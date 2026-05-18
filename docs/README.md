@@ -34,10 +34,13 @@ The project must prove the following before expanding:
 14. `13_TESTING_CHECKLIST.md`
 15. `14_TASK_BACKLOG.md`
 16. `15_DECISIONS.md`
+17. `16_CURRENT_ROADMAP.md`
+18. `17_OPEN_TASKS.md`
+19. `18_NEXT_STEPS.md`
+20. `19_WAVE_STAGE_SYSTEM_PLAN.md`
 
 ## Non-Negotiable Rule
 
 The first version is not a content game. It is a combat foundation.
 
 No character select, no story mode, no shop, no multiplayer, no progression, no RPG systems, no excessive effects, no boss fight, no world map in the first implementation phase.
-

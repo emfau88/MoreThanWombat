@@ -1,17 +1,33 @@
 import type { Fighter } from '../combat/Fighter';
 
 export type EnemyAiState = 'idle' | 'approach' | 'attack' | 'recover';
+export type EnemyAttackKind = 'basic' | 'special';
 
 export type EnemyIntent = {
   moveX: number;
   moveY: number;
   attackPressed: boolean;
+  attackKind: EnemyAttackKind;
   state: EnemyAiState;
 };
 
 const ATTACK_RANGE_X = 74;
 const ATTACK_RANGE_Y = 28;
 const DESIRED_SPACING_X = 42;
+const DEFAULT_APPROACH_SCALE = 0.86;
+const DEFAULT_VERTICAL_SCALE = 0.82;
+const DEFAULT_ATTACK_RECOVERY_MS = 260;
+const WIZARD_SPECIAL_RANGE_MIN_X = 130;
+const WIZARD_SPECIAL_RANGE_MAX_X = 280;
+const WIZARD_SPECIAL_RANGE_Y = 34;
+const WIZARD_BASIC_RANGE_X = 70;
+const WIZARD_BASIC_RANGE_Y = 26;
+const WIZARD_RETREAT_RANGE_X = 108;
+const WIZARD_APPROACH_SCALE = 0.7;
+const WIZARD_RETREAT_SCALE = 0.76;
+const WIZARD_VERTICAL_SCALE = 0.68;
+const WIZARD_SPECIAL_RECOVERY_MS = 520;
+const WIZARD_BASIC_RECOVERY_MS = 250;
 
 export class EnemyController {
   private recoveryRemainingMs = 0;
@@ -22,6 +38,7 @@ export class EnemyController {
         moveX: 0,
         moveY: 0,
         attackPressed: false,
+        attackKind: 'basic',
         state: 'idle',
       };
     }
@@ -31,6 +48,7 @@ export class EnemyController {
         moveX: 0,
         moveY: 0,
         attackPressed: false,
+        attackKind: 'basic',
         state: 'attack',
       };
     }
@@ -41,31 +59,98 @@ export class EnemyController {
         moveX: 0,
         moveY: 0,
         attackPressed: false,
+        attackKind: 'basic',
         state: 'recover',
       };
     }
 
+    if (enemy.id === 'discount_wizard') {
+      return this.updateDiscountWizard(enemy, target);
+    }
+
+    return this.updateDefaultMelee(enemy, target);
+  }
+
+  private updateDefaultMelee(enemy: Fighter, target: Fighter): EnemyIntent {
     const deltaX = target.x - enemy.x;
     const deltaY = target.y - enemy.y;
     const withinAttackRange = target.isGrounded && Math.abs(deltaX) <= ATTACK_RANGE_X && Math.abs(deltaY) <= ATTACK_RANGE_Y;
 
     if (withinAttackRange) {
-      this.recoveryRemainingMs = 220;
+      this.recoveryRemainingMs = DEFAULT_ATTACK_RECOVERY_MS;
       return {
         moveX: 0,
         moveY: 0,
         attackPressed: true,
+        attackKind: 'basic',
         state: 'attack',
       };
     }
 
-    const moveX = Math.abs(deltaX) > DESIRED_SPACING_X ? Math.sign(deltaX) : 0;
-    const moveY = Math.abs(deltaY) > ATTACK_RANGE_Y ? Math.sign(deltaY) : 0;
+    const moveX = Math.abs(deltaX) > DESIRED_SPACING_X ? Math.sign(deltaX) * DEFAULT_APPROACH_SCALE : 0;
+    const moveY = Math.abs(deltaY) > ATTACK_RANGE_Y ? Math.sign(deltaY) * DEFAULT_VERTICAL_SCALE : 0;
 
     return {
       moveX,
       moveY,
       attackPressed: false,
+      attackKind: 'basic',
+      state: 'approach',
+    };
+  }
+
+  private updateDiscountWizard(enemy: Fighter, target: Fighter): EnemyIntent {
+    const deltaX = target.x - enemy.x;
+    const absDeltaX = Math.abs(deltaX);
+    const deltaY = target.y - enemy.y;
+    const absDeltaY = Math.abs(deltaY);
+    const withinSpecialRange =
+      target.isGrounded &&
+      absDeltaX >= WIZARD_SPECIAL_RANGE_MIN_X &&
+      absDeltaX <= WIZARD_SPECIAL_RANGE_MAX_X &&
+      absDeltaY <= WIZARD_SPECIAL_RANGE_Y;
+    const withinBasicRange =
+      target.isGrounded &&
+      absDeltaX <= WIZARD_BASIC_RANGE_X &&
+      absDeltaY <= WIZARD_BASIC_RANGE_Y;
+
+    if (withinSpecialRange) {
+      this.recoveryRemainingMs = WIZARD_SPECIAL_RECOVERY_MS;
+      return {
+        moveX: 0,
+        moveY: 0,
+        attackPressed: true,
+        attackKind: 'special',
+        state: 'attack',
+      };
+    }
+
+    if (withinBasicRange) {
+      this.recoveryRemainingMs = WIZARD_BASIC_RECOVERY_MS;
+      return {
+        moveX: 0,
+        moveY: 0,
+        attackPressed: true,
+        attackKind: 'basic',
+        state: 'attack',
+      };
+    }
+
+    let moveX = 0;
+
+    if (absDeltaX < WIZARD_RETREAT_RANGE_X) {
+      moveX = -Math.sign(deltaX) * WIZARD_RETREAT_SCALE;
+    } else if (absDeltaX > WIZARD_SPECIAL_RANGE_MAX_X) {
+      moveX = Math.sign(deltaX) * WIZARD_APPROACH_SCALE;
+    }
+
+    const moveY = absDeltaY > WIZARD_SPECIAL_RANGE_Y ? Math.sign(deltaY) * WIZARD_VERTICAL_SCALE : 0;
+
+    return {
+      moveX,
+      moveY,
+      attackPressed: false,
+      attackKind: 'basic',
       state: 'approach',
     };
   }

@@ -9,6 +9,7 @@ import type { BattleMode, BattleSceneData, FighterId } from '../core/BattleModes
 import { BattleFlowController } from '../core/BattleFlowController';
 import { InputController } from '../core/InputController';
 import { MobileControls } from '../core/MobileControls';
+import type { ArenaId } from '../data/arenas';
 import { fighterDefinitions } from '../data/fighters';
 import { projectilesById } from '../data/projectiles';
 import { Hud } from '../ui/Hud';
@@ -22,15 +23,15 @@ type WaveConfig = {
 
 export class BattleScene extends Phaser.Scene {
   private readonly arenaBounds: FighterBounds = {
-    minX: 120,
-    maxX: 840,
-    minY: 240,
-    maxY: 460,
+    minX: 72,
+    maxX: 888,
+    minY: 224,
+    maxY: 474,
   };
   private inputController!: InputController;
   private mobileControls!: MobileControls;
   private player!: Fighter;
-  private enemy!: Fighter;
+  private enemy: Fighter | null = null;
   private instructionText!: Phaser.GameObjects.Text;
   private modeText!: Phaser.GameObjects.Text;
   private debugToggleButton!: Phaser.GameObjects.Rectangle;
@@ -38,7 +39,7 @@ export class BattleScene extends Phaser.Scene {
   private hud!: Hud;
   private resultText!: Phaser.GameObjects.Text;
   private resultHintText!: Phaser.GameObjects.Text;
-  private debugEnabled = true;
+  private debugEnabled = false;
   private hitboxSystem!: HitboxSystem;
   private projectileSystem!: ProjectileSystem;
   private pushboxSystem!: PushboxSystem;
@@ -48,6 +49,7 @@ export class BattleScene extends Phaser.Scene {
   private mode: BattleMode = 'duel';
   private playerFighterId: FighterId = 'wombat';
   private enemyFighterId: FighterId = 'angry_pigeon';
+  private arenaId: ArenaId = 'park';
   private waveIndex = 0;
   private waveTransitionRemainingMs = 0;
   private readonly spawnedProjectileAttackInstances = new Set<string>();
@@ -65,10 +67,11 @@ export class BattleScene extends Phaser.Scene {
     this.mode = data.mode ?? 'duel';
     this.playerFighterId = data.playerFighterId ?? 'wombat';
     this.enemyFighterId = data.enemyFighterId ?? 'angry_pigeon';
+    this.arenaId = data.arenaId ?? 'park';
   }
 
   create(): void {
-    this.debugEnabled = true;
+    this.debugEnabled = false;
     this.hitstopRemainingMs = 0;
     this.waveIndex = 0;
     this.waveTransitionRemainingMs = 0;
@@ -79,27 +82,20 @@ export class BattleScene extends Phaser.Scene {
     this.enemyController = new EnemyController();
     this.battleFlow = new BattleFlowController();
     this.createCharacterAnimations();
-    this.add.image(GAME_WIDTH / 2, GAME_HEIGHT / 2, 'duel-park-background').setDepth(-100);
-    this.add.rectangle(GAME_WIDTH / 2, 232, 820, 8, 0xf5f0d8, 0.16).setDepth(-90);
-    this.add.rectangle(GAME_WIDTH / 2, 468, 820, 8, 0x141821, 0.18).setDepth(-90);
-    this.add.text(32, 28, 'More Than Wombat - Combat Sandbox', {
-      color: '#f5f0d8',
-      fontFamily: 'Verdana, Geneva, sans-serif',
-      fontSize: '22px',
-    });
-    this.instructionText = this.add.text(32, 58, 'WASD/Arrows move, J/Space jab, K/Shift special, L jump, H debug, R restart', {
+    this.renderArena();
+    this.instructionText = this.add.text(32, 28, 'WASD/Arrows move, J/Space jab, K/Shift special, L jump, H debug, R restart', {
       color: '#c9d6df',
       fontFamily: 'Verdana, Geneva, sans-serif',
       fontSize: '14px',
     });
-    this.modeText = this.add.text(GAME_WIDTH - 28, 36, '', {
+    this.modeText = this.add.text(GAME_WIDTH - 28, 28, '', {
       color: '#f5f0d8',
       fontFamily: 'Verdana, Geneva, sans-serif',
       fontSize: '16px',
       align: 'right',
     }).setOrigin(1, 0.5);
     this.debugToggleButton = this.add
-      .rectangle(GAME_WIDTH - 92, 74, 124, 34, 0x223042, 0.94)
+      .rectangle(GAME_WIDTH - 92, 60, 124, 34, 0x223042, 0.94)
       .setStrokeStyle(2, 0xe9c46a, 0.86)
       .setDepth(2100)
       .setScrollFactor(0)
@@ -114,7 +110,7 @@ export class BattleScene extends Phaser.Scene {
         this.toggleDebug();
       });
     this.debugToggleLabel = this.add
-      .text(GAME_WIDTH - 92, 74, '', {
+      .text(GAME_WIDTH - 92, 60, '', {
         color: '#fff7e6',
         fontFamily: 'Verdana, Geneva, sans-serif',
         fontSize: '14px',
@@ -161,8 +157,9 @@ export class BattleScene extends Phaser.Scene {
     this.player = new Fighter(this, fighterDefinitions[this.playerFighterId], { x: 280, y: 340 });
     this.enemy = this.createEnemyForCurrentMode();
     this.player.setDebugVisible(this.debugEnabled);
-    this.enemy.setDebugVisible(this.debugEnabled);
-    this.enemy.updateVisuals();
+    this.enemy?.setDebugVisible(this.debugEnabled);
+    this.enemy?.updateVisuals();
+    this.instructionText.setVisible(this.debugEnabled);
     this.syncDebugToggleUi();
     this.hud = new Hud(this);
     this.updateModeText();
@@ -211,7 +208,7 @@ export class BattleScene extends Phaser.Scene {
       }
 
       this.player.updateVisuals();
-      this.enemy.updateVisuals();
+      this.enemy?.updateVisuals();
       this.hud.update(this.player, this.enemy);
       return;
     }
@@ -219,7 +216,7 @@ export class BattleScene extends Phaser.Scene {
     if (this.hitstopRemainingMs > 0) {
       this.hitstopRemainingMs = Math.max(0, this.hitstopRemainingMs - delta);
       this.player.updateVisuals();
-      this.enemy.updateVisuals();
+      this.enemy?.updateVisuals();
       this.hud.update(this.player, this.enemy);
       return;
     }
@@ -229,7 +226,9 @@ export class BattleScene extends Phaser.Scene {
     }
 
     if (inputState.attackPressed) {
-      this.player.faceTarget(this.enemy.x);
+      if (this.enemy) {
+        this.player.faceTarget(this.enemy.x);
+      }
       if (!this.player.isGrounded) {
         this.player.tryStartAirAttack();
       } else {
@@ -238,27 +237,45 @@ export class BattleScene extends Phaser.Scene {
     }
 
     if (inputState.specialPressed) {
-      this.player.faceTarget(this.enemy.x);
+      if (this.enemy) {
+        this.player.faceTarget(this.enemy.x);
+      }
       this.tryStartAttackWithFx(this.player, 'special');
     }
 
-    const enemyIntent = this.enemyController.update(this.enemy, this.player, deltaSeconds);
-    this.enemy.setStatusNote(`AI ${enemyIntent.state}`);
-    this.enemy.faceTarget(this.player.x);
+    let enemyIntent: ReturnType<EnemyController['update']> | null = null;
 
-    if (enemyIntent.attackPressed) {
-      this.tryStartAttackWithFx(this.enemy, 'basic');
+    if (this.enemy) {
+      enemyIntent = this.enemyController.update(this.enemy, this.player, deltaSeconds);
+      this.enemy.setStatusNote(`AI ${enemyIntent.state}`);
+      this.enemy.faceTarget(this.player.x);
+
+      if (enemyIntent.attackPressed) {
+        this.tryStartAttackWithFx(this.enemy, enemyIntent.attackKind);
+      }
     }
 
     this.player.update(deltaSeconds, inputState.moveX, inputState.moveY, this.arenaBounds);
-    this.enemy.update(deltaSeconds, enemyIntent.moveX, enemyIntent.moveY, this.arenaBounds);
+
+    if (this.enemy && enemyIntent) {
+      this.enemy.update(deltaSeconds, enemyIntent.moveX, enemyIntent.moveY, this.arenaBounds);
+    }
+
     this.spawnAttackProjectiles(this.player);
-    this.spawnAttackProjectiles(this.enemy);
-    this.pushboxSystem.resolve(this.player, this.enemy, this.arenaBounds);
-    const playerHit = this.hitboxSystem.resolveHit(this.player, this.enemy);
-    const enemyHit = this.hitboxSystem.resolveHit(this.enemy, this.player);
-    const projectileHits = this.projectileSystem.update(deltaSeconds, [this.player, this.enemy], this.arenaBounds);
-    this.spawnImpactFx(playerHit.attackId, this.enemy);
+
+    if (this.enemy) {
+      this.spawnAttackProjectiles(this.enemy);
+      this.pushboxSystem.resolve(this.player, this.enemy, this.arenaBounds);
+    }
+
+    const playerHit = this.enemy ? this.hitboxSystem.resolveHit(this.player, this.enemy) : { didHit: false, damage: 0, attackId: undefined };
+    const enemyHit = this.enemy ? this.hitboxSystem.resolveHit(this.enemy, this.player) : { didHit: false, damage: 0, attackId: undefined };
+    const projectileHits = this.projectileSystem.update(deltaSeconds, this.enemy ? [this.player, this.enemy] : [this.player], this.arenaBounds);
+
+    if (this.enemy) {
+      this.spawnImpactFx(playerHit.attackId, this.enemy);
+    }
+
     this.spawnImpactFx(enemyHit.attackId, this.player);
     for (const projectileHit of projectileHits) {
       this.spawnFx(projectileHit.impactAnimationKey, projectileHit.x, projectileHit.y, projectileHit.target.y + 8, false, 0.96);
@@ -266,10 +283,17 @@ export class BattleScene extends Phaser.Scene {
     const projectileDamage = projectileHits[0]?.damage ?? 0;
     this.applyImpactFeedback(playerHit.didHit ? playerHit.damage : enemyHit.didHit ? enemyHit.damage : projectileDamage);
     this.hud.update(this.player, this.enemy);
-    this.updateBattleResult();
+
+    if (this.enemy) {
+      this.updateBattleResult();
+    }
   }
 
   private updateBattleResult(): void {
+    if (!this.enemy) {
+      return;
+    }
+
     const playerDefeated = this.player.state === 'dead';
     let battleWon = false;
 
@@ -317,14 +341,14 @@ export class BattleScene extends Phaser.Scene {
     }
 
     this.player.update(deltaSeconds, moveX, moveY, this.arenaBounds);
-    this.enemy.updateVisuals();
+    this.enemy?.updateVisuals();
     this.hud.update(this.player, this.enemy);
   }
 
   private restartBattle(): void {
     this.resultText.setVisible(false);
     this.resultHintText.setVisible(false);
-    this.scene.restart({ mode: this.mode, playerFighterId: this.playerFighterId, enemyFighterId: this.enemyFighterId });
+    this.scene.restart({ mode: this.mode, playerFighterId: this.playerFighterId, enemyFighterId: this.enemyFighterId, arenaId: this.arenaId });
   }
 
   private goToMenu(): void {
@@ -334,7 +358,7 @@ export class BattleScene extends Phaser.Scene {
   private toggleDebug(): void {
     this.debugEnabled = !this.debugEnabled;
     this.player.setDebugVisible(this.debugEnabled);
-    this.enemy.setDebugVisible(this.debugEnabled);
+    this.enemy?.setDebugVisible(this.debugEnabled);
     this.instructionText.setVisible(this.debugEnabled);
     this.syncDebugToggleUi();
   }
@@ -419,7 +443,11 @@ export class BattleScene extends Phaser.Scene {
     });
   }
 
-  private createEnemyForCurrentMode(): Fighter {
+  private createEnemyForCurrentMode(): Fighter | null {
+    if (this.mode === 'test') {
+      return null;
+    }
+
     if (this.mode === 'duel') {
       const enemy = new Fighter(this, fighterDefinitions[this.enemyFighterId], { x: 650, y: 330 });
       enemy.facing = 'left';
@@ -439,7 +467,7 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private advanceWave(): void {
-    if (this.mode !== 'waves') {
+    if (this.mode !== 'waves' || !this.enemy) {
       return;
     }
 
@@ -449,9 +477,9 @@ export class BattleScene extends Phaser.Scene {
     this.spawnedProjectileAttackInstances.clear();
     this.enemy.destroy();
     this.enemy = this.createEnemyForCurrentMode();
-    this.enemy.setDebugVisible(this.debugEnabled);
-    this.enemy.updateVisuals();
-    this.enemy.setStatusNote('AI idle');
+    this.enemy?.setDebugVisible(this.debugEnabled);
+    this.enemy?.updateVisuals();
+    this.enemy?.setStatusNote('AI idle');
     this.resultText.setVisible(false);
     this.resultHintText.setVisible(false);
     this.updateModeText();
@@ -459,12 +487,46 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private updateModeText(): void {
+    const arenaLabel = this.getArenaLabel();
+
     if (this.mode === 'duel') {
-      this.modeText.setText('Mode: Duel');
+      this.modeText.setText(`Mode: Duel\nArena: ${arenaLabel}`);
       return;
     }
 
-    this.modeText.setText(`Mode: Waves ${this.waveIndex + 1}/${this.waveConfigs.length}`);
+    if (this.mode === 'test') {
+      this.modeText.setText(`Mode: Test\nArena: ${arenaLabel}`);
+      return;
+    }
+
+    this.modeText.setText(`Mode: Waves ${this.waveIndex + 1}/${this.waveConfigs.length}\nArena: ${arenaLabel}`);
+  }
+
+  private renderArena(): void {
+    if (this.arenaId === 'park') {
+      this.add.image(GAME_WIDTH / 2, GAME_HEIGHT / 2, 'duel-park-background').setDepth(-100);
+      this.add.rectangle(GAME_WIDTH / 2, 232, 820, 8, 0xf5f0d8, 0.16).setDepth(-90);
+      this.add.rectangle(GAME_WIDTH / 2, 468, 820, 8, 0x141821, 0.18).setDepth(-90);
+      return;
+    }
+
+    const backgroundKey = this.arenaId === 'rooftop' ? 'rooftop-background' : 'scrapyard-background';
+    const laneColor = this.arenaId === 'rooftop' ? 0xcfe8ff : 0xffd08a;
+    this.add.image(GAME_WIDTH / 2, GAME_HEIGHT / 2, backgroundKey).setDisplaySize(GAME_WIDTH, GAME_HEIGHT).setDepth(-100);
+    this.add.rectangle(GAME_WIDTH / 2, 230, 820, 10, laneColor, 0.12).setDepth(-90);
+    this.add.rectangle(GAME_WIDTH / 2, 468, 820, 10, 0x0a0b0f, 0.22).setDepth(-90);
+  }
+
+  private getArenaLabel(): string {
+    if (this.arenaId === 'park') {
+      return 'Park';
+    }
+
+    if (this.arenaId === 'rooftop') {
+      return 'Rooftop';
+    }
+
+    return 'Scrapyard';
   }
 
   private tryStartAttackWithFx(fighter: Fighter, kind: 'basic' | 'special'): void {

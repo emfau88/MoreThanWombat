@@ -44,6 +44,7 @@ export type FighterDefinition = {
     scale: number;
     animations: Partial<Record<FighterState, string>>;
     attackAnimations?: Partial<Record<string, string>>;
+    frameOffsetSets?: Record<string, Array<{ x: number; y: number }>>;
   };
 };
 
@@ -194,11 +195,15 @@ export class Fighter {
     }
 
     if (this.currentAttack) {
+      if (this.currentAttack.canMoveDuringAttack) {
+        this.applyMovementInput(moveX, moveY, deltaSeconds, bounds, false);
+      }
+
       this.updateAttack(deltaSeconds, bounds);
       return;
     }
 
-    this.moveBy(moveX, moveY, deltaSeconds, bounds);
+    this.applyMovementInput(moveX, moveY, deltaSeconds, bounds, true);
   }
 
   tryStartAttack(kind: 'basic' | 'special'): boolean {
@@ -374,7 +379,13 @@ export class Fighter {
     this.updateVisuals();
   }
 
-  private moveBy(moveX: number, moveY: number, deltaSeconds: number, bounds: FighterBounds): void {
+  private applyMovementInput(
+    moveX: number,
+    moveY: number,
+    deltaSeconds: number,
+    bounds: FighterBounds,
+    updateGroundState: boolean,
+  ): void {
     const inputVector = new Phaser.Math.Vector2(moveX, moveY);
 
     if (inputVector.lengthSq() > 1) {
@@ -388,11 +399,13 @@ export class Fighter {
     this.x = Phaser.Math.Clamp(this.x + inputVector.x * this.moveSpeed * deltaSeconds, bounds.minX, bounds.maxX);
     this.y = Phaser.Math.Clamp(this.y + inputVector.y * this.moveSpeed * deltaSeconds, bounds.minY, bounds.maxY);
 
-    if (this.isGrounded) {
+    if (updateGroundState && this.isGrounded) {
       this.state = inputVector.lengthSq() > 0 ? 'walk' : 'idle';
     }
 
-    this.updateVisuals();
+    if (updateGroundState) {
+      this.updateVisuals();
+    }
   }
 
   private updateVerticalMotion(deltaSeconds: number): void {
@@ -569,9 +582,31 @@ export class Fighter {
       attackAnimationKey ?? airAttackFallbackKey ?? this.definition.sprite.animations[this.state] ?? this.definition.sprite.animations.idle;
 
     if (!animationKey || this.sprite.anims.currentAnim?.key === animationKey) {
+      this.applySpriteFrameOffset();
       return;
     }
 
     this.sprite.play(animationKey, true);
+    this.applySpriteFrameOffset();
+  }
+
+  private applySpriteFrameOffset(): void {
+    if (!this.sprite || !this.definition.sprite) {
+      return;
+    }
+
+    const animationKey = this.sprite.anims.currentAnim?.key;
+    const frameOffsets = animationKey ? this.definition.sprite.frameOffsetSets?.[animationKey] : undefined;
+
+    if (!frameOffsets || frameOffsets.length === 0) {
+      this.sprite.setPosition(0, 0);
+      return;
+    }
+
+    const frameName = Number(this.sprite.frame.name);
+    const frameIndex = Number.isFinite(frameName) ? frameName : 0;
+    const offset = frameOffsets[frameIndex] ?? frameOffsets[frameOffsets.length - 1] ?? { x: 0, y: 0 };
+    const facingDirection = this.facing === 'left' ? -1 : 1;
+    this.sprite.setPosition(offset.x * facingDirection, offset.y);
   }
 }

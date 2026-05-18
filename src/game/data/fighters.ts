@@ -40,6 +40,14 @@ export const wombatDefinition: FighterDefinition = {
     attackAnimations: {
       air_bonk: 'wombat-air-bonk',
     },
+    frameOffsetSets: {
+      'wombat-idle': [
+        { x: 0, y: 0 },
+        { x: 3, y: 0 },
+        { x: 7, y: 0 },
+        { x: 10, y: 0 },
+      ],
+    },
   },
 };
 
@@ -78,6 +86,14 @@ export const angryPigeonDefinition: FighterDefinition = {
       hitstun: 'angry-pigeon-hit',
       dead: 'angry-pigeon-dead',
     },
+    frameOffsetSets: {
+      'angry-pigeon-idle': [
+        { x: 0, y: 0 },
+        { x: 2, y: 0 },
+        { x: 7, y: -2 },
+        { x: 7, y: -1 },
+      ],
+    },
   },
 };
 
@@ -108,7 +124,7 @@ export const discountWizardDefinition: FighterDefinition = {
   },
   sprite: {
     textureKey: 'discount-wizard',
-    scale: 0.84,
+    scale: 0.9,
     animations: {
       idle: 'discount-wizard-idle',
       walk: 'discount-wizard-walk',
@@ -121,6 +137,14 @@ export const discountWizardDefinition: FighterDefinition = {
       discount_wand_smack: 'discount-wizard-fireball',
       discount_fireball_cast: 'discount-wizard-fireball',
       discount_miscast: 'discount-wizard-miscast',
+    },
+    frameOffsetSets: {
+      'discount-wizard-idle': [
+        { x: 0, y: 0 },
+        { x: 10, y: 0 },
+        { x: 18, y: 0 },
+        { x: 16, y: 0 },
+      ],
     },
   },
 };

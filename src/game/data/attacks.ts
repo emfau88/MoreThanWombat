@@ -115,7 +115,7 @@ export const discountMiscast: AttackDefinition = {
   label: 'Miscast',
   startupMs: 260,
   activeMs: 150,
-  recoveryMs: 430,
+  recoveryMs: 220,
   damage: 14,
   hitstunMs: 390,
   knockbackX: 220,
@@ -126,6 +126,7 @@ export const discountMiscast: AttackDefinition = {
     width: 118,
     height: 58,
   },
+  canMoveDuringAttack: true,
 };
 
 export const budgetCrackedAxeSwing: AttackDefinition = {

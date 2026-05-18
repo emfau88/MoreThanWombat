@@ -11,8 +11,9 @@ export class MainMenuScene extends Phaser.Scene {
     this.add.image(GAME_WIDTH / 2, GAME_HEIGHT / 2, 'main-menu-background').setDisplaySize(GAME_WIDTH, GAME_HEIGHT).setDepth(0);
     this.add.rectangle(GAME_WIDTH / 2, GAME_HEIGHT / 2, GAME_WIDTH, GAME_HEIGHT, 0x05070c, 0.16).setDepth(1);
 
-    this.createModeButton(GAME_WIDTH / 2, 318, 300, 70, 'Duel', 'Current 1v1 setup', 'duel');
-    this.createModeButton(GAME_WIDTH / 2, 408, 300, 70, 'Waves', 'Three short enemy waves', 'waves');
+    this.createModeButton(GAME_WIDTH / 2, 272, 300, 70, 'Duel', 'Current 1v1 setup', 'duel');
+    this.createModeButton(GAME_WIDTH / 2, 362, 300, 70, 'Waves', 'Three short enemy waves', 'waves');
+    this.createModeButton(GAME_WIDTH / 2, 452, 300, 70, 'Test', 'Solo move and attack sandbox', 'test');
 
     this.add.text(GAME_WIDTH / 2, 482, 'Touch or click a mode to start', {
       color: '#d5dde4',

@@ -2,11 +2,20 @@ import Phaser from 'phaser';
 import type { PlayerInputState } from './InputController';
 
 type ControlElements = {
+  baseShadow: Phaser.GameObjects.Arc;
   base: Phaser.GameObjects.Arc;
+  baseRing: Phaser.GameObjects.Arc;
   knob: Phaser.GameObjects.Arc;
+  knobHighlight: Phaser.GameObjects.Arc;
+  attackShadow: Phaser.GameObjects.Arc;
   attackButton: Phaser.GameObjects.Arc;
+  attackRing: Phaser.GameObjects.Arc;
+  specialShadow: Phaser.GameObjects.Arc;
   specialButton: Phaser.GameObjects.Arc;
+  specialRing: Phaser.GameObjects.Arc;
+  jumpShadow: Phaser.GameObjects.Arc;
   jumpButton: Phaser.GameObjects.Arc;
+  jumpRing: Phaser.GameObjects.Arc;
   attackLabel: Phaser.GameObjects.Text;
   specialLabel: Phaser.GameObjects.Text;
   jumpLabel: Phaser.GameObjects.Text;
@@ -17,6 +26,7 @@ type TouchState = Omit<PlayerInputState, 'debugTogglePressed' | 'restartPressed'
 const JOYSTICK_RADIUS = 58;
 const JOYSTICK_KNOB_RADIUS = 28;
 const JOYSTICK_DEADZONE = 0.15;
+const JOYSTICK_CAPTURE_RADIUS = 180;
 
 export class MobileControls {
   private readonly scene: Phaser.Scene;
@@ -41,7 +51,6 @@ export class MobileControls {
     scene.input.on(Phaser.Input.Events.POINTER_DOWN, this.handlePointerDown, this);
     scene.input.on(Phaser.Input.Events.POINTER_MOVE, this.handlePointerMove, this);
     scene.input.on(Phaser.Input.Events.POINTER_UP, this.handlePointerUp, this);
-    scene.input.on(Phaser.Input.Events.GAME_OUT, this.resetJoystick, this);
     scene.scale.on(Phaser.Scale.Events.RESIZE, this.handleResize, this);
   }
 
@@ -49,7 +58,6 @@ export class MobileControls {
     this.scene.input.off(Phaser.Input.Events.POINTER_DOWN, this.handlePointerDown, this);
     this.scene.input.off(Phaser.Input.Events.POINTER_MOVE, this.handlePointerMove, this);
     this.scene.input.off(Phaser.Input.Events.POINTER_UP, this.handlePointerUp, this);
-    this.scene.input.off(Phaser.Input.Events.GAME_OUT, this.resetJoystick, this);
     this.scene.scale.off(Phaser.Scale.Events.RESIZE, this.handleResize, this);
   }
 
@@ -62,40 +70,97 @@ export class MobileControls {
   }
 
   private createControls(): ControlElements {
-    const base = this.scene.add.circle(0, 0, JOYSTICK_RADIUS, 0x0e141c, 0.42).setScrollFactor(0).setDepth(1000);
-    const knob = this.scene.add.circle(0, 0, JOYSTICK_KNOB_RADIUS, 0xf0f3bd, 0.9).setScrollFactor(0).setDepth(1001);
-    const attackButton = this.scene.add.circle(0, 0, 42, 0xd95d39, 0.9).setScrollFactor(0).setDepth(1000);
-    const specialButton = this.scene.add.circle(0, 0, 34, 0x457b9d, 0.88).setScrollFactor(0).setDepth(1000);
-    const jumpButton = this.scene.add.circle(0, 0, 32, 0x6f8f3a, 0.88).setScrollFactor(0).setDepth(1000);
+    const baseShadow = this.scene.add.circle(0, 0, JOYSTICK_RADIUS + 6, 0x02060b, 0.28).setScrollFactor(0).setDepth(996);
+    const base = this.scene.add
+      .circle(0, 0, JOYSTICK_RADIUS, 0x10202d, 0.58)
+      .setStrokeStyle(3, 0x89c2d9, 0.28)
+      .setScrollFactor(0)
+      .setDepth(1000);
+    const baseRing = this.scene.add
+      .circle(0, 0, JOYSTICK_RADIUS - 13, 0x193445, 0.22)
+      .setStrokeStyle(2, 0xd8f3dc, 0.14)
+      .setScrollFactor(0)
+      .setDepth(1001);
+    const knob = this.scene.add
+      .circle(0, 0, JOYSTICK_KNOB_RADIUS, 0xf1faee, 0.95)
+      .setStrokeStyle(3, 0x89c2d9, 0.35)
+      .setScrollFactor(0)
+      .setDepth(1002);
+    const knobHighlight = this.scene.add.circle(0, 0, JOYSTICK_KNOB_RADIUS * 0.48, 0xffffff, 0.22).setScrollFactor(0).setDepth(1003);
+
+    const attackShadow = this.scene.add.circle(0, 0, 46, 0x1d0803, 0.26).setScrollFactor(0).setDepth(996);
+    const attackButton = this.scene.add
+      .circle(0, 0, 42, 0xd4572f, 0.94)
+      .setStrokeStyle(3, 0xffe8c2, 0.4)
+      .setScrollFactor(0)
+      .setDepth(1000);
+    const attackRing = this.scene.add.circle(0, 0, 31, 0xff9f68, 0.18).setScrollFactor(0).setDepth(1001);
+
+    const specialShadow = this.scene.add.circle(0, 0, 38, 0x061019, 0.26).setScrollFactor(0).setDepth(996);
+    const specialButton = this.scene.add
+      .circle(0, 0, 34, 0x3d6f96, 0.93)
+      .setStrokeStyle(3, 0xd6ecff, 0.34)
+      .setScrollFactor(0)
+      .setDepth(1000);
+    const specialRing = this.scene.add.circle(0, 0, 24, 0x78a8c8, 0.18).setScrollFactor(0).setDepth(1001);
+
+    const jumpShadow = this.scene.add.circle(0, 0, 36, 0x081105, 0.26).setScrollFactor(0).setDepth(996);
+    const jumpButton = this.scene.add
+      .circle(0, 0, 32, 0x698f36, 0.93)
+      .setStrokeStyle(3, 0xe7ffd1, 0.34)
+      .setScrollFactor(0)
+      .setDepth(1000);
+    const jumpRing = this.scene.add.circle(0, 0, 23, 0xa8cf62, 0.18).setScrollFactor(0).setDepth(1001);
     const attackLabel = this.scene.add
       .text(0, 0, 'ATK', {
         color: '#fff7e6',
         fontFamily: 'Verdana, Geneva, sans-serif',
         fontSize: '16px',
+        fontStyle: 'bold',
       })
       .setOrigin(0.5)
-      .setDepth(1001)
+      .setDepth(1004)
       .setScrollFactor(0);
     const specialLabel = this.scene.add
       .text(0, 0, 'SP', {
         color: '#f3f7fb',
         fontFamily: 'Verdana, Geneva, sans-serif',
         fontSize: '14px',
+        fontStyle: 'bold',
       })
       .setOrigin(0.5)
-      .setDepth(1001)
+      .setDepth(1004)
       .setScrollFactor(0);
     const jumpLabel = this.scene.add
       .text(0, 0, 'JMP', {
         color: '#f3f7fb',
         fontFamily: 'Verdana, Geneva, sans-serif',
         fontSize: '12px',
+        fontStyle: 'bold',
       })
       .setOrigin(0.5)
-      .setDepth(1001)
+      .setDepth(1004)
       .setScrollFactor(0);
 
-    return { base, knob, attackButton, specialButton, jumpButton, attackLabel, specialLabel, jumpLabel };
+    return {
+      baseShadow,
+      base,
+      baseRing,
+      knob,
+      knobHighlight,
+      attackShadow,
+      attackButton,
+      attackRing,
+      specialShadow,
+      specialButton,
+      specialRing,
+      jumpShadow,
+      jumpButton,
+      jumpRing,
+      attackLabel,
+      specialLabel,
+      jumpLabel,
+    };
   }
 
   private handlePointerDown(pointer: Phaser.Input.Pointer): void {
@@ -109,17 +174,17 @@ export class MobileControls {
 
     if (this.containsPointer(pointer, this.controls.attackButton)) {
       this.touchState.attackPressed = true;
-      this.controls.attackButton.setScale(0.94);
+      this.setButtonScale('attack', 0.92);
     }
 
     if (this.containsPointer(pointer, this.controls.specialButton)) {
       this.touchState.specialPressed = true;
-      this.controls.specialButton.setScale(0.94);
+      this.setButtonScale('special', 0.92);
     }
 
     if (this.containsPointer(pointer, this.controls.jumpButton)) {
       this.touchState.jumpPressed = true;
-      this.controls.jumpButton.setScale(0.94);
+      this.setButtonScale('jump', 0.92);
     }
   }
 
@@ -137,24 +202,31 @@ export class MobileControls {
     }
 
     this.controls.attackButton.setScale(1);
+    this.controls.attackRing.setScale(1);
     this.controls.specialButton.setScale(1);
+    this.controls.specialRing.setScale(1);
     this.controls.jumpButton.setScale(1);
+    this.controls.jumpRing.setScale(1);
   }
 
   private updateJoystick(pointer: Phaser.Input.Pointer): void {
     const delta = new Phaser.Math.Vector2(pointer.x - this.joystickCenter.x, pointer.y - this.joystickCenter.y);
-    const clamped = delta.clone().limit(JOYSTICK_RADIUS);
-    const normalized = clamped.clone().scale(1 / JOYSTICK_RADIUS);
+    const clampedVisual = delta.clone().limit(JOYSTICK_RADIUS);
+    const clampedInput = delta.clone().limit(JOYSTICK_CAPTURE_RADIUS);
+    const normalized = clampedInput.clone().scale(1 / JOYSTICK_CAPTURE_RADIUS);
 
     if (normalized.length() < JOYSTICK_DEADZONE) {
       this.touchState.moveX = 0;
       this.touchState.moveY = 0;
     } else {
-      this.touchState.moveX = Phaser.Math.Clamp(normalized.x, -1, 1);
-      this.touchState.moveY = Phaser.Math.Clamp(normalized.y, -1, 1);
+      const strongInput = normalized.clone().normalize();
+      const inputStrength = Phaser.Math.Clamp(clampedInput.length() / JOYSTICK_RADIUS, 0, 1);
+      this.touchState.moveX = Phaser.Math.Clamp(strongInput.x * inputStrength, -1, 1);
+      this.touchState.moveY = Phaser.Math.Clamp(strongInput.y * inputStrength, -1, 1);
     }
 
-    this.controls.knob.setPosition(this.joystickCenter.x + clamped.x, this.joystickCenter.y + clamped.y);
+    this.controls.knob.setPosition(this.joystickCenter.x + clampedVisual.x, this.joystickCenter.y + clampedVisual.y);
+    this.controls.knobHighlight.setPosition(this.joystickCenter.x + clampedVisual.x - 6, this.joystickCenter.y + clampedVisual.y - 8);
   }
 
   private resetJoystick(): void {
@@ -162,6 +234,7 @@ export class MobileControls {
     this.touchState.moveX = 0;
     this.touchState.moveY = 0;
     this.controls.knob.setPosition(this.joystickCenter.x, this.joystickCenter.y);
+    this.controls.knobHighlight.setPosition(this.joystickCenter.x - 6, this.joystickCenter.y - 8);
   }
 
   private handleResize(gameSize: Phaser.Structs.Size): void {
@@ -170,8 +243,11 @@ export class MobileControls {
 
   private updateLayout(width: number, height: number): void {
     this.joystickCenter.set(92, height - 92);
+    this.controls.baseShadow.setPosition(this.joystickCenter.x + 2, this.joystickCenter.y + 4);
     this.controls.base.setPosition(this.joystickCenter.x, this.joystickCenter.y);
+    this.controls.baseRing.setPosition(this.joystickCenter.x, this.joystickCenter.y);
     this.controls.knob.setPosition(this.joystickCenter.x, this.joystickCenter.y);
+    this.controls.knobHighlight.setPosition(this.joystickCenter.x - 6, this.joystickCenter.y - 8);
 
     const attackX = width - 96;
     const attackY = height - 86;
@@ -180,12 +256,35 @@ export class MobileControls {
     const jumpX = width - 176;
     const jumpY = height - 68;
 
+    this.controls.attackShadow.setPosition(attackX + 2, attackY + 4);
     this.controls.attackButton.setPosition(attackX, attackY);
+    this.controls.attackRing.setPosition(attackX, attackY);
+    this.controls.specialShadow.setPosition(specialX + 2, specialY + 4);
     this.controls.specialButton.setPosition(specialX, specialY);
+    this.controls.specialRing.setPosition(specialX, specialY);
+    this.controls.jumpShadow.setPosition(jumpX + 2, jumpY + 4);
     this.controls.jumpButton.setPosition(jumpX, jumpY);
+    this.controls.jumpRing.setPosition(jumpX, jumpY);
     this.controls.attackLabel.setPosition(attackX, attackY);
     this.controls.specialLabel.setPosition(specialX, specialY);
     this.controls.jumpLabel.setPosition(jumpX, jumpY);
+  }
+
+  private setButtonScale(button: 'attack' | 'special' | 'jump', scale: number): void {
+    if (button === 'attack') {
+      this.controls.attackButton.setScale(scale);
+      this.controls.attackRing.setScale(scale);
+      return;
+    }
+
+    if (button === 'special') {
+      this.controls.specialButton.setScale(scale);
+      this.controls.specialRing.setScale(scale);
+      return;
+    }
+
+    this.controls.jumpButton.setScale(scale);
+    this.controls.jumpRing.setScale(scale);
   }
 
   private containsPointer(pointer: Phaser.Input.Pointer, target: Phaser.GameObjects.Arc): boolean {
