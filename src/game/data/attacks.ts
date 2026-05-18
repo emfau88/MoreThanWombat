@@ -209,6 +209,25 @@ export const budgetTinyRage: AttackDefinition = {
   manaCost: 30,
 };
 
+export const budgetAxeRain: AttackDefinition = {
+  id: 'budget_axe_rain',
+  label: 'Warranty Void Axe Rain',
+  startupMs: 330,
+  activeMs: 620,
+  recoveryMs: 540,
+  damage: 0,
+  hitstunMs: 0,
+  knockbackX: 0,
+  knockbackY: 0,
+  hitbox: {
+    offsetX: 0,
+    offsetY: 0,
+    width: 1,
+    height: 1,
+  },
+  manaCost: 100,
+};
+
 export const busterUnderbiteJab: AttackDefinition = {
   id: 'buster_underbite_jab',
   label: 'Underbite Jab',
@@ -276,6 +295,7 @@ export const attacksById: Record<string, AttackDefinition> = {
   [discountClearanceOrb.id]: discountClearanceOrb,
   [budgetCrackedAxeSwing.id]: budgetCrackedAxeSwing,
   [budgetTinyRage.id]: budgetTinyRage,
+  [budgetAxeRain.id]: budgetAxeRain,
   [busterUnderbiteJab.id]: busterUnderbiteJab,
   [busterBulldogBash.id]: busterBulldogBash,
   [airBonk.id]: airBonk,

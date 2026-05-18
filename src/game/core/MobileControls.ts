@@ -19,10 +19,13 @@ type ControlElements = {
   jumpShadow: Phaser.GameObjects.Arc;
   jumpButton: Phaser.GameObjects.Arc;
   jumpRing: Phaser.GameObjects.Arc;
+  menuShadow: Phaser.GameObjects.Rectangle;
+  menuButton: Phaser.GameObjects.Rectangle;
   attackLabel: Phaser.GameObjects.Text;
   specialLabel: Phaser.GameObjects.Text;
   ultimateLabel: Phaser.GameObjects.Text;
   jumpLabel: Phaser.GameObjects.Text;
+  menuLabel: Phaser.GameObjects.Text;
 };
 
 type TouchState = Omit<PlayerInputState, 'debugTogglePressed' | 'restartPressed'>;
@@ -125,6 +128,12 @@ export class MobileControls {
       .setScrollFactor(0)
       .setDepth(1000);
     const jumpRing = this.scene.add.circle(0, 0, 23, 0xa8cf62, 0.18).setScrollFactor(0).setDepth(1001);
+    const menuShadow = this.scene.add.rectangle(0, 0, 74, 28, 0x02060b, 0.24).setScrollFactor(0).setDepth(996);
+    const menuButton = this.scene.add
+      .rectangle(0, 0, 70, 24, 0x172333, 0.78)
+      .setStrokeStyle(2, 0xf5f0d8, 0.34)
+      .setScrollFactor(0)
+      .setDepth(1000);
     const attackLabel = this.scene.add
       .text(0, 0, 'ATK', {
         color: '#fff7e6',
@@ -165,6 +174,16 @@ export class MobileControls {
       .setOrigin(0.5)
       .setDepth(1004)
       .setScrollFactor(0);
+    const menuLabel = this.scene.add
+      .text(0, 0, 'MENU', {
+        color: '#f5f0d8',
+        fontFamily: 'Verdana, Geneva, sans-serif',
+        fontSize: '11px',
+        fontStyle: 'bold',
+      })
+      .setOrigin(0.5)
+      .setDepth(1004)
+      .setScrollFactor(0);
 
     return {
       baseShadow,
@@ -184,10 +203,13 @@ export class MobileControls {
       jumpShadow,
       jumpButton,
       jumpRing,
+      menuShadow,
+      menuButton,
       attackLabel,
       specialLabel,
       ultimateLabel,
       jumpLabel,
+      menuLabel,
     };
   }
 
@@ -219,6 +241,11 @@ export class MobileControls {
       this.touchState.jumpPressed = true;
       this.setButtonScale('jump', 0.92);
     }
+
+    if (this.containsRectPointer(pointer, this.controls.menuButton)) {
+      this.touchState.menuPressed = true;
+      this.controls.menuButton.setScale(0.96);
+    }
   }
 
   private handlePointerMove(pointer: Phaser.Input.Pointer): void {
@@ -242,6 +269,7 @@ export class MobileControls {
     this.controls.ultimateRing.setScale(1);
     this.controls.jumpButton.setScale(1);
     this.controls.jumpRing.setScale(1);
+    this.controls.menuButton.setScale(1);
   }
 
   private updateJoystick(pointer: Phaser.Input.Pointer): void {
@@ -291,6 +319,8 @@ export class MobileControls {
     const ultimateY = height - 178;
     const jumpX = width - 176;
     const jumpY = height - 68;
+    const menuX = 52;
+    const menuY = 30;
 
     this.controls.attackShadow.setPosition(attackX + 2, attackY + 4);
     this.controls.attackButton.setPosition(attackX, attackY);
@@ -304,10 +334,13 @@ export class MobileControls {
     this.controls.jumpShadow.setPosition(jumpX + 2, jumpY + 4);
     this.controls.jumpButton.setPosition(jumpX, jumpY);
     this.controls.jumpRing.setPosition(jumpX, jumpY);
+    this.controls.menuShadow.setPosition(menuX + 2, menuY + 3);
+    this.controls.menuButton.setPosition(menuX, menuY);
     this.controls.attackLabel.setPosition(attackX, attackY);
     this.controls.specialLabel.setPosition(specialX, specialY);
     this.controls.ultimateLabel.setPosition(ultimateX, ultimateY);
     this.controls.jumpLabel.setPosition(jumpX, jumpY);
+    this.controls.menuLabel.setPosition(menuX, menuY);
   }
 
   private setButtonScale(button: 'attack' | 'special' | 'ultimate' | 'jump', scale: number): void {
@@ -335,5 +368,11 @@ export class MobileControls {
 
   private containsPointer(pointer: Phaser.Input.Pointer, target: Phaser.GameObjects.Arc): boolean {
     return Phaser.Math.Distance.Between(pointer.x, pointer.y, target.x, target.y) <= target.radius;
+  }
+
+  private containsRectPointer(pointer: Phaser.Input.Pointer, target: Phaser.GameObjects.Rectangle): boolean {
+    const halfWidth = target.width * 0.5;
+    const halfHeight = target.height * 0.5;
+    return pointer.x >= target.x - halfWidth && pointer.x <= target.x + halfWidth && pointer.y >= target.y - halfHeight && pointer.y <= target.y + halfHeight;
   }
 }

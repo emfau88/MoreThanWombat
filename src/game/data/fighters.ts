@@ -185,6 +185,7 @@ export const budgetBarbarianDefinition: FighterDefinition = {
   attacks: {
     basic: 'budget_cracked_axe_swing',
     special: 'budget_tiny_rage',
+    ultimate: 'budget_axe_rain',
   },
   sprite: {
     textureKey: 'budget-barbarian',
@@ -196,6 +197,9 @@ export const budgetBarbarianDefinition: FighterDefinition = {
       special: 'budget-barbarian-tiny-rage',
       hitstun: 'budget-barbarian-hit',
       dead: 'budget-barbarian-dead',
+    },
+    attackAnimations: {
+      budget_axe_rain: 'budget-barbarian-tiny-rage',
     },
   },
 };

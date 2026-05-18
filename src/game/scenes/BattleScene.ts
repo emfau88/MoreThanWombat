@@ -13,12 +13,24 @@ import type { ArenaId } from '../data/arenas';
 import { fighterDefinitions } from '../data/fighters';
 import { projectilesById } from '../data/projectiles';
 import { Hud } from '../ui/Hud';
+import { intersectsRect, type Rect } from '../utils/Rect';
 
 type WaveConfig = {
   hp: number;
   spawnX: number;
   spawnY: number;
   moveSpeed: number;
+};
+
+type AxeRainStrike = {
+  owner: Fighter;
+  x: number;
+  y: number;
+  delayMs: number;
+  activeMs: number;
+  didImpact: boolean;
+  warning: Phaser.GameObjects.Ellipse;
+  hitTargetInstanceIds: Set<number>;
 };
 
 export class BattleScene extends Phaser.Scene {
@@ -55,6 +67,7 @@ export class BattleScene extends Phaser.Scene {
   private testDummyRegenDelayMs = 0;
   private testDummyLastHp = 0;
   private readonly spawnedProjectileAttackInstances = new Set<string>();
+  private readonly axeRainStrikes: AxeRainStrike[] = [];
   private readonly waveConfigs: WaveConfig[] = [
     { hp: 56, spawnX: 650, spawnY: 330, moveSpeed: 120 },
     { hp: 72, spawnX: 700, spawnY: 360, moveSpeed: 132 },
@@ -80,6 +93,7 @@ export class BattleScene extends Phaser.Scene {
     this.testDummyRegenDelayMs = 0;
     this.testDummyLastHp = 0;
     this.spawnedProjectileAttackInstances.clear();
+    this.clearAxeRainStrikes();
     this.hitboxSystem = new HitboxSystem();
     this.projectileSystem = new ProjectileSystem(this);
     this.pushboxSystem = new PushboxSystem();
@@ -309,9 +323,10 @@ export class BattleScene extends Phaser.Scene {
         this.spawnFx(projectileHit.impactAnimationKey, projectileHit.x, projectileHit.y, projectileHit.target.y + 8, false, 0.96);
       }
     }
+    const axeRainDamage = this.updateAxeRainStrikes(delta);
     this.updateTestDummyRegen(delta);
     const projectileDamage = projectileHits[0]?.damage ?? 0;
-    this.applyImpactFeedback(playerHit.didHit ? playerHit.damage : enemyHit.didHit ? enemyHit.damage : projectileDamage);
+    this.applyImpactFeedback(playerHit.didHit ? playerHit.damage : enemyHit.didHit ? enemyHit.damage : projectileDamage || axeRainDamage);
     this.hud.update(this.player, this.enemy);
 
     if (this.enemy && this.mode !== 'test') {
@@ -369,6 +384,11 @@ export class BattleScene extends Phaser.Scene {
     if (this.enemy.hp < this.enemy.maxHp) {
       const healedHp = Math.min(this.enemy.maxHp, this.enemy.hp + Math.ceil(deltaMs * 1.8));
       this.enemy.hp = healedHp;
+
+      if (this.enemy.state === 'dead' && healedHp > 0) {
+        this.enemy.state = 'idle';
+      }
+
       this.enemy.updateVisuals();
     }
 
@@ -484,6 +504,9 @@ export class BattleScene extends Phaser.Scene {
     this.createAnimationOnce('discount-wizard-ultimate-teleport', 'discount-wizard-ultimate-fx', 0, 3, 14, 0);
     this.createAnimationOnce('discount-wizard-ultimate-orb', 'discount-wizard-ultimate-fx', 4, 7, 12, -1);
     this.createAnimationOnce('discount-wizard-ultimate-impact', 'discount-wizard-ultimate-fx', 8, 11, 14, 0);
+    this.createAnimationOnce('budget-barbarian-axe-fall', 'budget-barbarian-ultimate-fx', 0, 3, 16, 0);
+    this.createAnimationOnce('budget-barbarian-axe-impact', 'budget-barbarian-ultimate-fx', 4, 7, 14, 0);
+    this.createAnimationOnce('budget-barbarian-axe-stuck', 'budget-barbarian-ultimate-fx', 8, 11, 7, 0);
   }
 
   private createAnimationOnce(
@@ -511,7 +534,6 @@ export class BattleScene extends Phaser.Scene {
       const trainingDummyDefinition = {
         ...fighterDefinitions.angry_pigeon,
         label: 'Training Dummy',
-        maxHp: 9999,
         moveSpeed: 0,
       };
       const dummy = new Fighter(this, trainingDummyDefinition, { x: 650, y: 340 });
@@ -546,6 +568,7 @@ export class BattleScene extends Phaser.Scene {
     this.enemyController = new EnemyController();
     this.projectileSystem.destroy();
     this.spawnedProjectileAttackInstances.clear();
+    this.clearAxeRainStrikes();
     this.enemy.destroy();
     this.enemy = this.createEnemyForCurrentMode();
     this.enemy?.setDebugVisible(this.debugEnabled);
@@ -623,6 +646,12 @@ export class BattleScene extends Phaser.Scene {
       return;
     }
 
+    if (attack.id === 'budget_axe_rain') {
+      this.startBudgetBarbarianUltimate(fighter);
+      this.cameras.main.shake(100, 0.005);
+      return;
+    }
+
     if (fighter.id !== 'discount_wizard') {
       return;
     }
@@ -662,6 +691,130 @@ export class BattleScene extends Phaser.Scene {
 
     this.spawnFx('discount-wizard-ultimate-teleport', fighter.x, fighter.y - 70, fighter.y + 14, false, 1.28, 'discount-wizard-ultimate-fx');
     this.cameras.main.shake(90, 0.004);
+  }
+
+  private startBudgetBarbarianUltimate(fighter: Fighter): void {
+    const direction = fighter.facing === 'right' ? 1 : -1;
+    const offsets = [78, 148, 218];
+
+    for (let index = 0; index < offsets.length; index += 1) {
+      const x = Phaser.Math.Clamp(fighter.x + offsets[index] * direction, this.arenaBounds.minX + 24, this.arenaBounds.maxX - 24);
+      const y = Phaser.Math.Clamp(fighter.y + (index - 1) * 10, this.arenaBounds.minY + 12, this.arenaBounds.maxY - 12);
+      const warning = this.add
+        .ellipse(x, y - 8, 88, 34, 0xff3f1f, 0.16)
+        .setStrokeStyle(2, 0xffd166, 0.72)
+        .setDepth(y + 6);
+
+      this.axeRainStrikes.push({
+        owner: fighter,
+        x,
+        y,
+        delayMs: 190 + index * 150,
+        activeMs: 120,
+        didImpact: false,
+        warning,
+        hitTargetInstanceIds: new Set<number>(),
+      });
+    }
+  }
+
+  private updateAxeRainStrikes(deltaMs: number): number {
+    let highestDamage = 0;
+
+    for (let index = this.axeRainStrikes.length - 1; index >= 0; index -= 1) {
+      const strike = this.axeRainStrikes[index];
+      strike.delayMs -= deltaMs;
+
+      if (strike.delayMs > 0) {
+        const pulse = 0.82 + Math.sin(this.time.now / 55) * 0.08;
+        strike.warning.setScale(pulse, pulse);
+        continue;
+      }
+
+      if (!strike.didImpact) {
+        strike.didImpact = true;
+        strike.warning.destroy();
+        this.spawnAxeRainFx(strike.x, strike.y);
+        this.cameras.main.shake(70, 0.004);
+      }
+
+      strike.activeMs -= deltaMs;
+      highestDamage = Math.max(highestDamage, this.resolveAxeRainStrike(strike));
+
+      if (strike.activeMs <= 0) {
+        this.axeRainStrikes.splice(index, 1);
+      }
+    }
+
+    return highestDamage;
+  }
+
+  private resolveAxeRainStrike(strike: AxeRainStrike): number {
+    const hitbox: Rect = {
+      x: strike.x - 48,
+      y: strike.y - 82,
+      width: 96,
+      height: 96,
+    };
+    const targets = this.enemy ? [this.player, this.enemy] : [this.player];
+    let highestDamage = 0;
+
+    for (const target of targets) {
+      if (target.instanceId === strike.owner.instanceId || target.state === 'dead' || strike.hitTargetInstanceIds.has(target.instanceId)) {
+        continue;
+      }
+
+      const hurtbox = target.getHurtbox();
+
+      if (!hurtbox || !intersectsRect(hitbox, hurtbox)) {
+        continue;
+      }
+
+      strike.hitTargetInstanceIds.add(target.instanceId);
+      target.receiveHit({
+        damage: 13,
+        hitstunMs: 300,
+        knockbackX: 135,
+        knockbackY: 58,
+        sourceFacing: strike.owner.facing,
+      });
+      highestDamage = Math.max(highestDamage, 13);
+    }
+
+    return highestDamage;
+  }
+
+  private spawnAxeRainFx(x: number, y: number): void {
+    const sprite = this.add
+      .sprite(x, y - 168, 'budget-barbarian-ultimate-fx')
+      .setOrigin(0.5)
+      .setDepth(y + 18)
+      .setScale(1.08);
+
+    sprite.play('budget-barbarian-axe-fall');
+    this.tweens.add({
+      targets: sprite,
+      y: y - 62,
+      duration: 130,
+      ease: 'Quad.easeIn',
+      onComplete: () => {
+        sprite.play('budget-barbarian-axe-impact');
+        sprite.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
+          sprite.play('budget-barbarian-axe-stuck');
+          this.time.delayedCall(720, () => {
+            sprite.destroy();
+          });
+        });
+      },
+    });
+  }
+
+  private clearAxeRainStrikes(): void {
+    for (const strike of this.axeRainStrikes) {
+      strike.warning.destroy();
+    }
+
+    this.axeRainStrikes.length = 0;
   }
 
   private spawnAttackProjectiles(fighter: Fighter): void {

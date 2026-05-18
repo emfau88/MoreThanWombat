@@ -52,6 +52,10 @@ export class PreloadScene extends Phaser.Scene {
       frameWidth: 128,
       frameHeight: 128,
     });
+    this.load.spritesheet('budget-barbarian-ultimate-fx', `${assetBase}fx/budget-barbarian/budget_barbarian_ultimate_sheet_128.png`, {
+      frameWidth: 128,
+      frameHeight: 128,
+    });
   }
 
   create(): void {
