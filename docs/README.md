@@ -39,6 +39,7 @@ The project must prove the following before expanding:
 19. `18_NEXT_STEPS.md`
 20. `19_WAVE_STAGE_SYSTEM_PLAN.md`
 21. `20_MANA_ULTIMATE_IMPLEMENTATION_PLAN.md`
+22. `21_CHARACTER_ASSET_STANDARD.md`
 
 ## Non-Negotiable Rule
 

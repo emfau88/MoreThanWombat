@@ -13,11 +13,15 @@ type ControlElements = {
   specialShadow: Phaser.GameObjects.Arc;
   specialButton: Phaser.GameObjects.Arc;
   specialRing: Phaser.GameObjects.Arc;
+  ultimateShadow: Phaser.GameObjects.Arc;
+  ultimateButton: Phaser.GameObjects.Arc;
+  ultimateRing: Phaser.GameObjects.Arc;
   jumpShadow: Phaser.GameObjects.Arc;
   jumpButton: Phaser.GameObjects.Arc;
   jumpRing: Phaser.GameObjects.Arc;
   attackLabel: Phaser.GameObjects.Text;
   specialLabel: Phaser.GameObjects.Text;
+  ultimateLabel: Phaser.GameObjects.Text;
   jumpLabel: Phaser.GameObjects.Text;
 };
 
@@ -36,6 +40,7 @@ export class MobileControls {
     moveY: 0,
     attackPressed: false,
     specialPressed: false,
+    ultimatePressed: false,
     jumpPressed: false,
     menuPressed: false,
   };
@@ -65,6 +70,7 @@ export class MobileControls {
     const currentState = { ...this.touchState };
     this.touchState.attackPressed = false;
     this.touchState.specialPressed = false;
+    this.touchState.ultimatePressed = false;
     this.touchState.jumpPressed = false;
     return currentState;
   }
@@ -104,6 +110,14 @@ export class MobileControls {
       .setDepth(1000);
     const specialRing = this.scene.add.circle(0, 0, 24, 0x78a8c8, 0.18).setScrollFactor(0).setDepth(1001);
 
+    const ultimateShadow = this.scene.add.circle(0, 0, 36, 0x1f0a19, 0.28).setScrollFactor(0).setDepth(996);
+    const ultimateButton = this.scene.add
+      .circle(0, 0, 32, 0xa23bd6, 0.94)
+      .setStrokeStyle(3, 0xf7dcff, 0.38)
+      .setScrollFactor(0)
+      .setDepth(1000);
+    const ultimateRing = this.scene.add.circle(0, 0, 23, 0xdf8cff, 0.2).setScrollFactor(0).setDepth(1001);
+
     const jumpShadow = this.scene.add.circle(0, 0, 36, 0x081105, 0.26).setScrollFactor(0).setDepth(996);
     const jumpButton = this.scene.add
       .circle(0, 0, 32, 0x698f36, 0.93)
@@ -126,6 +140,16 @@ export class MobileControls {
         color: '#f3f7fb',
         fontFamily: 'Verdana, Geneva, sans-serif',
         fontSize: '14px',
+        fontStyle: 'bold',
+      })
+      .setOrigin(0.5)
+      .setDepth(1004)
+      .setScrollFactor(0);
+    const ultimateLabel = this.scene.add
+      .text(0, 0, 'ULT', {
+        color: '#fff2ff',
+        fontFamily: 'Verdana, Geneva, sans-serif',
+        fontSize: '12px',
         fontStyle: 'bold',
       })
       .setOrigin(0.5)
@@ -154,11 +178,15 @@ export class MobileControls {
       specialShadow,
       specialButton,
       specialRing,
+      ultimateShadow,
+      ultimateButton,
+      ultimateRing,
       jumpShadow,
       jumpButton,
       jumpRing,
       attackLabel,
       specialLabel,
+      ultimateLabel,
       jumpLabel,
     };
   }
@@ -180,6 +208,11 @@ export class MobileControls {
     if (this.containsPointer(pointer, this.controls.specialButton)) {
       this.touchState.specialPressed = true;
       this.setButtonScale('special', 0.92);
+    }
+
+    if (this.containsPointer(pointer, this.controls.ultimateButton)) {
+      this.touchState.ultimatePressed = true;
+      this.setButtonScale('ultimate', 0.92);
     }
 
     if (this.containsPointer(pointer, this.controls.jumpButton)) {
@@ -205,6 +238,8 @@ export class MobileControls {
     this.controls.attackRing.setScale(1);
     this.controls.specialButton.setScale(1);
     this.controls.specialRing.setScale(1);
+    this.controls.ultimateButton.setScale(1);
+    this.controls.ultimateRing.setScale(1);
     this.controls.jumpButton.setScale(1);
     this.controls.jumpRing.setScale(1);
   }
@@ -253,6 +288,8 @@ export class MobileControls {
     const attackY = height - 86;
     const specialX = width - 170;
     const specialY = height - 146;
+    const ultimateX = width - 98;
+    const ultimateY = height - 178;
     const jumpX = width - 176;
     const jumpY = height - 68;
 
@@ -262,15 +299,19 @@ export class MobileControls {
     this.controls.specialShadow.setPosition(specialX + 2, specialY + 4);
     this.controls.specialButton.setPosition(specialX, specialY);
     this.controls.specialRing.setPosition(specialX, specialY);
+    this.controls.ultimateShadow.setPosition(ultimateX + 2, ultimateY + 4);
+    this.controls.ultimateButton.setPosition(ultimateX, ultimateY);
+    this.controls.ultimateRing.setPosition(ultimateX, ultimateY);
     this.controls.jumpShadow.setPosition(jumpX + 2, jumpY + 4);
     this.controls.jumpButton.setPosition(jumpX, jumpY);
     this.controls.jumpRing.setPosition(jumpX, jumpY);
     this.controls.attackLabel.setPosition(attackX, attackY);
     this.controls.specialLabel.setPosition(specialX, specialY);
+    this.controls.ultimateLabel.setPosition(ultimateX, ultimateY);
     this.controls.jumpLabel.setPosition(jumpX, jumpY);
   }
 
-  private setButtonScale(button: 'attack' | 'special' | 'jump', scale: number): void {
+  private setButtonScale(button: 'attack' | 'special' | 'ultimate' | 'jump', scale: number): void {
     if (button === 'attack') {
       this.controls.attackButton.setScale(scale);
       this.controls.attackRing.setScale(scale);
@@ -280,6 +321,12 @@ export class MobileControls {
     if (button === 'special') {
       this.controls.specialButton.setScale(scale);
       this.controls.specialRing.setScale(scale);
+      return;
+    }
+
+    if (button === 'ultimate') {
+      this.controls.ultimateButton.setScale(scale);
+      this.controls.ultimateRing.setScale(scale);
       return;
     }
 

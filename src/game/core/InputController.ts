@@ -5,6 +5,7 @@ export type PlayerInputState = {
   moveY: number;
   attackPressed: boolean;
   specialPressed: boolean;
+  ultimatePressed: boolean;
   jumpPressed: boolean;
   debugTogglePressed: boolean;
   restartPressed: boolean;
@@ -19,6 +20,7 @@ export class InputController {
   private readonly actionKeys: {
     attack: Phaser.Input.Keyboard.Key;
     special: Phaser.Input.Keyboard.Key;
+    ultimate: Phaser.Input.Keyboard.Key;
     jump: Phaser.Input.Keyboard.Key;
     debug: Phaser.Input.Keyboard.Key;
     restart: Phaser.Input.Keyboard.Key;
@@ -29,6 +31,7 @@ export class InputController {
     moveY: 0,
     attackPressed: false,
     specialPressed: false,
+    ultimatePressed: false,
     jumpPressed: false,
   };
 
@@ -52,6 +55,7 @@ export class InputController {
     this.actionKeys = keyboard.addKeys({
       attack: Phaser.Input.Keyboard.KeyCodes.J,
       special: Phaser.Input.Keyboard.KeyCodes.K,
+      ultimate: Phaser.Input.Keyboard.KeyCodes.U,
       jump: Phaser.Input.Keyboard.KeyCodes.L,
       debug: Phaser.Input.Keyboard.KeyCodes.H,
       restart: Phaser.Input.Keyboard.KeyCodes.R,
@@ -59,6 +63,7 @@ export class InputController {
     }) as {
       attack: Phaser.Input.Keyboard.Key;
       special: Phaser.Input.Keyboard.Key;
+      ultimate: Phaser.Input.Keyboard.Key;
       jump: Phaser.Input.Keyboard.Key;
       debug: Phaser.Input.Keyboard.Key;
       restart: Phaser.Input.Keyboard.Key;
@@ -77,6 +82,7 @@ export class InputController {
       Phaser.Input.Keyboard.JustDown(this.actionKeys.attack) || Phaser.Input.Keyboard.JustDown(this.cursors.space);
     const keyboardSpecialPressed =
       Phaser.Input.Keyboard.JustDown(this.actionKeys.special) || Phaser.Input.Keyboard.JustDown(this.cursors.shift);
+    const keyboardUltimatePressed = Phaser.Input.Keyboard.JustDown(this.actionKeys.ultimate);
     const keyboardJumpPressed = Phaser.Input.Keyboard.JustDown(this.actionKeys.jump);
     const debugTogglePressed = Phaser.Input.Keyboard.JustDown(this.actionKeys.debug);
     const restartPressed = Phaser.Input.Keyboard.JustDown(this.actionKeys.restart);
@@ -87,6 +93,7 @@ export class InputController {
       moveY: this.resolveAxis(moveY, this.touchState.moveY),
       attackPressed: keyboardAttackPressed || this.touchState.attackPressed,
       specialPressed: keyboardSpecialPressed || this.touchState.specialPressed,
+      ultimatePressed: keyboardUltimatePressed || this.touchState.ultimatePressed,
       jumpPressed: keyboardJumpPressed || this.touchState.jumpPressed,
       debugTogglePressed,
       restartPressed,
@@ -95,6 +102,7 @@ export class InputController {
 
     this.touchState.attackPressed = false;
     this.touchState.specialPressed = false;
+    this.touchState.ultimatePressed = false;
     this.touchState.jumpPressed = false;
 
     return inputState;

@@ -16,6 +16,7 @@ export type AttackDefinition = {
   };
   canMoveDuringAttack?: boolean;
   canTurnDuringAttack?: boolean;
+  manaCost?: number;
   projectileId?: string;
 };
 
@@ -53,6 +54,26 @@ export const wombatBellySlam: AttackDefinition = {
     width: 52,
     height: 38,
   },
+  manaCost: 25,
+};
+
+export const wombatEarthshaker: AttackDefinition = {
+  id: 'wombat_earthshaker',
+  label: 'Earthshaker Nap Slam',
+  startupMs: 210,
+  activeMs: 170,
+  recoveryMs: 520,
+  damage: 28,
+  hitstunMs: 560,
+  knockbackX: 330,
+  knockbackY: 95,
+  hitbox: {
+    offsetX: -124,
+    offsetY: -86,
+    width: 248,
+    height: 82,
+  },
+  manaCost: 100,
 };
 
 export const pigeonPeck: AttackDefinition = {
@@ -107,6 +128,7 @@ export const discountFireballCast: AttackDefinition = {
     width: 1,
     height: 1,
   },
+  manaCost: 22,
   projectileId: 'discount_fireball_projectile',
 };
 
@@ -127,6 +149,7 @@ export const discountMiscast: AttackDefinition = {
     height: 58,
   },
   canMoveDuringAttack: true,
+  manaCost: 22,
 };
 
 export const budgetCrackedAxeSwing: AttackDefinition = {
@@ -163,6 +186,7 @@ export const budgetTinyRage: AttackDefinition = {
     width: 62,
     height: 42,
   },
+  manaCost: 30,
 };
 
 export const busterUnderbiteJab: AttackDefinition = {
@@ -199,6 +223,7 @@ export const busterBulldogBash: AttackDefinition = {
     width: 64,
     height: 38,
   },
+  manaCost: 28,
 };
 
 export const airBonk: AttackDefinition = {
@@ -223,6 +248,7 @@ export const airBonk: AttackDefinition = {
 export const attacksById: Record<string, AttackDefinition> = {
   [wombatJab.id]: wombatJab,
   [wombatBellySlam.id]: wombatBellySlam,
+  [wombatEarthshaker.id]: wombatEarthshaker,
   [pigeonPeck.id]: pigeonPeck,
   [discountWandSmack.id]: discountWandSmack,
   [discountFireballCast.id]: discountFireballCast,

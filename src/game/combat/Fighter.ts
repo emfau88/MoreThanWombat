@@ -10,6 +10,7 @@ export type FighterState =
   | 'walk'
   | 'attack'
   | 'special'
+  | 'ultimate'
   | 'hitstun'
   | 'jump'
   | 'fall'
@@ -30,6 +31,9 @@ export type FighterDefinition = {
   fillColor: number;
   outlineColor: number;
   maxHp: number;
+  maxMana: number;
+  manaRegenPerSecond: number;
+  startingMana?: number;
   moveSpeed: number;
   width: number;
   height: number;
@@ -38,6 +42,7 @@ export type FighterDefinition = {
   attacks: {
     basic: string;
     special?: string;
+    ultimate?: string;
   };
   sprite?: {
     textureKey: string;
@@ -65,6 +70,8 @@ export class Fighter {
   readonly id: string;
   readonly label: string;
   readonly maxHp: number;
+  readonly maxMana: number;
+  readonly manaRegenPerSecond: number;
   readonly moveSpeed: number;
   readonly bodyWidth: number;
   readonly bodyHeight: number;
@@ -82,6 +89,7 @@ export class Fighter {
   z = 0;
   velocityZ = 0;
   hp: number;
+  mana: number;
   isGrounded = true;
   facing: FighterFacing = 'right';
   state: FighterState = 'idle';
@@ -108,6 +116,8 @@ export class Fighter {
     this.id = definition.id;
     this.label = definition.label;
     this.maxHp = definition.maxHp;
+    this.maxMana = definition.maxMana;
+    this.manaRegenPerSecond = definition.manaRegenPerSecond;
     this.moveSpeed = definition.moveSpeed;
     this.bodyWidth = definition.width;
     this.bodyHeight = definition.height;
@@ -115,6 +125,7 @@ export class Fighter {
     this.x = spawn.x;
     this.y = spawn.y;
     this.hp = definition.maxHp;
+    this.mana = Phaser.Math.Clamp(definition.startingMana ?? definition.maxMana, 0, definition.maxMana);
 
     this.shadow = scene.add.ellipse(0, 0, definition.width * 0.9, 16, 0x000000, 0.28);
     this.body = scene.add
@@ -169,6 +180,7 @@ export class Fighter {
       return;
     }
 
+    this.regenerateMana(deltaSeconds);
     this.updateVerticalMotion(deltaSeconds);
     this.applyKnockback(deltaSeconds, bounds);
 
@@ -206,12 +218,17 @@ export class Fighter {
     this.applyMovementInput(moveX, moveY, deltaSeconds, bounds, true);
   }
 
-  tryStartAttack(kind: 'basic' | 'special'): boolean {
-    const attackId = kind === 'basic' ? this.definition.attacks.basic : this.definition.attacks.special;
+  tryStartAttack(kind: 'basic' | 'special' | 'ultimate'): boolean {
+    const attackId =
+      kind === 'basic'
+        ? this.definition.attacks.basic
+        : kind === 'special'
+          ? this.definition.attacks.special
+          : this.definition.attacks.ultimate;
     return attackId ? this.tryStartAttackById(attackId, kind) : false;
   }
 
-  tryStartAttackById(attackId: string, kind: 'basic' | 'special'): boolean {
+  tryStartAttackById(attackId: string, kind: 'basic' | 'special' | 'ultimate'): boolean {
     if (this.state === 'hitstun' || this.state === 'dead' || this.currentAttack || !this.isGrounded || this.landingRemainingMs > 0) {
       return false;
     }
@@ -222,12 +239,17 @@ export class Fighter {
       return false;
     }
 
+    if (!this.canPayAttackCost(attack)) {
+      return false;
+    }
+
+    this.payAttackCost(attack);
     this.currentAttack = attack;
     this.attackElapsedMs = 0;
     this.attackPhase = 'startup';
     this.attackInstanceId += 1;
     this.hitTargets.clear();
-    this.state = kind === 'basic' ? 'attack' : 'special';
+    this.state = kind === 'basic' ? 'attack' : kind === 'special' ? 'special' : 'ultimate';
     this.updateVisuals();
     return true;
   }
@@ -359,6 +381,11 @@ export class Fighter {
   nudge(deltaX: number, deltaY: number, bounds: FighterBounds): void {
     this.x = Phaser.Math.Clamp(this.x + deltaX, bounds.minX, bounds.maxX);
     this.y = Phaser.Math.Clamp(this.y + deltaY, bounds.minY, bounds.maxY);
+    this.updateVisuals();
+  }
+
+  restoreMana(): void {
+    this.mana = this.maxMana;
     this.updateVisuals();
   }
 
@@ -500,8 +527,30 @@ export class Fighter {
     this.syncSpriteAnimation();
     this.syncDebugBoxes();
     const suffix = this.statusNote ? `\n${this.statusNote}` : '';
-    this.debugLabel.setText(`${this.label}\n${this.state} ${this.attackPhase}\nHP ${this.hp}${suffix}`);
+    this.debugLabel.setText(`${this.label}\n${this.state} ${this.attackPhase}\nHP ${this.hp} MP ${Math.floor(this.mana)}${suffix}`);
     applyDepthSort(this.container, this.y);
+  }
+
+  private regenerateMana(deltaSeconds: number): void {
+    if (this.mana >= this.maxMana || this.manaRegenPerSecond <= 0) {
+      return;
+    }
+
+    this.mana = Phaser.Math.Clamp(this.mana + this.manaRegenPerSecond * deltaSeconds, 0, this.maxMana);
+  }
+
+  private canPayAttackCost(attack: AttackDefinition): boolean {
+    return this.mana >= (attack.manaCost ?? 0);
+  }
+
+  private payAttackCost(attack: AttackDefinition): void {
+    const manaCost = attack.manaCost ?? 0;
+
+    if (manaCost <= 0) {
+      return;
+    }
+
+    this.mana = Phaser.Math.Clamp(this.mana - manaCost, 0, this.maxMana);
   }
 
   private syncDebugBoxes(): void {
@@ -538,6 +587,10 @@ export class Fighter {
 
     if (this.state === 'special') {
       return 0x9d4edd;
+    }
+
+    if (this.state === 'ultimate') {
+      return 0xffd166;
     }
 
     if (this.state === 'airAttack') {

@@ -83,7 +83,7 @@ export class BattleScene extends Phaser.Scene {
     this.battleFlow = new BattleFlowController();
     this.createCharacterAnimations();
     this.renderArena();
-    this.instructionText = this.add.text(32, 28, 'WASD/Arrows move, J/Space jab, K/Shift special, L jump, H debug, R restart', {
+    this.instructionText = this.add.text(32, 28, 'WASD/Arrows move, J/Space jab, K/Shift special, U ultimate slot, L jump, H debug, R restart', {
       color: '#c9d6df',
       fontFamily: 'Verdana, Geneva, sans-serif',
       fontSize: '14px',
@@ -156,6 +156,9 @@ export class BattleScene extends Phaser.Scene {
     });
     this.player = new Fighter(this, fighterDefinitions[this.playerFighterId], { x: 280, y: 340 });
     this.enemy = this.createEnemyForCurrentMode();
+    if (this.mode === 'test') {
+      this.player.restoreMana();
+    }
     this.player.setDebugVisible(this.debugEnabled);
     this.enemy?.setDebugVisible(this.debugEnabled);
     this.enemy?.updateVisuals();
@@ -192,6 +195,7 @@ export class BattleScene extends Phaser.Scene {
         inputState.moveY,
         inputState.jumpPressed,
         inputState.attackPressed,
+        inputState.ultimatePressed,
       );
       return;
     }
@@ -243,6 +247,13 @@ export class BattleScene extends Phaser.Scene {
       this.tryStartAttackWithFx(this.player, 'special');
     }
 
+    if (inputState.ultimatePressed) {
+      if (this.enemy) {
+        this.player.faceTarget(this.enemy.x);
+      }
+      this.tryStartAttackWithFx(this.player, 'ultimate');
+    }
+
     let enemyIntent: ReturnType<EnemyController['update']> | null = null;
 
     if (this.enemy) {
@@ -256,6 +267,10 @@ export class BattleScene extends Phaser.Scene {
     }
 
     this.player.update(deltaSeconds, inputState.moveX, inputState.moveY, this.arenaBounds);
+
+    if (this.mode === 'test') {
+      this.player.restoreMana();
+    }
 
     if (this.enemy && enemyIntent) {
       this.enemy.update(deltaSeconds, enemyIntent.moveX, enemyIntent.moveY, this.arenaBounds);
@@ -331,6 +346,7 @@ export class BattleScene extends Phaser.Scene {
     moveY: number,
     jumpPressed: boolean,
     attackPressed: boolean,
+    ultimatePressed: boolean,
   ): void {
     if (jumpPressed) {
       this.player.tryStartJump();
@@ -338,6 +354,10 @@ export class BattleScene extends Phaser.Scene {
 
     if (attackPressed && !this.player.isGrounded) {
       this.player.tryStartAirAttack();
+    }
+
+    if (ultimatePressed) {
+      this.tryStartAttackWithFx(this.player, 'ultimate');
     }
 
     this.player.update(deltaSeconds, moveX, moveY, this.arenaBounds);
@@ -389,6 +409,7 @@ export class BattleScene extends Phaser.Scene {
     this.createAnimationOnce('wombat-hit', 'wombat', 16, 17, 8, 0);
     this.createAnimationOnce('wombat-dead', 'wombat', 18, 19, 5, 0);
     this.createAnimationOnce('wombat-air-bonk', 'wombat-air-bonk', 0, 2, 12, 0);
+    this.createAnimationOnce('wombat-earthshaker-fx', 'wombat-earthshaker-fx', 0, 3, 14, 0);
 
     this.createAnimationOnce('angry-pigeon-idle', 'angry-pigeon', 0, 3, 5, -1);
     this.createAnimationOnce('angry-pigeon-walk', 'angry-pigeon', 4, 7, 8, -1);
@@ -529,20 +550,30 @@ export class BattleScene extends Phaser.Scene {
     return 'Scrapyard';
   }
 
-  private tryStartAttackWithFx(fighter: Fighter, kind: 'basic' | 'special'): void {
+  private tryStartAttackWithFx(fighter: Fighter, kind: 'basic' | 'special' | 'ultimate'): void {
     const attackId =
       fighter.id === 'discount_wizard' && kind === 'special'
         ? Phaser.Math.RND.pick(['discount_fireball_cast', 'discount_miscast'])
         : undefined;
     const didStart = attackId ? fighter.tryStartAttackById(attackId, kind) : fighter.tryStartAttack(kind);
 
-    if (!didStart || fighter.id !== 'discount_wizard') {
+    if (!didStart) {
       return;
     }
 
     const attack = fighter.getCurrentAttack();
 
     if (!attack) {
+      return;
+    }
+
+    if (attack.id === 'wombat_earthshaker') {
+      this.spawnFx('wombat-earthshaker-fx', fighter.x, fighter.y - 26, fighter.y + 18, false, 1.95, 'wombat-earthshaker-fx');
+      this.cameras.main.shake(150, 0.008);
+      return;
+    }
+
+    if (fighter.id !== 'discount_wizard') {
       return;
     }
 
@@ -589,6 +620,11 @@ export class BattleScene extends Phaser.Scene {
       return;
     }
 
+    if (attackId === 'wombat_earthshaker') {
+      this.spawnFx('wombat-earthshaker-fx', target.x, target.y - 30, target.y + 8, false, 1.35, 'wombat-earthshaker-fx');
+      return;
+    }
+
     if (attackId === 'discount_wand_smack' || attackId === 'discount_fireball_cast') {
       this.spawnFx('discount-wizard-fx-hit-puff', target.x, target.y - 42, target.y + 8, false, 0.96);
     }
@@ -605,8 +641,16 @@ export class BattleScene extends Phaser.Scene {
     this.spawnFx(animationKey, caster.x + offsetX * direction, caster.y + offsetY, caster.y + 12, caster.facing === 'left', scale);
   }
 
-  private spawnFx(animationKey: string, x: number, y: number, depth: number, flipX: boolean, scale: number): void {
-    const sprite = this.add.sprite(x, y, 'discount-wizard-fx').setOrigin(0.5).setDepth(depth).setFlipX(flipX).setScale(scale);
+  private spawnFx(
+    animationKey: string,
+    x: number,
+    y: number,
+    depth: number,
+    flipX: boolean,
+    scale: number,
+    textureKey = 'discount-wizard-fx',
+  ): void {
+    const sprite = this.add.sprite(x, y, textureKey).setOrigin(0.5).setDepth(depth).setFlipX(flipX).setScale(scale);
     sprite.play(animationKey);
     sprite.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
       sprite.destroy();

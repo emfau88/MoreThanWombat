@@ -7,6 +7,8 @@ export const wombatDefinition: FighterDefinition = {
   fillColor: 0xa67c52,
   outlineColor: 0x3c2a1e,
   maxHp: 100,
+  maxMana: 100,
+  manaRegenPerSecond: 4.5,
   moveSpeed: 170,
   width: 54,
   height: 68,
@@ -25,6 +27,7 @@ export const wombatDefinition: FighterDefinition = {
   attacks: {
     basic: 'wombat_jab',
     special: 'wombat_belly_slam',
+    ultimate: 'wombat_earthshaker',
   },
   sprite: {
     textureKey: 'wombat',
@@ -39,6 +42,7 @@ export const wombatDefinition: FighterDefinition = {
     },
     attackAnimations: {
       air_bonk: 'wombat-air-bonk',
+      wombat_earthshaker: 'wombat-belly-slam',
     },
     frameOffsetSets: {
       'wombat-idle': [
@@ -57,6 +61,8 @@ export const angryPigeonDefinition: FighterDefinition = {
   fillColor: 0x7d8597,
   outlineColor: 0x1f2937,
   maxHp: 64,
+  maxMana: 70,
+  manaRegenPerSecond: 4,
   moveSpeed: 130,
   width: 46,
   height: 62,
@@ -103,6 +109,8 @@ export const discountWizardDefinition: FighterDefinition = {
   fillColor: 0x2c7a8c,
   outlineColor: 0x17202a,
   maxHp: 76,
+  maxMana: 115,
+  manaRegenPerSecond: 6,
   moveSpeed: 135,
   width: 46,
   height: 70,
@@ -155,6 +163,8 @@ export const budgetBarbarianDefinition: FighterDefinition = {
   fillColor: 0xb8793a,
   outlineColor: 0x2b1a10,
   maxHp: 112,
+  maxMana: 90,
+  manaRegenPerSecond: 4,
   moveSpeed: 122,
   width: 58,
   height: 70,
@@ -194,6 +204,8 @@ export const busterBulldogDefinition: FighterDefinition = {
   fillColor: 0xb87834,
   outlineColor: 0x24150f,
   maxHp: 125,
+  maxMana: 85,
+  manaRegenPerSecond: 3.5,
   moveSpeed: 125,
   width: 62,
   height: 58,
