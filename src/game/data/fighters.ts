@@ -129,6 +129,7 @@ export const discountWizardDefinition: FighterDefinition = {
   attacks: {
     basic: 'discount_wand_smack',
     special: 'discount_fireball_cast',
+    ultimate: 'discount_clearance_orb',
   },
   sprite: {
     textureKey: 'discount-wizard',
@@ -145,6 +146,7 @@ export const discountWizardDefinition: FighterDefinition = {
       discount_wand_smack: 'discount-wizard-fireball',
       discount_fireball_cast: 'discount-wizard-fireball',
       discount_miscast: 'discount-wizard-miscast',
+      discount_clearance_orb: 'discount-wizard-fireball',
     },
     frameOffsetSets: {
       'discount-wizard-idle': [

@@ -48,6 +48,10 @@ export class PreloadScene extends Phaser.Scene {
       frameWidth: 64,
       frameHeight: 64,
     });
+    this.load.spritesheet('discount-wizard-ultimate-fx', `${assetBase}fx/discount-wizard/discount_wizard_ultimate_sheet_128.png`, {
+      frameWidth: 128,
+      frameHeight: 128,
+    });
   }
 
   create(): void {

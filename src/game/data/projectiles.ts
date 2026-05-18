@@ -12,6 +12,7 @@ export type ProjectileDefinition = {
   spawnOffsetX: number;
   spawnOffsetY: number;
   scale: number;
+  homingStrength?: number;
   hitbox: {
     offsetX: number;
     offsetY: number;
@@ -42,6 +43,30 @@ export const discountFireballProjectile: ProjectileDefinition = {
   },
 };
 
+export const discountUltimateOrbProjectile: ProjectileDefinition = {
+  id: 'discount_ultimate_orb_projectile',
+  textureKey: 'discount-wizard-ultimate-fx',
+  animationKey: 'discount-wizard-ultimate-orb',
+  impactAnimationKey: 'discount-wizard-ultimate-impact',
+  speed: 245,
+  lifetimeMs: 2600,
+  damage: 30,
+  hitstunMs: 560,
+  knockbackX: 285,
+  knockbackY: 62,
+  spawnOffsetX: 72,
+  spawnOffsetY: -54,
+  scale: 1.18,
+  homingStrength: 2.4,
+  hitbox: {
+    offsetX: -27,
+    offsetY: -24,
+    width: 54,
+    height: 48,
+  },
+};
+
 export const projectilesById: Record<string, ProjectileDefinition> = {
   [discountFireballProjectile.id]: discountFireballProjectile,
+  [discountUltimateOrbProjectile.id]: discountUltimateOrbProjectile,
 };

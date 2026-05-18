@@ -52,6 +52,8 @@ export class BattleScene extends Phaser.Scene {
   private arenaId: ArenaId = 'park';
   private waveIndex = 0;
   private waveTransitionRemainingMs = 0;
+  private testDummyRegenDelayMs = 0;
+  private testDummyLastHp = 0;
   private readonly spawnedProjectileAttackInstances = new Set<string>();
   private readonly waveConfigs: WaveConfig[] = [
     { hp: 56, spawnX: 650, spawnY: 330, moveSpeed: 120 },
@@ -75,6 +77,8 @@ export class BattleScene extends Phaser.Scene {
     this.hitstopRemainingMs = 0;
     this.waveIndex = 0;
     this.waveTransitionRemainingMs = 0;
+    this.testDummyRegenDelayMs = 0;
+    this.testDummyLastHp = 0;
     this.spawnedProjectileAttackInstances.clear();
     this.hitboxSystem = new HitboxSystem();
     this.projectileSystem = new ProjectileSystem(this);
@@ -159,6 +163,7 @@ export class BattleScene extends Phaser.Scene {
     });
     this.player = new Fighter(this, fighterDefinitions[this.playerFighterId], { x: 280, y: 340 });
     this.enemy = this.createEnemyForCurrentMode();
+    this.testDummyLastHp = this.enemy?.hp ?? 0;
     if (this.mode === 'test') {
       this.player.restoreMana();
     }
@@ -277,6 +282,8 @@ export class BattleScene extends Phaser.Scene {
 
     if (this.enemy && enemyIntent) {
       this.enemy.update(deltaSeconds, enemyIntent.moveX, enemyIntent.moveY, this.arenaBounds);
+    } else if (this.enemy && this.mode === 'test') {
+      this.enemy.update(deltaSeconds, 0, 0, this.arenaBounds);
     }
 
     this.spawnAttackProjectiles(this.player);
@@ -296,13 +303,18 @@ export class BattleScene extends Phaser.Scene {
 
     this.spawnImpactFx(enemyHit.attackId, this.player);
     for (const projectileHit of projectileHits) {
-      this.spawnFx(projectileHit.impactAnimationKey, projectileHit.x, projectileHit.y, projectileHit.target.y + 8, false, 0.96);
+      if (projectileHit.projectileId === 'discount_ultimate_orb_projectile') {
+        this.spawnFx(projectileHit.impactAnimationKey, projectileHit.x, projectileHit.y, projectileHit.target.y + 10, false, 1.28, 'discount-wizard-ultimate-fx');
+      } else {
+        this.spawnFx(projectileHit.impactAnimationKey, projectileHit.x, projectileHit.y, projectileHit.target.y + 8, false, 0.96);
+      }
     }
+    this.updateTestDummyRegen(delta);
     const projectileDamage = projectileHits[0]?.damage ?? 0;
     this.applyImpactFeedback(playerHit.didHit ? playerHit.damage : enemyHit.didHit ? enemyHit.damage : projectileDamage);
     this.hud.update(this.player, this.enemy);
 
-    if (this.enemy) {
+    if (this.enemy && this.mode !== 'test') {
       this.updateBattleResult();
     }
   }
@@ -337,6 +349,30 @@ export class BattleScene extends Phaser.Scene {
     const message = result === 'victory' ? 'Victory' : 'Defeat';
     this.resultText.setText(`${message}\nPress R to restart`).setVisible(true);
     this.resultHintText.setText('Press M for menu').setVisible(true);
+  }
+
+  private updateTestDummyRegen(deltaMs: number): void {
+    if (this.mode !== 'test' || !this.enemy) {
+      return;
+    }
+
+    if (this.enemy.hp < this.testDummyLastHp) {
+      this.testDummyRegenDelayMs = 1400;
+    }
+
+    if (this.testDummyRegenDelayMs > 0) {
+      this.testDummyRegenDelayMs = Math.max(0, this.testDummyRegenDelayMs - deltaMs);
+      this.testDummyLastHp = this.enemy.hp;
+      return;
+    }
+
+    if (this.enemy.hp < this.enemy.maxHp) {
+      const healedHp = Math.min(this.enemy.maxHp, this.enemy.hp + Math.ceil(deltaMs * 1.8));
+      this.enemy.hp = healedHp;
+      this.enemy.updateVisuals();
+    }
+
+    this.testDummyLastHp = this.enemy.hp;
   }
 
   private shouldAllowDuelVictoryFreeRoam(): boolean {
@@ -445,6 +481,9 @@ export class BattleScene extends Phaser.Scene {
     this.createAnimationOnce('discount-wizard-fx-fireball', 'discount-wizard-fx', 0, 3, 14, 0);
     this.createAnimationOnce('discount-wizard-fx-hit-puff', 'discount-wizard-fx', 4, 7, 14, 0);
     this.createAnimationOnce('discount-wizard-fx-miscast', 'discount-wizard-fx', 8, 11, 12, 0);
+    this.createAnimationOnce('discount-wizard-ultimate-teleport', 'discount-wizard-ultimate-fx', 0, 3, 14, 0);
+    this.createAnimationOnce('discount-wizard-ultimate-orb', 'discount-wizard-ultimate-fx', 4, 7, 12, -1);
+    this.createAnimationOnce('discount-wizard-ultimate-impact', 'discount-wizard-ultimate-fx', 8, 11, 14, 0);
   }
 
   private createAnimationOnce(
@@ -469,7 +508,15 @@ export class BattleScene extends Phaser.Scene {
 
   private createEnemyForCurrentMode(): Fighter | null {
     if (this.mode === 'test') {
-      return null;
+      const trainingDummyDefinition = {
+        ...fighterDefinitions.angry_pigeon,
+        label: 'Training Dummy',
+        maxHp: 9999,
+        moveSpeed: 0,
+      };
+      const dummy = new Fighter(this, trainingDummyDefinition, { x: 650, y: 340 });
+      dummy.facing = 'left';
+      return dummy;
     }
 
     if (this.mode === 'duel') {
@@ -587,7 +634,34 @@ export class BattleScene extends Phaser.Scene {
 
     if (attack.id === 'discount_miscast') {
       this.spawnCastFx('discount-wizard-fx-miscast', fighter, 42, -58, 1.18);
+      return;
     }
+
+    if (attack.id === 'discount_clearance_orb') {
+      this.startDiscountWizardUltimate(fighter);
+    }
+  }
+
+  private startDiscountWizardUltimate(fighter: Fighter): void {
+    const target = fighter === this.player ? this.enemy : this.player;
+    const startX = fighter.x;
+    const startY = fighter.y;
+    const safeMargin = 56;
+    const targetX = target?.x ?? GAME_WIDTH / 2;
+    const destinationX = targetX < GAME_WIDTH / 2 ? this.arenaBounds.maxX - safeMargin : this.arenaBounds.minX + safeMargin;
+
+    this.spawnFx('discount-wizard-ultimate-teleport', startX, startY - 70, startY + 14, false, 1.18, 'discount-wizard-ultimate-fx');
+    fighter.nudge(destinationX - fighter.x, 0, this.arenaBounds);
+
+    if (target) {
+      fighter.faceTarget(target.x);
+    } else {
+      fighter.facing = fighter.x < GAME_WIDTH / 2 ? 'right' : 'left';
+      fighter.updateVisuals();
+    }
+
+    this.spawnFx('discount-wizard-ultimate-teleport', fighter.x, fighter.y - 70, fighter.y + 14, false, 1.28, 'discount-wizard-ultimate-fx');
+    this.cameras.main.shake(90, 0.004);
   }
 
   private spawnAttackProjectiles(fighter: Fighter): void {
@@ -620,6 +694,11 @@ export class BattleScene extends Phaser.Scene {
 
     if (attackId === 'discount_miscast') {
       this.spawnFx('discount-wizard-fx-miscast', target.x, target.y - 44, target.y + 8, false, 1.08);
+      return;
+    }
+
+    if (attackId === 'discount_clearance_orb') {
+      this.spawnFx('discount-wizard-ultimate-impact', target.x, target.y - 54, target.y + 10, false, 1.28, 'discount-wizard-ultimate-fx');
       return;
     }
 

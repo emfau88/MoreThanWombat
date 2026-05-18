@@ -152,6 +152,26 @@ export const discountMiscast: AttackDefinition = {
   manaCost: 22,
 };
 
+export const discountClearanceOrb: AttackDefinition = {
+  id: 'discount_clearance_orb',
+  label: 'Clearance Orb',
+  startupMs: 380,
+  activeMs: 150,
+  recoveryMs: 520,
+  damage: 0,
+  hitstunMs: 0,
+  knockbackX: 0,
+  knockbackY: 0,
+  hitbox: {
+    offsetX: 0,
+    offsetY: 0,
+    width: 1,
+    height: 1,
+  },
+  manaCost: 100,
+  projectileId: 'discount_ultimate_orb_projectile',
+};
+
 export const budgetCrackedAxeSwing: AttackDefinition = {
   id: 'budget_cracked_axe_swing',
   label: 'Cracked Axe Swing',
@@ -253,6 +273,7 @@ export const attacksById: Record<string, AttackDefinition> = {
   [discountWandSmack.id]: discountWandSmack,
   [discountFireballCast.id]: discountFireballCast,
   [discountMiscast.id]: discountMiscast,
+  [discountClearanceOrb.id]: discountClearanceOrb,
   [budgetCrackedAxeSwing.id]: budgetCrackedAxeSwing,
   [budgetTinyRage.id]: budgetTinyRage,
   [busterUnderbiteJab.id]: busterUnderbiteJab,

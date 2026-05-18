@@ -10,6 +10,8 @@ type ActiveProjectile = {
   sprite: Phaser.GameObjects.Sprite;
   x: number;
   y: number;
+  velocityX: number;
+  velocityY: number;
   ageMs: number;
   hitTargetInstanceIds: Set<number>;
 };
@@ -48,6 +50,8 @@ export class ProjectileSystem {
       sprite,
       x,
       y,
+      velocityX: definition.speed * direction,
+      velocityY: 0,
       ageMs: 0,
       hitTargetInstanceIds: new Set<number>(),
     });
@@ -58,9 +62,10 @@ export class ProjectileSystem {
 
     for (let index = this.projectiles.length - 1; index >= 0; index -= 1) {
       const projectile = this.projectiles[index];
-      const direction = projectile.facing === 'right' ? 1 : -1;
       projectile.ageMs += deltaSeconds * 1000;
-      projectile.x += projectile.definition.speed * direction * deltaSeconds;
+      this.updateProjectileVelocity(projectile, targets, deltaSeconds);
+      projectile.x += projectile.velocityX * deltaSeconds;
+      projectile.y += projectile.velocityY * deltaSeconds;
       projectile.sprite.setPosition(projectile.x, projectile.y);
 
       const hitbox = this.getHitbox(projectile);
@@ -124,11 +129,66 @@ export class ProjectileSystem {
     };
   }
 
+  private updateProjectileVelocity(projectile: ActiveProjectile, targets: Fighter[], deltaSeconds: number): void {
+    const { definition } = projectile;
+
+    if (!definition.homingStrength) {
+      return;
+    }
+
+    const target = this.findHomingTarget(projectile, targets);
+
+    if (!target) {
+      return;
+    }
+
+    const currentVelocity = new Phaser.Math.Vector2(projectile.velocityX, projectile.velocityY);
+    const desiredVelocity = new Phaser.Math.Vector2(target.x - projectile.x, target.y - 44 - projectile.y)
+      .normalize()
+      .scale(definition.speed);
+    currentVelocity.lerp(desiredVelocity, Phaser.Math.Clamp(definition.homingStrength * deltaSeconds, 0, 1));
+
+    if (currentVelocity.lengthSq() > 0) {
+      currentVelocity.normalize().scale(definition.speed);
+    }
+
+    projectile.velocityX = currentVelocity.x;
+    projectile.velocityY = currentVelocity.y;
+    projectile.facing = currentVelocity.x < 0 ? 'left' : 'right';
+    projectile.sprite.setFlipX(projectile.facing === 'left');
+  }
+
+  private findHomingTarget(projectile: ActiveProjectile, targets: Fighter[]): Fighter | null {
+    let closestTarget: Fighter | null = null;
+    let closestDistanceSq = Number.POSITIVE_INFINITY;
+
+    for (const candidate of targets) {
+      if (candidate.instanceId === projectile.ownerInstanceId || candidate.state === 'dead') {
+        continue;
+      }
+
+      if (projectile.hitTargetInstanceIds.has(candidate.instanceId)) {
+        continue;
+      }
+
+      const distanceSq = Phaser.Math.Distance.Squared(projectile.x, projectile.y, candidate.x, candidate.y - 44);
+
+      if (distanceSq < closestDistanceSq) {
+        closestDistanceSq = distanceSq;
+        closestTarget = candidate;
+      }
+    }
+
+    return closestTarget;
+  }
+
   private isExpired(projectile: ActiveProjectile, bounds: FighterBounds): boolean {
     return (
       projectile.ageMs >= projectile.definition.lifetimeMs ||
       projectile.x < bounds.minX - 120 ||
-      projectile.x > bounds.maxX + 120
+      projectile.x > bounds.maxX + 120 ||
+      projectile.y < bounds.minY - 180 ||
+      projectile.y > bounds.maxY + 80
     );
   }
 
