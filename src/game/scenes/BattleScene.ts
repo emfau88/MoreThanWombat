@@ -484,7 +484,7 @@ export class BattleScene extends Phaser.Scene {
     this.createAnimationOnce('discount-wizard-dead', 'discount-wizard', 18, 19, 5, 0);
 
     this.createAnimationOnce('budget-barbarian-idle', 'budget-barbarian', 0, 1, 4, -1);
-    this.createAnimationOnce('budget-barbarian-walk', 'budget-barbarian', 4, 7, 8, -1);
+    this.createAnimationFromFramesOnce('budget-barbarian-walk', 'budget-barbarian', [4, 5, 7, 5], 7, -1);
     this.createAnimationOnce('budget-barbarian-axe-swing', 'budget-barbarian', 8, 10, 11, 0);
     this.createAnimationOnce('budget-barbarian-tiny-rage', 'budget-barbarian', 12, 14, 9, 0);
     this.createAnimationOnce('budget-barbarian-hit', 'budget-barbarian', 15, 15, 8, 0);
@@ -524,6 +524,25 @@ export class BattleScene extends Phaser.Scene {
     this.anims.create({
       key,
       frames: this.anims.generateFrameNumbers(textureKey, { start, end }),
+      frameRate,
+      repeat,
+    });
+  }
+
+  private createAnimationFromFramesOnce(
+    key: string,
+    textureKey: string,
+    frameNumbers: number[],
+    frameRate: number,
+    repeat: number,
+  ): void {
+    if (this.anims.exists(key)) {
+      return;
+    }
+
+    this.anims.create({
+      key,
+      frames: frameNumbers.map((frame) => ({ key: textureKey, frame })),
       frameRate,
       repeat,
     });

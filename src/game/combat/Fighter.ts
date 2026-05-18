@@ -49,6 +49,8 @@ export type FighterDefinition = {
     scale: number;
     animations: Partial<Record<FighterState, string>>;
     attackAnimations?: Partial<Record<string, string>>;
+    attackScaleOverrides?: Partial<Record<string, number>>;
+    frameScaleSets?: Record<string, number[]>;
     frameOffsetSets?: Record<string, Array<{ x: number; y: number }>>;
   };
 };
@@ -614,7 +616,9 @@ export class Fighter {
     }
 
     this.sprite.setFlipX(this.facing === 'left');
-    const spriteScale = this.definition.sprite.scale * (this.state === 'airAttack' ? 1.06 : 1);
+    const attackScale = this.currentAttack ? this.definition.sprite.attackScaleOverrides?.[this.currentAttack.id] ?? 1 : 1;
+    const frameScale = this.getCurrentSpriteFrameScale();
+    const spriteScale = this.definition.sprite.scale * attackScale * frameScale * (this.state === 'airAttack' ? 1.06 : 1);
     this.sprite.setScale(spriteScale);
 
     if (this.flashRemainingMs > 0) {
@@ -656,10 +660,25 @@ export class Fighter {
       return;
     }
 
-    const frameName = Number(this.sprite.frame.name);
-    const frameIndex = Number.isFinite(frameName) ? frameName : 0;
+    const frameIndex = this.sprite.anims.currentFrame?.index ? this.sprite.anims.currentFrame.index - 1 : 0;
     const offset = frameOffsets[frameIndex] ?? frameOffsets[frameOffsets.length - 1] ?? { x: 0, y: 0 };
     const facingDirection = this.facing === 'left' ? -1 : 1;
     this.sprite.setPosition(offset.x * facingDirection, offset.y);
+  }
+
+  private getCurrentSpriteFrameScale(): number {
+    if (!this.sprite || !this.definition.sprite) {
+      return 1;
+    }
+
+    const animationKey = this.sprite.anims.currentAnim?.key;
+    const frameScales = animationKey ? this.definition.sprite.frameScaleSets?.[animationKey] : undefined;
+
+    if (!frameScales || frameScales.length === 0) {
+      return 1;
+    }
+
+    const frameIndex = this.sprite.anims.currentFrame?.index ? this.sprite.anims.currentFrame.index - 1 : 0;
+    return frameScales[frameIndex] ?? frameScales[frameScales.length - 1] ?? 1;
   }
 }

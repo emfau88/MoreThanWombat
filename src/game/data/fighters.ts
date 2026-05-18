@@ -165,7 +165,7 @@ export const budgetBarbarianDefinition: FighterDefinition = {
   fillColor: 0xb8793a,
   outlineColor: 0x2b1a10,
   maxHp: 112,
-  maxMana: 90,
+  maxMana: 100,
   manaRegenPerSecond: 4,
   moveSpeed: 122,
   width: 58,
@@ -200,6 +200,29 @@ export const budgetBarbarianDefinition: FighterDefinition = {
     },
     attackAnimations: {
       budget_axe_rain: 'budget-barbarian-tiny-rage',
+    },
+    attackScaleOverrides: {
+      budget_cracked_axe_swing: 1.23,
+      budget_tiny_rage: 1.26,
+      budget_axe_rain: 1.26,
+    },
+    frameScaleSets: {
+      'budget-barbarian-walk': [
+        1.13,
+        1.11,
+        0.89,
+        1.11,
+      ],
+      'budget-barbarian-axe-swing': [
+        1.01,
+        1.16,
+        1.18,
+      ],
+      'budget-barbarian-tiny-rage': [
+        0.99,
+        1.03,
+        1.7,
+      ],
     },
   },
 };
