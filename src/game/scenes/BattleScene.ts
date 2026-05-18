@@ -95,7 +95,7 @@ export class BattleScene extends Phaser.Scene {
       align: 'right',
     }).setOrigin(1, 0.5);
     this.debugToggleButton = this.add
-      .rectangle(GAME_WIDTH - 92, 60, 124, 34, 0x223042, 0.94)
+      .rectangle(GAME_WIDTH / 2, 84, 124, 30, 0x223042, 0.94)
       .setStrokeStyle(2, 0xe9c46a, 0.86)
       .setDepth(2100)
       .setScrollFactor(0)
@@ -108,16 +108,19 @@ export class BattleScene extends Phaser.Scene {
       })
       .on(Phaser.Input.Events.POINTER_UP, () => {
         this.toggleDebug();
-      });
+      })
+      .setVisible(false)
+      .disableInteractive();
     this.debugToggleLabel = this.add
-      .text(GAME_WIDTH - 92, 60, '', {
+      .text(GAME_WIDTH / 2, 84, '', {
         color: '#fff7e6',
         fontFamily: 'Verdana, Geneva, sans-serif',
-        fontSize: '14px',
+        fontSize: '13px',
       })
       .setOrigin(0.5)
       .setDepth(2101)
-      .setScrollFactor(0);
+      .setScrollFactor(0)
+      .setVisible(false);
     this.resultText = this.add
       .text(GAME_WIDTH / 2, 112, '', {
         color: '#fff7e6',
@@ -409,7 +412,7 @@ export class BattleScene extends Phaser.Scene {
     this.createAnimationOnce('wombat-hit', 'wombat', 16, 17, 8, 0);
     this.createAnimationOnce('wombat-dead', 'wombat', 18, 19, 5, 0);
     this.createAnimationOnce('wombat-air-bonk', 'wombat-air-bonk', 0, 2, 12, 0);
-    this.createAnimationOnce('wombat-earthshaker-fx', 'wombat-earthshaker-fx', 0, 3, 14, 0);
+    this.createAnimationOnce('wombat-earthshaker-fx', 'wombat-earthshaker-fx', 0, 3, 9, 0);
 
     this.createAnimationOnce('angry-pigeon-idle', 'angry-pigeon', 0, 3, 5, -1);
     this.createAnimationOnce('angry-pigeon-walk', 'angry-pigeon', 4, 7, 8, -1);
@@ -511,16 +514,16 @@ export class BattleScene extends Phaser.Scene {
     const arenaLabel = this.getArenaLabel();
 
     if (this.mode === 'duel') {
-      this.modeText.setText(`Mode: Duel\nArena: ${arenaLabel}`);
+      this.modeText.setText(`Duel | ${arenaLabel}`);
       return;
     }
 
     if (this.mode === 'test') {
-      this.modeText.setText(`Mode: Test\nArena: ${arenaLabel}`);
+      this.modeText.setText(`Test | ${arenaLabel}`);
       return;
     }
 
-    this.modeText.setText(`Mode: Waves ${this.waveIndex + 1}/${this.waveConfigs.length}\nArena: ${arenaLabel}`);
+    this.modeText.setText(`Waves ${this.waveIndex + 1}/${this.waveConfigs.length} | ${arenaLabel}`);
   }
 
   private renderArena(): void {
@@ -568,7 +571,7 @@ export class BattleScene extends Phaser.Scene {
     }
 
     if (attack.id === 'wombat_earthshaker') {
-      this.spawnFx('wombat-earthshaker-fx', fighter.x, fighter.y - 26, fighter.y + 18, false, 1.95, 'wombat-earthshaker-fx');
+      this.spawnFx('wombat-earthshaker-fx', fighter.x, fighter.y - 186, fighter.y + 18, false, 1.95, 'wombat-earthshaker-fx');
       this.cameras.main.shake(150, 0.008);
       return;
     }
@@ -621,7 +624,7 @@ export class BattleScene extends Phaser.Scene {
     }
 
     if (attackId === 'wombat_earthshaker') {
-      this.spawnFx('wombat-earthshaker-fx', target.x, target.y - 30, target.y + 8, false, 1.35, 'wombat-earthshaker-fx');
+      this.spawnFx('wombat-earthshaker-fx', target.x, target.y - 130, target.y + 8, false, 1.35, 'wombat-earthshaker-fx');
       return;
     }
 

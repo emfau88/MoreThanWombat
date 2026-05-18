@@ -255,9 +255,8 @@ export class MobileControls {
       this.touchState.moveY = 0;
     } else {
       const strongInput = normalized.clone().normalize();
-      const inputStrength = Phaser.Math.Clamp(clampedInput.length() / JOYSTICK_RADIUS, 0, 1);
-      this.touchState.moveX = Phaser.Math.Clamp(strongInput.x * inputStrength, -1, 1);
-      this.touchState.moveY = Phaser.Math.Clamp(strongInput.y * inputStrength, -1, 1);
+      this.touchState.moveX = Phaser.Math.Clamp(strongInput.x, -1, 1);
+      this.touchState.moveY = Phaser.Math.Clamp(strongInput.y, -1, 1);
     }
 
     this.controls.knob.setPosition(this.joystickCenter.x + clampedVisual.x, this.joystickCenter.y + clampedVisual.y);
