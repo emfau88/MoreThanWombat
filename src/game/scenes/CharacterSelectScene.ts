@@ -15,7 +15,6 @@ type OptionCard = {
 type PreviewCard = {
   titleText: Phaser.GameObjects.Text;
   subtitleText: Phaser.GameObjects.Text;
-  descriptionText: Phaser.GameObjects.Text;
   sprite: Phaser.GameObjects.Sprite;
   roleText: Phaser.GameObjects.Text;
   spriteBaseX: number;
@@ -35,19 +34,25 @@ const PLAYER_OPTIONS: OptionCard[] = [
     id: 'discount_wizard',
     title: 'Discount Wizard',
     subtitle: 'Cheap ranged magic',
-    description: 'Throws bargain fireballs and occasionally embarrasses himself.',
+    description: 'Ranged pressure with cheap fireballs and unstable miscasts.',
   },
   {
     id: 'budget_barbarian',
     title: 'Budget Barbarian',
     subtitle: 'Slow axe bruiser',
-    description: 'Large damage, slower feet, and a very serious cardboard helmet.',
+    description: 'Large damage, slower feet, and heavy melee timing.',
   },
   {
     id: 'buster_bulldog',
     title: 'Buster Bulldog',
     subtitle: 'Underbite bruiser',
     description: 'Short, dense bulldog pressure with high knockback and stubborn HP.',
+  },
+  {
+    id: 'reference_fighter',
+    title: 'Reference Fighter',
+    subtitle: 'Animation test',
+    description: 'Development-only animation reference for motion checks.',
   },
 ];
 
@@ -62,7 +67,7 @@ const DUEL_ENEMY_OPTIONS: OptionCard[] = [
     id: 'discount_wizard',
     title: 'Discount Wizard',
     subtitle: 'Unreliable spellcaster',
-    description: 'Risky enemy caster that can still zone you with cheap fireballs.',
+    description: 'Risky caster that can still zone with cheap fireballs.',
   },
   {
     id: 'budget_barbarian',
@@ -75,6 +80,12 @@ const DUEL_ENEMY_OPTIONS: OptionCard[] = [
     title: 'Buster Bulldog',
     subtitle: 'Short heavy bruiser',
     description: 'Compact tank that trades speed for impact and crowding pressure.',
+  },
+  {
+    id: 'reference_fighter',
+    title: 'Reference Fighter',
+    subtitle: 'Animation test',
+    description: 'Development-only opponent for motion and hit timing checks.',
   },
 ];
 
@@ -107,17 +118,17 @@ export class CharacterSelectScene extends Phaser.Scene {
 
   create(): void {
     this.createCharacterAnimations();
-    this.add.rectangle(GAME_WIDTH / 2, GAME_HEIGHT / 2, GAME_WIDTH, GAME_HEIGHT, 0x0d1420);
-    this.add.rectangle(GAME_WIDTH / 2, GAME_HEIGHT / 2, GAME_WIDTH, GAME_HEIGHT, 0x162232, 0.92);
-    this.add.rectangle(GAME_WIDTH / 2, 58, 560, 48, 0x0f1824, 0.52).setStrokeStyle(1, 0x344960, 0.72);
+    this.add.image(GAME_WIDTH / 2, GAME_HEIGHT / 2, 'cs-background').setDisplaySize(GAME_WIDTH, GAME_HEIGHT).setDepth(-20);
+    this.add.rectangle(GAME_WIDTH / 2, GAME_HEIGHT / 2, GAME_WIDTH, GAME_HEIGHT, 0x061018, 0.2).setDepth(-10);
+    this.add.rectangle(GAME_WIDTH / 2, 54, 548, 42, 0x061018, 0.62).setStrokeStyle(1, 0x6f879a, 0.58).setDepth(1);
 
-    this.add.text(GAME_WIDTH / 2, 52, 'Character Select', {
+    this.add.text(GAME_WIDTH / 2, 48, 'Character Select', {
       color: '#fff7e6',
       fontFamily: 'Verdana, Geneva, sans-serif',
-      fontSize: '26px',
+      fontSize: '24px',
       stroke: '#101720',
       strokeThickness: 3,
-    }).setOrigin(0.5);
+    }).setOrigin(0.5).setDepth(6);
     this.add.text(
       GAME_WIDTH / 2,
       72,
@@ -125,33 +136,32 @@ export class CharacterSelectScene extends Phaser.Scene {
       {
       color: '#d5dde4',
       fontFamily: 'Verdana, Geneva, sans-serif',
-      fontSize: '13px',
+      fontSize: '12px',
       },
-    ).setOrigin(0.5);
+    ).setOrigin(0.5).setDepth(6);
 
     this.createArenaSelector();
-    this.playerCard = this.createPreviewCard(270, 294, 284, 300, 'PLAYER SIDE', false, true, 0x88c0ff, () => {
+    this.playerCard = this.createPreviewCard(252, 306, 340, 292, 'PLAYER', false, true, 0x88c0ff, () => {
       this.cyclePlayer(-1);
     }, () => {
       this.cyclePlayer(1);
     });
 
     if (this.mode === 'duel') {
-      this.enemyCard = this.createPreviewCard(690, 294, 284, 300, 'ENEMY SIDE', true, true, 0xff9a5a, () => {
+      this.enemyCard = this.createPreviewCard(708, 306, 340, 292, 'OPPONENT', true, true, 0xff9a5a, () => {
         this.cycleEnemy(-1);
       }, () => {
         this.cycleEnemy(1);
       });
     } else if (this.mode === 'test') {
-      this.enemyCard = this.createPreviewCard(690, 294, 284, 300, 'SOLO SANDBOX', true, false, 0x67d5b5);
+      this.enemyCard = this.createPreviewCard(708, 306, 340, 292, 'SOLO SANDBOX', true, false, 0x67d5b5);
       this.enemyCard.titleText.setText('No Enemy');
       this.enemyCard.subtitleText.setText('Free practice');
-      this.enemyCard.descriptionText.setText('Move, jump, basic, special, and air attack without combat pressure.');
       this.enemyCard.sprite.setVisible(false);
       this.enemyCard.indexText?.setVisible(false);
     } else {
-      this.enemyCard = this.createPreviewCard(690, 294, 284, 300, 'WAVE ENEMY', true, false, 0xff9a5a);
-      this.enemyCard.lockText = this.add.text(690, 438, 'Fixed for this mode', {
+      this.enemyCard = this.createPreviewCard(708, 306, 340, 292, 'WAVE ENEMY', true, false, 0xff9a5a);
+      this.enemyCard.lockText = this.add.text(708, 446, 'Fixed for this mode', {
         color: '#8da1b5',
         fontFamily: 'Verdana, Geneva, sans-serif',
         fontSize: '12px',
@@ -162,10 +172,10 @@ export class CharacterSelectScene extends Phaser.Scene {
     this.refreshEnemyCard();
     this.refreshArenaSelection();
 
-    this.createActionButton(280, 512, 190, 42, 'Back', () => {
+    this.createActionButton(286, 512, 212, 42, 'Back', () => {
       this.scene.start('MainMenuScene');
     });
-    this.createActionButton(680, 512, 230, 42, 'Start Battle', () => {
+    this.createActionButton(674, 512, 252, 42, 'Start Battle', () => {
       this.scene.start('BattleScene', {
         mode: this.mode,
         playerFighterId: this.selectedPlayer,
@@ -187,51 +197,41 @@ export class CharacterSelectScene extends Phaser.Scene {
     onPrev?: () => void,
     onNext?: () => void,
   ): PreviewCard {
-    const outerPanel = this.add.rectangle(x, y, width, height, 0x101923, 0.94).setStrokeStyle(3, accentColor, 0.9);
-    const roleBand = this.add.rectangle(x, y - 120, width - 26, 26, accentColor, 0.16).setStrokeStyle(1, accentColor, 0.58);
-    const divider = this.add.rectangle(x, y + 26, width - 36, 2, accentColor, 0.18);
-    outerPanel.setDepth(1);
-    roleBand.setDepth(2);
-    divider.setDepth(2);
+    const panelKey = accentColor === 0xff9a5a ? 'cs-panel-enemy' : 'cs-panel-player';
+    this.add.image(x, y, panelKey).setDisplaySize(width + 34, height + 34).setDepth(1);
 
-    const roleText = this.add.text(x, y - 120, label, {
+    const roleText = this.add.text(x, y - 132, label, {
       color: Phaser.Display.Color.IntegerToColor(accentColor).brighten(80).rgba,
       fontFamily: 'Verdana, Geneva, sans-serif',
-      fontSize: '16px',
+      fontSize: '15px',
       fontStyle: 'bold',
       stroke: '#101720',
       strokeThickness: 3,
     }).setOrigin(0.5).setDepth(6);
 
     const spriteBaseX = x;
-    const spriteBaseY = y + 10;
+    const spriteBaseY = y + 8;
     const sprite = this.add.sprite(spriteBaseX, spriteBaseY, 'wombat', 0).setOrigin(0.5, 1).setFlipX(flipPreview).setDepth(4);
-    const titleText = this.add.text(x, y + 52, '', {
+    const titleText = this.add.text(x, y + 58, '', {
       color: '#fff7e6',
       fontFamily: 'Verdana, Geneva, sans-serif',
-      fontSize: '24px',
+      fontSize: '22px',
       stroke: '#101720',
       strokeThickness: 3,
     }).setOrigin(0.5).setDepth(5);
-    const subtitleText = this.add.text(x, y + 80, '', {
+    const subtitleText = this.add.text(x, y + 86, '', {
       color: '#e9c46a',
       fontFamily: 'Verdana, Geneva, sans-serif',
       fontSize: '14px',
-    }).setOrigin(0.5).setDepth(5);
-    const descriptionText = this.add.text(x, y + 120, '', {
-      color: '#d5dde4',
-      fontFamily: 'Verdana, Geneva, sans-serif',
-      fontSize: '13px',
-      align: 'center',
-      wordWrap: { width: width - 56, useAdvancedWrap: true },
     }).setOrigin(0.5).setDepth(5);
 
     let indexText: Phaser.GameObjects.Text | undefined;
 
     if (showArrows && onPrev && onNext) {
-      this.createArrowButton(x - width / 2 - 24, y + 2, '<', accentColor, onPrev);
-      this.createArrowButton(x + width / 2 + 24, y + 2, '>', accentColor, onNext);
-      indexText = this.add.text(x, y + 32, '', {
+      const arrowVariant = accentColor === 0xff9a5a ? 'enemy' : 'player';
+      this.createArrowButton(x - width / 2 - 24, y + 2, '<', arrowVariant, accentColor, onPrev);
+      this.createArrowButton(x + width / 2 + 24, y + 2, '>', arrowVariant, accentColor, onNext);
+      indexText = this.add.text(x, y + 30, '', {
         color: '#8da1b5',
         fontFamily: 'Verdana, Geneva, sans-serif',
         fontSize: '12px',
@@ -241,7 +241,6 @@ export class CharacterSelectScene extends Phaser.Scene {
     const card: PreviewCard = {
       titleText,
       subtitleText,
-      descriptionText,
       sprite,
       roleText,
       spriteBaseX,
@@ -263,33 +262,39 @@ export class CharacterSelectScene extends Phaser.Scene {
     return card;
   }
 
-  private createArrowButton(x: number, y: number, label: string, accentColor: number, onClick: () => void): void {
-    const panel = this.add.circle(x, y, 22, 0x263547, 0.96).setStrokeStyle(2, accentColor, 0.9);
-    const text = this.add.text(x, y - 1, label, {
-      color: '#fff7e6',
-      fontFamily: 'Verdana, Geneva, sans-serif',
-      fontSize: '24px',
-    }).setOrigin(0.5);
+  private createArrowButton(
+    x: number,
+    y: number,
+    label: string,
+    variant: 'player' | 'enemy' | 'arena',
+    accentColor: number,
+    onClick: () => void,
+  ): void {
+    const direction = label === '<' ? 'left' : 'right';
+    const textureKey = `cs-arrow-${variant}-${direction}`;
+    const panel = this.add.image(x, y, textureKey).setDisplaySize(44, 44).setDepth(8);
+    const baseScaleX = panel.scaleX;
+    const baseScaleY = panel.scaleY;
+    this.add.circle(x, y, 25, accentColor, 0.04).setDepth(7);
 
     panel.setInteractive({ useHandCursor: true })
       .on(Phaser.Input.Events.POINTER_OVER, () => {
-        panel.setFillStyle(0x33475e, 0.98);
+        panel.setTint(0xffffff);
+        panel.setScale(baseScaleX * 1.06, baseScaleY * 1.06);
       })
       .on(Phaser.Input.Events.POINTER_OUT, () => {
-        panel.setFillStyle(0x263547, 0.96);
+        panel.clearTint();
+        panel.setScale(baseScaleX, baseScaleY);
       })
       .on(Phaser.Input.Events.POINTER_DOWN, () => {
-        panel.setScale(0.94);
-        text.setScale(0.94);
+        panel.setScale(baseScaleX * 0.94, baseScaleY * 0.94);
       })
       .on(Phaser.Input.Events.POINTER_UP, () => {
-        panel.setScale(1);
-        text.setScale(1);
+        panel.setScale(baseScaleX, baseScaleY);
         onClick();
       })
       .on(Phaser.Input.Events.POINTER_OUT, () => {
-        panel.setScale(1);
-        text.setScale(1);
+        panel.setScale(baseScaleX, baseScaleY);
       });
   }
 
@@ -330,7 +335,6 @@ export class CharacterSelectScene extends Phaser.Scene {
 
     card.titleText.setText(option.title);
     card.subtitleText.setText(option.subtitle);
-    card.descriptionText.setText(option.description);
     card.sprite.setTexture(textureKey, 0);
     card.sprite.setScale(spriteScale);
     card.sprite.setFlipX(flipPreview);
@@ -381,30 +385,30 @@ export class CharacterSelectScene extends Phaser.Scene {
   }
 
   private createArenaSelector(): void {
-    this.add.rectangle(GAME_WIDTH / 2, 108, 420, 42, 0x0f1824, 0.78).setStrokeStyle(2, 0x4b647c, 0.8);
-    this.add.text(GAME_WIDTH / 2, 94, 'ARENA', {
+    this.add.image(GAME_WIDTH / 2, 112, 'cs-arena-strip').setDisplaySize(456, 74).setDepth(1);
+    this.add.text(GAME_WIDTH / 2, 95, 'ARENA', {
       color: '#9fb5c9',
       fontFamily: 'Verdana, Geneva, sans-serif',
       fontSize: '12px',
       fontStyle: 'bold',
-    }).setOrigin(0.5);
-    this.arenaTitleText = this.add.text(GAME_WIDTH / 2, 108, '', {
+    }).setOrigin(0.5).setDepth(6);
+    this.arenaTitleText = this.add.text(GAME_WIDTH / 2, 110, '', {
       color: '#fff7e6',
       fontFamily: 'Verdana, Geneva, sans-serif',
       fontSize: '18px',
       stroke: '#101720',
       strokeThickness: 3,
-    }).setOrigin(0.5);
-    this.arenaSubtitleText = this.add.text(GAME_WIDTH / 2, 126, '', {
+    }).setOrigin(0.5).setDepth(6);
+    this.arenaSubtitleText = this.add.text(GAME_WIDTH / 2, 128, '', {
       color: '#e9c46a',
       fontFamily: 'Verdana, Geneva, sans-serif',
       fontSize: '11px',
-    }).setOrigin(0.5);
+    }).setOrigin(0.5).setDepth(6);
 
-    this.createArrowButton(GAME_WIDTH / 2 - 234, 108, '<', 0x67d5b5, () => {
+    this.createArrowButton(GAME_WIDTH / 2 - 258, 110, '<', 'arena', 0x67d5b5, () => {
       this.cycleArena(-1);
     });
-    this.createArrowButton(GAME_WIDTH / 2 + 234, 108, '>', 0x67d5b5, () => {
+    this.createArrowButton(GAME_WIDTH / 2 + 258, 110, '>', 'arena', 0x67d5b5, () => {
       this.cycleArena(1);
     });
   }
@@ -423,7 +427,7 @@ export class CharacterSelectScene extends Phaser.Scene {
 
   private getPreviewScale(definition: FighterDefinition): number {
     const baseScale = definition.sprite?.scale ?? 0.86;
-    return baseScale * 0.98;
+    return baseScale * 0.9;
   }
 
   private createActionButton(x: number, y: number, width: number, height: number, label: string, onClick: () => void): void {
@@ -450,8 +454,9 @@ export class CharacterSelectScene extends Phaser.Scene {
     this.createAnimationOnce('wombat-idle', 'wombat', 0, 3, 5, -1);
     this.createAnimationOnce('angry-pigeon-idle', 'angry-pigeon', 0, 3, 5, -1);
     this.createAnimationOnce('discount-wizard-idle', 'discount-wizard', 0, 3, 5, -1);
-    this.createAnimationOnce('budget-barbarian-idle', 'budget-barbarian', 0, 1, 4, -1);
+    this.createAnimationOnce('budget-barbarian-idle', 'budget-barbarian', 0, 3, 4, -1);
     this.createAnimationOnce('buster-bulldog-idle', 'buster-bulldog', 0, 3, 5, -1);
+    this.createAnimationOnce('reference-fighter-idle', 'reference-fighter', 0, 3, 6, -1);
   }
 
   private createAnimationOnce(

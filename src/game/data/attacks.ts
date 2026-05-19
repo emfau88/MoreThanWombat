@@ -265,6 +265,25 @@ export const busterBulldogBash: AttackDefinition = {
   manaCost: 28,
 };
 
+export const busterUnderbiteBulldozer: AttackDefinition = {
+  id: 'buster_underbite_bulldozer',
+  label: 'Underbite Bulldozer',
+  startupMs: 190,
+  activeMs: 160,
+  recoveryMs: 430,
+  damage: 27,
+  hitstunMs: 520,
+  knockbackX: 340,
+  knockbackY: 64,
+  hitbox: {
+    offsetX: 18,
+    offsetY: -58,
+    width: 122,
+    height: 48,
+  },
+  manaCost: 100,
+};
+
 export const airBonk: AttackDefinition = {
   id: 'air_bonk',
   label: 'Air Bonk',
@@ -298,5 +317,6 @@ export const attacksById: Record<string, AttackDefinition> = {
   [budgetAxeRain.id]: budgetAxeRain,
   [busterUnderbiteJab.id]: busterUnderbiteJab,
   [busterBulldogBash.id]: busterBulldogBash,
+  [busterUnderbiteBulldozer.id]: busterUnderbiteBulldozer,
   [airBonk.id]: airBonk,
 };

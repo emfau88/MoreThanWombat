@@ -189,16 +189,20 @@ export const budgetBarbarianDefinition: FighterDefinition = {
   },
   sprite: {
     textureKey: 'budget-barbarian',
-    scale: 0.9,
+    scale: 0.72,
     animations: {
       idle: 'budget-barbarian-idle',
       walk: 'budget-barbarian-walk',
       attack: 'budget-barbarian-axe-swing',
       special: 'budget-barbarian-tiny-rage',
+      jump: 'budget-barbarian-jump',
+      fall: 'budget-barbarian-fall',
+      landing: 'budget-barbarian-landing',
       hitstun: 'budget-barbarian-hit',
       dead: 'budget-barbarian-dead',
     },
     attackAnimations: {
+      air_bonk: 'budget-barbarian-air-bonk',
       budget_axe_rain: 'budget-barbarian-tiny-rage',
     },
     attackScaleOverrides: {
@@ -207,12 +211,6 @@ export const budgetBarbarianDefinition: FighterDefinition = {
       budget_axe_rain: 1.26,
     },
     frameScaleSets: {
-      'budget-barbarian-walk': [
-        1.13,
-        1.11,
-        0.89,
-        1.11,
-      ],
       'budget-barbarian-axe-swing': [
         1.01,
         1.16,
@@ -253,6 +251,7 @@ export const busterBulldogDefinition: FighterDefinition = {
   attacks: {
     basic: 'buster_underbite_jab',
     special: 'buster_bulldog_bash',
+    ultimate: 'buster_underbite_bulldozer',
   },
   sprite: {
     textureKey: 'buster-bulldog',
@@ -267,6 +266,59 @@ export const busterBulldogDefinition: FighterDefinition = {
     },
     attackAnimations: {
       air_bonk: 'buster-bulldog-air-bonk',
+      buster_underbite_bulldozer: 'buster-bulldog-bash',
+    },
+    attackScaleOverrides: {
+      buster_underbite_bulldozer: 1.08,
+    },
+  },
+};
+
+export const referenceFighterDefinition: FighterDefinition = {
+  id: 'reference_fighter',
+  label: 'Reference Fighter',
+  fillColor: 0x2f66d8,
+  outlineColor: 0x101820,
+  maxHp: 100,
+  maxMana: 100,
+  manaRegenPerSecond: 5,
+  moveSpeed: 165,
+  width: 44,
+  height: 64,
+  hurtbox: {
+    offsetX: -16,
+    offsetY: -58,
+    width: 32,
+    height: 54,
+  },
+  pushbox: {
+    offsetX: -13,
+    offsetY: -20,
+    width: 26,
+    height: 18,
+  },
+  attacks: {
+    basic: 'buster_underbite_jab',
+    special: 'buster_bulldog_bash',
+  },
+  sprite: {
+    textureKey: 'reference-fighter',
+    scale: 1.32,
+    animations: {
+      idle: 'reference-fighter-idle',
+      walk: 'reference-fighter-walk',
+      attack: 'reference-fighter-basic',
+      special: 'reference-fighter-special',
+      jump: 'reference-fighter-jump',
+      fall: 'reference-fighter-fall',
+      landing: 'reference-fighter-landing',
+      hitstun: 'reference-fighter-hit',
+      dead: 'reference-fighter-dead',
+    },
+    attackAnimations: {
+      air_bonk: 'reference-fighter-air-bonk',
+      buster_underbite_jab: 'reference-fighter-basic',
+      buster_bulldog_bash: 'reference-fighter-special',
     },
   },
 };
@@ -277,4 +329,5 @@ export const fighterDefinitions: Record<FighterId, FighterDefinition> = {
   discount_wizard: discountWizardDefinition,
   budget_barbarian: budgetBarbarianDefinition,
   buster_bulldog: busterBulldogDefinition,
+  reference_fighter: referenceFighterDefinition,
 };

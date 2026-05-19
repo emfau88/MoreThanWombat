@@ -483,12 +483,16 @@ export class BattleScene extends Phaser.Scene {
     this.createAnimationOnce('discount-wizard-hit', 'discount-wizard', 16, 17, 8, 0);
     this.createAnimationOnce('discount-wizard-dead', 'discount-wizard', 18, 19, 5, 0);
 
-    this.createAnimationOnce('budget-barbarian-idle', 'budget-barbarian', 0, 1, 4, -1);
-    this.createAnimationFromFramesOnce('budget-barbarian-walk', 'budget-barbarian', [4, 5, 7, 5], 7, -1);
+    this.createAnimationOnce('budget-barbarian-idle', 'budget-barbarian', 0, 3, 4, -1);
+    this.createAnimationFromFramesOnce('budget-barbarian-walk', 'budget-barbarian', [4, 6, 5, 7], 7, -1);
     this.createAnimationOnce('budget-barbarian-axe-swing', 'budget-barbarian', 8, 10, 11, 0);
     this.createAnimationOnce('budget-barbarian-tiny-rage', 'budget-barbarian', 12, 14, 9, 0);
     this.createAnimationOnce('budget-barbarian-hit', 'budget-barbarian', 15, 15, 8, 0);
     this.createAnimationOnce('budget-barbarian-dead', 'budget-barbarian', 16, 17, 5, 0);
+    this.createAnimationOnce('budget-barbarian-jump', 'budget-barbarian', 20, 20, 8, 0);
+    this.createAnimationOnce('budget-barbarian-fall', 'budget-barbarian', 21, 21, 8, 0);
+    this.createAnimationOnce('budget-barbarian-landing', 'budget-barbarian', 22, 22, 8, 0);
+    this.createAnimationOnce('budget-barbarian-air-bonk', 'budget-barbarian', 24, 26, 12, 0);
 
     this.createAnimationOnce('buster-bulldog-idle', 'buster-bulldog', 0, 3, 5, -1);
     this.createAnimationOnce('buster-bulldog-walk', 'buster-bulldog', 4, 7, 8, -1);
@@ -497,6 +501,17 @@ export class BattleScene extends Phaser.Scene {
     this.createAnimationOnce('buster-bulldog-hit', 'buster-bulldog', 16, 17, 8, 0);
     this.createAnimationOnce('buster-bulldog-dead', 'buster-bulldog', 18, 19, 5, 0);
     this.createAnimationOnce('buster-bulldog-air-bonk', 'buster-bulldog-air-bonk', 0, 2, 12, 0);
+
+    this.createAnimationOnce('reference-fighter-idle', 'reference-fighter', 0, 3, 6, -1);
+    this.createAnimationOnce('reference-fighter-walk', 'reference-fighter', 4, 6, 10, -1);
+    this.createAnimationOnce('reference-fighter-basic', 'reference-fighter', 7, 10, 15, 0);
+    this.createAnimationOnce('reference-fighter-special', 'reference-fighter', 11, 13, 14, 0);
+    this.createAnimationFromFramesOnce('reference-fighter-hit', 'reference-fighter', [11], 8, 0);
+    this.createAnimationFromFramesOnce('reference-fighter-dead', 'reference-fighter', [11], 8, 0);
+    this.createAnimationFromFramesOnce('reference-fighter-jump', 'reference-fighter', [14, 15], 10, 0);
+    this.createAnimationFromFramesOnce('reference-fighter-fall', 'reference-fighter', [17], 10, 0);
+    this.createAnimationFromFramesOnce('reference-fighter-landing', 'reference-fighter', [3], 8, 0);
+    this.createAnimationFromFramesOnce('reference-fighter-air-bonk', 'reference-fighter', [14, 15, 16, 17], 13, 0);
 
     this.createAnimationOnce('discount-wizard-fx-fireball', 'discount-wizard-fx', 0, 3, 14, 0);
     this.createAnimationOnce('discount-wizard-fx-hit-puff', 'discount-wizard-fx', 4, 7, 14, 0);
@@ -671,6 +686,11 @@ export class BattleScene extends Phaser.Scene {
       return;
     }
 
+    if (attack.id === 'buster_underbite_bulldozer') {
+      this.startBusterBulldogUltimate(fighter);
+      return;
+    }
+
     if (fighter.id !== 'discount_wizard') {
       return;
     }
@@ -735,6 +755,54 @@ export class BattleScene extends Phaser.Scene {
         hitTargetInstanceIds: new Set<number>(),
       });
     }
+  }
+
+  private startBusterBulldogUltimate(fighter: Fighter): void {
+    const direction = fighter.facing === 'right' ? 1 : -1;
+    const dashDistance = 94;
+    const startX = fighter.x;
+    const targetX = Phaser.Math.Clamp(fighter.x + dashDistance * direction, this.arenaBounds.minX + 24, this.arenaBounds.maxX - 24);
+    const actualDistance = targetX - fighter.x;
+
+    fighter.nudge(actualDistance, 0, this.arenaBounds);
+    this.cameras.main.shake(120, 0.006);
+
+    for (let index = 0; index < 4; index += 1) {
+      const progress = index / 3;
+      const x = startX + actualDistance * progress - 18 * direction;
+      const y = fighter.y + 6 + (index % 2) * 4;
+      const dust = this.add
+        .ellipse(x, y, 34 + index * 8, 14 + index * 2, 0xd8c2a2, 0.28 - index * 0.04)
+        .setDepth(fighter.y - 2)
+        .setRotation(direction * -0.12);
+
+      this.tweens.add({
+        targets: dust,
+        alpha: 0,
+        scaleX: 1.45,
+        scaleY: 0.72,
+        x: x - direction * (18 + index * 5),
+        duration: 220 + index * 35,
+        ease: 'Quad.easeOut',
+        onComplete: () => dust.destroy(),
+      });
+    }
+
+    const ring = this.add
+      .ellipse(fighter.x + 48 * direction, fighter.y - 44, 92, 52, 0xffe39a, 0.18)
+      .setStrokeStyle(3, 0xffd166, 0.72)
+      .setDepth(fighter.y + 16)
+      .setRotation(direction * 0.08);
+
+    this.tweens.add({
+      targets: ring,
+      alpha: 0,
+      scaleX: 1.55,
+      scaleY: 1.2,
+      duration: 260,
+      ease: 'Quad.easeOut',
+      onComplete: () => ring.destroy(),
+    });
   }
 
   private updateAxeRainStrikes(deltaMs: number): number {

@@ -1,48 +1,62 @@
-# More Than Wombat — Docs Index
+# More Than Wombat - Docs Index
 
-This folder contains the planning, architecture, implementation rules, and task roadmap for **More Than Wombat**, a mobile-first HTML5 2D arena brawler inspired by the design principles of classic pseudo-depth beat 'em ups such as Little Fighter 2.
+This folder contains both the original foundation documents and the current project handoff for **More Than Wombat**, a mobile-first Phaser/TypeScript/Vite 2D pseudo-depth arena brawler.
 
-## Core Goal
+## Read This First
 
-Build a small, stable, playable Phaser-based combat sandbox first. Do not build a full game immediately.
+The project has moved beyond the original combat sandbox MVP. Use the docs in this order for current work:
 
-The project must prove the following before expanding:
+1. `22_HANDOFF_FOR_NEW_CHAT.md`
+2. `16_CURRENT_ROADMAP.md`
+3. `17_OPEN_TASKS.md`
+4. `21_CHARACTER_ASSET_STANDARD.md`
+5. Relevant implementation spec from `07` to `13` only when touching that system
 
-- Mobile-first control works.
-- Player movement feels responsive.
-- Attacks have clear startup, active, and recovery timing.
-- Hitboxes and hurtboxes are separate from sprites.
-- Knockback, hitstun, and health work.
-- Enemy AI can approach and attack without becoming chaotic.
-- The codebase stays modular and does not collapse into one oversized scene file.
+## Current Truth
 
-## Recommended Reading Order
+These files describe the current built prototype and near-term work:
 
-1. `00_PROJECT_BRIEF.md`
-2. `01_TECH_STACK_DECISION.md`
-3. `02_GAME_DESIGN_PILLARS.md`
-4. `03_ARCHITECTURE_RULES.md`
-5. `04_AGENT_RULES.md`
-6. `05_ROADMAP.md`
-7. `06_MVP_SCOPE.md`
-8. `07_COMBAT_SYSTEM_SPEC.md`
-9. `08_CHARACTER_SYSTEM_SPEC.md`
-10. `09_MOBILE_INPUT_SPEC.md`
-11. `10_ASSET_PIPELINE_SPEC.md`
-12. `11_SCENE_STRUCTURE_SPEC.md`
-13. `12_ACCEPTANCE_CRITERIA.md`
-14. `13_TESTING_CHECKLIST.md`
-15. `14_TASK_BACKLOG.md`
-16. `15_DECISIONS.md`
-17. `16_CURRENT_ROADMAP.md`
-18. `17_OPEN_TASKS.md`
-19. `18_NEXT_STEPS.md`
-20. `19_WAVE_STAGE_SYSTEM_PLAN.md`
-21. `20_MANA_ULTIMATE_IMPLEMENTATION_PLAN.md`
-22. `21_CHARACTER_ASSET_STANDARD.md`
+- `16_CURRENT_ROADMAP.md` - actual execution roadmap based on what is already built
+- `17_OPEN_TASKS.md` - practical current task list
+- `18_NEXT_STEPS.md` - recommended short development block order
+- `19_WAVE_STAGE_SYSTEM_PLAN.md` - future side-scrolling wave-stage plan
+- `20_MANA_ULTIMATE_IMPLEMENTATION_PLAN.md` - mana and ultimate rollout notes
+- `21_CHARACTER_ASSET_STANDARD.md` - character animation and asset quality rules
+- `22_HANDOFF_FOR_NEW_CHAT.md` - compact current handoff; read this first
 
-## Non-Negotiable Rule
+## Foundation Docs
 
-The first version is not a content game. It is a combat foundation.
+These files remain valid as design intent, architecture guardrails, and scope protection. They are not a complete description of the current shipped prototype:
 
-No character select, no story mode, no shop, no multiplayer, no progression, no RPG systems, no excessive effects, no boss fight, no world map in the first implementation phase.
+- `00_PROJECT_BRIEF.md`
+- `01_TECH_STACK_DECISION.md`
+- `02_GAME_DESIGN_PILLARS.md`
+- `03_ARCHITECTURE_RULES.md`
+- `04_AGENT_RULES.md`
+- `05_ROADMAP.md`
+- `06_MVP_SCOPE.md`
+- `07_COMBAT_SYSTEM_SPEC.md`
+- `08_CHARACTER_SYSTEM_SPEC.md`
+- `09_MOBILE_INPUT_SPEC.md`
+- `10_ASSET_PIPELINE_SPEC.md`
+- `11_SCENE_STRUCTURE_SPEC.md`
+- `12_ACCEPTANCE_CRITERIA.md`
+- `13_TESTING_CHECKLIST.md`
+- `14_TASK_BACKLOG.md`
+- `15_DECISIONS.md`
+
+## Non-Negotiable Guardrail
+
+Combat feel, mobile readability, and stable architecture remain more important than adding content.
+
+Do not use the old MVP documents as permission to remove existing systems such as character select, arenas, mana, ultimates, waves, or the current roster. Use them to protect the project from broad scope creep such as multiplayer, story, shops, meta progression, complex RPG systems, or large rewrites.
+
+## Current Working Rule
+
+Before implementing:
+
+1. Check `22_HANDOFF_FOR_NEW_CHAT.md`.
+2. Check `16_CURRENT_ROADMAP.md` and `17_OPEN_TASKS.md`.
+3. Inspect the relevant code path.
+4. Make the smallest isolated change that advances the current roadmap.
+5. Run `npm.cmd run build` when code or assets change.
