@@ -9,7 +9,6 @@ export class MainMenuScene extends Phaser.Scene {
 
   create(): void {
     this.add.image(GAME_WIDTH / 2, GAME_HEIGHT / 2, 'main-menu-background').setDisplaySize(GAME_WIDTH, GAME_HEIGHT).setDepth(0);
-    this.add.rectangle(GAME_WIDTH / 2, GAME_HEIGHT / 2, GAME_WIDTH, GAME_HEIGHT, 0x05070c, 0.26).setDepth(1);
 
     this.createModeButton(GAME_WIDTH / 2, 258, 338, 84, 'Duel', 'Current 1v1 setup', 'duel');
     this.createModeButton(GAME_WIDTH / 2, 358, 338, 84, 'Waves', 'Three short enemy waves', 'waves');

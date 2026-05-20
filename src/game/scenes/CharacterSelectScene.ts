@@ -120,25 +120,6 @@ export class CharacterSelectScene extends Phaser.Scene {
     this.createCharacterAnimations();
     this.add.image(GAME_WIDTH / 2, GAME_HEIGHT / 2, 'cs-background').setDisplaySize(GAME_WIDTH, GAME_HEIGHT).setDepth(-20);
     this.add.rectangle(GAME_WIDTH / 2, GAME_HEIGHT / 2, GAME_WIDTH, GAME_HEIGHT, 0x061018, 0.2).setDepth(-10);
-    this.add.rectangle(GAME_WIDTH / 2, 54, 548, 42, 0x061018, 0.62).setStrokeStyle(1, 0x6f879a, 0.58).setDepth(1);
-
-    this.add.text(GAME_WIDTH / 2, 48, 'Character Select', {
-      color: '#fff7e6',
-      fontFamily: 'Verdana, Geneva, sans-serif',
-      fontSize: '24px',
-      stroke: '#101720',
-      strokeThickness: 3,
-    }).setOrigin(0.5).setDepth(6);
-    this.add.text(
-      GAME_WIDTH / 2,
-      72,
-      this.mode === 'duel' ? 'Choose fighter and opponent' : this.mode === 'test' ? 'Choose your fighter for solo sandbox' : 'Choose your fighter',
-      {
-      color: '#d5dde4',
-      fontFamily: 'Verdana, Geneva, sans-serif',
-      fontSize: '12px',
-      },
-    ).setOrigin(0.5).setDepth(6);
 
     this.createArenaSelector();
     this.playerCard = this.createPreviewCard(252, 306, 340, 292, 'PLAYER', false, true, 0x88c0ff, () => {
@@ -272,7 +253,7 @@ export class CharacterSelectScene extends Phaser.Scene {
   ): void {
     const direction = label === '<' ? 'left' : 'right';
     const textureKey = `cs-arrow-${variant}-${direction}`;
-    const panel = this.add.image(x, y, textureKey).setDisplaySize(44, 44).setDepth(8);
+    const panel = this.add.image(x, y - 2, textureKey).setDisplaySize(38, 38).setDepth(8);
     const baseScaleX = panel.scaleX;
     const baseScaleY = panel.scaleY;
     this.add.circle(x, y, 25, accentColor, 0.04).setDepth(7);
@@ -385,30 +366,31 @@ export class CharacterSelectScene extends Phaser.Scene {
   }
 
   private createArenaSelector(): void {
-    this.add.image(GAME_WIDTH / 2, 112, 'cs-arena-strip').setDisplaySize(456, 74).setDepth(1);
-    this.add.text(GAME_WIDTH / 2, 95, 'ARENA', {
+    const arenaY = 76;
+    this.add.image(GAME_WIDTH / 2, arenaY, 'cs-arena-strip').setDisplaySize(456, 74).setDepth(1);
+    this.add.text(GAME_WIDTH / 2, arenaY - 17, 'ARENA', {
       color: '#9fb5c9',
       fontFamily: 'Verdana, Geneva, sans-serif',
       fontSize: '12px',
       fontStyle: 'bold',
     }).setOrigin(0.5).setDepth(6);
-    this.arenaTitleText = this.add.text(GAME_WIDTH / 2, 110, '', {
+    this.arenaTitleText = this.add.text(GAME_WIDTH / 2, arenaY - 2, '', {
       color: '#fff7e6',
       fontFamily: 'Verdana, Geneva, sans-serif',
       fontSize: '18px',
       stroke: '#101720',
       strokeThickness: 3,
     }).setOrigin(0.5).setDepth(6);
-    this.arenaSubtitleText = this.add.text(GAME_WIDTH / 2, 128, '', {
+    this.arenaSubtitleText = this.add.text(GAME_WIDTH / 2, arenaY + 16, '', {
       color: '#e9c46a',
       fontFamily: 'Verdana, Geneva, sans-serif',
       fontSize: '11px',
     }).setOrigin(0.5).setDepth(6);
 
-    this.createArrowButton(GAME_WIDTH / 2 - 258, 110, '<', 'arena', 0x67d5b5, () => {
+    this.createArrowButton(GAME_WIDTH / 2 - 258, arenaY, '<', 'arena', 0x67d5b5, () => {
       this.cycleArena(-1);
     });
-    this.createArrowButton(GAME_WIDTH / 2 + 258, 110, '>', 'arena', 0x67d5b5, () => {
+    this.createArrowButton(GAME_WIDTH / 2 + 258, arenaY, '>', 'arena', 0x67d5b5, () => {
       this.cycleArena(1);
     });
   }
