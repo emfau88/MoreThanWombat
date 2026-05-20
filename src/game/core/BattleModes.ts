@@ -1,4 +1,5 @@
 import type { ArenaId } from '../data/arenas';
+import type { WaveStageId } from '../data/stages';
 
 export type BattleMode = 'duel' | 'waves' | 'test';
 
@@ -22,4 +23,5 @@ export type BattleSceneData = {
   playerFighterId?: FighterId;
   enemyFighterId?: FighterId;
   arenaId?: ArenaId;
+  stageId?: WaveStageId;
 };
