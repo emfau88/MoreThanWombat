@@ -9,16 +9,16 @@ export class MainMenuScene extends Phaser.Scene {
 
   create(): void {
     this.add.image(GAME_WIDTH / 2, GAME_HEIGHT / 2, 'main-menu-background').setDisplaySize(GAME_WIDTH, GAME_HEIGHT).setDepth(0);
-    this.add.rectangle(GAME_WIDTH / 2, GAME_HEIGHT / 2, GAME_WIDTH, GAME_HEIGHT, 0x05070c, 0.16).setDepth(1);
+    this.add.rectangle(GAME_WIDTH / 2, GAME_HEIGHT / 2, GAME_WIDTH, GAME_HEIGHT, 0x05070c, 0.26).setDepth(1);
 
-    this.createModeButton(GAME_WIDTH / 2, 272, 300, 70, 'Duel', 'Current 1v1 setup', 'duel');
-    this.createModeButton(GAME_WIDTH / 2, 362, 300, 70, 'Waves', 'Three short enemy waves', 'waves');
-    this.createModeButton(GAME_WIDTH / 2, 452, 300, 70, 'Test', 'Solo move and attack sandbox', 'test');
+    this.createModeButton(GAME_WIDTH / 2, 258, 338, 84, 'Duel', 'Current 1v1 setup', 'duel');
+    this.createModeButton(GAME_WIDTH / 2, 358, 338, 84, 'Waves', 'Three short enemy waves', 'waves');
+    this.createModeButton(GAME_WIDTH / 2, 458, 338, 84, 'Test', 'Solo move and attack sandbox', 'test');
 
-    this.add.text(GAME_WIDTH / 2, 482, 'Touch or click a mode to start', {
+    this.add.text(GAME_WIDTH / 2, 516, 'Touch or click a mode to start', {
       color: '#d5dde4',
       fontFamily: 'Verdana, Geneva, sans-serif',
-      fontSize: '14px',
+      fontSize: '13px',
       stroke: '#111820',
       strokeThickness: 4,
     }).setOrigin(0.5).setDepth(5);
@@ -33,30 +33,47 @@ export class MainMenuScene extends Phaser.Scene {
     subtitle: string,
     mode: BattleMode,
   ): void {
-    const panel = this.add.rectangle(x, y, width, height, 0x182334, 0.88).setStrokeStyle(3, 0xe9c46a).setDepth(4);
-    const titleText = this.add.text(x, y - 12, title, {
+    const panel = this.add.image(x, y, 'main-menu-button-panel').setDisplaySize(width, height).setDepth(4);
+    const baseScaleX = panel.scaleX;
+    const baseScaleY = panel.scaleY;
+    const titleText = this.add.text(x, y - 14, title, {
       color: '#fff7e6',
       fontFamily: 'Verdana, Geneva, sans-serif',
-      fontSize: '23px',
-      stroke: '#111820',
-      strokeThickness: 3,
+      fontSize: '25px',
+      fontStyle: 'bold',
+      stroke: '#071018',
+      strokeThickness: 4,
     }).setOrigin(0.5);
-    const subtitleText = this.add.text(x, y + 18, subtitle, {
+    const subtitleText = this.add.text(x, y + 13, subtitle, {
       color: '#d5dde4',
       fontFamily: 'Verdana, Geneva, sans-serif',
       fontSize: '13px',
-      stroke: '#111820',
+      stroke: '#071018',
       strokeThickness: 3,
     }).setOrigin(0.5);
 
     panel.setInteractive({ useHandCursor: true })
       .on(Phaser.Input.Events.POINTER_OVER, () => {
-        panel.setFillStyle(0x2d3a4a, 0.96);
+        panel.setTint(0xfff1bf);
+        panel.setScale(baseScaleX * 1.035, baseScaleY * 1.035);
+        titleText.setScale(1.035);
+        subtitleText.setScale(1.035);
       })
       .on(Phaser.Input.Events.POINTER_OUT, () => {
-        panel.setFillStyle(0x182334, 0.88);
+        panel.clearTint();
+        panel.setScale(baseScaleX, baseScaleY);
+        titleText.setScale(1);
+        subtitleText.setScale(1);
+      })
+      .on(Phaser.Input.Events.POINTER_DOWN, () => {
+        panel.setScale(baseScaleX * 0.98, baseScaleY * 0.98);
+        titleText.setScale(0.98);
+        subtitleText.setScale(0.98);
       })
       .on(Phaser.Input.Events.POINTER_UP, () => {
+        panel.setScale(baseScaleX, baseScaleY);
+        titleText.setScale(1);
+        subtitleText.setScale(1);
         this.scene.start('CharacterSelectScene', { mode });
       });
 

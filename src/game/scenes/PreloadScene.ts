@@ -9,6 +9,7 @@ export class PreloadScene extends Phaser.Scene {
     const assetBase = `${import.meta.env.BASE_URL}assets/`;
 
     this.load.image('main-menu-background', `${assetBase}2.png`);
+    this.load.image('main-menu-button-panel', `${assetBase}ui/main-menu/menu_button_panel.png`);
     this.load.image('duel-park-background', `${assetBase}arenas/park/duel_park_background.png`);
     this.load.image('scrapyard-background', `${assetBase}arenas/scrapyard/scrapyard_background.png`);
     this.load.image('rooftop-background', `${assetBase}arenas/rooftop/rooftop_background.png`);
