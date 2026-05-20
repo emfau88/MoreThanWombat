@@ -37,7 +37,7 @@ export class BattleScene extends Phaser.Scene {
   private readonly arenaBounds: FighterBounds = {
     minX: 72,
     maxX: 888,
-    minY: 224,
+    minY: 248,
     maxY: 474,
   };
   private inputController!: InputController;
@@ -326,7 +326,8 @@ export class BattleScene extends Phaser.Scene {
     const axeRainDamage = this.updateAxeRainStrikes(delta);
     this.updateTestDummyRegen(delta);
     const projectileDamage = projectileHits[0]?.damage ?? 0;
-    this.applyImpactFeedback(playerHit.didHit ? playerHit.damage : enemyHit.didHit ? enemyHit.damage : projectileDamage || axeRainDamage);
+    const impactAttackId = playerHit.didHit ? playerHit.attackId : enemyHit.didHit ? enemyHit.attackId : undefined;
+    this.applyImpactFeedback(playerHit.didHit ? playerHit.damage : enemyHit.didHit ? enemyHit.damage : projectileDamage || axeRainDamage, impactAttackId);
     this.hud.update(this.player, this.enemy);
 
     if (this.enemy && this.mode !== 'test') {
@@ -451,8 +452,14 @@ export class BattleScene extends Phaser.Scene {
     this.debugToggleLabel.setText(`Debug: ${this.debugEnabled ? 'On' : 'Off'}`);
   }
 
-  private applyImpactFeedback(damage: number): void {
+  private applyImpactFeedback(damage: number, attackId?: string): void {
     if (damage <= 0) {
+      return;
+    }
+
+    if (attackId === 'wombat_earthshaker') {
+      this.hitstopRemainingMs = 24;
+      this.cameras.main.shake(130, 0.008);
       return;
     }
 
@@ -675,7 +682,7 @@ export class BattleScene extends Phaser.Scene {
     }
 
     if (attack.id === 'wombat_earthshaker') {
-      this.spawnFx('wombat-earthshaker-fx', fighter.x, fighter.y - 186, fighter.y + 18, false, 1.95, 'wombat-earthshaker-fx');
+      this.spawnFx('wombat-earthshaker-fx', fighter.x, fighter.y - 178, fighter.y - 6, false, 1.72, 'wombat-earthshaker-fx');
       this.cameras.main.shake(150, 0.008);
       return;
     }

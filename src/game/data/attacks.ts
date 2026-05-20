@@ -27,13 +27,13 @@ export const wombatJab: AttackDefinition = {
   activeMs: 80,
   recoveryMs: 160,
   damage: 8,
-  hitstunMs: 220,
+  hitstunMs: 190,
   knockbackX: 130,
   knockbackY: 20,
   hitbox: {
     offsetX: 28,
     offsetY: -52,
-    width: 38,
+    width: 42,
     height: 24,
   },
 };
@@ -51,7 +51,7 @@ export const wombatBellySlam: AttackDefinition = {
   hitbox: {
     offsetX: 24,
     offsetY: -56,
-    width: 52,
+    width: 57,
     height: 38,
   },
   manaCost: 25,
@@ -65,13 +65,13 @@ export const wombatEarthshaker: AttackDefinition = {
   recoveryMs: 520,
   damage: 28,
   hitstunMs: 560,
-  knockbackX: 330,
-  knockbackY: 95,
+  knockbackX: 540,
+  knockbackY: 165,
   hitbox: {
-    offsetX: -132,
-    offsetY: -98,
-    width: 264,
-    height: 116,
+    offsetX: -180,
+    offsetY: -132,
+    width: 360,
+    height: 184,
   },
   manaCost: 100,
 };
@@ -83,13 +83,13 @@ export const pigeonPeck: AttackDefinition = {
   activeMs: 80,
   recoveryMs: 260,
   damage: 5,
-  hitstunMs: 160,
+  hitstunMs: 130,
   knockbackX: 80,
   knockbackY: 10,
   hitbox: {
     offsetX: 20,
     offsetY: -42,
-    width: 30,
+    width: 33,
     height: 18,
   },
 };
@@ -101,13 +101,13 @@ export const discountWandSmack: AttackDefinition = {
   activeMs: 80,
   recoveryMs: 175,
   damage: 6,
-  hitstunMs: 170,
+  hitstunMs: 145,
   knockbackX: 90,
   knockbackY: 8,
   hitbox: {
     offsetX: 24,
     offsetY: -50,
-    width: 34,
+    width: 38,
     height: 28,
   },
 };
@@ -135,9 +135,9 @@ export const discountFireballCast: AttackDefinition = {
 export const discountMiscast: AttackDefinition = {
   id: 'discount_miscast',
   label: 'Miscast',
-  startupMs: 260,
+  startupMs: 150,
   activeMs: 150,
-  recoveryMs: 220,
+  recoveryMs: 80,
   damage: 14,
   hitstunMs: 390,
   knockbackX: 220,
@@ -149,7 +149,6 @@ export const discountMiscast: AttackDefinition = {
     height: 58,
   },
   canMoveDuringAttack: true,
-  manaCost: 22,
 };
 
 export const discountClearanceOrb: AttackDefinition = {
@@ -179,13 +178,13 @@ export const budgetCrackedAxeSwing: AttackDefinition = {
   activeMs: 105,
   recoveryMs: 245,
   damage: 12,
-  hitstunMs: 260,
+  hitstunMs: 225,
   knockbackX: 150,
   knockbackY: 18,
   hitbox: {
     offsetX: 28,
     offsetY: -56,
-    width: 58,
+    width: 64,
     height: 32,
   },
 };
@@ -203,7 +202,7 @@ export const budgetTinyRage: AttackDefinition = {
   hitbox: {
     offsetX: 22,
     offsetY: -58,
-    width: 62,
+    width: 68,
     height: 42,
   },
   manaCost: 30,
@@ -235,13 +234,13 @@ export const busterUnderbiteJab: AttackDefinition = {
   activeMs: 90,
   recoveryMs: 190,
   damage: 9,
-  hitstunMs: 230,
+  hitstunMs: 200,
   knockbackX: 125,
   knockbackY: 16,
   hitbox: {
     offsetX: 28,
     offsetY: -46,
-    width: 42,
+    width: 46,
     height: 28,
   },
 };
@@ -259,7 +258,7 @@ export const busterBulldogBash: AttackDefinition = {
   hitbox: {
     offsetX: 22,
     offsetY: -52,
-    width: 64,
+    width: 70,
     height: 38,
   },
   manaCost: 28,
@@ -291,13 +290,13 @@ export const airBonk: AttackDefinition = {
   activeMs: 120,
   recoveryMs: 140,
   damage: 7,
-  hitstunMs: 190,
+  hitstunMs: 165,
   knockbackX: 100,
   knockbackY: 22,
   hitbox: {
-    offsetX: 20,
+    offsetX: 18,
     offsetY: -26,
-    width: 54,
+    width: 62,
     height: 92,
   },
   canTurnDuringAttack: false,

@@ -63,9 +63,9 @@ export type FighterBounds = {
 };
 
 export class Fighter {
-  private static readonly JUMP_VELOCITY_Z = 430;
-  private static readonly GRAVITY_Z = 1120;
-  private static readonly LANDING_RECOVERY_MS = 90;
+  private static readonly JUMP_VELOCITY_Z = 480;
+  private static readonly GRAVITY_Z = 1180;
+  private static readonly LANDING_RECOVERY_MS = 60;
   private static nextInstanceId = 1;
 
   readonly instanceId: number;
@@ -338,6 +338,7 @@ export class Fighter {
     knockbackX: number;
     knockbackY: number;
     sourceFacing: FighterFacing;
+    launchVelocityZ?: number;
   }): void {
     if (this.state === 'dead') {
       return;
@@ -351,6 +352,11 @@ export class Fighter {
     this.landingRemainingMs = 0;
     this.velocityX = hit.sourceFacing === 'right' ? hit.knockbackX : -hit.knockbackX;
     this.velocityY = hit.knockbackY;
+    if (hit.launchVelocityZ && hit.launchVelocityZ > 0) {
+      this.z = Math.max(this.z, 1);
+      this.velocityZ = Math.max(this.velocityZ, hit.launchVelocityZ);
+      this.isGrounded = false;
+    }
     this.flashRemainingMs = 110;
 
     if (this.hp <= 0) {

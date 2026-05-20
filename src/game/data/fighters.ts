@@ -9,7 +9,7 @@ export const wombatDefinition: FighterDefinition = {
   maxHp: 100,
   maxMana: 100,
   manaRegenPerSecond: 4.5,
-  moveSpeed: 170,
+  moveSpeed: 187,
   width: 54,
   height: 68,
   hurtbox: {
@@ -111,7 +111,7 @@ export const discountWizardDefinition: FighterDefinition = {
   maxHp: 76,
   maxMana: 115,
   manaRegenPerSecond: 6,
-  moveSpeed: 135,
+  moveSpeed: 149,
   width: 46,
   height: 70,
   hurtbox: {
@@ -167,7 +167,7 @@ export const budgetBarbarianDefinition: FighterDefinition = {
   maxHp: 112,
   maxMana: 100,
   manaRegenPerSecond: 4,
-  moveSpeed: 122,
+  moveSpeed: 134,
   width: 58,
   height: 70,
   hurtbox: {
@@ -233,7 +233,7 @@ export const busterBulldogDefinition: FighterDefinition = {
   maxHp: 125,
   maxMana: 85,
   manaRegenPerSecond: 3.5,
-  moveSpeed: 125,
+  moveSpeed: 138,
   width: 62,
   height: 58,
   hurtbox: {
@@ -282,7 +282,7 @@ export const referenceFighterDefinition: FighterDefinition = {
   maxHp: 100,
   maxMana: 100,
   manaRegenPerSecond: 5,
-  moveSpeed: 165,
+  moveSpeed: 182,
   width: 44,
   height: 64,
   hurtbox: {

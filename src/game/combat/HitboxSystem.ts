@@ -40,12 +40,21 @@ export class HitboxSystem {
       return { didHit: false, damage: 0 };
     }
 
+    const isRadialSlam = attack.id === 'wombat_earthshaker';
+    const sourceFacing = isRadialSlam
+      ? defender.x >= attacker.x
+        ? 'right'
+        : 'left'
+      : attacker.facing;
+    const verticalDirection = isRadialSlam && defender.y !== attacker.y ? Math.sign(defender.y - attacker.y) : 1;
+
     defender.receiveHit({
       damage: attack.damage,
       hitstunMs: attack.hitstunMs,
       knockbackX: attack.knockbackX,
-      knockbackY: attack.knockbackY,
-      sourceFacing: attacker.facing,
+      knockbackY: attack.knockbackY * verticalDirection,
+      sourceFacing,
+      launchVelocityZ: isRadialSlam ? 500 : undefined,
     });
     attacker.registerHit(defenderHitTargetId);
     return {
