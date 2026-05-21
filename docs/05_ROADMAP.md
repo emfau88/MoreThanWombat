@@ -1,6 +1,16 @@
-# 05 — Roadmap
+# 05 - Roadmap
 
-## Phase 0 — Project Setup
+Historical foundation roadmap.
+
+This file still matters as the original build-order logic, but it no longer describes the current shipped prototype.
+For current execution priorities, use:
+
+- `16_CURRENT_ROADMAP.md`
+- `17_OPEN_TASKS.md`
+- `18_NEXT_STEPS.md`
+- `22_HANDOFF_FOR_NEW_CHAT.md`
+
+## Phase 0 - Project Setup
 
 Goal: Create a clean Phaser + TypeScript + Vite project.
 
@@ -20,7 +30,7 @@ Acceptance:
 - Game opens on desktop browser.
 - Game opens in mobile browser or mobile emulator.
 
-## Phase 1 — Combat Sandbox Foundation
+## Phase 1 - Combat Sandbox Foundation
 
 Goal: One player and one dummy enemy in an arena.
 
@@ -42,7 +52,7 @@ Acceptance:
 - Sprite depth changes correctly by vertical position.
 - Controls work on desktop and mobile.
 
-## Phase 2 — First Attack
+## Phase 2 - First Attack
 
 Goal: One functional normal attack.
 
@@ -65,7 +75,7 @@ Acceptance:
 - Enemy is knocked back.
 - Enemy cannot be hit multiple times by same attack unless explicitly allowed.
 
-## Phase 3 — Enemy AI
+## Phase 3 - Enemy AI
 
 Goal: Enemy can approach and attack.
 
@@ -83,7 +93,7 @@ Acceptance:
 - Enemy does not constantly overlap player.
 - Player can take damage.
 
-## Phase 4 — Mobile Combat Pass
+## Phase 4 - Mobile Combat Pass
 
 Goal: Combat is playable on phone.
 
@@ -103,7 +113,7 @@ Acceptance:
 - Inputs do not stick.
 - No accidental multi-input chaos.
 
-## Phase 5 — Feel Pass
+## Phase 5 - Feel Pass
 
 Goal: Make hits satisfying.
 
@@ -121,7 +131,7 @@ Acceptance:
 - Effects do not hide readability.
 - Performance remains stable.
 
-## Phase 6 — First Arena Wave
+## Phase 6 - First Arena Wave
 
 Goal: A tiny playable level.
 
@@ -140,7 +150,7 @@ Acceptance:
 - Waves spawn predictably.
 - No endless broken state.
 
-## Phase 7 — Visual Identity Pass
+## Phase 7 - Visual Identity Pass
 
 Goal: Replace placeholders with first real style pass.
 
@@ -158,7 +168,7 @@ Acceptance:
 - Animations do not jitter.
 - Characters remain readable on mobile.
 
-## Phase 8 — Content Expansion Gate
+## Phase 8 - Content Expansion Gate
 
 Only begin after all previous phases are stable.
 

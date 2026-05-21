@@ -1,6 +1,27 @@
 # 19 - Wave Stage System Plan
 
-This is a future plan for LF2-inspired wave stages that scroll to the right.
+This document started as a future plan for LF2-inspired wave stages that scroll to the right.
+It is now partially implemented and should be read as both plan and status note.
+
+## Current Status
+
+Implemented today:
+
+- Stage definition file exists at `src/game/data/stages.ts`
+- First stage `junkyard_run` exists
+- 3 horizontal sections exist
+- Wave mode now uses staged sections instead of only fixed-arena respawns
+- Multi-enemy section support exists
+- Section-specific combat bounds exist
+- Camera follow exists in Wave mode only
+- HUD and overlays remain screen-space
+
+Not done yet:
+
+- Proper wave polish/balancing pass
+- More than one real stage
+- Obstacles, hazards, gates, bosses, or branching
+- Broader content variety inside the staged wave structure
 
 ## Goal
 
@@ -24,7 +45,7 @@ Recommended split:
 - Test: fixed 960x540 arena
 - Waves: stage-based side-scroll arenas
 
-## Proposed Data Model
+## Data Model
 
 ```ts
 type StageDefinition = {
@@ -33,17 +54,22 @@ type StageDefinition = {
   backgroundKey: string;
   worldWidth: number;
   scrollMode: 'fixed' | 'side_scroll';
-  waves: StageWaveDefinition[];
+  sections: StageSectionDefinition[];
 };
 
-type StageWaveDefinition = {
-  sectionIndex: number;
+type StageSectionDefinition = {
+  id: string;
+  title: string;
   bounds: FighterBounds;
-  enemyFighterId: FighterId;
-  enemyHp: number;
-  enemyMoveSpeed: number;
+  enemies: StageEnemySpawnDefinition[];
+};
+
+type StageEnemySpawnDefinition = {
+  fighterId: FighterId;
   spawnX: number;
   spawnY: number;
+  hpOverride?: number;
+  moveSpeedOverride?: number;
 };
 ```
 
@@ -57,14 +83,13 @@ type StageWaveDefinition = {
 - UI fixed with `scrollFactor(0)`
 - Clear transition after each section
 
-## Recommended First Implementation
+## First Implementation Status
 
-Start with one stage:
+The first implementation already follows the intended narrow scope:
 
 - `junkyard_run`
 - 3 sections
-- 3 waves
-- one wide 2400-3200px background
+- one wide stage background
 - no obstacles
 - no branching
 - no infinite procedural scrolling
@@ -76,11 +101,10 @@ Start with one stage:
 - Arena bounds must remain clear and readable on mobile
 - Wide generated backgrounds need careful composition so the playable lane stays consistent
 
-## Not In First Pass
+## Still Not In This Pass
 
 - Infinite scrolling
 - Doors, gates, or collision obstacles
-- Multiple enemy groups per section
 - Story scripting
 - Boss fights
 - Map hazards

@@ -1,6 +1,6 @@
 # More Than Wombat - Handoff For New Chat
 
-Last updated: 2026-05-19
+Last updated: 2026-05-21
 
 ## Purpose
 
@@ -67,7 +67,17 @@ https://emfau88.github.io/MoreThanWombat/
 
 ### Waves
 
-Short enemy wave mode. Still fixed-arena based. A future LF2-style side-scrolling wave-stage plan is documented in `19_WAVE_STAGE_SYSTEM_PLAN.md`.
+Short staged wave mode.
+
+Current implementation:
+
+- Uses `junkyard_run`
+- Uses 3 horizontal sections
+- Uses wave-only camera follow
+- Uses section-specific combat bounds
+- Supports multiple enemies inside a section
+
+This is the first staged implementation, not the final polished version. See `19_WAVE_STAGE_SYSTEM_PLAN.md`.
 
 ### Test
 
@@ -182,7 +192,7 @@ Arena data lives in:
 src/game/data/arenas.ts
 ```
 
-Wave side-scrolling stages are planned but not implemented. See:
+Wave side-scrolling stage flow is now partially implemented. See:
 
 ```text
 docs/19_WAVE_STAGE_SYSTEM_PLAN.md
@@ -212,6 +222,7 @@ src/game/data/fighters.ts
 src/game/data/attacks.ts
 src/game/data/projectiles.ts
 src/game/data/arenas.ts
+src/game/data/stages.ts
 ```
 
 Input:
@@ -330,18 +341,34 @@ The character select received a compact readability pass after adding the Refere
 
 Still needs one real mobile/desktop visual QA pass before treating this as final.
 
+### Wave Mode
+
+Wave mode recently changed the most and is now the main regression risk:
+
+- now uses staged sections
+- now uses wave-only camera follow
+- now uses real section bounds
+- now supports multi-enemy sections
+
+This is a meaningful upgrade, but it still needs a dedicated polish pass for:
+
+- camera comfort
+- section pacing
+- spawn spacing
+- mobile readability during wave play
+
 ### Bundle Size
 
 Vite warns that the JS chunk is larger than 500 kB. This is not currently a blocker.
 
 ## Next Sensible Tasks
 
-1. Verify mobile start-of-battle input responsiveness on touch devices.
-2. Do a focused combat feel pass for movement and enemy pressure.
-3. Do a short balancing pass for mana costs, regen, and ultimate impact.
-4. Polish Test mode UX if needed.
-5. Consider a true asset normalization pass for existing character sheets.
-6. Later: implement `Wave Stage System` from `19_WAVE_STAGE_SYSTEM_PLAN.md`.
+1. Verify the new Wave mode camera and section pacing.
+2. Verify mobile start-of-battle input responsiveness on touch devices.
+3. Do a short wave/combat balancing pass for pressure, spacing, and feel.
+4. Re-check menu and character-select readability on real devices.
+5. Do a short balancing pass for mana costs, regen, and ultimate impact.
+6. Later: expand Wave mode only after the first staged version feels stable.
 
 ## Do Not Do Next
 
@@ -361,7 +388,7 @@ Avoid these until combat and assets are more stable:
 Most recent pushed commit at time of writing:
 
 ```text
-7e28d39 Stabilize barbarian animation scaling
+3113b1a Build first staged wave mode flow
 ```
 
 Before starting new work, always run:
@@ -376,7 +403,7 @@ npm.cmd run build
 1. `docs/22_HANDOFF_FOR_NEW_CHAT.md`
 2. `docs/16_CURRENT_ROADMAP.md`
 3. `docs/17_OPEN_TASKS.md`
-4. `docs/20_MANA_ULTIMATE_IMPLEMENTATION_PLAN.md`
+4. `docs/19_WAVE_STAGE_SYSTEM_PLAN.md`
 5. `docs/21_CHARACTER_ASSET_STANDARD.md`
 
 Then inspect the relevant code path before editing.

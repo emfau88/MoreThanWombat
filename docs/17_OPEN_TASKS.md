@@ -27,29 +27,31 @@ Acceptance:
 - No delayed first input caused by menu touch carry-over
 - Behavior is consistent across repeated battle starts
 
-## P1 - UI and Flow
+## P1 - Wave Mode Verification And Polish
 
-### TASK-CUR-003 - Finish Character Select Layout Pass
+### TASK-CUR-003 - Validate New Wave Camera Feel
 
 Goal:
-Finalize the current character select so it reads cleanly on desktop and mobile.
+Make sure the new Wave-only camera follow improves the mode instead of making combat harder to read.
 
 Acceptance:
 
-- Player and enemy sides are obvious
-- Fighter previews are readable
-- Arrows are easy to press
-- Layout does not feel cluttered
+- Camera follow feels stable
+- Camera does not overreact during close combat
+- Desktop and mobile remain readable
+- Duel and Test still feel unchanged
 
-### TASK-CUR-004 - Review Main Menu Readability
+### TASK-CUR-004 - Tune Wave Section Pacing
 
 Goal:
-Make sure menu buttons remain readable over the current background art.
+Make `junkyard_run` feel intentional section-by-section.
 
 Acceptance:
 
-- Buttons remain readable on desktop and mobile
-- Background supports the menu instead of fighting it
+- Section 1 is not awkwardly empty or cramped
+- Section 2 and 3 multi-enemy pressure stays fair
+- Section intro and clear timing feel clean
+- Bounds do not make specials or movement feel artificially broken
 
 ## P2 - Controls and Feel
 
@@ -115,9 +117,32 @@ Acceptance:
 - Behavior remains simple and stable
 - No major AI rewrite required
 
-## P4 - Combat and Presentation Polish
+## P4 - UI Verification And Presentation Polish
 
-### TASK-CUR-009 - Audio Integration Pass
+### TASK-CUR-009 - Verify Character Select On Real Devices
+
+Goal:
+Confirm the current character select is actually finished enough on desktop and mobile.
+
+Acceptance:
+
+- Cards are readable
+- Arrows are clean and touch-friendly
+- Arena strip reads clearly
+- No layout break on smaller screens
+
+### TASK-CUR-010 - Verify Main Menu Presentation
+
+Goal:
+Confirm the new button-asset-based main menu holds up across screens.
+
+Acceptance:
+
+- Buttons remain readable on desktop and mobile
+- Background title remains visible
+- Menu spacing feels intentional
+
+### TASK-CUR-011 - Audio Integration Pass
 
 Goal:
 Use the available sound assets to improve hit and movement feedback.
@@ -127,19 +152,9 @@ Acceptance:
 - Core hit feedback has at least basic SFX
 - Sounds do not overwhelm readability
 
-### TASK-CUR-010 - Map Variety Pass
-
-Goal:
-Add one or more additional usable arena backgrounds once current systems are stable.
-
-Acceptance:
-
-- New map supports combat readability
-- Menu or duel flow can surface the map choice cleanly if enabled
-
 ## P5 - Documentation
 
-### TASK-CUR-011 - Keep Current Roadmap Updated
+### TASK-CUR-012 - Keep Current Roadmap Updated
 
 Goal:
 Avoid divergence between the codebase and the docs again.

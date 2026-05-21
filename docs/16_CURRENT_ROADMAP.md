@@ -1,6 +1,6 @@
 # 16 - Current Roadmap
 
-This file reflects the actual project state after the initial sandbox, roster, and menu work.
+This file reflects the actual project state after the initial sandbox, roster, menu, combat-feel, and first wave-stage work.
 
 The original roadmap in `05_ROADMAP.md` remains useful as the foundation plan.
 This document is the current execution roadmap based on what is already built.
@@ -12,17 +12,21 @@ Implemented and usable today:
 - Phaser + TypeScript + Vite project setup
 - Boot, preload, main menu, character select, battle scene
 - Duel mode
-- Wave mode
+- Waves mode
+- Test mode
+- Arena select
 - Arena background and mobile-friendly scaling
 - Keyboard controls
-- Touch joystick, attack, special, jump
+- Touch joystick, attack, special, jump, ultimate, menu
 - Wombat player character
 - Angry Pigeon enemy
 - Discount Wizard playable character
 - Budget Barbarian playable character
 - Buster Bulldog playable character
+- Reference Fighter diagnostic character
 - Basic attacks
 - Specials
+- Mana and ultimates
 - Hitboxes, hurtboxes, pushboxes, debug rendering
 - Damage, hitstun, knockback
 - Hitstop, hit flash, screen shake
@@ -30,7 +34,16 @@ Implemented and usable today:
 - One minimal air attack (`air_bonk`)
 - Projectile system for Discount Wizard
 - Debug toggle in battle UI
+- Character select presentation pass
+- Main menu button presentation pass
 - GitHub Pages deployment setup
+- First staged Wave mode flow:
+  - `junkyard_run`
+  - 3 horizontal sections
+  - section intro/clear flow
+  - multi-enemy section support
+  - section-specific combat bounds
+  - wave-only camera follow and wider world rendering
 
 ## Phase A - Stabilization
 
@@ -42,7 +55,7 @@ Focus:
 - Verify GitHub Pages build and asset loading end-to-end
 - Verify start-of-battle input responsiveness on touch
 - Verify fullscreen behavior on mobile browsers
-- Clean up character select layout and readability
+- Verify current menu and character-select visuals on real devices
 - Remove remaining awkward UI or control friction before adding more content
 
 Exit criteria:
@@ -50,7 +63,7 @@ Exit criteria:
 - GitHub Pages version matches local build visually
 - No missing asset paths on hosted build
 - Mobile controls respond immediately and predictably
-- Character select is readable and touch-friendly
+- Menus and character select are readable and touch-friendly
 - No known stuck-state or startup-input confusion
 
 ## Phase B - Combat Feel and Control Pass
@@ -61,7 +74,7 @@ Improve movement readability and combat pacing without expanding the system too 
 Focus:
 
 - Evaluate smoother movement feel for player controls
-- Review whether acceleration, deceleration, or input filtering would improve readability
+- Keep current movement buffs readable on both desktop and touch
 - Tune enemy pacing if they feel too aggressive or too close too quickly
 - Preserve responsiveness while reducing chaotic contact pressure
 - Keep touch controls simple and readable
@@ -69,6 +82,7 @@ Focus:
 Specific review items already identified:
 
 - Investigate slightly smoother player control if it improves feel without adding lag
+- Re-check jump height, air-bonk reliability, and melee spacing after the recent feel pass
 - Consider making enemy approach behavior a little slower if combat currently feels too sticky
 - Verify that movement feels good on both keyboard and touch, not only one input method
 
@@ -78,7 +92,33 @@ Exit criteria:
 - Enemy pressure remains fair and readable
 - No input stickiness introduced by control changes
 
-## Phase C - Enemy Pacing and Wizard Identity Pass
+## Phase C - Wave Mode Polish Pass
+
+Goal:
+Make the first staged Wave mode feel intentionally playable instead of merely technically working.
+
+Focus:
+
+- Verify `junkyard_run` section pacing
+- Verify camera follow comfort on desktop and mobile
+- Tune spawn spacing, section pressure, and transition timing
+- Ensure section bounds do not feel artificially cramped
+- Confirm Duel/Test remain stable after wave-specific changes
+
+Specific observations already raised:
+
+- Wave mode was recently upgraded from fixed-arena waves to staged section flow
+- Camera and bounds now behave differently in Waves than in Duel/Test
+- This needs a focused playtest pass before adding more content
+
+Exit criteria:
+
+- Wave mode feels like its own mode, not Duel with respawns
+- Camera does not fight readability
+- Section progression feels clear and stable
+- No Wave-only regressions in battle flow
+
+## Phase D - Enemy Pacing and Wizard Identity Pass
 
 Goal:
 Make the enemy roster and especially Discount Wizard read more clearly as distinct fighters.
@@ -90,47 +130,23 @@ Focus:
 - Make humor beats such as miscasts visible in real fights instead of disappearing into melee pressure
 - Review AI decision timing, desired spacing, and attack range thresholds
 
-Specific observations already raised:
-
-- Some enemies may be slightly too fast or too eager to collapse distance
-- Discount Wizard often ends up in melee too quickly
-- Miscast comedy and projectile identity are underrepresented during actual play
-
 Exit criteria:
 
 - Wizard more often demonstrates ranged behavior
 - Miscast moments are visible often enough to matter
 - Enemy pressure remains fun, not passive
 
-## Phase D - Content Presentation Pass
+## Phase E - Content Presentation and Light Content Pass
 
 Goal:
-Make the existing content read better before expanding the roster much further.
-
-Focus:
-
-- Finish the character select presentation
-- Improve menu polish where needed
-- Verify all fighter previews and labels are readable on mobile
-- Review map presentation and variation
-
-Exit criteria:
-
-- Character select feels intentional and understandable
-- Menus do not fight the player
-- Existing content feels presentable enough for wider testing
-
-## Phase E - Content Expansion
-
-Goal:
-Add more game content only after the current sandbox feels stable and readable.
+Make the current content feel presentable, then add only narrow, low-risk content.
 
 Potential scope:
 
-- Additional arena backgrounds
-- Additional fighter characters
-- Additional enemy behaviors within the existing combat model
-- Better wave progression structure
+- Real-device UI review for menu and character select
+- One more small wave-stage polish pass
+- Additional arena/background only if readability stays high
+- One narrow fighter/content addition only after wave/combat confidence improves
 
 Guardrails:
 
@@ -138,6 +154,7 @@ Guardrails:
 - No meta progression
 - No giant system rewrite
 - No full LF2 air-combat expansion unless deliberately planned later
+- No broad content burst before wave/combat stability is proven
 
 ## Phase F - Documentation and Production Hygiene
 
@@ -150,8 +167,8 @@ Focus:
 - Log balancing decisions that materially affect game feel
 - Track deployment assumptions for GitHub Pages
 - Track known control and mobile issues explicitly
+- Keep the wave-stage docs synchronized with the real implementation state
 
 Exit criteria:
 
 - Documentation matches the shipped prototype closely enough for handoff or pause-and-return work
-

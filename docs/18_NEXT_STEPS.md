@@ -2,48 +2,53 @@
 
 This file captures the current recommended execution order for the next short development block.
 
-## Block 1 - Arena Variety
+## Block 1 - Wave Mode Polish
 
 Goal:
-Add exactly one more usable arena and make arena choice part of the existing character-select flow.
+Make the first staged Wave mode feel solid before adding more content again.
 
 Reason:
 
-- Low risk compared to deeper combat changes
-- Immediate content gain
-- Good way to validate menu and battle-flow flexibility
+- The wave-stage architecture is now in place
+- It needs feel validation before expansion
+- This is the highest-risk recent change set
 
 Current direction:
 
-- Keep the existing park arena
-- Add one second arena with a different visual identity
-- Keep combat rules and collision unchanged
+- Verify camera follow comfort
+- Tune section pacing and multi-enemy spacing
+- Keep Duel/Test unchanged while improving Waves only
 
-## Block 2 - Character Feel Consistency
+## Block 2 - Combat Feel Verification
 
 Goal:
-Make sure the current roster feels equally intentional before adding another fighter.
+Re-check the recent combat-feel pass under real play conditions.
 
 Focus:
 
 - Verify jump and air-bonk coverage across the roster
-- Check idle stability and presentation consistency
+- Check that current movement and range changes still feel good
 - Continue tuning mobile HUD readability and control feel
 
-## Block 3 - New Mobile Hybrid Fighter
+## Block 3 - UI And Device QA
 
 Goal:
-Add one new fighter only after arena variety and current roster consistency are in a good state.
+Verify that the improved menu and character select are truly done.
 
-Target profile:
+Focus:
 
-- More mobile than the current bruisers
-- Has a readable ranged tool
-- Still has a simple, reliable melee attack
-- No new combat subsystem required
+- Main menu readability
+- Character select readability
+- Touch comfort on real devices
+
+## Block 4 - New Content Only After Stability
+
+Goal:
+Add narrow new content only after Waves, combat feel, and UI verification are stable.
 
 Guardrails:
 
 - No teleport as a first pass unless clearly justified
 - No major AI rewrite
 - No complex combo system expansion
+- No broad roster/content burst before the current prototype feels stable

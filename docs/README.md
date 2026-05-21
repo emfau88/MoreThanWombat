@@ -19,7 +19,7 @@ These files describe the current built prototype and near-term work:
 - `16_CURRENT_ROADMAP.md` - actual execution roadmap based on what is already built
 - `17_OPEN_TASKS.md` - practical current task list
 - `18_NEXT_STEPS.md` - recommended short development block order
-- `19_WAVE_STAGE_SYSTEM_PLAN.md` - future side-scrolling wave-stage plan
+- `19_WAVE_STAGE_SYSTEM_PLAN.md` - wave-stage plan plus implementation status notes
 - `20_MANA_ULTIMATE_IMPLEMENTATION_PLAN.md` - mana and ultimate rollout notes
 - `21_CHARACTER_ASSET_STANDARD.md` - character animation and asset quality rules
 - `22_HANDOFF_FOR_NEW_CHAT.md` - compact current handoff; read this first
