@@ -120,7 +120,7 @@ export class CombatGymController {
     const dummyAnimation = dummy?.getAnimationDebugInfo();
     const playerMove = player.getCurrentAttack();
     const dummyMove = dummy?.getCurrentAttack();
-    const playerLine = `P ${player.state}/${player.getAttackPhase()} ${playerMove?.id ?? '-'} ${Math.round(player.getAttackElapsedMs())}ms rem ${Math.round(player.getAttackPhaseRemainingMs())} | ${playerAnimation.animationKey} f${playerAnimation.frameIndex}`;
+    const playerLine = `P ${player.state}/${player.getAttackPhase()} ${playerMove?.id ?? '-'} ${Math.round(player.getAttackElapsedMs())}ms rem ${Math.round(player.getAttackPhaseRemainingMs())} | hit ${player.getActiveHitboxProfileId()} hurt ${player.getHurtboxProfileId()} | ${playerAnimation.animationKey} f${playerAnimation.frameIndex}`;
     const dummyLine = dummy
       ? `D ${dummy.state}/${dummy.getAttackPhase()} ${dummyMove?.id ?? '-'} | ${dummyAnimation?.animationKey ?? 'none'} f${dummyAnimation?.frameIndex ?? 0}`
       : 'D none';
@@ -139,12 +139,16 @@ export class CombatGymController {
           state: player.state,
           attackId: playerMove?.id ?? null,
           phase: player.getAttackPhase(),
+          hitboxProfile: player.getActiveHitboxProfileId(),
+          hurtboxProfile: player.getHurtboxProfileId(),
         },
         dummy: dummy ? {
           health: dummy.hp,
           state: dummy.state,
           attackId: dummyMove?.id ?? null,
           response: dummy.getCombatResponse(),
+          hitboxProfile: dummy.getActiveHitboxProfileId(),
+          hurtboxProfile: dummy.getHurtboxProfileId(),
         } : null,
         hitstopMs: feedback.getHitstopRemainingMs(),
       });

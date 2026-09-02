@@ -10,10 +10,12 @@ This document is the current execution roadmap based on what is already built.
 - BULK 0 Combat Gym is complete.
 - BULK 0.5 architecture safety work is complete: move timeline, contact resolution, input buffer, feedback, presentation FX, animation registration, mobile hit testing, and core tests are separated.
 - BULK 1 is complete: deterministic normalization, whole-sheet QA, enlarged loop previews, and visual review are integrated.
+- BULK 2 is complete: timeline-bound attack profiles, state-based hurtbox/pushbox profiles, explicit lane/height ranges, factions, real overlap contacts, pairwise crowd pushboxes, and Combat Gym profile telemetry are integrated.
 - Five Body sheets, ten Idle/Walk groups, and all expected production cells pass hard asset gates.
 - Discount Wizard v2 was rebuilt from a canonical master and approved in Character Select and Combat Gym at 0.25×; body and spell VFX remain separate.
 - Pigeon palette variation and Wombat/Barbarian pose-height warnings were reviewed and accepted as intentional animation changes.
-- The active system block is BULK 2: data-driven hitbox/hurtbox/pushbox profiles on the shared move timeline.
+- Wombat Jab and Belly Slam are the authored Early/Main/Late references; Air Bonk and Axe Rain use explicit data profiles, while unchanged moves retain a safe `main` fallback.
+- The active system block is BULK 3: finish move-specific Hit Confirm and impact orchestration on the already separated timeline/resolver/feedback foundation.
 - New roster, stage, and meta content remains frozen until the polished combat slice proves these layers.
 
 ## Current State Summary
@@ -38,7 +40,7 @@ Implemented and usable today:
 - Basic attacks
 - Specials
 - Mana and ultimates
-- Hitboxes, hurtboxes, pushboxes, debug rendering
+- Timeline-bound hitbox profiles, state-based hurtboxes/pushboxes, factions, contact markers, and debug rendering
 - Damage, hitstun, knockback
 - Hitstop, hit flash, screen shake
 - Jump foundation with fake-z
@@ -49,7 +51,7 @@ Implemented and usable today:
 - Main menu button presentation pass
 - GitHub Pages deployment setup
 - Deterministic character-sheet normalization and hard asset QA
-- Typecheck plus 17 automated combat/input/debug tests
+- Typecheck plus 23 automated combat/input/debug/box-profile tests
 - First staged Wave mode flow:
   - `junkyard_run`
   - 3 horizontal sections

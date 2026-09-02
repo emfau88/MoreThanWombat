@@ -21,6 +21,9 @@ There is currently no `lint` script. State that explicitly if lint coverage is r
 - Pause, fire a move, and advance with single-frame steps.
 - Verify startup, active, recovery, animation frame, and hitstop telemetry.
 - Toggle boxes and verify hurtbox, pushbox, and active hitbox are distinguishable.
+- Frame-step authored moves across exact Early/Main/Late boundaries and verify the telemetry/profile geometry changes together.
+- Verify airborne fighters use the airborne hurtbox and no grounded pushbox.
+- Verify the contact marker appears at the actual hitbox/hurtbox overlap, not at the generic defender center.
 - Verify a guarding dummy takes no damage.
 - Verify an invulnerable dummy takes no damage.
 - Verify an idle dummy takes damage exactly once per attack instance.
@@ -66,6 +69,8 @@ There is currently no `lint` script. State that explicitly if lint coverage is r
 - Attack while enemy is below player.
 - Verify hit only lands when hitbox overlaps hurtbox.
 - Verify enemy does not take repeated accidental damage from one swing.
+- Verify same-faction fighters/projectiles do not deal friendly-fire damage.
+- In Waves, verify enemies separate via pushboxes instead of stacking indefinitely.
 - Verify dead enemy no longer attacks.
 
 ## Enemy AI Test

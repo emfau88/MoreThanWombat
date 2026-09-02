@@ -12,7 +12,7 @@ export class PushboxSystem {
     const boxA = fighterA.getPushbox();
     const boxB = fighterB.getPushbox();
 
-    if (!intersectsRect(boxA, boxB)) {
+    if (!boxA || !boxB || !intersectsRect(boxA, boxB)) {
       return;
     }
 

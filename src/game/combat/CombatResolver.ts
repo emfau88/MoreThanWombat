@@ -1,10 +1,17 @@
 import type { AttackDefinition } from '../data/attacks';
-import { intersectsRect, type Rect } from '../utils/Rect';
+import { getRectOverlapCenter, type Rect } from '../utils/Rect';
 import type { FighterFacing } from './Fighter';
 
 export type CombatResponse = 'normal' | 'guard' | 'invulnerable';
 export type CombatOutcome = 'miss' | 'hit' | 'blocked' | 'invulnerable';
-export type CombatMissReason = 'no-hitbox' | 'dead' | 'no-overlap' | 'projectile' | 'already-hit';
+export type CombatMissReason =
+  | 'no-hitbox'
+  | 'dead'
+  | 'no-overlap'
+  | 'lane-range'
+  | 'height-range'
+  | 'projectile'
+  | 'already-hit';
 
 export type CombatResolutionInput = {
   attack: AttackDefinition | null;
@@ -17,6 +24,10 @@ export type CombatResolutionInput = {
   attackerY: number;
   defenderX: number;
   defenderY: number;
+  attackerZ?: number;
+  defenderZ?: number;
+  laneTolerance?: number;
+  heightTolerance?: number;
   attackerFacing: FighterFacing;
 };
 
@@ -56,14 +67,18 @@ export function resolveCombatContact(input: CombatResolutionInput): CombatResolu
     return { outcome: 'miss', damage: 0, reason: 'already-hit' };
   }
 
-  if (!intersectsRect(activeHitbox, defenderHurtbox)) {
-    return { outcome: 'miss', damage: 0, reason: 'no-overlap' };
+  if (Math.abs(input.defenderY - input.attackerY) > (input.laneTolerance ?? Number.POSITIVE_INFINITY)) {
+    return { outcome: 'miss', damage: 0, reason: 'lane-range' };
   }
 
-  const overlapLeft = Math.max(activeHitbox.x, defenderHurtbox.x);
-  const overlapRight = Math.min(activeHitbox.x + activeHitbox.width, defenderHurtbox.x + defenderHurtbox.width);
-  const overlapTop = Math.max(activeHitbox.y, defenderHurtbox.y);
-  const overlapBottom = Math.min(activeHitbox.y + activeHitbox.height, defenderHurtbox.y + defenderHurtbox.height);
+  if (Math.abs((input.defenderZ ?? 0) - (input.attackerZ ?? 0)) > (input.heightTolerance ?? Number.POSITIVE_INFINITY)) {
+    return { outcome: 'miss', damage: 0, reason: 'height-range' };
+  }
+
+  const contact = getRectOverlapCenter(activeHitbox, defenderHurtbox);
+  if (!contact) {
+    return { outcome: 'miss', damage: 0, reason: 'no-overlap' };
+  }
   const isRadialKnockback = attack.knockbackMode === 'radial';
   const sourceFacing = isRadialKnockback
     ? input.defenderX >= input.attackerX
@@ -82,8 +97,8 @@ export function resolveCombatContact(input: CombatResolutionInput): CombatResolu
     outcome,
     damage: outcome === 'hit' ? attack.damage : 0,
     attackId: attack.id,
-    contactX: (overlapLeft + overlapRight) * 0.5,
-    contactY: (overlapTop + overlapBottom) * 0.5,
+    contactX: contact.x,
+    contactY: contact.y,
     sourceFacing,
     verticalKnockbackDirection,
     launchVelocityZ: attack.launchVelocityZ,

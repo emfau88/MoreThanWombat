@@ -10,13 +10,16 @@ BULK 0 and the architecture safety pass BULK 0.5 from `23_ARCADE_QUALITY_COMBAT_
 - Pause, frame step, slow motion, box overlays, telemetry, guard, invulnerability, and attack-loop dummy modes exist.
 - Move timeline, input buffering, contact resolution, hit feedback, presentation FX, animation registration, and mobile hit testing were separated into focused modules.
 - Melee, projectile, and Axe Rain contacts share hit/blocked/invulnerable outcomes.
-- `npm.cmd run typecheck`, `npm.cmd test`, and `npm.cmd run build` are required checks; 17 tests currently pass.
+- `npm.cmd run typecheck`, `npm.cmd test`, and `npm.cmd run build` are required checks; 23 tests currently pass.
 - The touch `MENU` control has priority over joystick capture and has been verified in a mobile landscape viewport.
 - BULK 1 is complete: deterministic normalization, loop previews, whole-sheet gates, and visual review pass for all five production Body sheets.
 - Discount Wizard v2 was rebuilt from a canonical master; all 20 cells pass, and Wand Smack plus Miscast were approved in the Combat Gym at 0.25×.
 - Runtime Idle offsets and Barbarian scale-pop repairs were removed in favor of generated normalized sheets.
 - Read `24_BULK_1_CHARACTER_ASSET_IMPLEMENTATION.md` and `docs/qa/character-assets-latest.md` before changing character art.
-- The active priority is BULK 2 hitbox/hurtbox/pushbox data work. No additional architecture rewrite is required before it; extend the separated timeline/resolver systems incrementally.
+- BULK 2 is complete: timeline-bound Early/Main/Late hitboxes, state-based hurtbox/pushbox profiles, explicit lane/height limits, factions, real overlap contacts, pairwise crowd pushboxes, and profile telemetry are integrated.
+- Wombat Jab/Belly Slam are the authored reference profiles; Air Bonk/Axe Rain are explicit, and unchanged moves safely use their previous box as a `main` fallback.
+- Read `25_BULK_2_BOX_PROFILE_IMPLEMENTATION.md` before changing collision or contact geometry.
+- The active priority is BULK 3 Hit Confirm and impact orchestration. No additional architecture rewrite is required; build on the existing timeline/resolver/feedback modules.
 
 ## Purpose
 
@@ -35,7 +38,7 @@ The current build is a playable prototype with:
 - Arena select
 - Duel mode
 - Waves mode
-- Test mode with a passive training dummy
+- Combat Gym with deterministic fighter/move/dummy/range/lane/mana presets
 - Mobile touch controls
 - Desktop debug controls
 - Multiple playable fighters
@@ -59,6 +62,8 @@ Useful commands:
 
 ```powershell
 npm.cmd run build
+npm.cmd run typecheck
+npm.cmd test
 npm.cmd run dev -- --host 127.0.0.1 --port 4173
 git status --short
 ```
@@ -95,16 +100,17 @@ Current implementation:
 
 This is the first staged implementation, not the final polished version. See `19_WAVE_STAGE_SYSTEM_PLAN.md`.
 
-### Test
+### Combat Gym / Test
 
-Solo practice mode with a passive training dummy.
+Deterministic solo practice and frame-analysis mode.
 
 Important current behavior:
 
-- Player has full mana in Test mode.
-- Training dummy does not attack.
-- Training dummy uses normal HP so damage impact is visible.
-- Dummy regenerates after a short delay.
+- Fighter, move, dummy, range, lane gap, mana, and dummy behavior are selectable.
+- Dummy modes include idle, guard, invulnerable, and attack-loop.
+- Pause, 60-Hz frame step, 1×/0.5×/0.25×, box overlays, reset, and telemetry are available.
+- Telemetry includes attack phase, move time, animation frame, hitstop, hitbox profile, and hurtbox profile.
+- Training dummy uses normal HP so damage impact is visible and regenerates after a short delay.
 - Mobile has a small `MENU` button to leave battle/test.
 
 ## Current Fighters
@@ -220,6 +226,9 @@ Core combat:
 
 ```text
 src/game/combat/Fighter.ts
+src/game/combat/BoxProfiles.ts
+src/game/combat/CombatFaction.ts
+src/game/combat/CombatResolver.ts
 src/game/combat/HitboxSystem.ts
 src/game/combat/ProjectileSystem.ts
 src/game/combat/PushboxSystem.ts
@@ -311,18 +320,14 @@ public/assets/fx/**/*_chroma.png
 
 ### Sprite Normalization
 
-Some generated character sheets have inconsistent frame sizes. Barbarian already needed runtime correction and a custom walk frame sequence.
-
-Risk:
-
-- Future generated characters may need the same audit.
+All five productive Body sheets currently pass deterministic whole-sheet, root, baseline, palette, and clipping gates. Future or edited sheets can regress and must use the same pipeline.
 
 Recommended process:
 
-1. Measure alpha bounds per frame.
-2. Preview idle/walk/attack in Test mode.
-3. Fix via asset normalization where possible.
-4. Use runtime frame corrections only as a pragmatic local patch.
+1. Run `npm.cmd run assets:refresh`.
+2. Review enlarged mirrored/non-mirrored loops.
+3. Preview changed attacks at 0.25× in the Combat Gym.
+4. Fix the source/master or deterministic pipeline instead of adding runtime offsets.
 
 ### Ultimate System
 
@@ -379,12 +384,12 @@ Vite warns that the JS chunk is larger than 500 kB. This is not currently a bloc
 
 ## Next Sensible Tasks
 
-1. Verify the new Wave mode camera and section pacing.
-2. Verify mobile start-of-battle input responsiveness on touch devices.
-3. Do a short wave/combat balancing pass for pressure, spacing, and feel.
-4. Re-check menu and character-select readability on real devices.
-5. Do a short balancing pass for mana costs, regen, and ultimate impact.
-6. Later: expand Wave mode only after the first staged version feels stable.
+1. Complete BULK 3 move-specific Hit Confirm and impact orchestration.
+2. Build the first restrained contact-VFX/SFX slice on the resolved overlap point.
+3. Verify mobile start-of-battle input and combat readability on real devices.
+4. Verify the new Wave camera, enemy separation, and section pacing.
+5. Re-check menu and character-select readability on real devices.
+6. Expand content only after the combat slice passes these gates.
 
 ## Do Not Do Next
 
@@ -401,11 +406,7 @@ Avoid these until combat and assets are more stable:
 
 ## Current Git State At Handoff
 
-Most recent pushed commit at time of writing:
-
-```text
-3113b1a Build first staged wave mode flow
-```
+The latest completed local milestones are BULK 1 and BULK 2. Use `git log -3 --oneline` for authoritative hashes instead of copying a potentially stale hash from this document.
 
 Before starting new work, always run:
 

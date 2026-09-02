@@ -124,4 +124,4 @@ Die v2-PNG-Quellen sind ein kontrollierter, deutlich besserer Stand, aber noch k
 
 ## Übergang zu BULK 2
 
-BULK 1 ist geschlossen. Aktiver nächster Block ist das datengetriebene Hitbox-/Hurtbox-/Pushbox-System. Die neue Art-Pipeline bleibt dabei ein Gate: Boxprofile werden gegen die normalisierten Runtime-Sheets und im Combat Gym bei 0,25× authored und abgenommen.
+BULK 1 ist geschlossen. Das anschließende datengetriebene Hitbox-/Hurtbox-/Pushbox-System wurde als BULK 2 ebenfalls abgeschlossen; Umsetzung und Abnahme stehen in `25_BULK_2_BOX_PROFILE_IMPLEMENTATION.md`. Die Art-Pipeline bleibt dabei ein Gate: weitere move-spezifische Boxprofile werden gegen die normalisierten Runtime-Sheets und im Combat Gym bei 0,25× authored und abgenommen.

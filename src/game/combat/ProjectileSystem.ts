@@ -1,11 +1,13 @@
 import Phaser from 'phaser';
 import type { Fighter, FighterBounds, FighterFacing } from './Fighter';
 import type { ProjectileDefinition } from '../data/projectiles';
-import { intersectsRect, type Rect } from '../utils/Rect';
+import { getRectOverlapCenter, type Rect } from '../utils/Rect';
 import type { CombatOutcome } from './CombatResolver';
+import { canCombatFactionHit, type CombatFaction } from './CombatFaction';
 
 type ActiveProjectile = {
   ownerInstanceId: number;
+  ownerFaction: CombatFaction;
   facing: FighterFacing;
   definition: ProjectileDefinition;
   sprite: Phaser.GameObjects.Sprite;
@@ -36,9 +38,9 @@ export class ProjectileSystem {
   spawn(owner: Fighter, definition: ProjectileDefinition): void {
     const direction = owner.facing === 'right' ? 1 : -1;
     const x = owner.x + definition.spawnOffsetX * direction;
-    const y = owner.y + definition.spawnOffsetY;
+    const y = owner.y;
     const sprite = this.scene.add
-      .sprite(x, y, definition.textureKey)
+      .sprite(x, y + definition.spawnOffsetY, definition.textureKey)
       .setOrigin(0.5)
       .setScale(definition.scale)
       .setFlipX(owner.facing === 'left')
@@ -48,6 +50,7 @@ export class ProjectileSystem {
 
     this.projectiles.push({
       ownerInstanceId: owner.instanceId,
+      ownerFaction: owner.faction,
       facing: owner.facing,
       definition,
       sprite,
@@ -69,11 +72,16 @@ export class ProjectileSystem {
       this.updateProjectileVelocity(projectile, targets, deltaSeconds);
       projectile.x += projectile.velocityX * deltaSeconds;
       projectile.y += projectile.velocityY * deltaSeconds;
-      projectile.sprite.setPosition(projectile.x, projectile.y);
+      projectile.sprite.setPosition(projectile.x, projectile.y + projectile.definition.spawnOffsetY);
 
       const hitbox = this.getHitbox(projectile);
+      let targetContact: { x: number; y: number } | null = null;
       const target = targets.find((candidate) => {
-        if (candidate.instanceId === projectile.ownerInstanceId || candidate.state === 'dead') {
+        if (
+          candidate.instanceId === projectile.ownerInstanceId
+          || !canCombatFactionHit(projectile.ownerFaction, candidate.faction)
+          || candidate.state === 'dead'
+        ) {
           return false;
         }
 
@@ -81,11 +89,21 @@ export class ProjectileSystem {
           return false;
         }
 
+        if (Math.abs(candidate.y - projectile.y) > projectile.definition.laneTolerance) {
+          return false;
+        }
+
+        if (Math.abs(candidate.z) > projectile.definition.heightTolerance) {
+          return false;
+        }
+
         const hurtbox = candidate.getHurtbox();
-        return hurtbox ? intersectsRect(hitbox, hurtbox) : false;
+        targetContact = hurtbox ? getRectOverlapCenter(hitbox, hurtbox) : null;
+        return targetContact !== null;
       });
 
       if (target) {
+        const contact = targetContact ?? { x: projectile.x, y: projectile.y + projectile.definition.spawnOffsetY };
         projectile.hitTargetInstanceIds.add(target.instanceId);
         const response = target.getCombatResponse();
         const outcome: CombatOutcome = response === 'guard'
@@ -108,10 +126,11 @@ export class ProjectileSystem {
           outcome,
           impactAnimationKey: projectile.definition.impactAnimationKey,
           damage: outcome === 'hit' ? projectile.definition.damage : 0,
-          x: projectile.x,
-          y: projectile.y,
+          x: contact.x,
+          y: contact.y,
           target,
         });
+        target.showDebugContact(contact.x, contact.y);
         this.removeAt(index);
         continue;
       }
@@ -136,7 +155,7 @@ export class ProjectileSystem {
     const { definition } = projectile;
     return {
       x: projectile.x + definition.hitbox.offsetX,
-      y: projectile.y + definition.hitbox.offsetY,
+      y: projectile.y + definition.spawnOffsetY + definition.hitbox.offsetY,
       width: definition.hitbox.width,
       height: definition.hitbox.height,
     };
@@ -156,7 +175,7 @@ export class ProjectileSystem {
     }
 
     const currentVelocity = new Phaser.Math.Vector2(projectile.velocityX, projectile.velocityY);
-    const desiredVelocity = new Phaser.Math.Vector2(target.x - projectile.x, target.y - 44 - projectile.y)
+    const desiredVelocity = new Phaser.Math.Vector2(target.x - projectile.x, target.y - projectile.y)
       .normalize()
       .scale(definition.speed);
     currentVelocity.lerp(desiredVelocity, Phaser.Math.Clamp(definition.homingStrength * deltaSeconds, 0, 1));
@@ -176,7 +195,11 @@ export class ProjectileSystem {
     let closestDistanceSq = Number.POSITIVE_INFINITY;
 
     for (const candidate of targets) {
-      if (candidate.instanceId === projectile.ownerInstanceId || candidate.state === 'dead') {
+      if (
+        candidate.instanceId === projectile.ownerInstanceId
+        || !canCombatFactionHit(projectile.ownerFaction, candidate.faction)
+        || candidate.state === 'dead'
+      ) {
         continue;
       }
 
@@ -184,7 +207,7 @@ export class ProjectileSystem {
         continue;
       }
 
-      const distanceSq = Phaser.Math.Distance.Squared(projectile.x, projectile.y, candidate.x, candidate.y - 44);
+      const distanceSq = Phaser.Math.Distance.Squared(projectile.x, projectile.y, candidate.x, candidate.y);
 
       if (distanceSq < closestDistanceSq) {
         closestDistanceSq = distanceSq;

@@ -9,10 +9,11 @@ The project has moved beyond the original combat sandbox MVP. Use the docs in th
 1. `22_HANDOFF_FOR_NEW_CHAT.md`
 2. `23_ARCADE_QUALITY_COMBAT_VFX_PLAN.md`
 3. `24_BULK_1_CHARACTER_ASSET_IMPLEMENTATION.md`
-4. `16_CURRENT_ROADMAP.md`
-5. `17_OPEN_TASKS.md`
-6. `21_CHARACTER_ASSET_STANDARD.md`
-7. Relevant implementation spec from `07` to `13` only when touching that system
+4. `25_BULK_2_BOX_PROFILE_IMPLEMENTATION.md`
+5. `16_CURRENT_ROADMAP.md`
+6. `17_OPEN_TASKS.md`
+7. `21_CHARACTER_ASSET_STANDARD.md`
+8. Relevant implementation spec from `07` to `13` only when touching that system
 
 ## Current Truth
 
@@ -27,6 +28,7 @@ These files describe the current built prototype and near-term work:
 - `22_HANDOFF_FOR_NEW_CHAT.md` - compact current handoff; read this first
 - `23_ARCADE_QUALITY_COMBAT_VFX_PLAN.md` - full prioritized audit and production plan for arcade quality, combat feel, hitboxes, character sheets, VFX, audio, mobile UX, and the vertical slice
 - `24_BULK_1_CHARACTER_ASSET_IMPLEMENTATION.md` - completed deterministic sheet pipeline, Discount Wizard v2 rebuild, whole-sheet QA, visual decisions, and the required asset workflow
+- `25_BULK_2_BOX_PROFILE_IMPLEMENTATION.md` - completed data-driven hitbox/hurtbox/pushbox profiles, faction rules, overlap contacts, authored Wombat reference moves, and Combat Gym QA
 
 ## Foundation Docs
 

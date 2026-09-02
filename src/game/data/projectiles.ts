@@ -13,6 +13,8 @@ export type ProjectileDefinition = {
   spawnOffsetX: number;
   spawnOffsetY: number;
   scale: number;
+  laneTolerance: number;
+  heightTolerance: number;
   homingStrength?: number;
   hitbox: {
     offsetX: number;
@@ -37,6 +39,8 @@ export const discountFireballProjectile: ProjectileDefinition = {
   spawnOffsetX: 54,
   spawnOffsetY: -50,
   scale: 0.92,
+  laneTolerance: 38,
+  heightTolerance: 92,
   hitbox: {
     offsetX: -17,
     offsetY: -12,
@@ -60,6 +64,8 @@ export const discountUltimateOrbProjectile: ProjectileDefinition = {
   spawnOffsetX: 72,
   spawnOffsetY: -54,
   scale: 1.18,
+  laneTolerance: 64,
+  heightTolerance: 180,
   homingStrength: 2.4,
   hitbox: {
     offsetX: -27,

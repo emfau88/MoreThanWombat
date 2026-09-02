@@ -1,5 +1,50 @@
 import type { FighterDefinition } from '../combat/Fighter';
+import type { FighterBoxProfiles, LocalBox } from '../combat/BoxProfiles';
 import type { FighterId } from '../core/BattleModes';
+
+function createHurtboxProfiles(base: LocalBox): FighterBoxProfiles {
+  return {
+    standing: base,
+    moving: {
+      offsetX: base.offsetX + 2,
+      offsetY: base.offsetY + 1,
+      width: base.width - 4,
+      height: base.height - 1,
+    },
+    attacking: base,
+    airborne: {
+      offsetX: base.offsetX + 3,
+      offsetY: base.offsetY + 5,
+      width: base.width - 6,
+      height: base.height - 8,
+    },
+    hit: {
+      offsetX: base.offsetX - 2,
+      offsetY: base.offsetY + 3,
+      width: base.width + 4,
+      height: base.height - 3,
+    },
+    knockdown: null,
+  };
+}
+
+function createPushboxProfiles(base: LocalBox): FighterBoxProfiles {
+  return {
+    standing: base,
+    moving: base,
+    attacking: base,
+    airborne: null,
+    hit: base,
+    knockdown: null,
+  };
+}
+
+function createFighterBoxProfiles(hurtbox: LocalBox, pushbox: LocalBox): Pick<FighterDefinition, 'hurtboxProfiles' | 'pushboxProfiles'> {
+  return {
+    hurtboxProfiles: createHurtboxProfiles(hurtbox),
+    pushboxProfiles: createPushboxProfiles(pushbox),
+  };
+}
 
 export const wombatDefinition: FighterDefinition = {
   id: 'wombat',
@@ -24,6 +69,10 @@ export const wombatDefinition: FighterDefinition = {
     width: 32,
     height: 20,
   },
+  ...createFighterBoxProfiles(
+    { offsetX: -20, offsetY: -60, width: 40, height: 56 },
+    { offsetX: -16, offsetY: -22, width: 32, height: 20 },
+  ),
   attacks: {
     basic: 'wombat_jab',
     special: 'wombat_belly_slam',
@@ -70,6 +119,10 @@ export const angryPigeonDefinition: FighterDefinition = {
     width: 30,
     height: 18,
   },
+  ...createFighterBoxProfiles(
+    { offsetX: -18, offsetY: -54, width: 36, height: 50 },
+    { offsetX: -15, offsetY: -20, width: 30, height: 18 },
+  ),
   attacks: {
     basic: 'pigeon_peck',
   },
@@ -110,6 +163,10 @@ export const discountWizardDefinition: FighterDefinition = {
     width: 28,
     height: 20,
   },
+  ...createFighterBoxProfiles(
+    { offsetX: -17, offsetY: -62, width: 34, height: 58 },
+    { offsetX: -14, offsetY: -22, width: 28, height: 20 },
+  ),
   attacks: {
     basic: 'discount_wand_smack',
     special: 'discount_fireball_cast',
@@ -158,6 +215,10 @@ export const budgetBarbarianDefinition: FighterDefinition = {
     width: 36,
     height: 20,
   },
+  ...createFighterBoxProfiles(
+    { offsetX: -22, offsetY: -62, width: 44, height: 58 },
+    { offsetX: -18, offsetY: -22, width: 36, height: 20 },
+  ),
   attacks: {
     basic: 'budget_cracked_axe_swing',
     special: 'budget_tiny_rage',
@@ -207,6 +268,10 @@ export const busterBulldogDefinition: FighterDefinition = {
     width: 40,
     height: 18,
   },
+  ...createFighterBoxProfiles(
+    { offsetX: -26, offsetY: -52, width: 52, height: 48 },
+    { offsetX: -20, offsetY: -20, width: 40, height: 18 },
+  ),
   attacks: {
     basic: 'buster_underbite_jab',
     special: 'buster_bulldog_bash',
@@ -256,6 +321,10 @@ export const referenceFighterDefinition: FighterDefinition = {
     width: 26,
     height: 18,
   },
+  ...createFighterBoxProfiles(
+    { offsetX: -16, offsetY: -58, width: 32, height: 54 },
+    { offsetX: -13, offsetY: -20, width: 26, height: 18 },
+  ),
   attacks: {
     basic: 'buster_underbite_jab',
     special: 'buster_bulldog_bash',

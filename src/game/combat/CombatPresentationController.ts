@@ -6,7 +6,8 @@ import type { Fighter, FighterBounds } from './Fighter';
 import type { HitResolution } from './HitboxSystem';
 import type { CombatImpact } from './HitFeedback';
 import { MoveStartCueController } from './MoveStartCueController';
-import { intersectsRect, type Rect } from '../utils/Rect';
+import { getRectOverlapCenter, type Rect } from '../utils/Rect';
+import { canCombatFactionHit } from './CombatFaction';
 
 type AxeRainStrike = {
   owner: Fighter;
@@ -191,7 +192,7 @@ export class CombatPresentationController {
       const x = Phaser.Math.Clamp(fighter.x + offsets[index] * direction, bounds.minX + 24, bounds.maxX - 24);
       const y = Phaser.Math.Clamp(fighter.y + (index - 1) * 10, bounds.minY + 12, bounds.maxY - 12);
       const warning = this.scene.add
-        .ellipse(x, y - 8, 88, 34, 0xff3f1f, 0.16)
+        .ellipse(x, y - 8, 96, 36, 0xff3f1f, 0.16)
         .setStrokeStyle(2, 0xffd166, 0.72)
         .setDepth(y + 6);
 
@@ -258,25 +259,41 @@ export class CombatPresentationController {
   }
 
   private resolveAxeRainStrike(strike: AxeRainStrike): CombatImpact[] {
+    const attack = attacksById.budget_axe_rain;
+    const areaHit = attack.areaHit;
+    if (!areaHit) {
+      return [];
+    }
     const hitbox: Rect = {
-      x: strike.x - 48,
-      y: strike.y - 82,
-      width: 96,
-      height: 96,
+      x: strike.x + areaHit.hitbox.offsetX,
+      y: strike.y + areaHit.hitbox.offsetY,
+      width: areaHit.hitbox.width,
+      height: areaHit.hitbox.height,
     };
     const impacts: CombatImpact[] = [];
 
     for (const target of this.context.getCurrentTargets()) {
-      if (target.instanceId === strike.owner.instanceId || target.state === 'dead' || strike.hitTargetInstanceIds.has(target.instanceId)) {
+      if (
+        target.instanceId === strike.owner.instanceId
+        || !canCombatFactionHit(strike.owner.faction, target.faction)
+        || target.state === 'dead'
+        || strike.hitTargetInstanceIds.has(target.instanceId)
+      ) {
+        continue;
+      }
+
+      if (Math.abs(target.y - strike.y) > areaHit.laneTolerance || Math.abs(target.z) > areaHit.heightTolerance) {
         continue;
       }
 
       const hurtbox = target.getHurtbox();
-      if (!hurtbox || !intersectsRect(hitbox, hurtbox)) {
+      const contact = hurtbox ? getRectOverlapCenter(hitbox, hurtbox) : null;
+      if (!contact) {
         continue;
       }
 
       strike.hitTargetInstanceIds.add(target.instanceId);
+      target.showDebugContact(contact.x, contact.y);
       const response = target.getCombatResponse();
       const outcome = response === 'guard'
         ? 'blocked'
@@ -286,19 +303,19 @@ export class CombatPresentationController {
 
       if (outcome === 'hit') {
         target.receiveHit({
-          damage: 13,
-          hitstunMs: 300,
-          knockbackX: 135,
-          knockbackY: 58,
+          damage: areaHit.damage,
+          hitstunMs: areaHit.hitstunMs,
+          knockbackX: areaHit.knockbackX,
+          knockbackY: areaHit.knockbackY,
           sourceFacing: strike.owner.facing,
         });
       }
 
       impacts.push({
-        damage: outcome === 'hit' ? 13 : 0,
+        damage: outcome === 'hit' ? areaHit.damage : 0,
         attackId: 'budget_axe_rain',
         outcome,
-        timeline: attacksById.budget_axe_rain.timeline,
+        timeline: attack.timeline,
       });
     }
 

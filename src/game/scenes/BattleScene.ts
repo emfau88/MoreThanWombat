@@ -212,7 +212,7 @@ export class BattleScene extends Phaser.Scene {
       this.combatPresentation.destroy();
       this.combatGym?.destroy();
     });
-    this.player = new Fighter(this, fighterDefinitions[this.playerFighterId], this.getPlayerSpawnPoint());
+    this.player = new Fighter(this, fighterDefinitions[this.playerFighterId], this.getPlayerSpawnPoint(), 'player');
     this.enemy = null;
     if (this.mode === 'waves') {
       this.waveEnemies = this.createWaveEnemiesForCurrentSection();
@@ -381,7 +381,13 @@ export class BattleScene extends Phaser.Scene {
 
     for (const enemy of this.getCurrentEnemies()) {
       this.spawnAttackProjectiles(enemy);
-      this.pushboxSystem.resolve(this.player, enemy, this.arenaBounds);
+    }
+
+    const pushboxActors = [this.player, ...this.getCurrentEnemies()];
+    for (let actorIndex = 0; actorIndex < pushboxActors.length; actorIndex += 1) {
+      for (let otherIndex = actorIndex + 1; otherIndex < pushboxActors.length; otherIndex += 1) {
+        this.pushboxSystem.resolve(pushboxActors[actorIndex], pushboxActors[otherIndex], this.arenaBounds);
+      }
     }
 
     const impacts: CombatImpact[] = [];
@@ -601,13 +607,13 @@ export class BattleScene extends Phaser.Scene {
       const dummy = new Fighter(this, trainingDummyDefinition, {
         x: Phaser.Math.Clamp(playerSpawn.x + range, this.arenaBounds.minX, this.arenaBounds.maxX),
         y: Phaser.Math.Clamp(playerSpawn.y + laneGap, this.arenaBounds.minY, this.arenaBounds.maxY),
-      });
+      }, 'enemy');
       dummy.facing = 'left';
       return dummy;
     }
 
     if (this.mode === 'duel') {
-      const enemy = new Fighter(this, fighterDefinitions[this.enemyFighterId], { x: 650, y: 330 });
+      const enemy = new Fighter(this, fighterDefinitions[this.enemyFighterId], { x: 650, y: 330 }, 'enemy');
       enemy.facing = 'left';
       return enemy;
     }
@@ -826,7 +832,7 @@ export class BattleScene extends Phaser.Scene {
         maxHp: spawn.hpOverride ?? fighterDefinitions[spawn.fighterId].maxHp,
         moveSpeed: spawn.moveSpeedOverride ?? fighterDefinitions[spawn.fighterId].moveSpeed,
       };
-      const enemy = new Fighter(this, waveDefinition, runtimeSpawn);
+      const enemy = new Fighter(this, waveDefinition, runtimeSpawn, 'enemy');
       enemy.facing = 'left';
       this.waveEnemyControllers.set(enemy.instanceId, new EnemyController());
       return enemy;

@@ -8,7 +8,7 @@
 
 ---
 
-## Umsetzungsstatus — 2026-09-01
+## Umsetzungsstatus — 2026-09-02
 
 ### BULK 0 und BULK 0,5: abgeschlossen
 
@@ -24,7 +24,7 @@
 - Der Touch-Menü-Hit-Test hat Vorrang vor dem großen Joystick-Capture und wird als Einmalimpuls konsumiert.
 - `BattleScene.ts` wurde von über 1.200 auf rund 1.020 Zeilen reduziert; weitere Trennung bleibt später sinnvoll, ist aber kein Sofort-Blocker mehr.
 - Reproduzierbare Befehle sind vorhanden: `npm run typecheck`, `npm test`, `npm run build`.
-- Derzeit bestehen **17 automatisierte Tests** für Timeline, Combat Resolution, Feedback, Input Buffer, Clock, Combat-Gym-Modell und Mobile-Hit-Test.
+- Derzeit bestehen **23 automatisierte Tests** für Timeline, Combat Resolution, Feedback, Input Buffer, Clock, Combat-Gym-Modell, Mobile-Hit-Test und Boxprofile.
 - Browser-Abnahme bestanden: Preset-Wechsel, Guard, Invulnerability, Frame Step, Boxen und Touch-Menü im mobilen Landscape-Viewport.
 
 ### Bekannte Restpunkte nach BULK 0/0,5
@@ -32,8 +32,8 @@
 - Knockdown-Testdummy und Frame-Time-Protokollierung gehören in den späteren State-/Performance-Ausbau.
 - Der Produktionsbuild enthält weiterhin einen Chunk über 500 kB; Lazy Loading bleibt BULK 8.
 - `npm audit` meldet drei High-Warnungen in Build-Abhängigkeiten; ein erzwungener Major-Upgrade-Fix wurde bewusst nicht ungeprüft ausgeführt.
-- `Fighter` enthält weiterhin Visual-, State- und Box-Verantwortung. Diese zweite Trennstufe soll datengetrieben mit BULK 2/3 wachsen, nicht als riskanter Big-Bang-Umbau.
-- **Aktiver nächster Schritt:** BULK 2 datengetrieben umsetzen; die Architektur ist durch BULK 0,5 ausreichend abgesichert, sodass kein weiterer Big-Bang-Umbau vorgeschaltet werden muss.
+- `Fighter` enthält weiterhin Visual- und State-Verantwortung, aber seine Boxauswahl ist jetzt datengetrieben. Eine weitere Trennung darf gezielt mit realem Bedarf wachsen, nicht als riskanter Big-Bang-Umbau.
+- **Aktiver nächster Schritt:** BULK 3 auf der bestehenden Timeline-/Resolver-/Feedback-Grundlage vervollständigen; kein weiterer Architektur-Neubau muss vorgeschaltet werden.
 
 ### BULK 1: abgeschlossen und visuell abgenommen
 
@@ -48,6 +48,18 @@
 - Wombat-/Barbarian-Gang-Bobbing und die Pigeon-Palettenwarnung wurden visuell als beabsichtigte Pose-/Flächenänderungen freigegeben.
 - Wand Smack und Miscast wurden im Combat Gym bei 0,25× geprüft; der Miscast ist dafür jetzt direkt anwählbar.
 - Der vollständige Workflow und die Review-Entscheidungen stehen in `24_BULK_1_CHARACTER_ASSET_IMPLEMENTATION.md` und `docs/qa/character-assets-latest.md`.
+
+### BULK 2: abgeschlossen und im Combat Gym abgenommen
+
+- Hitboxprofile unterstützen lückenlose Early-/Main-/Late-Fenster und mehrere Boxen pro Fenster.
+- Wombat Jab und Belly Slam sind die framegenauen Authoring-Referenzen; Air Bonk und Axe Rain besitzen explizite Profile.
+- Alle produktiven Fighter besitzen zustandsabhängige Hurtbox-/Pushboxprofile für Standing, Moving, Attacking, Airborne, Hit und Knockdown.
+- Lane- und Höhenreichweite sind pro authored Angriff explizit; der tatsächliche Box-Überlappungsmittelpunkt ist der gemeinsame Kontaktpunkt.
+- Combat-Factions verhindern Friendly Fire bei Nahkampf, Projektilen, Homing und Axe Rain.
+- Pushboxen werden über alle Fighter-Paare gelöst; Airborne/Knockdown blockieren den Bodenraum nicht.
+- Combat-Gym-Telemetrie zeigt Hitbox-/Hurtboxprofil und Kontaktmarker.
+- Jab, Belly Slam, Air Bonk und Wizard Fireball wurden bei 0,25× beziehungsweise per 60-Hz-Einzelschritt geprüft.
+- Details, bewusste Grenzen und Tests stehen in `25_BULK_2_BOX_PROFILE_IMPLEMENTATION.md`.
 
 ---
 
@@ -67,7 +79,7 @@ Die richtige Strategie lautet deshalb:
 
 > **Zuerst einen kleinen Combat-Gym- und Asset-QA-Prozess aufbauen, dann einen einzigen Kampf vollständig polieren. Erst danach neue Stages, Figuren oder Meta-Systeme produzieren.**
 
-**Status nach BULK 0/0,5/1:** Combat Gym, zentrale Timeline-/Resolver-/Feedback-Bausteine, Input Buffer sowie die Character-Asset-Pipeline sind umgesetzt. Charakter-Root, Clipping und Wizard-Farbidentität sind nicht mehr der aktive Hauptblock. Der größte aktuelle Qualitätshebel ist BULK 2: phasen- und zustandsabhängige Boxprofile mit präzisem Kontaktpunkt; danach folgen die vollständige Hit-Confirm-/VFX-/Audio-Abstimmung und defensive Combat States.
+**Status nach BULK 0/0,5/1/2:** Combat Gym, zentrale Timeline-/Resolver-/Feedback-Bausteine, Input Buffer, Character-Asset-Pipeline sowie phasen- und zustandsabhängige Boxprofile mit präzisem Kontaktpunkt sind umgesetzt. Charakter-Root, Clipping, Wizard-Farbidentität und Collision-Grundmodell sind nicht mehr die aktiven Hauptblöcke. Der größte aktuelle Qualitätshebel ist BULK 3: vollständige Hit-Confirm-/Impact-Abstimmung; danach folgen VFX-/Audio-Sprache und defensive Combat States.
 
 ---
 
@@ -127,16 +139,16 @@ Die Pixelmessung ist ein Diagnosewerkzeug, kein Ersatz für eine Animation Revie
 | Bereich | Aktueller Stand | Bewertung | Hauptlücke |
 |---|---|---:|---|
 | Identität und Art Direction | eigenes Wombat-/Underdog-Thema, starke Menüs und Hintergründe | stark | Figuren- und Effektqualität angleichen |
-| Technische Basis | Phaser 4.1, TypeScript, Vite; Build, Typecheck und 17 Tests erfolgreich | gut | weitere Modulentkopplung, Asset-Ladeplan |
+| Technische Basis | Phaser 4.1, TypeScript, Vite; Build, Typecheck und 23 Tests erfolgreich | gut | gezielte weitere Modulentkopplung, Asset-Ladeplan |
 | Kernkampf | Startup/Active/Recovery, Input Buffer, zentraler Resolver, Hitstop, Knockback, Hitstun, Air Attack | gut für Pre-Alpha | Knockdown, Defense, Cancel-/Chain-Regeln |
-| Collision | Hitbox, Hurtbox, Pushbox, einheitliche Outcomes und Debug-Anzeige vorhanden | gute Grundlage | phasen-/zustandsabhängige Boxprofile und echter Kontaktpunkt |
+| Collision | phasen-/zustandsabhängige Hit-/Hurt-/Pushboxprofile, Factions, explizite Lane-/Höhenreichweite und echter Kontaktpunkt | stark für Pre-Alpha | weitere Moves selektiv authored kalibrieren |
 | Charaktere | 5 eigene Figuren plus Reference Fighter; 5/5 Body-Sheets bestehen harte QA-Gates | gute produktive Grundlage | dedizierte Air-/State-Abdeckung und native Layer-Master |
 | Spezialangriffe/Ultimates | figurenspezifisch und visuell unterscheidbar | vielversprechend | genaue Kontakt-Synchronisierung und einheitlicher Feedback-Standard |
 | Projektile | vorhanden, inklusive Impact-FX | brauchbar | Team/Faction-Regeln, Kontaktpunkt, einheitliche Hitprofile |
 | Waves | drei kurze Waves vorhanden | technischer Beweis | Gegnerrollen, Koordination, Stage Beats, Boss |
 | Mobile Controls | großer Joystick und vier Aktionen vorhanden | spielbar | HUD-Flächen, Kontext, Portrait, Desktop-Ausblendung |
 | Audio | Assets teilweise vorhanden, aber kein fertiger Audio-Layer | kritisch offen | SFX, Musik, Mix, Haptik |
-| QA | Combat Gym, Debugboxen, Frame Step, 17 Kernsystemtests, Loop-Vorschauen und Whole-Sheet-Asset-Gates | gute Grundlage | Capture-Automation, Performance-Messung und CI-Gates |
+| QA | Combat Gym, Profiltelemetrie, Kontaktmarker, Frame Step, 23 Kernsystemtests, Loop-Vorschauen und Whole-Sheet-Asset-Gates | gute Grundlage | Capture-Automation, Performance-Messung und CI-Gates |
 | Produktionsreife | umfangreiche Dokumentation | gut | Provenienz/Lizenzen, Modulentkopplung, Performance-Budgets |
 
 ### Technische Größenordnung
@@ -146,7 +158,7 @@ Die Pixelmessung ist ein Diagnosewerkzeug, kein Ersatz für eine Animation Revie
 - `dist` insgesamt ungefähr **56 MB**
 - ungefähr **30 vorab geladene Assets** mit zusammen rund **13,9 MB**
 - `BattleScene.ts` liegt nach BULK 0,5 bei rund 1.020 Zeilen; `Fighter.ts` bleibt ein größerer nächster Trennungskandidat
-- Typecheck und 17 automatisierte Kernsystemtests sind vorhanden; ein Lint-Script und CI-Gates fehlen noch
+- Typecheck und 23 automatisierte Kernsystemtests sind vorhanden; ein Lint-Script und CI-Gates fehlen noch
 
 Diese Werte sind noch kein Release-Blocker. Sie zeigen aber, dass der nächste Ausbau ohne Systemtrennung, Lazy Loading und wiederholbare Tests teurer und riskanter wird.
 
@@ -277,7 +289,9 @@ Der aktuelle Hitstun-Tint kann mehrere hundert Millisekunden bestehen. Das ist l
 - richtungsabhängige Weltpositionen
 - Luftangriff und Projektile
 
-#### Aktuelle Grenzen
+#### Ursprüngliche Grenzen vor BULK 2
+
+Diese Baseline ist mit dem Abschluss von BULK 2 systemisch adressiert. Der umgesetzte Stand und die bewusste schrittweise Move-Kalibrierung stehen in `25_BULK_2_BOX_PROFILE_IMPLEMENTATION.md`.
 
 - jeder Nahkampfangriff verwendet im Active-Fenster im Wesentlichen **ein statisches Rechteck**
 - die Hurtbox einer Figur bleibt weitgehend gleich, unabhängig von Pose und Zustand
@@ -596,6 +610,7 @@ Die Reihenfolge ist absichtlich streng. Ein Block darf teilweise parallel vorber
 
 **Priorität:** P0
 **Ziel:** Treffer fühlen sich großzügig, aber niemals zufällig oder visuell getrennt an.
+**Umsetzungsstatus:** abgeschlossen am 2026-09-02; Referenz-Authoring und Abnahme siehe `25_BULK_2_BOX_PROFILE_IMPLEMENTATION.md`.
 
 #### Arbeitspakete
 
@@ -630,12 +645,17 @@ Die Reihenfolge ist absichtlich streng. Ein Block darf teilweise parallel vorber
 - Boxprofilwechsel treten exakt am geplanten Animationsframe auf
 - Gegner blockieren und stapeln sich nicht unlesbar ineinander
 
+#### Abschlussnotiz
+
+Die System- und Vertical-Slice-Abnahme ist erfüllt. Wombat Jab und Belly Slam bilden die Early-/Main-/Late-Referenz; Wombat Air Bonk, Budget Axe Rain, Projectiles und Fighter-State-Profile belegen die übrigen Pfade. Noch nicht einzeln kalibrierte Moves verwenden kompatibel ihre bisherige Box als `main`-Profil und werden nur bei visuellem Bedarf weiter authored.
+
 ---
 
 ### BULK 3 — Trefferkern: Input Buffer, Hit Confirm und Impact-Orchestrierung
 
 **Priorität:** P0/P1
 **Ziel:** Ein Treffer besitzt einen einzigen, deterministischen Kontaktmoment, an dem alle Feedbackschichten hängen.
+**Umsetzungsstatus:** aktiv; Input Buffer, zentraler Resolver, Feedback-Policy, Hitstop und Kontaktpunkt sind als Grundlage vorhanden. Offen ist vor allem die vollständige move-spezifische Orchestrierung aus Spark, kurzem Flash, Shake, SFX und optionaler Haptik.
 
 #### Empfohlenes Move-Timeline-Modell
 

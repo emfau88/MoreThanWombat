@@ -1,5 +1,6 @@
 import type { Fighter } from './Fighter';
 import { resolveCombatContact, type CombatOutcome } from './CombatResolver';
+import { canCombatFactionHit } from './CombatFaction';
 
 export type HitResolution = {
   didHit: boolean;
@@ -9,30 +10,63 @@ export type HitResolution = {
   outcome?: CombatOutcome;
   contactX?: number;
   contactY?: number;
+  hitboxProfileId?: string;
   attacker?: Fighter;
   defender?: Fighter;
 };
 
 export class HitboxSystem {
   resolveHit(attacker: Fighter, defender: Fighter): HitResolution {
-    const activeHitbox = attacker.getActiveHitbox();
+    if (!canCombatFactionHit(attacker.faction, defender.faction)) {
+      return { didHit: false, didConnect: false, damage: 0 };
+    }
+
+    const activeHitboxes = attacker.getActiveHitboxes();
     const hurtbox = defender.getHurtbox();
 
     const attack = attacker.getCurrentAttack();
     const defenderHitTargetId = String(defender.instanceId);
-    const resolution = resolveCombatContact({
+    let connectedProfileId: string | undefined;
+    let resolution = resolveCombatContact({
       attack,
-      activeHitbox,
+      activeHitbox: null,
       defenderHurtbox: hurtbox,
       defenderIsDead: defender.state === 'dead',
       defenderResponse: defender.getCombatResponse(),
       alreadyHit: attacker.hasHitTarget(defenderHitTargetId),
       attackerX: attacker.x,
       attackerY: attacker.y,
+      attackerZ: attacker.z,
       defenderX: defender.x,
       defenderY: defender.y,
+      defenderZ: defender.z,
       attackerFacing: attacker.facing,
     });
+
+    for (const activeHitbox of activeHitboxes) {
+      const candidate = resolveCombatContact({
+        attack,
+        activeHitbox: activeHitbox.rect,
+        defenderHurtbox: hurtbox,
+        defenderIsDead: defender.state === 'dead',
+        defenderResponse: defender.getCombatResponse(),
+        alreadyHit: attacker.hasHitTarget(defenderHitTargetId),
+        attackerX: attacker.x,
+        attackerY: attacker.y,
+        attackerZ: attacker.z,
+        defenderX: defender.x,
+        defenderY: defender.y,
+        defenderZ: defender.z,
+        laneTolerance: activeHitbox.laneTolerance,
+        heightTolerance: activeHitbox.heightTolerance,
+        attackerFacing: attacker.facing,
+      });
+      resolution = candidate;
+      if (candidate.outcome !== 'miss') {
+        connectedProfileId = activeHitbox.profileId;
+        break;
+      }
+    }
 
     if (resolution.outcome === 'miss') {
       return { didHit: false, didConnect: false, damage: 0 };
@@ -50,6 +84,7 @@ export class HitboxSystem {
     }
 
     attacker.registerHit(defenderHitTargetId);
+    attacker.showDebugContact(resolution.contactX, resolution.contactY);
     return {
       didHit: resolution.outcome === 'hit',
       didConnect: true,
@@ -58,6 +93,7 @@ export class HitboxSystem {
       outcome: resolution.outcome,
       contactX: resolution.contactX,
       contactY: resolution.contactY,
+      hitboxProfileId: connectedProfileId,
       attacker,
       defender,
     };

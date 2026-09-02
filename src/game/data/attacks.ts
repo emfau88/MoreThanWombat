@@ -1,4 +1,5 @@
 import type { MoveTimelineDefinition } from '../combat/MoveTimeline';
+import type { AttackHitboxProfile, LocalBox } from '../combat/BoxProfiles';
 
 export type AttackDefinition = {
   id: string;
@@ -10,11 +11,16 @@ export type AttackDefinition = {
   hitstunMs: number;
   knockbackX: number;
   knockbackY: number;
-  hitbox: {
-    offsetX: number;
-    offsetY: number;
-    width: number;
-    height: number;
+  hitbox: LocalBox;
+  hitboxProfile?: AttackHitboxProfile;
+  areaHit?: {
+    hitbox: LocalBox;
+    laneTolerance: number;
+    heightTolerance: number;
+    damage: number;
+    hitstunMs: number;
+    knockbackX: number;
+    knockbackY: number;
   };
   canMoveDuringAttack?: boolean;
   canTurnDuringAttack?: boolean;
@@ -41,6 +47,30 @@ export const wombatJab: AttackDefinition = {
     width: 42,
     height: 24,
   },
+  hitboxProfile: {
+    laneTolerance: 34,
+    heightTolerance: 72,
+    windows: [
+      {
+        id: 'early',
+        startMs: 0,
+        endMs: 24,
+        boxes: [{ offsetX: 24, offsetY: -50, width: 34, height: 22 }],
+      },
+      {
+        id: 'main',
+        startMs: 24,
+        endMs: 60,
+        boxes: [{ offsetX: 28, offsetY: -54, width: 46, height: 30 }],
+      },
+      {
+        id: 'late',
+        startMs: 60,
+        endMs: 80,
+        boxes: [{ offsetX: 32, offsetY: -50, width: 34, height: 24 }],
+      },
+    ],
+  },
   timeline: { feedbackClass: 'light' },
 };
 
@@ -59,6 +89,30 @@ export const wombatBellySlam: AttackDefinition = {
     offsetY: -56,
     width: 57,
     height: 38,
+  },
+  hitboxProfile: {
+    laneTolerance: 44,
+    heightTolerance: 82,
+    windows: [
+      {
+        id: 'early',
+        startMs: 0,
+        endMs: 35,
+        boxes: [{ offsetX: 18, offsetY: -52, width: 46, height: 34 }],
+      },
+      {
+        id: 'main',
+        startMs: 35,
+        endMs: 105,
+        boxes: [{ offsetX: 18, offsetY: -58, width: 68, height: 44 }],
+      },
+      {
+        id: 'late',
+        startMs: 105,
+        endMs: 140,
+        boxes: [{ offsetX: 10, offsetY: -54, width: 56, height: 38 }],
+      },
+    ],
   },
   manaCost: 25,
   timeline: { feedbackClass: 'heavy' },
@@ -247,6 +301,15 @@ export const budgetAxeRain: AttackDefinition = {
     width: 1,
     height: 1,
   },
+  areaHit: {
+    hitbox: { offsetX: -48, offsetY: -82, width: 96, height: 96 },
+    laneTolerance: 18,
+    heightTolerance: 130,
+    damage: 13,
+    hitstunMs: 300,
+    knockbackX: 135,
+    knockbackY: 58,
+  },
   manaCost: 100,
   timeline: { feedbackClass: 'ultimate', startCue: 'budget-axe-rain' },
 };
@@ -325,6 +388,18 @@ export const airBonk: AttackDefinition = {
     offsetY: -26,
     width: 62,
     height: 92,
+  },
+  hitboxProfile: {
+    laneTolerance: 46,
+    heightTolerance: 170,
+    windows: [
+      {
+        id: 'main',
+        startMs: 0,
+        endMs: 120,
+        boxes: [{ offsetX: 18, offsetY: -26, width: 62, height: 92 }],
+      },
+    ],
   },
   canTurnDuringAttack: false,
   timeline: { feedbackClass: 'light' },

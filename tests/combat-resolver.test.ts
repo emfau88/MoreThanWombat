@@ -55,6 +55,19 @@ test('combat resolution rejects non-overlap and duplicate targets', () => {
   });
 });
 
+test('combat resolution enforces authored lane and height tolerances', () => {
+  assert.deepEqual(resolve({ attackerY: 0, defenderY: 35, laneTolerance: 34 }), {
+    outcome: 'miss',
+    damage: 0,
+    reason: 'lane-range',
+  });
+  assert.deepEqual(resolve({ attackerZ: 0, defenderZ: 81, heightTolerance: 80 }), {
+    outcome: 'miss',
+    damage: 0,
+    reason: 'height-range',
+  });
+});
+
 test('guard and invulnerability connect without dealing damage', () => {
   const blocked = resolve({ defenderResponse: 'guard' });
   const invulnerable = resolve({ defenderResponse: 'invulnerable' });

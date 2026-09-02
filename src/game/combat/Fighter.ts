@@ -4,6 +4,15 @@ import type { AttackDefinition } from '../data/attacks';
 import { attacksById } from '../data/attacks';
 import type { Rect } from '../utils/Rect';
 import type { CombatResponse } from './CombatResolver';
+import type { CombatFaction } from './CombatFaction';
+import {
+  getAttackHitboxWindow,
+  getFighterBoxProfileId,
+  resolveFighterBox,
+  type FighterBoxProfileId,
+  type FighterBoxProfiles,
+  type LocalBox,
+} from './BoxProfiles';
 import {
   getAttackPhaseAtElapsed,
   getMoveTimelineSnapshot,
@@ -24,11 +33,12 @@ export type FighterState =
   | 'landing'
   | 'dead';
 export type AttackPhase = TimelineAttackPhase;
-type LocalBox = {
-  offsetX: number;
-  offsetY: number;
-  width: number;
-  height: number;
+
+export type ActiveWorldHitbox = {
+  profileId: string;
+  rect: Rect;
+  laneTolerance: number;
+  heightTolerance: number;
 };
 
 export type FighterDefinition = {
@@ -44,7 +54,9 @@ export type FighterDefinition = {
   width: number;
   height: number;
   hurtbox: LocalBox;
+  hurtboxProfiles?: FighterBoxProfiles;
   pushbox: LocalBox;
+  pushboxProfiles?: FighterBoxProfiles;
   attacks: {
     basic: string;
     special?: string;
@@ -77,6 +89,7 @@ export class Fighter {
   readonly instanceId: number;
   readonly id: string;
   readonly label: string;
+  readonly faction: CombatFaction;
   readonly maxHp: number;
   readonly maxMana: number;
   readonly manaRegenPerSecond: number;
@@ -92,6 +105,7 @@ export class Fighter {
   readonly hurtboxDebug: Phaser.GameObjects.Rectangle;
   readonly pushboxDebug: Phaser.GameObjects.Rectangle;
   readonly hitboxDebug: Phaser.GameObjects.Rectangle;
+  readonly contactDebug: Phaser.GameObjects.Ellipse;
   x: number;
   y: number;
   z = 0;
@@ -117,13 +131,21 @@ export class Fighter {
   private landingRemainingMs = 0;
   private hasUsedAirAttack = false;
   private combatResponse: CombatResponse = 'normal';
+  private readonly hitboxDebugRects: Phaser.GameObjects.Rectangle[];
+  private contactDebugRemainingMs = 0;
 
-  constructor(scene: Phaser.Scene, definition: FighterDefinition, spawn: { x: number; y: number }) {
+  constructor(
+    scene: Phaser.Scene,
+    definition: FighterDefinition,
+    spawn: { x: number; y: number },
+    faction: CombatFaction = 'neutral',
+  ) {
     this.definition = definition;
     this.instanceId = Fighter.nextInstanceId;
     Fighter.nextInstanceId += 1;
     this.id = definition.id;
     this.label = definition.label;
+    this.faction = faction;
     this.maxHp = definition.maxHp;
     this.maxMana = definition.maxMana;
     this.manaRegenPerSecond = definition.manaRegenPerSecond;
@@ -160,14 +182,18 @@ export class Fighter {
     this.hurtboxDebug.setStrokeStyle(2, 0x48bfe3).setFillStyle(0x48bfe3, 0.08);
     this.pushboxDebug = scene.add.rectangle(0, 0, definition.pushbox.width, definition.pushbox.height).setOrigin(0, 0);
     this.pushboxDebug.setStrokeStyle(2, 0xffb703).setFillStyle(0xffb703, 0.08);
-    this.hitboxDebug = scene.add.rectangle(0, 0, 1, 1).setOrigin(0, 0);
-    this.hitboxDebug.setStrokeStyle(2, 0xfb5607).setFillStyle(0xfb5607, 0.1).setVisible(false);
+    this.hitboxDebugRects = [this.createHitboxDebugRect(scene)];
+    this.hitboxDebug = this.hitboxDebugRects[0];
+    this.contactDebug = scene.add.ellipse(0, 0, 10, 10, 0xffffff, 0.32)
+      .setStrokeStyle(2, 0xff2e88)
+      .setVisible(false);
     this.visualContainer = scene.add.container(0, 0, [
       this.body,
       ...(this.sprite ? [this.sprite] : []),
       this.hurtboxDebug,
       this.pushboxDebug,
-      this.hitboxDebug,
+      ...this.hitboxDebugRects,
+      this.contactDebug,
       this.debugLabel,
     ]);
 
@@ -180,6 +206,7 @@ export class Fighter {
 
   update(deltaSeconds: number, moveX: number, moveY: number, bounds: FighterBounds): void {
     this.flashRemainingMs = Math.max(0, this.flashRemainingMs - deltaSeconds * 1000);
+    this.contactDebugRemainingMs = Math.max(0, this.contactDebugRemainingMs - deltaSeconds * 1000);
 
     if (this.state === 'dead') {
       this.z = 0;
@@ -347,23 +374,71 @@ export class Fighter {
   }
 
   getHurtbox(): Rect | null {
-    if (this.state === 'dead') {
+    const localBox = resolveFighterBox(
+      this.definition.hurtbox,
+      this.definition.hurtboxProfiles,
+      this.getHurtboxProfileId(),
+    );
+
+    if (!localBox) {
       return null;
     }
 
-    return this.getWorldRect(this.definition.hurtbox);
+    return this.getWorldRect(localBox);
   }
 
-  getPushbox(): Rect {
-    return this.getWorldRect(this.definition.pushbox);
+  getHurtboxProfileId(): FighterBoxProfileId {
+    return getFighterBoxProfileId(this.state, this.isGrounded);
+  }
+
+  getPushbox(): Rect | null {
+    const profileId = getFighterBoxProfileId(this.state, this.isGrounded);
+    const localBox = resolveFighterBox(this.definition.pushbox, this.definition.pushboxProfiles, profileId);
+    return localBox ? this.getWorldRect(localBox) : null;
+  }
+
+  getActiveHitboxes(): ActiveWorldHitbox[] {
+    if (!this.currentAttack || this.attackPhase !== 'active' || this.state === 'dead') {
+      return [];
+    }
+
+    const attack = this.currentAttack;
+    const profile = attack.hitboxProfile;
+    if (!profile) {
+      return [{
+        profileId: 'main',
+        rect: this.getWorldRect(attack.hitbox),
+        laneTolerance: 48,
+        heightTolerance: 96,
+      }];
+    }
+
+    const activeElapsedMs = this.attackElapsedMs - attack.startupMs;
+    const window = getAttackHitboxWindow(profile, activeElapsedMs);
+    if (!window) {
+      return [];
+    }
+
+    return window.boxes.map((box) => ({
+      profileId: window.id,
+      rect: this.getWorldRect(box),
+      laneTolerance: profile.laneTolerance,
+      heightTolerance: profile.heightTolerance,
+    }));
   }
 
   getActiveHitbox(): Rect | null {
-    if (!this.currentAttack || this.attackPhase !== 'active' || this.state === 'dead') {
-      return null;
-    }
+    return this.getActiveHitboxes()[0]?.rect ?? null;
+  }
 
-    return this.getWorldRect(this.currentAttack.hitbox);
+  getActiveHitboxProfileId(): string {
+    return this.getActiveHitboxes()[0]?.profileId ?? 'none';
+  }
+
+  showDebugContact(contactX: number, contactY: number): void {
+    this.contactDebugRemainingMs = 260;
+    this.contactDebug.setPosition(contactX - this.x, contactY - this.y + this.z);
+    this.contactDebug.setVisible(this.debugEnabled);
   }
 
   receiveHit(hit: {
@@ -412,7 +487,11 @@ export class Fighter {
     this.debugLabel.setVisible(enabled);
     this.hurtboxDebug.setVisible(enabled);
     this.pushboxDebug.setVisible(enabled);
-    this.hitboxDebug.setVisible(enabled && this.attackPhase === 'active' && this.currentAttack !== null);
+    for (const hitboxDebug of this.hitboxDebugRects) {
+      hitboxDebug.setVisible(false);
+    }
+    this.contactDebug.setVisible(enabled && this.contactDebugRemainingMs > 0);
+    this.syncDebugBoxes();
   }
 
   setStatusNote(statusNote: string): void {
@@ -569,7 +648,8 @@ export class Fighter {
     this.syncSpriteAnimation();
     this.syncDebugBoxes();
     const suffix = this.statusNote ? `\n${this.statusNote}` : '';
-    this.debugLabel.setText(`${this.label}\n${this.state} ${this.attackPhase}\nHP ${this.hp} MP ${Math.floor(this.mana)}${suffix}`);
+    const profileLine = `hurt ${this.getHurtboxProfileId()} | hit ${this.getActiveHitboxProfileId()}`;
+    this.debugLabel.setText(`${this.label}\n${this.state} ${this.attackPhase}\n${profileLine}\nHP ${this.hp} MP ${Math.floor(this.mana)}${suffix}`);
     applyDepthSort(this.container, this.y);
   }
 
@@ -596,22 +676,49 @@ export class Fighter {
   }
 
   private syncDebugBoxes(): void {
-    const hurtbox = this.getWorldRect(this.definition.hurtbox);
-    const pushbox = this.getWorldRect(this.definition.pushbox);
-    const activeHitbox = this.getActiveHitbox();
+    const hurtbox = this.getHurtbox();
+    const pushbox = this.getPushbox();
+    const activeHitboxes = this.getActiveHitboxes();
 
-    this.hurtboxDebug.setPosition(hurtbox.x - this.x, hurtbox.y - this.y + this.z);
-    this.pushboxDebug.setPosition(pushbox.x - this.x, pushbox.y - this.y + this.z);
-
-    if (activeHitbox) {
-      this.hitboxDebug.setPosition(activeHitbox.x - this.x, activeHitbox.y - this.y + this.z);
-      this.hitboxDebug.setSize(activeHitbox.width, activeHitbox.height);
+    while (this.hitboxDebugRects.length < activeHitboxes.length) {
+      const debugRect = this.createHitboxDebugRect(this.visualContainer.scene);
+      this.hitboxDebugRects.push(debugRect);
+      this.visualContainer.add(debugRect);
     }
 
-    this.hurtboxDebug.setVisible(this.debugEnabled);
-    this.pushboxDebug.setVisible(this.debugEnabled);
-    this.hitboxDebug.setVisible(this.debugEnabled && activeHitbox !== null);
+    if (hurtbox) {
+      this.hurtboxDebug
+        .setPosition(hurtbox.x - this.x, hurtbox.y - this.y + this.z)
+        .setSize(hurtbox.width, hurtbox.height);
+    }
+    if (pushbox) {
+      this.pushboxDebug
+        .setPosition(pushbox.x - this.x, pushbox.y - this.y + this.z)
+        .setSize(pushbox.width, pushbox.height);
+    }
+
+    for (const [index, hitboxDebug] of this.hitboxDebugRects.entries()) {
+      const activeHitbox = activeHitboxes[index]?.rect;
+      if (activeHitbox) {
+        hitboxDebug
+          .setPosition(activeHitbox.x - this.x, activeHitbox.y - this.y + this.z)
+          .setSize(activeHitbox.width, activeHitbox.height);
+      }
+      hitboxDebug.setVisible(this.debugEnabled && activeHitbox !== undefined);
+    }
+
+    this.hurtboxDebug.setVisible(this.debugEnabled && hurtbox !== null);
+    this.pushboxDebug.setVisible(this.debugEnabled && pushbox !== null);
+    this.contactDebug.setVisible(this.debugEnabled && this.contactDebugRemainingMs > 0);
     this.debugLabel.setVisible(this.debugEnabled);
+  }
+
+  private createHitboxDebugRect(scene: Phaser.Scene): Phaser.GameObjects.Rectangle {
+    return scene.add.rectangle(0, 0, 1, 1)
+      .setOrigin(0, 0)
+      .setStrokeStyle(2, 0xfb5607)
+      .setFillStyle(0xfb5607, 0.1)
+      .setVisible(false);
   }
 
   private getBodyColor(): number {

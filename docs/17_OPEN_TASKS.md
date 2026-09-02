@@ -4,20 +4,34 @@ This is the current practical task list based on the implemented build, not the 
 
 ## P0 - Current Arcade-Quality Work
 
-### TASK-AQ-002 - Implement BULK 2 Box Profiles
+### TASK-AQ-003 - Complete BULK 3 Hit Confirm And Impact Orchestration
 
 Goal:
-Move from one static attack rectangle toward timeline-bound Early/Main/Late profiles without re-coupling logic to `BattleScene`.
+Turn the existing timeline, resolver, feedback policy, input buffer, and overlap contact into one fully tuned move-specific impact path.
 
 Acceptance:
 
-- Box profile data schema exists
-- At least Wombat Jab and one heavy/special move use authored phase profiles
-- Standing, moving, airborne, hit, and future knockdown hurtbox requirements are documented
-- Combat Gym displays the active profile and contact point
-- Existing 17 tests stay green and new profile-boundary tests are added
+- Light, medium, heavy, and ultimate contacts have authored feedback profiles
+- Hitstop, flash, shake, spark, SFX hook, and optional haptics originate from the same resolved contact
+- Whiff, hit, block, and invulnerable feedback remain distinct
+- Long hitstun/air-attack body tint is replaced by short readable feedback
+- Combat Gym frame-step verifies timing and taps remain buffered through hitstop
+- Existing 23 tests stay green and feedback-boundary coverage is extended
 
 ## Completed Arcade-Quality Milestones
+
+### TASK-AQ-002 - Implement BULK 2 Box Profiles
+
+Completed 2026-09-02:
+
+- Attack profiles support exact Early/Main/Late windows and multiple boxes.
+- Wombat Jab and Belly Slam are authored references; Air Bonk and Axe Rain use explicit data profiles.
+- All fighter definitions expose standing, moving, attacking, airborne, hit, and knockdown box states.
+- Airborne/knockdown pushboxes no longer block the ground lane.
+- Melee, projectiles, and Axe Rain use the actual overlap center and explicit lane/height limits.
+- Player/enemy/neutral factions prevent friendly fire; Wave enemies resolve pushboxes pairwise.
+- Combat Gym shows active hitbox/hurtbox profiles and the contact marker.
+- Typecheck passes and 23/23 automated tests are green.
 
 ### TASK-AQ-001 - Close BULK 1 Art Review Warnings
 
