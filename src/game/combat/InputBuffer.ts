@@ -14,8 +14,8 @@ export class InputBuffer {
 
   constructor(private readonly windowMs = 120) {}
 
-  advance(deltaMs: number): void {
-    if (deltaMs <= 0) {
+  advance(deltaMs: number, isCombatFrozen = false): void {
+    if (deltaMs <= 0 || isCombatFrozen) {
       return;
     }
 

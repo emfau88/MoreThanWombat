@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { GAME_HEIGHT, GAME_WIDTH } from '../GameConfig';
 import { EnemyController, type EnemyIntent } from '../ai/EnemyController';
 import { CombatFeedbackController, type CombatImpact } from '../combat/CombatFeedbackController';
+import { CombatImpactOrchestrator } from '../combat/CombatImpactOrchestrator';
 import { CombatPresentationController } from '../combat/CombatPresentationController';
 import { Fighter, type FighterBounds } from '../combat/Fighter';
 import { HitboxSystem, type HitResolution } from '../combat/HitboxSystem';
@@ -65,6 +66,7 @@ export class BattleScene extends Phaser.Scene {
   private battleFlow!: BattleFlowController;
   private combatFeedback!: CombatFeedbackController;
   private combatPresentation!: CombatPresentationController;
+  private combatImpact!: CombatImpactOrchestrator;
   private readonly inputBuffer = new InputBuffer(150);
   private combatGym: CombatGymController | null = null;
   private combatGymSettings: CombatGymSettings | null = null;
@@ -132,7 +134,9 @@ export class BattleScene extends Phaser.Scene {
       getCurrentTargets: () => [this.player, ...this.getCurrentEnemies()],
       getTargetFor: (fighter) => fighter === this.player ? this.getPreferredEnemyTarget() : this.player,
       getVisibleCenterX: () => this.mode === 'waves' ? this.cameras.main.worldView.centerX : GAME_WIDTH / 2,
+      getShakeScale: () => this.combatFeedback.getAccessibilityScale(),
     });
+    this.combatImpact = new CombatImpactOrchestrator(this, this.combatFeedback, this.combatPresentation);
     registerCharacterAnimations(this);
     this.renderArena();
     this.instructionText = this.add.text(32, 28, 'WASD/Arrows move, J/Space jab, K/Shift special, U ultimate slot, L jump, H debug, R restart', {
@@ -268,8 +272,14 @@ export class BattleScene extends Phaser.Scene {
 
     const simulationDeltaMs = clockStep.deltaMs;
     const deltaSeconds = simulationDeltaMs / 1000;
-    this.inputBuffer.advance(simulationDeltaMs);
+    const wasHitstopActive = this.combatFeedback.isHitstopActive();
+    this.inputBuffer.advance(simulationDeltaMs, wasHitstopActive);
     this.combatFeedback.advance(simulationDeltaMs);
+    this.player.advancePresentation(simulationDeltaMs);
+    for (const enemy of this.getCurrentEnemies()) {
+      enemy.advancePresentation(simulationDeltaMs);
+    }
+    this.combatPresentation.advancePresentation(simulationDeltaMs);
 
     if (this.shouldAllowDuelVictoryFreeRoam()) {
       this.updateDuelVictoryFreeRoam(
@@ -299,7 +309,7 @@ export class BattleScene extends Phaser.Scene {
       return;
     }
 
-    if (this.combatFeedback.isHitstopActive()) {
+    if (wasHitstopActive) {
       this.renderFrozenFrame();
       return;
     }
@@ -395,36 +405,31 @@ export class BattleScene extends Phaser.Scene {
     for (const enemy of this.getCurrentEnemies()) {
       const playerHitAttempt = this.hitboxSystem.resolveHit(this.player, enemy);
       if (playerHitAttempt.didConnect) {
-        if (playerHitAttempt.didHit) {
-          this.combatPresentation.spawnHitImpact(playerHitAttempt);
-        }
         impacts.push(this.createCombatImpact(playerHitAttempt));
       }
 
       const enemyHitAttempt = this.hitboxSystem.resolveHit(enemy, this.player);
       if (enemyHitAttempt.didConnect) {
-        if (enemyHitAttempt.didHit) {
-          this.combatPresentation.spawnHitImpact(enemyHitAttempt);
-        }
         impacts.push(this.createCombatImpact(enemyHitAttempt));
       }
     }
 
     const projectileHits = this.projectileSystem.update(deltaSeconds, [this.player, ...this.getCurrentEnemies()], this.arenaBounds);
     for (const projectileHit of projectileHits) {
-      if (projectileHit.outcome === 'hit') {
-        this.combatPresentation.spawnProjectileImpact(projectileHit);
-      }
       impacts.push({
         damage: projectileHit.damage,
         attackId: projectileHit.sourceAttackId,
         outcome: projectileHit.outcome,
         timeline: attacksById[projectileHit.sourceAttackId]?.timeline,
+        contactX: projectileHit.x,
+        contactY: projectileHit.y,
+        attacker: projectileHit.attacker,
+        defender: projectileHit.target,
       });
     }
     impacts.push(...this.combatPresentation.update(simulationDeltaMs));
     this.updateTestDummyRegen(simulationDeltaMs);
-    this.combatFeedback.applyStrongestImpact(impacts);
+    this.combatImpact.apply(impacts);
     this.syncPrimaryEnemy();
     this.hud.update(this.player, this.getHudEnemy());
 
@@ -588,6 +593,10 @@ export class BattleScene extends Phaser.Scene {
       attackId: hit.attackId,
       outcome: hit.outcome,
       timeline: attack?.timeline,
+      contactX: hit.contactX,
+      contactY: hit.contactY,
+      attacker: hit.attacker,
+      defender: hit.defender,
     };
   }
 
@@ -631,7 +640,13 @@ export class BattleScene extends Phaser.Scene {
     this.player.setManaForDebug(this.player.maxMana * manaRatio);
     this.player.setCombatResponse('normal');
     this.enemy?.setCombatResponse(
-      dummyMode === 'guard' ? 'guard' : dummyMode === 'invulnerable' ? 'invulnerable' : 'normal',
+      dummyMode === 'guard'
+        ? 'guard'
+        : dummyMode === 'armor'
+          ? 'armor'
+          : dummyMode === 'invulnerable'
+            ? 'invulnerable'
+            : 'normal',
     );
   }
 
@@ -647,6 +662,7 @@ export class BattleScene extends Phaser.Scene {
       },
       onReset: () => this.restartBattle(),
       onToggleDebug: () => this.toggleDebug(),
+      onCycleShakeMode: () => this.combatFeedback.cycleShakeMode(),
     });
   }
 

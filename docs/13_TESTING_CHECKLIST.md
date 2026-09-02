@@ -25,7 +25,12 @@ There is currently no `lint` script. State that explicitly if lint coverage is r
 - Verify airborne fighters use the airborne hurtbox and no grounded pushbox.
 - Verify the contact marker appears at the actual hitbox/hurtbox overlap, not at the generic defender center.
 - Verify a guarding dummy takes no damage.
+- Verify an armored dummy takes damage without hitstun, knockback, or attack interruption.
 - Verify an invulnerable dummy takes no damage.
+- Verify Light, Heavy, Block, Armor, Invulnerable, and Magic report different impact profiles.
+- Verify a Whiff leaves impact telemetry at `none` and produces no contact spark/SFX.
+- Cycle Combat Gym shake through Full/Reduced/Off; contact and move-cue shake must obey it while sparks remain readable.
+- During hitstop, press a buffered action and verify its 150-ms lifetime does not age until combat resumes.
 - Verify an idle dummy takes damage exactly once per attack instance.
 - Test the `MENU` touch target in a landscape mobile viewport; it must win over joystick capture.
 

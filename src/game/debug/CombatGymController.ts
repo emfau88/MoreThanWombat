@@ -24,6 +24,7 @@ type CombatGymCallbacks = {
   onFireMove: () => void;
   onReset: () => void;
   onToggleDebug: () => void;
+  onCycleShakeMode: () => void;
 };
 
 export class CombatGymController {
@@ -33,6 +34,7 @@ export class CombatGymController {
   private readonly pauseButton: GymButton;
   private readonly speedButton: GymButton;
   private readonly debugButton: GymButton;
+  private readonly shakeButton: GymButton;
   private readonly playerButton: GymButton;
   private readonly moveButton: GymButton;
   private readonly dummyButton: GymButton;
@@ -47,6 +49,7 @@ export class CombatGymController {
     speed: Phaser.Input.Keyboard.Key;
     fire: Phaser.Input.Keyboard.Key;
     togglePanel: Phaser.Input.Keyboard.Key;
+    shake: Phaser.Input.Keyboard.Key;
   };
   private panelVisible = true;
 
@@ -66,7 +69,7 @@ export class CombatGymController {
       fontSize: '12px',
       fontStyle: 'bold',
     }).setOrigin(0, 0.5);
-    const hint = scene.add.text(-444, 64, 'P pause  O step  I speed  T fire  F2 panel', {
+    const hint = scene.add.text(-444, 64, 'P pause  O step  I speed  T fire  G shake  F2 panel', {
       color: '#91a7b8',
       fontFamily: 'Verdana, Geneva, sans-serif',
       fontSize: '10px',
@@ -79,6 +82,7 @@ export class CombatGymController {
     this.debugButton = this.createButton(62, -52, 112, this.callbacks.onToggleDebug);
     this.createButton(180, -52, 104, this.callbacks.onReset, 'Reset');
     this.createButton(292, -52, 104, () => this.setPanelVisible(false), 'Hide F2');
+    this.shakeButton = this.createButton(402, -52, 100, this.callbacks.onCycleShakeMode, 'Shake Full');
 
     this.playerButton = this.createButton(-342, -16, 178, () => this.cycleSetting('player'));
     this.moveButton = this.createButton(-112, -16, 270, () => this.cycleSetting('move'));
@@ -108,6 +112,7 @@ export class CombatGymController {
       speed: Phaser.Input.Keyboard.KeyCodes.I,
       fire: Phaser.Input.Keyboard.KeyCodes.T,
       togglePanel: Phaser.Input.Keyboard.KeyCodes.F2,
+      shake: Phaser.Input.Keyboard.KeyCodes.G,
     }) as CombatGymController['keys'];
     this.refreshLabels(false);
   }
@@ -125,7 +130,12 @@ export class CombatGymController {
       ? `D ${dummy.state}/${dummy.getAttackPhase()} ${dummyMove?.id ?? '-'} | ${dummyAnimation?.animationKey ?? 'none'} f${dummyAnimation?.frameIndex ?? 0}`
       : 'D none';
     const freeze = feedback.isHitstopActive() ? ` | hitstop ${Math.ceil(feedback.getHitstopRemainingMs())}ms` : '';
-    this.telemetryText.setText(`${playerLine}${freeze}\n${dummyLine}`);
+    const impact = feedback.getLastImpactDebugInfo();
+    const impactLine = impact
+      ? `impact ${impact.outcome}/${impact.feedbackClass} ${impact.sparkStyle} sfx ${impact.sound}`
+      : 'impact none';
+    this.shakeButton.label.setText(`Shake ${feedback.getShakeMode()}`);
+    this.telemetryText.setText(`${playerLine}${freeze}\n${dummyLine} | ${impactLine}`);
 
     if (import.meta.env.DEV) {
       document.documentElement.dataset.combatGym = JSON.stringify({
@@ -151,6 +161,8 @@ export class CombatGymController {
           hurtboxProfile: dummy.getHurtboxProfileId(),
         } : null,
         hitstopMs: feedback.getHitstopRemainingMs(),
+        shakeMode: feedback.getShakeMode(),
+        lastImpact: impact,
       });
     }
   }
@@ -181,6 +193,9 @@ export class CombatGymController {
     }
     if (Phaser.Input.Keyboard.JustDown(this.keys.togglePanel)) {
       this.setPanelVisible(!this.panelVisible);
+    }
+    if (Phaser.Input.Keyboard.JustDown(this.keys.shake)) {
+      this.callbacks.onCycleShakeMode();
     }
   }
 

@@ -81,12 +81,14 @@ export class HitboxSystem {
         sourceFacing: resolution.sourceFacing,
         launchVelocityZ: resolution.launchVelocityZ,
       });
+    } else if (resolution.outcome === 'armored') {
+      defender.receiveArmoredHit(resolution.damage);
     }
 
     attacker.registerHit(defenderHitTargetId);
     attacker.showDebugContact(resolution.contactX, resolution.contactY);
     return {
-      didHit: resolution.outcome === 'hit',
+      didHit: resolution.outcome === 'hit' || resolution.outcome === 'armored',
       didConnect: true,
       damage: resolution.damage,
       attackId: resolution.attackId,

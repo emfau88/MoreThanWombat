@@ -4,21 +4,34 @@ This is the current practical task list based on the implemented build, not the 
 
 ## P0 - Current Arcade-Quality Work
 
-### TASK-AQ-003 - Complete BULK 3 Hit Confirm And Impact Orchestration
+### TASK-AQ-004 - Build BULK 4 Unified VFX Language
 
 Goal:
-Turn the existing timeline, resolver, feedback policy, input buffer, and overlap contact into one fully tuned move-specific impact path.
+Replace the restrained code-native contact-spark reference with a coherent, reusable, mobile-budgeted VFX library on the completed `CombatImpact` event.
 
 Acceptance:
 
-- Light, medium, heavy, and ultimate contacts have authored feedback profiles
-- Hitstop, flash, shake, spark, SFX hook, and optional haptics originate from the same resolved contact
-- Whiff, hit, block, and invulnerable feedback remain distinct
-- Long hitstun/air-attack body tint is replaced by short readable feedback
-- Combat Gym frame-step verifies timing and taps remain buffered through hitstop
-- Existing 23 tests stay green and feedback-boundary coverage is extended
+- Light, medium, heavy, magic, block, armor, and invulnerable effects share one art language
+- Normal hits never hide defender pose/reaction for more than a few frames
+- Wombat Air Bonk body/ground effect separation and Earthshaker anticipation/impact/decay are reviewed
+- Warning and impact geometry stay aligned for Axe Rain
+- Object lifetime and overdraw remain safe for mobile crowd combat
+- Existing 31 tests and Combat Gym outcome presets remain green
 
 ## Completed Arcade-Quality Milestones
+
+### TASK-AQ-003 - Complete BULK 3 Hit Confirm And Impact Orchestration
+
+Completed 2026-09-02:
+
+- One `CombatImpact` path now owns short flash, spark, SFX, optional haptics, Hitstop, and camera shake.
+- Light/Medium/Heavy/Ultimate plus Block/Armor/Invulnerable profiles are explicit and testable.
+- Armor takes damage without hitstun or knockback; Whiffs never emit impact feedback.
+- Wizard contacts use a distinct magic profile; Earthshaker's former 24-ms exception is retuned to 105 ms.
+- Input buffers do not age during hitstop.
+- Full/Reduced/Off shake modes apply to contact and move-cue camera shake.
+- Eight CC0 Kenney impact sounds are integrated.
+- Typecheck/build pass and 31/31 automated tests are green.
 
 ### TASK-AQ-002 - Implement BULK 2 Box Profiles
 

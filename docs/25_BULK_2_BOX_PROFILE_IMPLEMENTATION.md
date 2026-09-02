@@ -102,8 +102,8 @@ Neue Regressionstests decken ab:
 - Ein eigener `knockdown`-Combat-State wird erst mit den defensiven States eingeführt; das Profil und das Nullbox-Verhalten sind bereits vorbereitet.
 - Nicht jeder bestehende Move benötigt drei Phasen. Weitere Profile werden nur dort authored, wo Animation oder Spielentscheidung dadurch klarer werden.
 - Die individuelle Air-Bonk-Kalibrierung für jede weitere Silhouette erfolgt bei der jeweiligen Move-/Animationsabnahme. Die technische Möglichkeit und die Wombat-Referenz sind vorhanden.
-- Die Kontaktmarkierung ist Diagnose. Produktions-Hit-Sparks, Audio, Haptik und vollständige Impact-Orchestrierung gehören zu BULK 3/4.
+- Die Kontaktmarkierung bleibt Diagnose. Der zentrale Spark-/Audio-/Haptik-/Impact-Pfad wurde anschließend in BULK 3 umgesetzt; die finale gezeichnete Effektbibliothek gehört zu BULK 4.
 
 ## Nächster aktiver Block
 
-BULK 3 schließt die bereits vorhandene Timeline-, Input-Buffer-, Resolver- und Feedback-Grundlage zu einem vollständigen, move-spezifischen Hit-Confirm-Paket: abgestufter Hitstop, kurzer Flash, gerichteter Shake, Kontakt-Spark, Whiff-/Block-Unterscheidung sowie SFX-/Haptik-Hooks. Ein weiterer Architektur-Neubau ist davor nicht erforderlich.
+BULK 3 ist abgeschlossen; Details stehen in `26_BULK_3_HIT_CONFIRM_IMPLEMENTATION.md`. Aktiver nächster Block ist BULK 4, das die finale VFX-Sprache auf dem bestehenden Hit-Confirm-Event aufbaut.

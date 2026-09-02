@@ -2,8 +2,8 @@ import type { AttackDefinition } from '../data/attacks';
 import { getRectOverlapCenter, type Rect } from '../utils/Rect';
 import type { FighterFacing } from './Fighter';
 
-export type CombatResponse = 'normal' | 'guard' | 'invulnerable';
-export type CombatOutcome = 'miss' | 'hit' | 'blocked' | 'invulnerable';
+export type CombatResponse = 'normal' | 'guard' | 'armor' | 'invulnerable';
+export type CombatOutcome = 'miss' | 'hit' | 'blocked' | 'armored' | 'invulnerable';
 export type CombatMissReason =
   | 'no-hitbox'
   | 'dead'
@@ -38,7 +38,7 @@ export type CombatResolution =
       reason: CombatMissReason;
     }
   | {
-      outcome: 'hit' | 'blocked' | 'invulnerable';
+      outcome: 'hit' | 'blocked' | 'armored' | 'invulnerable';
       damage: number;
       attackId: string;
       contactX: number;
@@ -89,13 +89,15 @@ export function resolveCombatContact(input: CombatResolutionInput): CombatResolu
     isRadialKnockback && input.defenderY !== input.attackerY ? Math.sign(input.defenderY - input.attackerY) : 1;
   const outcome = input.defenderResponse === 'guard'
     ? 'blocked'
+    : input.defenderResponse === 'armor'
+      ? 'armored'
     : input.defenderResponse === 'invulnerable'
       ? 'invulnerable'
       : 'hit';
 
   return {
     outcome,
-    damage: outcome === 'hit' ? attack.damage : 0,
+    damage: outcome === 'hit' || outcome === 'armored' ? attack.damage : 0,
     attackId: attack.id,
     contactX: contact.x,
     contactY: contact.y,

@@ -24,7 +24,7 @@
 - Der Touch-Menü-Hit-Test hat Vorrang vor dem großen Joystick-Capture und wird als Einmalimpuls konsumiert.
 - `BattleScene.ts` wurde von über 1.200 auf rund 1.020 Zeilen reduziert; weitere Trennung bleibt später sinnvoll, ist aber kein Sofort-Blocker mehr.
 - Reproduzierbare Befehle sind vorhanden: `npm run typecheck`, `npm test`, `npm run build`.
-- Derzeit bestehen **23 automatisierte Tests** für Timeline, Combat Resolution, Feedback, Input Buffer, Clock, Combat-Gym-Modell, Mobile-Hit-Test und Boxprofile.
+- Derzeit bestehen **31 automatisierte Tests** für Timeline, Combat Resolution, Impact-Profile, Input Buffer, Clock, Combat-Gym-Modell, Mobile-Hit-Test und Boxprofile.
 - Browser-Abnahme bestanden: Preset-Wechsel, Guard, Invulnerability, Frame Step, Boxen und Touch-Menü im mobilen Landscape-Viewport.
 
 ### Bekannte Restpunkte nach BULK 0/0,5
@@ -33,7 +33,7 @@
 - Der Produktionsbuild enthält weiterhin einen Chunk über 500 kB; Lazy Loading bleibt BULK 8.
 - `npm audit` meldet drei High-Warnungen in Build-Abhängigkeiten; ein erzwungener Major-Upgrade-Fix wurde bewusst nicht ungeprüft ausgeführt.
 - `Fighter` enthält weiterhin Visual- und State-Verantwortung, aber seine Boxauswahl ist jetzt datengetrieben. Eine weitere Trennung darf gezielt mit realem Bedarf wachsen, nicht als riskanter Big-Bang-Umbau.
-- **Aktiver nächster Schritt:** BULK 3 auf der bestehenden Timeline-/Resolver-/Feedback-Grundlage vervollständigen; kein weiterer Architektur-Neubau muss vorgeschaltet werden.
+- **Aktiver nächster Schritt:** BULK 4 als visuelle VFX-Bibliothek auf dem abgeschlossenen zentralen Hit-Confirm-Pfad aufbauen; kein weiterer Trefferkern-Umbau ist erforderlich.
 
 ### BULK 1: abgeschlossen und visuell abgenommen
 
@@ -61,6 +61,19 @@
 - Jab, Belly Slam, Air Bonk und Wizard Fireball wurden bei 0,25× beziehungsweise per 60-Hz-Einzelschritt geprüft.
 - Details, bewusste Grenzen und Tests stehen in `25_BULK_2_BOX_PROFILE_IMPLEMENTATION.md`.
 
+### BULK 3: abgeschlossen und framegenau abgenommen
+
+- `CombatImpactOrchestrator` bündelt bestätigte Nahkampf-, Projektil- und Area-Kontakte inklusive Angreifer, Verteidiger und Kontaktpunkt.
+- Light, Medium, Heavy und Ultimate besitzen abgestufte Hitstop-, Flash-, Shake-, Spark-, SFX- und Haptikprofile.
+- Block, Armor und Invulnerable sind eigene Outcomes mit unterschiedlichen Farben, Sounds und Reaktionen; Whiffs bleiben ohne Impact-Feedback.
+- Armor nimmt Schaden, unterbricht aber State/Angriff nicht durch Hitstun oder Knockback.
+- Der feste 110-ms-Flash sowie dauerhafte Hitstun-/Air-Attack-Tints sind entfernt.
+- Eingabepuffer altern während Hitstop nicht; Freeze-Zeit wird auf vollständige Simulationsframes aufgerundet.
+- Acht kurze CC0-Kenney-Impact-Sounds sind integriert; optionale Haptik hängt am selben stärksten Kontakt.
+- Camera Shake kann im Combat Gym auf `full`, `reduced` oder `off` gestellt werden und gilt auch für Move-Cues.
+- Light, Heavy, Block, Armor, Invulnerable, Magic und Whiff wurden framegenau visuell geprüft; 31/31 Tests bestehen.
+- Details stehen in `26_BULK_3_HIT_CONFIRM_IMPLEMENTATION.md`.
+
 ---
 
 ## 1. Kurzurteil
@@ -79,7 +92,7 @@ Die richtige Strategie lautet deshalb:
 
 > **Zuerst einen kleinen Combat-Gym- und Asset-QA-Prozess aufbauen, dann einen einzigen Kampf vollständig polieren. Erst danach neue Stages, Figuren oder Meta-Systeme produzieren.**
 
-**Status nach BULK 0/0,5/1/2:** Combat Gym, zentrale Timeline-/Resolver-/Feedback-Bausteine, Input Buffer, Character-Asset-Pipeline sowie phasen- und zustandsabhängige Boxprofile mit präzisem Kontaktpunkt sind umgesetzt. Charakter-Root, Clipping, Wizard-Farbidentität und Collision-Grundmodell sind nicht mehr die aktiven Hauptblöcke. Der größte aktuelle Qualitätshebel ist BULK 3: vollständige Hit-Confirm-/Impact-Abstimmung; danach folgen VFX-/Audio-Sprache und defensive Combat States.
+**Status nach BULK 0/0,5/1/2/3:** Combat Gym, Timeline/Resolver, Input Buffer, Character-Asset-Pipeline, Boxprofile, präziser Kontaktpunkt und zentrale Hit-Confirm-/Impact-Orchestrierung sind umgesetzt. Charakter-Root, Clipping, Wizard-Farbidentität, Collision-Grundmodell und Trefferfeedback-Architektur sind nicht mehr die aktiven Hauptblöcke. Der größte aktuelle Qualitätshebel ist BULK 4: eine konsistente gezeichnete VFX-Sprache; danach folgen Audio-Mix und defensive Combat States.
 
 ---
 
@@ -139,7 +152,7 @@ Die Pixelmessung ist ein Diagnosewerkzeug, kein Ersatz für eine Animation Revie
 | Bereich | Aktueller Stand | Bewertung | Hauptlücke |
 |---|---|---:|---|
 | Identität und Art Direction | eigenes Wombat-/Underdog-Thema, starke Menüs und Hintergründe | stark | Figuren- und Effektqualität angleichen |
-| Technische Basis | Phaser 4.1, TypeScript, Vite; Build, Typecheck und 23 Tests erfolgreich | gut | gezielte weitere Modulentkopplung, Asset-Ladeplan |
+| Technische Basis | Phaser 4.1, TypeScript, Vite; Build, Typecheck und 31 Tests erfolgreich | gut | gezielte weitere Modulentkopplung, Asset-Ladeplan |
 | Kernkampf | Startup/Active/Recovery, Input Buffer, zentraler Resolver, Hitstop, Knockback, Hitstun, Air Attack | gut für Pre-Alpha | Knockdown, Defense, Cancel-/Chain-Regeln |
 | Collision | phasen-/zustandsabhängige Hit-/Hurt-/Pushboxprofile, Factions, explizite Lane-/Höhenreichweite und echter Kontaktpunkt | stark für Pre-Alpha | weitere Moves selektiv authored kalibrieren |
 | Charaktere | 5 eigene Figuren plus Reference Fighter; 5/5 Body-Sheets bestehen harte QA-Gates | gute produktive Grundlage | dedizierte Air-/State-Abdeckung und native Layer-Master |
@@ -147,8 +160,8 @@ Die Pixelmessung ist ein Diagnosewerkzeug, kein Ersatz für eine Animation Revie
 | Projektile | vorhanden, inklusive Impact-FX | brauchbar | Team/Faction-Regeln, Kontaktpunkt, einheitliche Hitprofile |
 | Waves | drei kurze Waves vorhanden | technischer Beweis | Gegnerrollen, Koordination, Stage Beats, Boss |
 | Mobile Controls | großer Joystick und vier Aktionen vorhanden | spielbar | HUD-Flächen, Kontext, Portrait, Desktop-Ausblendung |
-| Audio | Assets teilweise vorhanden, aber kein fertiger Audio-Layer | kritisch offen | SFX, Musik, Mix, Haptik |
-| QA | Combat Gym, Profiltelemetrie, Kontaktmarker, Frame Step, 23 Kernsystemtests, Loop-Vorschauen und Whole-Sheet-Asset-Gates | gute Grundlage | Capture-Automation, Performance-Messung und CI-Gates |
+| Audio | acht kontaktgebundene CC0-Impact-SFX und optionale Haptik integriert | brauchbare Impact-Grundlage | Musik, globaler Mix, Varianten und Lautstärkeregler |
+| QA | Combat Gym, Box-/Impact-Telemetrie, Kontaktmarker, Frame Step, 31 Kernsystemtests, Loop-Vorschauen und Whole-Sheet-Asset-Gates | gute Grundlage | Capture-Automation, Performance-Messung und CI-Gates |
 | Produktionsreife | umfangreiche Dokumentation | gut | Provenienz/Lizenzen, Modulentkopplung, Performance-Budgets |
 
 ### Technische Größenordnung
@@ -156,9 +169,9 @@ Die Pixelmessung ist ein Diagnosewerkzeug, kein Ersatz für eine Animation Revie
 - Produktionsbuild erfolgreich
 - JavaScript-Bundle zuletzt ungefähr **1,43 MB**, gzip ungefähr **372 KB**
 - `dist` insgesamt ungefähr **56 MB**
-- ungefähr **30 vorab geladene Assets** mit zusammen rund **13,9 MB**
+- ungefähr **38 vorab geladene Assets** mit zusammen rund **14,0 MB**; die acht neuen Impact-Sounds umfassen nur rund 59 KB
 - `BattleScene.ts` liegt nach BULK 0,5 bei rund 1.020 Zeilen; `Fighter.ts` bleibt ein größerer nächster Trennungskandidat
-- Typecheck und 23 automatisierte Kernsystemtests sind vorhanden; ein Lint-Script und CI-Gates fehlen noch
+- Typecheck und 31 automatisierte Kernsystemtests sind vorhanden; ein Lint-Script und CI-Gates fehlen noch
 
 Diese Werte sind noch kein Release-Blocker. Sie zeigen aber, dass der nächste Ausbau ohne Systemtrennung, Lazy Loading und wiederholbare Tests teurer und riskanter wird.
 
@@ -655,7 +668,7 @@ Die System- und Vertical-Slice-Abnahme ist erfüllt. Wombat Jab und Belly Slam b
 
 **Priorität:** P0/P1
 **Ziel:** Ein Treffer besitzt einen einzigen, deterministischen Kontaktmoment, an dem alle Feedbackschichten hängen.
-**Umsetzungsstatus:** aktiv; Input Buffer, zentraler Resolver, Feedback-Policy, Hitstop und Kontaktpunkt sind als Grundlage vorhanden. Offen ist vor allem die vollständige move-spezifische Orchestrierung aus Spark, kurzem Flash, Shake, SFX und optionaler Haptik.
+**Umsetzungsstatus:** abgeschlossen am 2026-09-02; Profile, zentraler Orchestrator, Armor, Audio/Haptik, Shake-Zugänglichkeit und framegenaue Abnahme siehe `26_BULK_3_HIT_CONFIRM_IMPLEMENTATION.md`.
 
 #### Empfohlenes Move-Timeline-Modell
 

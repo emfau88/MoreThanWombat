@@ -1,10 +1,19 @@
 import Phaser from 'phaser';
-import { resolveHitFeedbackProfile, type CombatImpact } from './HitFeedback';
+import {
+  getImpactAccessibilityScale,
+  resolveHitFeedbackProfile,
+  shouldPresentCombatImpact,
+  type CombatImpact,
+  type HitFeedbackProfile,
+  type ImpactShakeMode,
+} from './HitFeedback';
 
 export type { CombatImpact } from './HitFeedback';
 
 export class CombatFeedbackController {
   private hitstopRemainingMs = 0;
+  private shakeMode: ImpactShakeMode = 'full';
+  private lastImpact: { outcome: string; profile: HitFeedbackProfile } | null = null;
 
   constructor(private readonly camera: Phaser.Cameras.Scene2D.Camera) {}
 
@@ -13,7 +22,7 @@ export class CombatFeedbackController {
   }
 
   applyStrongestImpact(impacts: CombatImpact[]): void {
-    const validImpacts = impacts.filter((impact) => impact.damage > 0 || impact.outcome === 'blocked');
+    const validImpacts = impacts.filter(shouldPresentCombatImpact);
     if (validImpacts.length === 0) {
       return;
     }
@@ -23,8 +32,13 @@ export class CombatFeedbackController {
       .sort((a, b) => b.profile.hitstopMs - a.profile.hitstopMs || b.impact.damage - a.impact.damage)[0];
 
     this.hitstopRemainingMs = Math.max(this.hitstopRemainingMs, strongest.profile.hitstopMs);
-    if (strongest.profile.shakeDurationMs > 0 && strongest.profile.shakeIntensity > 0) {
-      this.camera.shake(strongest.profile.shakeDurationMs, strongest.profile.shakeIntensity);
+    this.lastImpact = { outcome: strongest.impact.outcome ?? 'hit', profile: strongest.profile };
+    const accessibilityScale = getImpactAccessibilityScale(this.shakeMode);
+    if (strongest.profile.shakeDurationMs > 0 && strongest.profile.shakeIntensity > 0 && accessibilityScale > 0) {
+      this.camera.shake(
+        strongest.profile.shakeDurationMs,
+        strongest.profile.shakeIntensity * accessibilityScale,
+      );
     }
   }
 
@@ -36,7 +50,33 @@ export class CombatFeedbackController {
     return this.hitstopRemainingMs;
   }
 
+  cycleShakeMode(): ImpactShakeMode {
+    this.shakeMode = this.shakeMode === 'full' ? 'reduced' : this.shakeMode === 'reduced' ? 'off' : 'full';
+    return this.shakeMode;
+  }
+
+  getShakeMode(): ImpactShakeMode {
+    return this.shakeMode;
+  }
+
+  getAccessibilityScale(): number {
+    return getImpactAccessibilityScale(this.shakeMode);
+  }
+
+  getLastImpactDebugInfo(): { outcome: string; feedbackClass: string; sparkStyle: string; sound: string } | null {
+    if (!this.lastImpact) {
+      return null;
+    }
+    return {
+      outcome: this.lastImpact.outcome,
+      feedbackClass: this.lastImpact.profile.feedbackClass,
+      sparkStyle: this.lastImpact.profile.sparkStyle,
+      sound: this.lastImpact.profile.sound,
+    };
+  }
+
   reset(): void {
     this.hitstopRemainingMs = 0;
+    this.lastImpact = null;
   }
 }

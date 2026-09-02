@@ -43,3 +43,7 @@ test('combat gym setting cycles wrap and reset move choice for a new player', ()
   assert.equal(settings.moveIndex, 0);
   assert.equal(getSelectedCombatGymMove(settings).attack.id, 'discount_wand_smack');
 });
+
+test('combat gym exposes armor as a deterministic contact response', () => {
+  assert.ok(COMBAT_GYM_DUMMY_MODES.includes('armor'));
+});

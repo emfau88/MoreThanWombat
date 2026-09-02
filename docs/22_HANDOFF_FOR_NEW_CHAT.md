@@ -2,15 +2,15 @@
 
 Last updated: 2026-09-02
 
-## 2026-09-01 Priority Update
+## 2026-09-02 Priority Update
 
 BULK 0 and the architecture safety pass BULK 0.5 from `23_ARCADE_QUALITY_COMBAT_VFX_PLAN.md` are complete.
 
 - Test mode is now a full Combat Gym with fighter/move/dummy/range/lane/mana presets.
-- Pause, frame step, slow motion, box overlays, telemetry, guard, invulnerability, and attack-loop dummy modes exist.
+- Pause, frame step, slow motion, box overlays, telemetry, guard, armor, invulnerability, and attack-loop dummy modes exist.
 - Move timeline, input buffering, contact resolution, hit feedback, presentation FX, animation registration, and mobile hit testing were separated into focused modules.
-- Melee, projectile, and Axe Rain contacts share hit/blocked/invulnerable outcomes.
-- `npm.cmd run typecheck`, `npm.cmd test`, and `npm.cmd run build` are required checks; 23 tests currently pass.
+- Melee, projectile, and Axe Rain contacts share hit/blocked/armored/invulnerable outcomes.
+- `npm.cmd run typecheck`, `npm.cmd test`, and `npm.cmd run build` are required checks; 31 tests currently pass.
 - The touch `MENU` control has priority over joystick capture and has been verified in a mobile landscape viewport.
 - BULK 1 is complete: deterministic normalization, loop previews, whole-sheet gates, and visual review pass for all five production Body sheets.
 - Discount Wizard v2 was rebuilt from a canonical master; all 20 cells pass, and Wand Smack plus Miscast were approved in the Combat Gym at 0.25×.
@@ -19,7 +19,11 @@ BULK 0 and the architecture safety pass BULK 0.5 from `23_ARCADE_QUALITY_COMBAT_
 - BULK 2 is complete: timeline-bound Early/Main/Late hitboxes, state-based hurtbox/pushbox profiles, explicit lane/height limits, factions, real overlap contacts, pairwise crowd pushboxes, and profile telemetry are integrated.
 - Wombat Jab/Belly Slam are the authored reference profiles; Air Bonk/Axe Rain are explicit, and unchanged moves safely use their previous box as a `main` fallback.
 - Read `25_BULK_2_BOX_PROFILE_IMPLEMENTATION.md` before changing collision or contact geometry.
-- The active priority is BULK 3 Hit Confirm and impact orchestration. No additional architecture rewrite is required; build on the existing timeline/resolver/feedback modules.
+- BULK 3 is complete: one `CombatImpact` event now drives strength/outcome-specific hitstop, 34–64 ms flash, shake, contact spark, SFX, optional haptics, and telemetry.
+- Input buffers no longer age during hitstop; long Hitstun/Air-Attack body tints are removed.
+- Shake is Full/Reduced/Off in Combat Gym and gates both contact and move-cue camera motion.
+- Read `26_BULK_3_HIT_CONFIRM_IMPLEMENTATION.md` before changing impact timing or presentation.
+- The active priority is BULK 4 unified VFX language. Preserve the completed contact event and replace/refine presentation layers incrementally.
 
 ## Purpose
 
@@ -229,6 +233,10 @@ src/game/combat/Fighter.ts
 src/game/combat/BoxProfiles.ts
 src/game/combat/CombatFaction.ts
 src/game/combat/CombatResolver.ts
+src/game/combat/CombatImpactOrchestrator.ts
+src/game/combat/CombatFeedbackController.ts
+src/game/combat/CombatPresentationController.ts
+src/game/combat/HitFeedback.ts
 src/game/combat/HitboxSystem.ts
 src/game/combat/ProjectileSystem.ts
 src/game/combat/PushboxSystem.ts
@@ -384,12 +392,12 @@ Vite warns that the JS chunk is larger than 500 kB. This is not currently a bloc
 
 ## Next Sensible Tasks
 
-1. Complete BULK 3 move-specific Hit Confirm and impact orchestration.
-2. Build the first restrained contact-VFX/SFX slice on the resolved overlap point.
-3. Verify mobile start-of-battle input and combat readability on real devices.
-4. Verify the new Wave camera, enemy separation, and section pacing.
+1. Complete BULK 4 unified, mobile-budgeted VFX language on the existing contact event.
+2. Separate Wombat Air Bonk body and ground-impact presentation; refine Earthshaker anticipation/impact/decay.
+3. Verify SFX mix, haptics, mobile start-of-battle input, and combat readability on real devices.
+4. Verify the new Wave camera, enemy separation, effect overdraw, and section pacing.
 5. Re-check menu and character-select readability on real devices.
-6. Expand content only after the combat slice passes these gates.
+6. Expand content only after the visual combat slice passes these gates.
 
 ## Do Not Do Next
 
@@ -406,7 +414,7 @@ Avoid these until combat and assets are more stable:
 
 ## Current Git State At Handoff
 
-The latest completed local milestones are BULK 1 and BULK 2. Use `git log -3 --oneline` for authoritative hashes instead of copying a potentially stale hash from this document.
+The latest completed local milestones are BULK 1, BULK 2, and BULK 3. Use `git log -4 --oneline` for authoritative hashes instead of copying a potentially stale hash from this document.
 
 Before starting new work, always run:
 

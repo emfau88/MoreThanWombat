@@ -77,6 +77,12 @@ test('guard and invulnerability connect without dealing damage', () => {
   assert.equal(invulnerable.damage, 0);
 });
 
+test('armor takes damage without becoming a normal hit outcome', () => {
+  const armored = resolve({ defenderResponse: 'armor' });
+  assert.equal(armored.outcome, 'armored');
+  assert.equal(armored.damage, baseAttack.damage);
+});
+
 test('radial knockback derives facing and vertical direction from positions', () => {
   const radialAttack = { ...baseAttack, knockbackMode: 'radial' as const, launchVelocityZ: 500 };
   const result = resolve({

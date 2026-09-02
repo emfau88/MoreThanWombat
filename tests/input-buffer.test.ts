@@ -24,3 +24,21 @@ test('input buffer expires unconsumed actions', () => {
   buffer.advance(121);
   assert.equal(buffer.has('special'), false);
 });
+
+test('production buffer remains alive across the longest default hitstop', () => {
+  const buffer = new InputBuffer(150);
+  buffer.capture({ ...emptyInput, jumpPressed: true });
+  buffer.advance(110);
+  assert.equal(buffer.has('jump'), true);
+  buffer.advance(41);
+  assert.equal(buffer.has('jump'), false);
+});
+
+test('buffer lifetime does not age while combat is frozen', () => {
+  const buffer = new InputBuffer(120);
+  buffer.capture({ ...emptyInput, attackPressed: true });
+  buffer.advance(500, true);
+  assert.equal(buffer.has('attack'), true);
+  buffer.advance(120);
+  assert.equal(buffer.has('attack'), false);
+});

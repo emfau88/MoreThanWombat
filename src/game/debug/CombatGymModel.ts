@@ -3,7 +3,7 @@ import { attacksById } from '../data/attacks';
 import { fighterDefinitions } from '../data/fighters';
 import type { FighterId } from '../core/BattleModes';
 
-export type CombatGymDummyMode = 'idle' | 'guard' | 'invulnerable' | 'attack-loop';
+export type CombatGymDummyMode = 'idle' | 'guard' | 'armor' | 'invulnerable' | 'attack-loop';
 export type CombatGymMoveKind = 'basic' | 'special' | 'ultimate' | 'air';
 
 export type CombatGymSettings = {
@@ -33,7 +33,7 @@ export const COMBAT_GYM_FIGHTERS: FighterId[] = [
 export const COMBAT_GYM_RANGES = [58, 92, 150] as const;
 export const COMBAT_GYM_LANE_GAPS = [0, 34, 68] as const;
 export const COMBAT_GYM_MANA_RATIOS = [0, 0.5, 1] as const;
-export const COMBAT_GYM_DUMMY_MODES: CombatGymDummyMode[] = ['idle', 'guard', 'invulnerable', 'attack-loop'];
+export const COMBAT_GYM_DUMMY_MODES: CombatGymDummyMode[] = ['idle', 'guard', 'armor', 'invulnerable', 'attack-loop'];
 
 export function createDefaultCombatGymSettings(playerId: FighterId, dummyId: FighterId): CombatGymSettings {
   return {

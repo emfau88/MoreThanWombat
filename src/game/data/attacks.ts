@@ -140,9 +140,11 @@ export const wombatEarthshaker: AttackDefinition = {
   timeline: {
     feedbackClass: 'ultimate',
     startCue: 'wombat-earthshaker',
-    hitstopMs: 24,
-    shakeDurationMs: 130,
-    shakeIntensity: 0.008,
+    hitstopMs: 105,
+    shakeDurationMs: 118,
+    shakeIntensity: 0.0072,
+    defenderFlashMs: 64,
+    hapticMs: 24,
   },
 };
 
@@ -181,7 +183,7 @@ export const discountWandSmack: AttackDefinition = {
     width: 38,
     height: 28,
   },
-  timeline: { feedbackClass: 'light' },
+  timeline: { feedbackClass: 'light', impactSparkStyle: 'magic', impactSound: 'magic' },
 };
 
 export const discountFireballCast: AttackDefinition = {
@@ -202,7 +204,12 @@ export const discountFireballCast: AttackDefinition = {
   },
   manaCost: 22,
   projectileId: 'discount_fireball_projectile',
-  timeline: { feedbackClass: 'light', startCue: 'discount-fireball' },
+  timeline: {
+    feedbackClass: 'light',
+    startCue: 'discount-fireball',
+    impactSparkStyle: 'magic',
+    impactSound: 'magic',
+  },
 };
 
 export const discountMiscast: AttackDefinition = {
@@ -222,7 +229,12 @@ export const discountMiscast: AttackDefinition = {
     height: 58,
   },
   canMoveDuringAttack: true,
-  timeline: { feedbackClass: 'medium', startCue: 'discount-miscast' },
+  timeline: {
+    feedbackClass: 'medium',
+    startCue: 'discount-miscast',
+    impactSparkStyle: 'magic',
+    impactSound: 'magic',
+  },
 };
 
 export const discountClearanceOrb: AttackDefinition = {
@@ -243,7 +255,12 @@ export const discountClearanceOrb: AttackDefinition = {
   },
   manaCost: 100,
   projectileId: 'discount_ultimate_orb_projectile',
-  timeline: { feedbackClass: 'ultimate', startCue: 'discount-clearance-orb' },
+  timeline: {
+    feedbackClass: 'ultimate',
+    startCue: 'discount-clearance-orb',
+    impactSparkStyle: 'magic',
+    impactSound: 'magic',
+  },
 };
 
 export const budgetCrackedAxeSwing: AttackDefinition = {

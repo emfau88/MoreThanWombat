@@ -1,6 +1,8 @@
 export type AttackPhase = 'startup' | 'active' | 'recovery' | 'none';
 
 export type HitFeedbackClass = 'light' | 'medium' | 'heavy' | 'ultimate';
+export type ImpactSparkStyle = 'physical' | 'magic';
+export type ImpactSoundId = 'light' | 'medium' | 'heavy' | 'ultimate' | 'magic';
 
 export type MoveStartCue =
   | 'wombat-earthshaker'
@@ -16,6 +18,12 @@ export type MoveTimelineDefinition = {
   hitstopMs?: number;
   shakeDurationMs?: number;
   shakeIntensity?: number;
+  defenderFlashMs?: number;
+  defenderFlashColor?: number;
+  impactSparkStyle?: ImpactSparkStyle;
+  impactSound?: ImpactSoundId;
+  impactSoundVolume?: number;
+  hapticMs?: number;
 };
 
 export type TimedMove = {

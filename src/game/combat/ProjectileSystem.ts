@@ -6,6 +6,7 @@ import type { CombatOutcome } from './CombatResolver';
 import { canCombatFactionHit, type CombatFaction } from './CombatFaction';
 
 type ActiveProjectile = {
+  owner: Fighter;
   ownerInstanceId: number;
   ownerFaction: CombatFaction;
   facing: FighterFacing;
@@ -28,6 +29,7 @@ export type ProjectileHit = {
   x: number;
   y: number;
   target: Fighter;
+  attacker: Fighter;
 };
 
 export class ProjectileSystem {
@@ -49,6 +51,7 @@ export class ProjectileSystem {
     sprite.play(definition.animationKey);
 
     this.projectiles.push({
+      owner,
       ownerInstanceId: owner.instanceId,
       ownerFaction: owner.faction,
       facing: owner.facing,
@@ -108,6 +111,8 @@ export class ProjectileSystem {
         const response = target.getCombatResponse();
         const outcome: CombatOutcome = response === 'guard'
           ? 'blocked'
+          : response === 'armor'
+            ? 'armored'
           : response === 'invulnerable'
             ? 'invulnerable'
             : 'hit';
@@ -119,16 +124,19 @@ export class ProjectileSystem {
             knockbackY: projectile.definition.knockbackY,
             sourceFacing: projectile.facing,
           });
+        } else if (outcome === 'armored') {
+          target.receiveArmoredHit(projectile.definition.damage);
         }
         hits.push({
           projectileId: projectile.definition.id,
           sourceAttackId: projectile.definition.sourceAttackId,
           outcome,
           impactAnimationKey: projectile.definition.impactAnimationKey,
-          damage: outcome === 'hit' ? projectile.definition.damage : 0,
+          damage: outcome === 'hit' || outcome === 'armored' ? projectile.definition.damage : 0,
           x: contact.x,
           y: contact.y,
           target,
+          attacker: projectile.owner,
         });
         target.showDebugContact(contact.x, contact.y);
         this.removeAt(index);

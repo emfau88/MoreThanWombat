@@ -127,6 +127,7 @@ export class Fighter {
   private debugEnabled = true;
   private statusNote = '';
   private flashRemainingMs = 0;
+  private flashColor = 0xfff1bf;
   private attackInstanceId = 0;
   private landingRemainingMs = 0;
   private hasUsedAirAttack = false;
@@ -205,9 +206,6 @@ export class Fighter {
   }
 
   update(deltaSeconds: number, moveX: number, moveY: number, bounds: FighterBounds): void {
-    this.flashRemainingMs = Math.max(0, this.flashRemainingMs - deltaSeconds * 1000);
-    this.contactDebugRemainingMs = Math.max(0, this.contactDebugRemainingMs - deltaSeconds * 1000);
-
     if (this.state === 'dead') {
       this.z = 0;
       this.velocityZ = 0;
@@ -441,6 +439,18 @@ export class Fighter {
     this.contactDebug.setVisible(this.debugEnabled);
   }
 
+  advancePresentation(deltaMs: number): void {
+    const safeDeltaMs = Math.max(0, deltaMs);
+    this.flashRemainingMs = Math.max(0, this.flashRemainingMs - safeDeltaMs);
+    this.contactDebugRemainingMs = Math.max(0, this.contactDebugRemainingMs - safeDeltaMs);
+  }
+
+  showImpactFlash(durationMs: number, color: number): void {
+    this.flashRemainingMs = Math.max(this.flashRemainingMs, Math.max(0, durationMs));
+    this.flashColor = color;
+    this.updateVisuals();
+  }
+
   receiveHit(hit: {
     damage: number;
     hitstunMs: number;
@@ -466,8 +476,6 @@ export class Fighter {
       this.velocityZ = Math.max(this.velocityZ, hit.launchVelocityZ);
       this.isGrounded = false;
     }
-    this.flashRemainingMs = 110;
-
     if (this.hp <= 0) {
       this.z = 0;
       this.velocityZ = 0;
@@ -479,6 +487,26 @@ export class Fighter {
       this.hitstunRemainingMs = hit.hitstunMs;
     }
 
+    this.updateVisuals();
+  }
+
+  receiveArmoredHit(damage: number): void {
+    if (this.state === 'dead' || damage <= 0) {
+      return;
+    }
+
+    this.hp = Math.max(0, this.hp - damage);
+    if (this.hp <= 0) {
+      this.currentAttack = null;
+      this.attackElapsedMs = 0;
+      this.attackPhase = 'none';
+      this.hitTargets.clear();
+      this.z = 0;
+      this.velocityZ = 0;
+      this.isGrounded = true;
+      this.state = 'dead';
+      this.hitstunRemainingMs = 0;
+    }
     this.updateVisuals();
   }
 
@@ -723,15 +751,11 @@ export class Fighter {
 
   private getBodyColor(): number {
     if (this.flashRemainingMs > 0) {
-      return 0xfff1bf;
+      return this.flashColor;
     }
 
     if (this.state === 'dead') {
       return 0x4b5563;
-    }
-
-    if (this.state === 'hitstun') {
-      return 0xe76f51;
     }
 
     if (this.state === 'special') {
@@ -740,10 +764,6 @@ export class Fighter {
 
     if (this.state === 'ultimate') {
       return 0xffd166;
-    }
-
-    if (this.state === 'airAttack') {
-      return 0xffc857;
     }
 
     if (this.state === 'attack') {
@@ -769,7 +789,7 @@ export class Fighter {
     this.sprite.setScale(spriteScale);
 
     if (this.flashRemainingMs > 0) {
-      this.sprite.setTint(0xfff1bf);
+      this.sprite.setTint(this.flashColor);
     } else {
       this.sprite.clearTint();
     }

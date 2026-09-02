@@ -1,10 +1,8 @@
 import Phaser from 'phaser';
 import type { AttackDefinition } from '../data/attacks';
 import { attacksById } from '../data/attacks';
-import type { ProjectileHit } from './ProjectileSystem';
 import type { Fighter, FighterBounds } from './Fighter';
-import type { HitResolution } from './HitboxSystem';
-import type { CombatImpact } from './HitFeedback';
+import type { CombatImpact, HitFeedbackProfile, PresentedImpactStyle } from './HitFeedback';
 import { MoveStartCueController } from './MoveStartCueController';
 import { getRectOverlapCenter, type Rect } from '../utils/Rect';
 import { canCombatFactionHit } from './CombatFaction';
@@ -20,15 +18,26 @@ type AxeRainStrike = {
   hitTargetInstanceIds: Set<number>;
 };
 
+type ActiveContactSpark = {
+  container: Phaser.GameObjects.Container;
+  elapsedMs: number;
+  durationMs: number;
+  startScale: number;
+  endScaleX: number;
+  endScaleY: number;
+};
+
 export type CombatPresentationContext = {
   getArenaBounds: () => FighterBounds;
   getCurrentTargets: () => Fighter[];
   getTargetFor: (fighter: Fighter) => Fighter | null;
   getVisibleCenterX: () => number;
+  getShakeScale: () => number;
 };
 
 export class CombatPresentationController {
   private readonly axeRainStrikes: AxeRainStrike[] = [];
+  private readonly contactSparks: ActiveContactSpark[] = [];
   private readonly moveStartCues: MoveStartCueController;
 
   constructor(
@@ -38,7 +47,7 @@ export class CombatPresentationController {
     this.moveStartCues = new MoveStartCueController({
       'wombat-earthshaker': (fighter) => {
         this.spawnFx('wombat-earthshaker-fx', fighter.x, fighter.y - 178, fighter.y - 6, false, 1.72, 'wombat-earthshaker-fx');
-        this.scene.cameras.main.shake(150, 0.008);
+        this.shake(90, 0.0032);
       },
       'discount-fireball': (fighter) => {
         this.spawnCastFx('discount-wizard-fx-fireball', fighter, 66, -52, 1.08);
@@ -51,7 +60,7 @@ export class CombatPresentationController {
       },
       'budget-axe-rain': (fighter) => {
         this.startBudgetBarbarianUltimate(fighter);
-        this.scene.cameras.main.shake(100, 0.005);
+        this.shake(65, 0.0022);
       },
       'buster-bulldozer': (fighter) => {
         this.startBusterBulldogUltimate(fighter);
@@ -63,58 +72,28 @@ export class CombatPresentationController {
     this.moveStartCues.handleAttackStarted(fighter, attack);
   }
 
-  spawnHitImpact(hit: HitResolution): void {
-    const attackId = hit.attackId;
-    const target = hit.defender;
+  spawnContactImpact(impact: CombatImpact, profile: HitFeedbackProfile): void {
+    const attackId = impact.attackId;
+    const target = impact.defender;
     if (!attackId || !target) {
       return;
     }
 
-    const contactX = hit.contactX ?? target.x;
-    const contactY = hit.contactY ?? target.y - 42;
+    const contactX = impact.contactX ?? target.x;
+    const contactY = impact.contactY ?? target.y - 42;
+    const outcome = impact.outcome ?? 'hit';
 
-    if (attackId === 'discount_miscast') {
+    if (outcome === 'hit' && attackId === 'discount_miscast') {
       this.spawnFx('discount-wizard-fx-miscast', contactX, contactY, target.y + 8, false, 1.08);
-      return;
-    }
-
-    if (attackId === 'discount_clearance_orb') {
+    } else if (outcome === 'hit' && attackId === 'discount_clearance_orb') {
       this.spawnFx('discount-wizard-ultimate-impact', contactX, contactY, target.y + 10, false, 1.28, 'discount-wizard-ultimate-fx');
-      return;
-    }
-
-    if (attackId === 'wombat_earthshaker') {
+    } else if (outcome === 'hit' && attackId === 'wombat_earthshaker') {
       this.spawnFx('wombat-earthshaker-fx', contactX, target.y - 130, target.y + 8, false, 1.35, 'wombat-earthshaker-fx');
-      return;
-    }
-
-    if (attackId === 'discount_wand_smack' || attackId === 'discount_fireball_cast') {
+    } else if (outcome === 'hit' && (attackId === 'discount_wand_smack' || attackId === 'discount_fireball_cast')) {
       this.spawnFx('discount-wizard-fx-hit-puff', contactX, contactY, target.y + 8, false, 0.96);
     }
-  }
 
-  spawnProjectileImpact(projectileHit: ProjectileHit): void {
-    if (projectileHit.projectileId === 'discount_ultimate_orb_projectile') {
-      this.spawnFx(
-        projectileHit.impactAnimationKey,
-        projectileHit.x,
-        projectileHit.y,
-        projectileHit.target.y + 10,
-        false,
-        1.28,
-        'discount-wizard-ultimate-fx',
-      );
-      return;
-    }
-
-    this.spawnFx(
-      projectileHit.impactAnimationKey,
-      projectileHit.x,
-      projectileHit.y,
-      projectileHit.target.y + 8,
-      false,
-      0.96,
-    );
+    this.spawnGenericContactSpark(contactX, contactY, target.y + 20, profile.sparkStyle, profile.sparkScale);
   }
 
   update(deltaMs: number): CombatImpact[] {
@@ -134,7 +113,7 @@ export class CombatPresentationController {
         strike.didImpact = true;
         strike.warning.destroy();
         this.spawnAxeRainFx(strike.x, strike.y);
-        this.scene.cameras.main.shake(70, 0.004);
+        this.shake(60, 0.0028);
       }
 
       strike.activeMs -= deltaMs;
@@ -148,11 +127,19 @@ export class CombatPresentationController {
     return impacts;
   }
 
+  advancePresentation(deltaMs: number): void {
+    this.updateContactSparks(deltaMs);
+  }
+
   clearTransientEffects(): void {
     for (const strike of this.axeRainStrikes) {
       strike.warning.destroy();
     }
     this.axeRainStrikes.length = 0;
+    for (const spark of this.contactSparks) {
+      spark.container.destroy(true);
+    }
+    this.contactSparks.length = 0;
   }
 
   destroy(): void {
@@ -180,7 +167,7 @@ export class CombatPresentationController {
     }
 
     this.spawnFx('discount-wizard-ultimate-teleport', fighter.x, fighter.y - 70, fighter.y + 14, false, 1.28, 'discount-wizard-ultimate-fx');
-    this.scene.cameras.main.shake(90, 0.004);
+    this.shake(90, 0.0035);
   }
 
   private startBudgetBarbarianUltimate(fighter: Fighter): void {
@@ -218,7 +205,7 @@ export class CombatPresentationController {
     const actualDistance = targetX - fighter.x;
 
     fighter.nudge(actualDistance, 0, bounds);
-    this.scene.cameras.main.shake(120, 0.006);
+    this.shake(80, 0.003);
 
     for (let index = 0; index < 4; index += 1) {
       const progress = index / 3;
@@ -297,6 +284,8 @@ export class CombatPresentationController {
       const response = target.getCombatResponse();
       const outcome = response === 'guard'
         ? 'blocked'
+        : response === 'armor'
+          ? 'armored'
         : response === 'invulnerable'
           ? 'invulnerable'
           : 'hit';
@@ -309,13 +298,19 @@ export class CombatPresentationController {
           knockbackY: areaHit.knockbackY,
           sourceFacing: strike.owner.facing,
         });
+      } else if (outcome === 'armored') {
+        target.receiveArmoredHit(areaHit.damage);
       }
 
       impacts.push({
-        damage: outcome === 'hit' ? areaHit.damage : 0,
+        damage: outcome === 'hit' || outcome === 'armored' ? areaHit.damage : 0,
         attackId: 'budget_axe_rain',
         outcome,
         timeline: attack.timeline,
+        contactX: contact.x,
+        contactY: contact.y,
+        attacker: strike.owner,
+        defender: target,
       });
     }
 
@@ -362,5 +357,80 @@ export class CombatPresentationController {
     const sprite = this.scene.add.sprite(x, y, textureKey).setOrigin(0.5).setDepth(depth).setFlipX(flipX).setScale(scale);
     sprite.play(animationKey);
     sprite.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => sprite.destroy());
+  }
+
+  private spawnGenericContactSpark(
+    x: number,
+    y: number,
+    depth: number,
+    style: PresentedImpactStyle,
+    scale: number,
+  ): void {
+    const palette: Record<PresentedImpactStyle, { core: number; edge: number; rays: number }> = {
+      physical: { core: 0xfff7d1, edge: 0xff9f43, rays: 5 },
+      magic: { core: 0xffffff, edge: 0xd86cff, rays: 6 },
+      block: { core: 0xd7fbff, edge: 0x52c7e8, rays: 4 },
+      armor: { core: 0xffdf9e, edge: 0xb76b2d, rays: 5 },
+      invulnerable: { core: 0xe9fdff, edge: 0x77d9ff, rays: 3 },
+    };
+    const colors = palette[style];
+    const container = this.scene.add.container(x, y).setDepth(depth);
+    const ring = this.scene.add
+      .ellipse(0, 0, 30, 20, colors.edge, 0.08)
+      .setStrokeStyle(2, colors.edge, 0.9)
+      .setBlendMode(Phaser.BlendModes.ADD);
+    const core = this.scene.add
+      .ellipse(0, 0, 15, 11, colors.core, 0.96)
+      .setBlendMode(Phaser.BlendModes.ADD);
+    const rays: Phaser.GameObjects.Rectangle[] = [];
+
+    for (let index = 0; index < colors.rays; index += 1) {
+      const angle = (Math.PI * 2 * index) / colors.rays + (style === 'magic' ? 0.24 : 0);
+      const length = 15 + (index % 2) * 5;
+      const ray = this.scene.add
+        .rectangle(Math.cos(angle) * 12, Math.sin(angle) * 8, length, 3, colors.edge, 0.9)
+        .setRotation(angle)
+        .setBlendMode(Phaser.BlendModes.ADD);
+      rays.push(ray);
+    }
+
+    container.add([ring, ...rays, core]);
+    const startScale = scale * 0.68;
+    container.setScale(startScale);
+    this.contactSparks.push({
+      container,
+      elapsedMs: 0,
+      durationMs: style === 'invulnerable' ? 105 : 125,
+      startScale,
+      endScaleX: scale * 1.16,
+      endScaleY: scale * (style === 'block' ? 0.94 : 1.16),
+    });
+  }
+
+  private updateContactSparks(deltaMs: number): void {
+    for (let index = this.contactSparks.length - 1; index >= 0; index -= 1) {
+      const spark = this.contactSparks[index];
+      spark.elapsedMs += Math.max(0, deltaMs);
+      const progress = Phaser.Math.Clamp(spark.elapsedMs / spark.durationMs, 0, 1);
+      const eased = 1 - (1 - progress) * (1 - progress);
+      spark.container
+        .setAlpha(1 - progress)
+        .setScale(
+          Phaser.Math.Linear(spark.startScale, spark.endScaleX, eased),
+          Phaser.Math.Linear(spark.startScale, spark.endScaleY, eased),
+        );
+      if (progress >= 1) {
+        spark.container.destroy(true);
+        this.contactSparks.splice(index, 1);
+      }
+    }
+  }
+
+  private shake(durationMs: number, intensity: number): void {
+    const scale = this.context.getShakeScale();
+    if (durationMs <= 0 || intensity <= 0 || scale <= 0) {
+      return;
+    }
+    this.scene.cameras.main.shake(durationMs, intensity * scale);
   }
 }

@@ -6,7 +6,8 @@ export class PreloadScene extends Phaser.Scene {
   }
 
   preload(): void {
-    const assetBase = `${import.meta.env.BASE_URL}assets/`;
+    const publicBase = import.meta.env.BASE_URL;
+    const assetBase = `${publicBase}assets/`;
 
     this.load.image('main-menu-background', `${assetBase}2.png`);
     this.load.image('main-menu-button-panel', `${assetBase}ui/main-menu/menu_button_panel.png`);
@@ -74,6 +75,15 @@ export class PreloadScene extends Phaser.Scene {
       frameWidth: 128,
       frameHeight: 128,
     });
+    const impactAudioBase = `${publicBase}kenney_impact-sounds/Audio/`;
+    this.load.audio('impact-light', `${impactAudioBase}impactGeneric_light_002.ogg`);
+    this.load.audio('impact-medium', `${impactAudioBase}impactPunch_medium_001.ogg`);
+    this.load.audio('impact-heavy', `${impactAudioBase}impactPunch_heavy_002.ogg`);
+    this.load.audio('impact-ultimate', `${impactAudioBase}impactMetal_heavy_003.ogg`);
+    this.load.audio('impact-magic', `${impactAudioBase}impactGlass_medium_003.ogg`);
+    this.load.audio('impact-block', `${impactAudioBase}impactMetal_light_001.ogg`);
+    this.load.audio('impact-armor', `${impactAudioBase}impactMetal_medium_003.ogg`);
+    this.load.audio('impact-invulnerable', `${impactAudioBase}impactGlass_light_001.ogg`);
   }
 
   create(): void {
