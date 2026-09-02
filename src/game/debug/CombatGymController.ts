@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { GAME_WIDTH } from '../GameConfig';
 import type { Fighter } from '../combat/Fighter';
 import type { CombatFeedbackController } from '../combat/CombatFeedbackController';
+import { getVfxStyleLockLabel, type VfxStyleLockMode } from '../combat/VfxStyleLock';
 import { CombatClock } from './CombatClock';
 import { fighterDefinitions } from '../data/fighters';
 import {
@@ -25,6 +26,8 @@ type CombatGymCallbacks = {
   onReset: () => void;
   onToggleDebug: () => void;
   onCycleShakeMode: () => void;
+  onCycleVfxStyle: () => VfxStyleLockMode;
+  getVfxStyle: () => VfxStyleLockMode;
 };
 
 export class CombatGymController {
@@ -35,6 +38,7 @@ export class CombatGymController {
   private readonly speedButton: GymButton;
   private readonly debugButton: GymButton;
   private readonly shakeButton: GymButton;
+  private readonly vfxStyleButton: GymButton;
   private readonly playerButton: GymButton;
   private readonly moveButton: GymButton;
   private readonly dummyButton: GymButton;
@@ -50,6 +54,7 @@ export class CombatGymController {
     fire: Phaser.Input.Keyboard.Key;
     togglePanel: Phaser.Input.Keyboard.Key;
     shake: Phaser.Input.Keyboard.Key;
+    vfxStyle: Phaser.Input.Keyboard.Key;
   };
   private panelVisible = true;
 
@@ -69,7 +74,7 @@ export class CombatGymController {
       fontSize: '12px',
       fontStyle: 'bold',
     }).setOrigin(0, 0.5);
-    const hint = scene.add.text(-444, 64, 'P pause  O step  I speed  T fire  G shake  F2 panel', {
+    const hint = scene.add.text(-444, 64, 'P pause  O step  I speed  T fire  V VFX style  G shake  F2 panel', {
       color: '#91a7b8',
       fontFamily: 'Verdana, Geneva, sans-serif',
       fontSize: '10px',
@@ -81,7 +86,7 @@ export class CombatGymController {
     this.speedButton = this.createButton(-48, -52, 92, () => this.clock.cycleTimeScale());
     this.debugButton = this.createButton(62, -52, 112, this.callbacks.onToggleDebug);
     this.createButton(180, -52, 104, this.callbacks.onReset, 'Reset');
-    this.createButton(292, -52, 104, () => this.setPanelVisible(false), 'Hide F2');
+    this.vfxStyleButton = this.createButton(292, -52, 104, this.callbacks.onCycleVfxStyle, 'VFX Ref');
     this.shakeButton = this.createButton(402, -52, 100, this.callbacks.onCycleShakeMode, 'Shake Full');
 
     this.playerButton = this.createButton(-342, -16, 178, () => this.cycleSetting('player'));
@@ -113,6 +118,7 @@ export class CombatGymController {
       fire: Phaser.Input.Keyboard.KeyCodes.T,
       togglePanel: Phaser.Input.Keyboard.KeyCodes.F2,
       shake: Phaser.Input.Keyboard.KeyCodes.G,
+      vfxStyle: Phaser.Input.Keyboard.KeyCodes.V,
     }) as CombatGymController['keys'];
     this.refreshLabels(false);
   }
@@ -162,6 +168,7 @@ export class CombatGymController {
         } : null,
         hitstopMs: feedback.getHitstopRemainingMs(),
         shakeMode: feedback.getShakeMode(),
+        vfxStyle: this.callbacks.getVfxStyle(),
         lastImpact: impact,
       });
     }
@@ -197,6 +204,9 @@ export class CombatGymController {
     if (Phaser.Input.Keyboard.JustDown(this.keys.shake)) {
       this.callbacks.onCycleShakeMode();
     }
+    if (Phaser.Input.Keyboard.JustDown(this.keys.vfxStyle)) {
+      this.callbacks.onCycleVfxStyle();
+    }
   }
 
   private setPanelVisible(visible: boolean): void {
@@ -214,6 +224,7 @@ export class CombatGymController {
     this.pauseButton.label.setText(this.clock.isPaused() ? 'Resume' : 'Pause');
     this.speedButton.label.setText(`${this.clock.getTimeScale()}x Speed`);
     this.debugButton.label.setText(`Boxes ${debugEnabled ? 'On' : 'Off'}`);
+    this.vfxStyleButton.label.setText(`VFX ${getVfxStyleLockLabel(this.callbacks.getVfxStyle())}`);
     this.playerButton.label.setText(`Player: ${fighterDefinitions[this.settings.playerId].label}`);
     this.moveButton.label.setText(`Move: ${move.attack.label}`);
     this.dummyButton.label.setText(`Dummy: ${fighterDefinitions[this.settings.dummyId].label}`);

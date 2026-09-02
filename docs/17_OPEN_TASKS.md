@@ -10,7 +10,16 @@ Goal:
 Replace the restrained code-native contact-spark reference with a coherent, reusable, mobile-budgeted VFX library on the completed `CombatImpact` event.
 
 Execution plan:
-`27_BULK_4_UNIFIED_VFX_PRODUCTION_PLAN.md`. Start with BULK 4.0 Style Lock; do not mass-produce effects before the physical, magic, and neutral ground prototypes are visually approved.
+`27_BULK_4_UNIFIED_VFX_PRODUCTION_PLAN.md`. BULK 4.0 is technically implemented and documented in `28_BULK_4_0_VFX_STYLE_LOCK.md`; do not mass-produce effects before its direction is visually approved.
+
+Current BULK 4.0 result:
+
+- six transparent ImageGen Source-Master and six deterministic Runtime exports exist,
+- `npm.cmd run vfx:refresh` validates transparency, canvas, edge padding, and manifest targets,
+- Combat Gym cycles `VFX Ref → VFX Comic A → VFX Comic B`,
+- Park/1×, Scrapyard/0.25×, and Rooftop/0.5× visual checks pass,
+- recommended production split: Comic B for Light/Small, Comic A vocabulary for Medium/Heavy,
+- remaining gate: user visual approval before BULK 4.1 production architecture.
 
 Acceptance:
 
@@ -20,7 +29,7 @@ Acceptance:
 - Wombat Air Bonk body/ground effect separation and Earthshaker anticipation/impact/decay are reviewed
 - Warning and impact geometry stay aligned for Axe Rain
 - Object lifetime and overdraw remain safe for mobile crowd combat
-- Existing 31 tests and Combat Gym outcome presets remain green
+- Existing 33 tests and Combat Gym outcome presets remain green
 
 ## Completed Arcade-Quality Milestones
 

@@ -12,10 +12,11 @@ The project has moved beyond the original combat sandbox MVP. Use the docs in th
 4. `25_BULK_2_BOX_PROFILE_IMPLEMENTATION.md`
 5. `26_BULK_3_HIT_CONFIRM_IMPLEMENTATION.md`
 6. `27_BULK_4_UNIFIED_VFX_PRODUCTION_PLAN.md`
-7. `16_CURRENT_ROADMAP.md`
-8. `17_OPEN_TASKS.md`
-9. `21_CHARACTER_ASSET_STANDARD.md`
-10. Relevant implementation spec from `07` to `13` only when touching that system
+7. `28_BULK_4_0_VFX_STYLE_LOCK.md`
+8. `16_CURRENT_ROADMAP.md`
+9. `17_OPEN_TASKS.md`
+10. `21_CHARACTER_ASSET_STANDARD.md`
+11. Relevant implementation spec from `07` to `13` only when touching that system
 
 ## Current Truth
 
@@ -33,6 +34,7 @@ These files describe the current built prototype and near-term work:
 - `25_BULK_2_BOX_PROFILE_IMPLEMENTATION.md` - completed data-driven hitbox/hurtbox/pushbox profiles, faction rules, overlap contacts, authored Wombat reference moves, and Combat Gym QA
 - `26_BULK_3_HIT_CONFIRM_IMPLEMENTATION.md` - completed centralized Hit Confirm, strength/outcome profiles, short flashes, contact sparks, impact SFX/haptics, Armor, shake accessibility, and frame-step QA
 - `27_BULK_4_UNIFIED_VFX_PRODUCTION_PLAN.md` - detailed execution order for a transparent, reusable, comic-style VFX library; includes the current asset audit, Wombat background/layer fixes, style-lock gate, mobile budgets, and Definition of Done
+- `28_BULK_4_0_VFX_STYLE_LOCK.md` - implemented six-asset Punchy Comic Impact style board, Combat Gym A/B comparison, visual/technical QA, production recommendation, and approval boundary
 
 ## Foundation Docs
 
@@ -71,3 +73,4 @@ Before implementing:
 4. Make the smallest isolated change that advances the current roadmap.
 5. Run `npm.cmd run build` when code or assets change.
 6. Run `npm.cmd run assets:refresh` whenever a character Body sheet or its manifest changes.
+7. Run `npm.cmd run vfx:refresh` whenever a BULK 4 style-lock Source, Runtime target, or manifest entry changes.

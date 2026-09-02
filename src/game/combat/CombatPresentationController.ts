@@ -6,6 +6,12 @@ import type { CombatImpact, HitFeedbackProfile, PresentedImpactStyle } from './H
 import { MoveStartCueController } from './MoveStartCueController';
 import { getRectOverlapCenter, type Rect } from '../utils/Rect';
 import { canCombatFactionHit } from './CombatFaction';
+import {
+  cycleVfxStyleLockMode,
+  getStyleLockContactTexture,
+  getStyleLockGroundTexture,
+  type VfxStyleLockMode,
+} from './VfxStyleLock';
 
 type AxeRainStrike = {
   owner: Fighter;
@@ -39,6 +45,7 @@ export class CombatPresentationController {
   private readonly axeRainStrikes: AxeRainStrike[] = [];
   private readonly contactSparks: ActiveContactSpark[] = [];
   private readonly moveStartCues: MoveStartCueController;
+  private vfxStyleLockMode: VfxStyleLockMode = 'reference';
 
   constructor(
     private readonly scene: Phaser.Scene,
@@ -129,6 +136,18 @@ export class CombatPresentationController {
 
   advancePresentation(deltaMs: number): void {
     this.updateContactSparks(deltaMs);
+  }
+
+  cycleVfxStyleLockMode(): VfxStyleLockMode {
+    this.vfxStyleLockMode = cycleVfxStyleLockMode(this.vfxStyleLockMode);
+    if (this.vfxStyleLockMode !== 'reference') {
+      this.spawnVfxStyleLockPreview();
+    }
+    return this.vfxStyleLockMode;
+  }
+
+  getVfxStyleLockMode(): VfxStyleLockMode {
+    return this.vfxStyleLockMode;
   }
 
   clearTransientEffects(): void {
@@ -366,6 +385,12 @@ export class CombatPresentationController {
     style: PresentedImpactStyle,
     scale: number,
   ): void {
+    const styleLockTexture = getStyleLockContactTexture(this.vfxStyleLockMode, style);
+    if (styleLockTexture) {
+      this.spawnStyleLockContactSpark(x, y, depth, styleLockTexture, scale);
+      return;
+    }
+
     const palette: Record<PresentedImpactStyle, { core: number; edge: number; rays: number }> = {
       physical: { core: 0xfff7d1, edge: 0xff9f43, rays: 5 },
       magic: { core: 0xffffff, edge: 0xd86cff, rays: 6 },
@@ -405,6 +430,56 @@ export class CombatPresentationController {
       endScaleX: scale * 1.16,
       endScaleY: scale * (style === 'block' ? 0.94 : 1.16),
     });
+  }
+
+  private spawnStyleLockContactSpark(
+    x: number,
+    y: number,
+    depth: number,
+    textureKey: string,
+    scale: number,
+  ): void {
+    const container = this.scene.add.container(x, y).setDepth(depth);
+    const image = this.scene.add.image(0, 0, textureKey).setOrigin(0.5);
+    container.add(image);
+    const startScale = scale * 0.44;
+    this.contactSparks.push({
+      container: container.setScale(startScale),
+      elapsedMs: 0,
+      durationMs: 118,
+      startScale,
+      endScaleX: scale * 0.64,
+      endScaleY: scale * 0.64,
+    });
+  }
+
+  private spawnVfxStyleLockPreview(): void {
+    const physicalTexture = getStyleLockContactTexture(this.vfxStyleLockMode, 'physical');
+    const magicTexture = getStyleLockContactTexture(this.vfxStyleLockMode, 'magic');
+    const groundTexture = getStyleLockGroundTexture(this.vfxStyleLockMode);
+    if (!physicalTexture || !magicTexture || !groundTexture) {
+      return;
+    }
+
+    const centerX = this.context.getVisibleCenterX();
+    const previews = [
+      { texture: physicalTexture, x: centerX - 150, y: 342, depth: 2230, scale: 0.6 },
+      { texture: magicTexture, x: centerX, y: 342, depth: 2230, scale: 0.6 },
+      { texture: groundTexture, x: centerX + 150, y: 408, depth: 2230, scale: 0.58 },
+    ];
+
+    for (const preview of previews) {
+      const container = this.scene.add.container(preview.x, preview.y).setDepth(preview.depth);
+      container.add(this.scene.add.image(0, 0, preview.texture).setOrigin(0.5));
+      this.contactSparks.push({
+        container: container.setScale(preview.scale),
+        elapsedMs: 0,
+        durationMs: 900,
+        startScale: preview.scale,
+        endScaleX: preview.scale * 1.04,
+        endScaleY: preview.scale * 1.04,
+      });
+    }
   }
 
   private updateContactSparks(deltaMs: number): void {

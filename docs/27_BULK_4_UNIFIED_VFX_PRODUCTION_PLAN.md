@@ -1,8 +1,10 @@
 # 27 — BULK 4: Einheitliche, universelle VFX-Sprache
 
-**Status:** geplant, noch nicht implementiert
+**Status:** BULK 4.0 technisch umgesetzt und Ingame-geprüft; visuelle Freigabe offen, BULK 4.1–4.4 noch nicht begonnen
 
 **Planungsstand:** 2026-09-02
+
+**Style-Lock-Ergebnis:** `28_BULK_4_0_VFX_STYLE_LOCK.md`
 
 **Abhängigkeit:** BULK 3 ist abgeschlossen; `CombatImpact` bleibt die verbindliche Quelle für bestätigte Kontakte.
 
@@ -85,7 +87,7 @@ Beispiele:
 
 Die vom Nutzer beobachtete feste Umgebung ist sehr wahrscheinlich der Earthshaker: Das Sheet besitzt zwar transparenten Außenraum, malt aber Gras und rissige Erde direkt in alle Effektphasen. Dadurch sieht der Effekt im Park plausibler aus als auf Rooftop oder Scrapyard.
 
-Beim Air Bonk ist im geladenen `_128`-Sheet kein grüner Hintergrund vorhanden. Der Fehler dort ist stattdessen die fehlende Layertrennung: weißer Bodenspark und Steine sind Teil des Wombat-Body-Frames. Beide Probleme werden in BULK 4.2 gemeinsam behoben.
+Beim Air Bonk ist im geladenen `_128`-Sheet kein grüner Hintergrund vorhanden. Der Fehler dort ist stattdessen die fehlende Layertrennung: weißer Bodenspark und Steine sind Teil des Wombat-Body-Frames. Die Sichtprüfung des produktiven normalisierten Wombat-Sheets zeigt außerdem eingebrannte Kontakt-/Bodenlinien in Jab- und Belly-Slam-Zellen. Diese Body-/VFX-Trennung und der Earthshaker-Terrainersatz werden in BULK 4.2 gemeinsam behoben.
 
 ## 4. Style Guide „Punchy Comic Impact“
 
@@ -207,6 +209,8 @@ Eine visuelle Vorschau rendert jede Animation auf mindestens vier Testflächen: 
 
 **Priorität:** P0, vor jeder Serienproduktion
 
+**Status 2026-09-02:** technisch abgeschlossen; Nutzerfreigabe der empfohlenen Produktionsrichtung offen. Zwei transparente Varianten für Physical Light, Wizard Magic Light und Neutral Ground wurden erzeugt, automatisch geprüft und im Combat Gym als `VFX Ref → Comic A → Comic B` vergleichbar gemacht. Die Ingame-Prüfung umfasst Park/1×, Scrapyard/0,25× und Rooftop/0,5×. Empfehlung: Comic B als Light-/Small-Basis, Comic A als Medium-/Heavy-Formvokabular. Details, Style Board und Abnahme stehen in `28_BULK_4_0_VFX_STYLE_LOCK.md`.
+
 Lieferumfang:
 
 - ein einseitiges visuelles Style Board mit Form-, Kontur-, Farb- und Timingregeln,
@@ -225,7 +229,7 @@ Abnahme:
 - Trefferpose bleibt erkennbar,
 - Light und Magic sind ohne UI unterscheidbar.
 
-**Commit-Gate:** Style Guide und freigegebene Referenzassets getrennt committen. Keine Roster-Massenproduktion vor Freigabe.
+**Commit-Gate:** Style Guide und Referenzassets bleiben als eigener nachvollziehbarer Stand erhalten. Keine Roster-Massenproduktion und kein globaler Produktionsstandard vor Nutzerfreigabe.
 
 ### BULK 4.1 — Bibliothekskern, Manifest und QA
 

@@ -30,6 +30,8 @@ There is currently no `lint` script. State that explicitly if lint coverage is r
 - Verify Light, Heavy, Block, Armor, Invulnerable, and Magic report different impact profiles.
 - Verify a Whiff leaves impact telemetry at `none` and produces no contact spark/SFX.
 - Cycle Combat Gym shake through Full/Reduced/Off; contact and move-cue shake must obey it while sparks remain readable.
+- Cycle Combat Gym VFX through Ref/Comic A/Comic B with button or `V`; Physical, Magic, and Ground previews must use the selected family.
+- With Comic A/B active, verify physical and magic contacts still appear only on confirmed overlap and stay frozen during Pause/Frame Step.
 - During hitstop, press a buffered action and verify its 150-ms lifetime does not age until combat resumes.
 - Verify an idle dummy takes damage exactly once per attack instance.
 - Test the `MENU` touch target in a landscape mobile viewport; it must win over joystick capture.
@@ -41,6 +43,14 @@ There is currently no `lint` script. State that explicitly if lint coverage is r
 - Review enlarged Idle/Walk loops both original and mirrored in `docs/qa/character-loop-previews/`.
 - Review changed attacks in the Combat Gym at 0.25× with boxes off and on.
 - Confirm Body and contact/cast VFX remain separate layers.
+
+## VFX Asset Regression
+
+- Run `npm.cmd run vfx:refresh` after any style-lock Source, Runtime target, or `config/vfx-style-lock.json` change.
+- Confirm all expected assets pass alpha, corner, border, canvas, and nonempty checks in `docs/qa/vfx-style-lock-latest.md`.
+- Review Comic A/B on Park, Scrapyard, and Rooftop; no rectangle, chroma fringe, painted terrain, or fixed ground plate may be visible.
+- Review at 1×, 0.5×, and 0.25× with Pause/Frame Step; Light effects must not hide the defender reaction.
+- Keep Character Body, Contact FX, Ground FX, Weapon FX, and arena art in separate Runtime layers.
 
 ## Desktop Manual Test
 

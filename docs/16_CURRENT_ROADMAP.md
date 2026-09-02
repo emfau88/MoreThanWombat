@@ -12,12 +12,13 @@ This document is the current execution roadmap based on what is already built.
 - BULK 1 is complete: deterministic normalization, whole-sheet QA, enlarged loop previews, and visual review are integrated.
 - BULK 2 is complete: timeline-bound attack profiles, state-based hurtbox/pushbox profiles, explicit lane/height ranges, factions, real overlap contacts, pairwise crowd pushboxes, and Combat Gym profile telemetry are integrated.
 - BULK 3 is complete: one contact event now drives strength/outcome-specific hitstop, short flash, shake, spark, SFX, optional haptics, and Combat Gym impact telemetry.
+- BULK 4.0 is technically complete: six transparent Punchy Comic Impact prototypes, deterministic build/QA, and a Combat Gym `Ref/Comic A/Comic B` comparison are integrated. The production recommendation is Comic B for Light/Small and Comic A as the Medium/Heavy vocabulary; user visual approval is still required.
 - Five Body sheets, ten Idle/Walk groups, and all expected production cells pass hard asset gates.
 - Discount Wizard v2 was rebuilt from a canonical master and approved in Character Select and Combat Gym at 0.25×; body and spell VFX remain separate.
 - Pigeon palette variation and Wombat/Barbarian pose-height warnings were reviewed and accepted as intentional animation changes.
 - Wombat Jab and Belly Slam are the authored Early/Main/Late references; Air Bonk and Axe Rain use explicit data profiles, while unchanged moves retain a safe `main` fallback.
 - Block, Armor, Invulnerable, physical hits, magic hits, and whiffs are explicitly distinct; buffered inputs no longer age during hitstop.
-- The active system block is BULK 4. Its implementation plan is locked in `27_BULK_4_UNIFIED_VFX_PRODUCTION_PLAN.md`: first approve three Punchy Comic Impact prototypes, then build the transparent reusable library. No effect may contain a baked arena or terrain background.
+- The active gate is visual approval of BULK 4.0 in `28_BULK_4_0_VFX_STYLE_LOCK.md`. After approval, BULK 4.1 builds the reusable recipe/director/pooling foundation. No effect may contain a baked arena or terrain background.
 - New roster, stage, and meta content remains frozen until the polished combat slice proves these layers.
 
 ## Current State Summary
@@ -28,7 +29,7 @@ Implemented and usable today:
 - Boot, preload, main menu, character select, battle scene
 - Duel mode
 - Waves mode
-- Combat Gym with fighter/move/dummy/range/lane/mana presets, pause, frame step, slow motion, boxes, and telemetry
+- Combat Gym with fighter/move/dummy/range/lane/mana presets, pause, frame step, slow motion, boxes, VFX Ref/A/B comparison, and telemetry
 - Arena select
 - Arena background and mobile-friendly scaling
 - Keyboard controls
@@ -53,7 +54,8 @@ Implemented and usable today:
 - Main menu button presentation pass
 - GitHub Pages deployment setup
 - Deterministic character-sheet normalization and hard asset QA
-- Typecheck plus 31 automated combat/input/debug/box-profile/impact tests
+- Deterministic VFX style-lock export and alpha/border QA
+- Typecheck plus 33 automated combat/input/debug/box-profile/impact/VFX tests
 - First staged Wave mode flow:
   - `junkyard_run`
   - 3 horizontal sections

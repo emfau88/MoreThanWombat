@@ -75,6 +75,12 @@ export class PreloadScene extends Phaser.Scene {
       frameWidth: 128,
       frameHeight: 128,
     });
+    this.load.image('vfx-style-physical-light-a', `${assetBase}fx/style-lock/physical-light-a.png`);
+    this.load.image('vfx-style-physical-light-b', `${assetBase}fx/style-lock/physical-light-b.png`);
+    this.load.image('vfx-style-magic-light-a', `${assetBase}fx/style-lock/magic-light-a.png`);
+    this.load.image('vfx-style-magic-light-b', `${assetBase}fx/style-lock/magic-light-b.png`);
+    this.load.image('vfx-style-ground-impact-a', `${assetBase}fx/style-lock/ground-impact-a.png`);
+    this.load.image('vfx-style-ground-impact-b', `${assetBase}fx/style-lock/ground-impact-b.png`);
     const impactAudioBase = `${publicBase}kenney_impact-sounds/Audio/`;
     this.load.audio('impact-light', `${impactAudioBase}impactGeneric_light_002.ogg`);
     this.load.audio('impact-medium', `${impactAudioBase}impactPunch_medium_001.ogg`);

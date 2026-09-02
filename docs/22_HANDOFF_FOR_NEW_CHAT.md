@@ -10,7 +10,7 @@ BULK 0 and the architecture safety pass BULK 0.5 from `23_ARCADE_QUALITY_COMBAT_
 - Pause, frame step, slow motion, box overlays, telemetry, guard, armor, invulnerability, and attack-loop dummy modes exist.
 - Move timeline, input buffering, contact resolution, hit feedback, presentation FX, animation registration, and mobile hit testing were separated into focused modules.
 - Melee, projectile, and Axe Rain contacts share hit/blocked/armored/invulnerable outcomes.
-- `npm.cmd run typecheck`, `npm.cmd test`, and `npm.cmd run build` are required checks; 31 tests currently pass.
+- `npm.cmd run typecheck`, `npm.cmd test`, and `npm.cmd run build` are required checks; 33 tests currently pass.
 - The touch `MENU` control has priority over joystick capture and has been verified in a mobile landscape viewport.
 - BULK 1 is complete: deterministic normalization, loop previews, whole-sheet gates, and visual review pass for all five production Body sheets.
 - Discount Wizard v2 was rebuilt from a canonical master; all 20 cells pass, and Wand Smack plus Miscast were approved in the Combat Gym at 0.25×.
@@ -23,7 +23,9 @@ BULK 0 and the architecture safety pass BULK 0.5 from `23_ARCADE_QUALITY_COMBAT_
 - Input buffers no longer age during hitstop; long Hitstun/Air-Attack body tints are removed.
 - Shake is Full/Reduced/Off in Combat Gym and gates both contact and move-cue camera motion.
 - Read `26_BULK_3_HIT_CONFIRM_IMPLEMENTATION.md` before changing impact timing or presentation.
-- The active priority is BULK 4 unified VFX language. Read `27_BULK_4_UNIFIED_VFX_PRODUCTION_PLAN.md`; begin with its Style Lock, preserve the completed contact event, and never bake arena or terrain backgrounds into Runtime VFX.
+- BULK 4.0 Style Lock is technically complete. Six transparent physical/magic/ground prototypes, deterministic `vfx:refresh`, and the Combat Gym Ref/A/B comparison are integrated and tested on Park, Scrapyard, and Rooftop at 1×/0.25×/0.5×.
+- Read `28_BULK_4_0_VFX_STYLE_LOCK.md` for the visual decision: Comic B is recommended for Light/Small and Comic A as the Medium/Heavy vocabulary. User visual approval is the active gate before BULK 4.1.
+- Preserve the completed `CombatImpact` event and never bake arena or terrain backgrounds into Runtime VFX.
 
 ## Purpose
 
@@ -68,6 +70,7 @@ Useful commands:
 npm.cmd run build
 npm.cmd run typecheck
 npm.cmd test
+npm.cmd run vfx:refresh
 npm.cmd run dev -- --host 127.0.0.1 --port 4173
 git status --short
 ```
@@ -392,9 +395,9 @@ Vite warns that the JS chunk is larger than 500 kB. This is not currently a bloc
 
 ## Next Sensible Tasks
 
-1. Complete BULK 4.0 Style Lock from `27_BULK_4_UNIFIED_VFX_PRODUCTION_PLAN.md`: physical hit, Wizard magic hit, and neutral ground-impact prototypes.
-2. Build the reusable VFX manifest/recipe/QA foundation only after visual approval.
-3. Separate Wombat Air Bonk body and ground-impact presentation; replace Earthshaker's baked grass/soil plate with transparent reusable layers.
+1. Review and visually approve the implemented BULK 4.0 direction in `28_BULK_4_0_VFX_STYLE_LOCK.md`.
+2. Build BULK 4.1 reusable VFX recipe/director/pooling foundation only after that approval.
+3. In BULK 4.2 separate Wombat Jab, Belly Slam, and Air Bonk body/contact-ground layers; replace Earthshaker's baked grass/soil plate with transparent reusable layers.
 4. Verify SFX mix, haptics, mobile start-of-battle input, and combat readability on real devices.
 5. Verify the new Wave camera, enemy separation, effect overdraw, and section pacing.
 6. Re-check menu and character-select readability on real devices.
