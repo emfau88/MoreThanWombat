@@ -11,10 +11,11 @@ The project has moved beyond the original combat sandbox MVP. Use the docs in th
 3. `24_BULK_1_CHARACTER_ASSET_IMPLEMENTATION.md`
 4. `25_BULK_2_BOX_PROFILE_IMPLEMENTATION.md`
 5. `26_BULK_3_HIT_CONFIRM_IMPLEMENTATION.md`
-6. `16_CURRENT_ROADMAP.md`
-7. `17_OPEN_TASKS.md`
-8. `21_CHARACTER_ASSET_STANDARD.md`
-9. Relevant implementation spec from `07` to `13` only when touching that system
+6. `27_BULK_4_UNIFIED_VFX_PRODUCTION_PLAN.md`
+7. `16_CURRENT_ROADMAP.md`
+8. `17_OPEN_TASKS.md`
+9. `21_CHARACTER_ASSET_STANDARD.md`
+10. Relevant implementation spec from `07` to `13` only when touching that system
 
 ## Current Truth
 
@@ -31,6 +32,7 @@ These files describe the current built prototype and near-term work:
 - `24_BULK_1_CHARACTER_ASSET_IMPLEMENTATION.md` - completed deterministic sheet pipeline, Discount Wizard v2 rebuild, whole-sheet QA, visual decisions, and the required asset workflow
 - `25_BULK_2_BOX_PROFILE_IMPLEMENTATION.md` - completed data-driven hitbox/hurtbox/pushbox profiles, faction rules, overlap contacts, authored Wombat reference moves, and Combat Gym QA
 - `26_BULK_3_HIT_CONFIRM_IMPLEMENTATION.md` - completed centralized Hit Confirm, strength/outcome profiles, short flashes, contact sparks, impact SFX/haptics, Armor, shake accessibility, and frame-step QA
+- `27_BULK_4_UNIFIED_VFX_PRODUCTION_PLAN.md` - detailed execution order for a transparent, reusable, comic-style VFX library; includes the current asset audit, Wombat background/layer fixes, style-lock gate, mobile budgets, and Definition of Done
 
 ## Foundation Docs
 

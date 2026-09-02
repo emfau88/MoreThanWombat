@@ -23,7 +23,7 @@ BULK 0 and the architecture safety pass BULK 0.5 from `23_ARCADE_QUALITY_COMBAT_
 - Input buffers no longer age during hitstop; long Hitstun/Air-Attack body tints are removed.
 - Shake is Full/Reduced/Off in Combat Gym and gates both contact and move-cue camera motion.
 - Read `26_BULK_3_HIT_CONFIRM_IMPLEMENTATION.md` before changing impact timing or presentation.
-- The active priority is BULK 4 unified VFX language. Preserve the completed contact event and replace/refine presentation layers incrementally.
+- The active priority is BULK 4 unified VFX language. Read `27_BULK_4_UNIFIED_VFX_PRODUCTION_PLAN.md`; begin with its Style Lock, preserve the completed contact event, and never bake arena or terrain backgrounds into Runtime VFX.
 
 ## Purpose
 
@@ -392,12 +392,13 @@ Vite warns that the JS chunk is larger than 500 kB. This is not currently a bloc
 
 ## Next Sensible Tasks
 
-1. Complete BULK 4 unified, mobile-budgeted VFX language on the existing contact event.
-2. Separate Wombat Air Bonk body and ground-impact presentation; refine Earthshaker anticipation/impact/decay.
-3. Verify SFX mix, haptics, mobile start-of-battle input, and combat readability on real devices.
-4. Verify the new Wave camera, enemy separation, effect overdraw, and section pacing.
-5. Re-check menu and character-select readability on real devices.
-6. Expand content only after the visual combat slice passes these gates.
+1. Complete BULK 4.0 Style Lock from `27_BULK_4_UNIFIED_VFX_PRODUCTION_PLAN.md`: physical hit, Wizard magic hit, and neutral ground-impact prototypes.
+2. Build the reusable VFX manifest/recipe/QA foundation only after visual approval.
+3. Separate Wombat Air Bonk body and ground-impact presentation; replace Earthshaker's baked grass/soil plate with transparent reusable layers.
+4. Verify SFX mix, haptics, mobile start-of-battle input, and combat readability on real devices.
+5. Verify the new Wave camera, enemy separation, effect overdraw, and section pacing.
+6. Re-check menu and character-select readability on real devices.
+7. Expand content only after the visual combat slice passes these gates.
 
 ## Do Not Do Next
 

@@ -9,9 +9,13 @@ This is the current practical task list based on the implemented build, not the 
 Goal:
 Replace the restrained code-native contact-spark reference with a coherent, reusable, mobile-budgeted VFX library on the completed `CombatImpact` event.
 
+Execution plan:
+`27_BULK_4_UNIFIED_VFX_PRODUCTION_PLAN.md`. Start with BULK 4.0 Style Lock; do not mass-produce effects before the physical, magic, and neutral ground prototypes are visually approved.
+
 Acceptance:
 
 - Light, medium, heavy, magic, block, armor, and invulnerable effects share one art language
+- Every runtime effect has real alpha transparency and contains no baked arena, grass, soil, asphalt, sky, or solid chroma background
 - Normal hits never hide defender pose/reaction for more than a few frames
 - Wombat Air Bonk body/ground effect separation and Earthshaker anticipation/impact/decay are reviewed
 - Warning and impact geometry stay aligned for Axe Rain

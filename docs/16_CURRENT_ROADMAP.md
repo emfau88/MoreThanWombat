@@ -17,7 +17,7 @@ This document is the current execution roadmap based on what is already built.
 - Pigeon palette variation and Wombat/Barbarian pose-height warnings were reviewed and accepted as intentional animation changes.
 - Wombat Jab and Belly Slam are the authored Early/Main/Late references; Air Bonk and Axe Rain use explicit data profiles, while unchanged moves retain a safe `main` fallback.
 - Block, Armor, Invulnerable, physical hits, magic hits, and whiffs are explicitly distinct; buffered inputs no longer age during hitstop.
-- The active system block is BULK 4: replace the code-native reference sparks with a coherent, performance-budgeted VFX library while preserving the completed contact event.
+- The active system block is BULK 4. Its implementation plan is locked in `27_BULK_4_UNIFIED_VFX_PRODUCTION_PLAN.md`: first approve three Punchy Comic Impact prototypes, then build the transparent reusable library. No effect may contain a baked arena or terrain background.
 - New roster, stage, and meta content remains frozen until the polished combat slice proves these layers.
 
 ## Current State Summary

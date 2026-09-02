@@ -33,7 +33,7 @@
 - Der Produktionsbuild enthält weiterhin einen Chunk über 500 kB; Lazy Loading bleibt BULK 8.
 - `npm audit` meldet drei High-Warnungen in Build-Abhängigkeiten; ein erzwungener Major-Upgrade-Fix wurde bewusst nicht ungeprüft ausgeführt.
 - `Fighter` enthält weiterhin Visual- und State-Verantwortung, aber seine Boxauswahl ist jetzt datengetrieben. Eine weitere Trennung darf gezielt mit realem Bedarf wachsen, nicht als riskanter Big-Bang-Umbau.
-- **Aktiver nächster Schritt:** BULK 4 als visuelle VFX-Bibliothek auf dem abgeschlossenen zentralen Hit-Confirm-Pfad aufbauen; kein weiterer Trefferkern-Umbau ist erforderlich.
+- **Aktiver nächster Schritt:** BULK 4 nach `27_BULK_4_UNIFIED_VFX_PRODUCTION_PLAN.md`. Zuerst wird die comicartige, LF2-inspirierte, aber eigenständige Stilrichtung anhand dreier Ingame-Prototypen festgelegt. Danach entsteht die transparente universelle Bibliothek; kein weiterer Trefferkern-Umbau ist erforderlich.
 
 ### BULK 1: abgeschlossen und visuell abgenommen
 
@@ -725,6 +725,8 @@ Jeder Move beschreibt mindestens:
 **Priorität:** P1
 **Ziel:** Effekte verstärken Information und Charakter, ohne Figuren oder Arena zu verdecken.
 
+**Verbindlicher Detail- und Ausführungsplan:** `27_BULK_4_UNIFIED_VFX_PRODUCTION_PLAN.md`. Er ergänzt diesen Überblick um Bestandsaudit, Punchy-Comic-Style-Lock, universelle Rezepte, Alpha-/Hintergrund-Gates, Teilblöcke 4.0–4.4, Mobile-Budgets und Definition of Done.
+
 #### VFX-Schichten
 
 1. **Anticipation:** Charge, Warning, Windup Dust
@@ -760,6 +762,8 @@ Jeder Move beschreibt mindestens:
 - Alpha, Blend Mode und Overdraw auf schwachem Mobilgerät prüfen
 - Kontakt-VFX folgt dem Kontaktpunkt; Boden-VFX folgt der Ground Plane
 - Body-Sheets und World-FX getrennt halten
+- keine Arena-, Gras-, Erd-, Asphalt- oder Himmelsfläche in ein Runtime-VFX-Sheet einbacken
+- LF2 als Referenz für Klarheit, Tempo und Effektstaffelung verwenden, nicht als Asset- oder Pixelstil-Kopie
 - Partikelanzahl und Lebensdauer budgetieren; Objektpooling verwenden
 
 #### Figurenspezifische Aufgaben
