@@ -1,6 +1,6 @@
 # 28 — BULK 4.0 VFX Style Lock
 
-**Status:** technisch umgesetzt und Ingame-geprüft; visuelle Richtungsfreigabe durch den Nutzer offen
+**Status:** freigegeben und als Produktionsgrundlage von BULK 4.1 umgesetzt
 
 **Stand:** 2026-09-02
 
@@ -27,19 +27,12 @@
 
 Little Fighter 2 dient nur als Referenz für Tempo, Größenhierarchie und sofortige Lesbarkeit. Linienführung, Palette und Assets bleiben eigenständige More-Than-Wombat-Gestaltung.
 
-## Implementierter Vergleichsmodus
+## Implementierter Produktionsmodus
 
-Der Combat Gym startet weiterhin mit `VFX Ref`. Button oder Taste `V` schaltet:
-
-```text
-VFX Ref → VFX Comic A → VFX Comic B → VFX Ref
-```
-
-- Beim Wechsel auf Comic A/B erscheinen Physical, Magic und Ground als gemeinsame Vorschau.
-- Bestätigte physische und magische Kontakte verwenden im jeweiligen Modus das ausgewählte Style-Lock-Asset.
-- Referenzmodus, Trefferlogik, Hitstop, Flash, SFX, Haptik und Schadenswerte bleiben unverändert.
+- Der Combat Gym zeigt die Produktionsbibliothek. Button oder Taste `V` schaltet durch Physical-, Magic-, Outcome-, Motion- und Ground-Rezepte; die Vorschau verwendet dieselbe Combat Clock wie echte Treffer.
+- `Q` beziehungsweise `VFX full/reduced/minimal` schaltet die optionale Residue-Dichte. Kerninformationen bleiben in jedem Qualitätsmodus sichtbar.
+- Bestätigte Kontakte wählen ihr Rezept nur aus Outcome und Stärke. Trefferlogik, Hitstop, Flash, SFX, Haptik und Schadenswerte bleiben unverändert.
 - Pause, Frame Step und 1×/0,5×/0,25× laufen über dieselbe Combat Clock; Effekte bleiben im Pause-Frame stehen.
-- Der Produktionsstandard wurde noch nicht global auf A oder B umgestellt. Das geschieht erst nach visueller Freigabe.
 
 ## Technische und visuelle Abnahme 4.0
 
@@ -66,9 +59,9 @@ Ergebnisdateien: `docs/qa/vfx-style-lock-latest.md` und `docs/qa/vfx-style-lock-
 
 ## Empfehlung und Freigabeentscheidung
 
-**Empfehlung:** Comic B wird die Produktionsbasis für Light Contacts und kleine/mittlere Ground Impacts. Comic A wird nicht verworfen, sondern liefert die größere Formensprache für Medium, Heavy und Ultimate. Diese Kombination ist am klarsten, skaliert am besten in Crowd Combat und kommt der gewünschten LF2-artigen Sofortlesbarkeit am nächsten, ohne die vorhandene hochauflösende Comicoptik zu verlassen.
+**Freigegebene Entscheidung:** Comic B ist die Produktionsbasis für Light Contacts und kleine/mittlere Ground Impacts. Comic A liefert die größere Formensprache für Medium, Heavy und Ultimate. Diese Kombination ist am klarsten, skaliert am besten in Crowd Combat und kommt der gewünschten LF2-artigen Sofortlesbarkeit am nächsten, ohne die vorhandene hochauflösende Comicoptik zu verlassen.
 
-Vor BULK 4.1 ist nur noch die visuelle Richtungsfreigabe offen. Danach wird aus dieser Entscheidung die datengetriebene Bibliothek mit Physical/Magic Light–Heavy, Block, Armor, Invulnerable, Dust, Trails und Warning Shapes gebaut.
+BULK 4.1 setzt diese Entscheidung als datengetriebene Bibliothek mit Physical/Magic Light–Ultimate, Block, Armor, Invulnerable, Dust, Trails und Ground-Rezepten um. Warning Shapes und Signature-Specials folgen gezielt mit BULK 4.2/4.3.
 
 ## Bewusste Grenze zu BULK 4.2
 

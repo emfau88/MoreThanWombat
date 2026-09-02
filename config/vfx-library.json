@@ -1,0 +1,82 @@
+{
+  "version": 1,
+  "sourceRoot": "art-source/vfx/library",
+  "runtimeRoot": "public/assets/fx/library",
+  "assets": [
+    {
+      "id": "block-contact",
+      "category": "contact",
+      "origin": "contact-center",
+      "durationMs": 96,
+      "blendMode": "normal",
+      "qualityClass": "core",
+      "source": "block-contact-source.png",
+      "output": "block-contact.png",
+      "canvasWidth": 128,
+      "canvasHeight": 128,
+      "fitWidth": 108,
+      "fitHeight": 104,
+      "alignment": "center"
+    },
+    {
+      "id": "armor-contact",
+      "category": "contact",
+      "origin": "contact-center",
+      "durationMs": 112,
+      "blendMode": "normal",
+      "qualityClass": "core",
+      "source": "armor-contact-source.png",
+      "output": "armor-contact.png",
+      "canvasWidth": 128,
+      "canvasHeight": 128,
+      "fitWidth": 110,
+      "fitHeight": 110,
+      "alignment": "center"
+    },
+    {
+      "id": "invulnerable-contact",
+      "category": "contact",
+      "origin": "contact-center",
+      "durationMs": 86,
+      "blendMode": "normal",
+      "qualityClass": "core",
+      "source": "invulnerable-contact-source.png",
+      "output": "invulnerable-contact.png",
+      "canvasWidth": 128,
+      "canvasHeight": 128,
+      "fitWidth": 102,
+      "fitHeight": 78,
+      "alignment": "center"
+    },
+    {
+      "id": "whiff-trail",
+      "category": "motion",
+      "origin": "directional-center",
+      "durationMs": 84,
+      "blendMode": "normal",
+      "qualityClass": "core",
+      "source": "whiff-trail-source.png",
+      "output": "whiff-trail.png",
+      "canvasWidth": 256,
+      "canvasHeight": 128,
+      "fitWidth": 236,
+      "fitHeight": 88,
+      "alignment": "center"
+    },
+    {
+      "id": "dust-medium",
+      "category": "ground",
+      "origin": "ground-center",
+      "durationMs": 260,
+      "blendMode": "normal",
+      "qualityClass": "residue",
+      "source": "dust-medium-source.png",
+      "output": "dust-medium.png",
+      "canvasWidth": 256,
+      "canvasHeight": 128,
+      "fitWidth": 238,
+      "fitHeight": 104,
+      "alignment": "ground"
+    }
+  ]
+}

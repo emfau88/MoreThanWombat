@@ -24,7 +24,7 @@
 - Der Touch-Menü-Hit-Test hat Vorrang vor dem großen Joystick-Capture und wird als Einmalimpuls konsumiert.
 - `BattleScene.ts` wurde von über 1.200 auf rund 1.020 Zeilen reduziert; weitere Trennung bleibt später sinnvoll, ist aber kein Sofort-Blocker mehr.
 - Reproduzierbare Befehle sind vorhanden: `npm run typecheck`, `npm test`, `npm run build`.
-- Derzeit bestehen **33 automatisierte Tests** für Timeline, Combat Resolution, Impact-Profile, Input Buffer, Clock, Combat-Gym-Modell, Mobile-Hit-Test, Boxprofile und VFX-Style-Lock-Auswahl.
+- Derzeit bestehen **34 automatisierte Tests** für Timeline, Combat Resolution, Impact-Profile, Input Buffer, Clock, Combat-Gym-Modell, Mobile-Hit-Test, Boxprofile und VFX-Rezept-/Qualitätsauswahl.
 - Browser-Abnahme bestanden: Preset-Wechsel, Guard, Invulnerability, Frame Step, Boxen und Touch-Menü im mobilen Landscape-Viewport.
 
 ### Bekannte Restpunkte nach BULK 0/0,5
@@ -33,7 +33,7 @@
 - Der Produktionsbuild enthält weiterhin einen Chunk über 500 kB; Lazy Loading bleibt BULK 8.
 - `npm audit` meldet drei High-Warnungen in Build-Abhängigkeiten; ein erzwungener Major-Upgrade-Fix wurde bewusst nicht ungeprüft ausgeführt.
 - `Fighter` enthält weiterhin Visual- und State-Verantwortung, aber seine Boxauswahl ist jetzt datengetrieben. Eine weitere Trennung darf gezielt mit realem Bedarf wachsen, nicht als riskanter Big-Bang-Umbau.
-- **Aktiver nächster Schritt:** BULK 4.0 ist technisch umgesetzt; Style Board, sechs transparente Varianten und Ingame-A/B-Vergleich stehen in `28_BULK_4_0_VFX_STYLE_LOCK.md`. Nach Nutzerfreigabe folgt BULK 4.1 mit der universellen Bibliotheksarchitektur; kein weiterer Trefferkern-Umbau ist erforderlich.
+- **Aktiver nächster Schritt:** BULK 4.0 und 4.1 sind umgesetzt; Style Board, transparente Bibliothek, Rezeptauswahl und gepoolte Präsentationslayer stehen in `28_BULK_4_0_VFX_STYLE_LOCK.md`. Als Nächstes folgt die Wombat-Layertrennung in BULK 4.2; kein weiterer Trefferkern-Umbau ist erforderlich.
 
 ### BULK 1: abgeschlossen und visuell abgenommen
 
@@ -92,7 +92,7 @@ Die richtige Strategie lautet deshalb:
 
 > **Zuerst einen kleinen Combat-Gym- und Asset-QA-Prozess aufbauen, dann einen einzigen Kampf vollständig polieren. Erst danach neue Stages, Figuren oder Meta-Systeme produzieren.**
 
-**Status nach BULK 0/0,5/1/2/3 und 4.0:** Combat Gym, Timeline/Resolver, Input Buffer, Character-Asset-Pipeline, Boxprofile, präziser Kontaktpunkt, zentrale Hit-Confirm-/Impact-Orchestrierung sowie der transparente VFX-Style-Lock sind umgesetzt. Charakter-Root, Clipping, Wizard-Farbidentität, Collision-Grundmodell und Trefferfeedback-Architektur sind nicht mehr die aktiven Hauptblöcke. Der nächste Qualitätshebel ist nach visueller Freigabe BULK 4.1: die datengetriebene VFX-Bibliothek; danach folgen Wombat-/Signature-Layer, Audio-Mix und defensive Combat States.
+**Status nach BULK 0/0,5/1/2/3, 4.0 und 4.1:** Combat Gym, Timeline/Resolver, Input Buffer, Character-Asset-Pipeline, Boxprofile, präziser Kontaktpunkt, zentrale Hit-Confirm-/Impact-Orchestrierung sowie die transparente, datengetriebene VFX-Bibliothek sind umgesetzt. Charakter-Root, Clipping, Wizard-Farbidentität, Collision-Grundmodell und Trefferfeedback-Architektur sind nicht mehr die aktiven Hauptblöcke. Der nächste Qualitätshebel ist BULK 4.2: Wombat-/Signature-Layer; danach folgen Audio-Mix und defensive Combat States.
 
 ---
 
@@ -161,7 +161,7 @@ Die Pixelmessung ist ein Diagnosewerkzeug, kein Ersatz für eine Animation Revie
 | Waves | drei kurze Waves vorhanden | technischer Beweis | Gegnerrollen, Koordination, Stage Beats, Boss |
 | Mobile Controls | großer Joystick und vier Aktionen vorhanden | spielbar | HUD-Flächen, Kontext, Portrait, Desktop-Ausblendung |
 | Audio | acht kontaktgebundene CC0-Impact-SFX und optionale Haptik integriert | brauchbare Impact-Grundlage | Musik, globaler Mix, Varianten und Lautstärkeregler |
-| QA | Combat Gym, Box-/Impact-Telemetrie, Kontaktmarker, Frame Step, VFX Ref/A/B, 33 Kernsystemtests, Loop-Vorschauen sowie Character- und VFX-Asset-Gates | gute Grundlage | Capture-Automation, Performance-Messung und CI-Gates |
+| QA | Combat Gym, Box-/Impact-Telemetrie, Kontaktmarker, Frame Step, VFX-Rezept-/Qualitätslabor, 34 Kernsystemtests, Loop-Vorschauen sowie Character- und VFX-Asset-Gates | gute Grundlage | Capture-Automation, Performance-Messung und CI-Gates |
 | Produktionsreife | umfangreiche Dokumentation | gut | Provenienz/Lizenzen, Modulentkopplung, Performance-Budgets |
 
 ### Technische Größenordnung
@@ -727,7 +727,7 @@ Jeder Move beschreibt mindestens:
 
 **Verbindlicher Detail- und Ausführungsplan:** `27_BULK_4_UNIFIED_VFX_PRODUCTION_PLAN.md`. Er ergänzt diesen Überblick um Bestandsaudit, Punchy-Comic-Style-Lock, universelle Rezepte, Alpha-/Hintergrund-Gates, Teilblöcke 4.0–4.4, Mobile-Budgets und Definition of Done.
 
-**Umsetzungsstatus 2026-09-02:** BULK 4.0 ist technisch abgeschlossen. Sechs transparente Style-Lock-Assets, reproduzierbarer Export/QA und der Combat-Gym-Vergleich `Ref/Comic A/Comic B` bestehen. Geprüft wurden Park bei 1×, Scrapyard bei 0,25× und Rooftop bei 0,5×. Die empfohlene Richtung steht in `28_BULK_4_0_VFX_STYLE_LOCK.md`; BULK 4.1 wartet auf Nutzerfreigabe.
+**Umsetzungsstatus 2026-09-02:** BULK 4.0 und 4.1 sind abgeschlossen. Der freigegebene Style Lock ist als transparente Bibliothek mit zwei Manifesten, automatischer Alpha-/Rand-QA, Outcome×Stärke-Rezepten, gepoolten Image-Layern und Combat-Gym-Rezept-/Qualitätslabor umgesetzt. Park/1×, Scrapyard/0,25× und Rooftop/0,5× bestehen die sichtbare Hintergrundprüfung; Block, Armor und Invulnerable wurden zusätzlich am echten Kontaktpunkt geprüft. BULK 4.2 ist der aktive nächste Schritt.
 
 #### VFX-Schichten
 

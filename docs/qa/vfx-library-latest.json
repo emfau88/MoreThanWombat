@@ -1,0 +1,181 @@
+{
+  "generatedAt": "2026-09-02T18:59:12.238Z",
+  "results": [
+    {
+      "id": "block-contact",
+      "category": "contact",
+      "source": "block-contact-source.png",
+      "output": "block-contact.png",
+      "sourceMetrics": {
+        "width": 1503,
+        "height": 1047,
+        "transparentRatio": 0.7637,
+        "partialRatio": 0.2354,
+        "cornersTransparent": true,
+        "borderTransparent": true,
+        "bounds": {
+          "minX": 256,
+          "minY": 29,
+          "maxX": 1139,
+          "maxY": 1003
+        }
+      },
+      "runtimeMetrics": {
+        "width": 128,
+        "height": 128,
+        "transparentRatio": 0.7385,
+        "partialRatio": 0.2615,
+        "cornersTransparent": true,
+        "borderTransparent": true,
+        "bounds": {
+          "minX": 17,
+          "minY": 13,
+          "maxX": 111,
+          "maxY": 115
+        }
+      },
+      "failures": []
+    },
+    {
+      "id": "armor-contact",
+      "category": "contact",
+      "source": "armor-contact-source.png",
+      "output": "armor-contact.png",
+      "sourceMetrics": {
+        "width": 1254,
+        "height": 1254,
+        "transparentRatio": 0.6509,
+        "partialRatio": 0.3483,
+        "cornersTransparent": true,
+        "borderTransparent": true,
+        "bounds": {
+          "minX": 65,
+          "minY": 46,
+          "maxX": 1186,
+          "maxY": 1187
+        }
+      },
+      "runtimeMetrics": {
+        "width": 128,
+        "height": 128,
+        "transparentRatio": 0.6851,
+        "partialRatio": 0.3149,
+        "cornersTransparent": true,
+        "borderTransparent": true,
+        "bounds": {
+          "minX": 10,
+          "minY": 10,
+          "maxX": 117,
+          "maxY": 118
+        }
+      },
+      "failures": []
+    },
+    {
+      "id": "invulnerable-contact",
+      "category": "contact",
+      "source": "invulnerable-contact-source.png",
+      "output": "invulnerable-contact.png",
+      "sourceMetrics": {
+        "width": 1536,
+        "height": 1024,
+        "transparentRatio": 0.9534,
+        "partialRatio": 0.0466,
+        "cornersTransparent": true,
+        "borderTransparent": true,
+        "bounds": {
+          "minX": 492,
+          "minY": 241,
+          "maxX": 1041,
+          "maxY": 744
+        }
+      },
+      "runtimeMetrics": {
+        "width": 128,
+        "height": 128,
+        "transparentRatio": 0.8906,
+        "partialRatio": 0.1094,
+        "cornersTransparent": true,
+        "borderTransparent": true,
+        "bounds": {
+          "minX": 22,
+          "minY": 26,
+          "maxX": 106,
+          "maxY": 102
+        }
+      },
+      "failures": []
+    },
+    {
+      "id": "whiff-trail",
+      "category": "motion",
+      "source": "whiff-trail-source.png",
+      "output": "whiff-trail.png",
+      "sourceMetrics": {
+        "width": 1672,
+        "height": 940,
+        "transparentRatio": 0.8661,
+        "partialRatio": 0.1323,
+        "cornersTransparent": true,
+        "borderTransparent": true,
+        "bounds": {
+          "minX": 82,
+          "minY": 215,
+          "maxX": 1590,
+          "maxY": 627
+        }
+      },
+      "runtimeMetrics": {
+        "width": 256,
+        "height": 128,
+        "transparentRatio": 0.8387,
+        "partialRatio": 0.1611,
+        "cornersTransparent": true,
+        "borderTransparent": true,
+        "bounds": {
+          "minX": 11,
+          "minY": 32,
+          "maxX": 245,
+          "maxY": 96
+        }
+      },
+      "failures": []
+    },
+    {
+      "id": "dust-medium",
+      "category": "ground",
+      "source": "dust-medium-source.png",
+      "output": "dust-medium.png",
+      "sourceMetrics": {
+        "width": 1672,
+        "height": 940,
+        "transparentRatio": 0.8309,
+        "partialRatio": 0.1684,
+        "cornersTransparent": true,
+        "borderTransparent": true,
+        "bounds": {
+          "minX": 71,
+          "minY": 305,
+          "maxX": 1569,
+          "maxY": 725
+        }
+      },
+      "runtimeMetrics": {
+        "width": 256,
+        "height": 128,
+        "transparentRatio": 0.7928,
+        "partialRatio": 0.2072,
+        "cornersTransparent": true,
+        "borderTransparent": true,
+        "bounds": {
+          "minX": 9,
+          "minY": 56,
+          "maxX": 246,
+          "maxY": 121
+        }
+      },
+      "failures": []
+    }
+  ],
+  "failures": []
+}

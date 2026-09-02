@@ -34,7 +34,7 @@ These files describe the current built prototype and near-term work:
 - `25_BULK_2_BOX_PROFILE_IMPLEMENTATION.md` - completed data-driven hitbox/hurtbox/pushbox profiles, faction rules, overlap contacts, authored Wombat reference moves, and Combat Gym QA
 - `26_BULK_3_HIT_CONFIRM_IMPLEMENTATION.md` - completed centralized Hit Confirm, strength/outcome profiles, short flashes, contact sparks, impact SFX/haptics, Armor, shake accessibility, and frame-step QA
 - `27_BULK_4_UNIFIED_VFX_PRODUCTION_PLAN.md` - detailed execution order for a transparent, reusable, comic-style VFX library; includes the current asset audit, Wombat background/layer fixes, style-lock gate, mobile budgets, and Definition of Done
-- `28_BULK_4_0_VFX_STYLE_LOCK.md` - implemented six-asset Punchy Comic Impact style board, Combat Gym A/B comparison, visual/technical QA, production recommendation, and approval boundary
+- `28_BULK_4_0_VFX_STYLE_LOCK.md` - approved Punchy Comic Impact style board, visual/technical QA, production decision, and its 4.1 recipe-library integration
 
 ## Foundation Docs
 

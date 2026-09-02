@@ -1,10 +1,10 @@
 # 27 — BULK 4: Einheitliche, universelle VFX-Sprache
 
-**Status:** BULK 4.0 technisch umgesetzt und Ingame-geprüft; visuelle Freigabe offen, BULK 4.1–4.4 noch nicht begonnen
+**Status:** BULK 4.0 und BULK 4.1 abgeschlossen; BULK 4.2–4.4 noch nicht begonnen
 
 **Planungsstand:** 2026-09-02
 
-**Style-Lock-Ergebnis:** `28_BULK_4_0_VFX_STYLE_LOCK.md`
+**Style-Lock-Ergebnis:** `28_BULK_4_0_VFX_STYLE_LOCK.md`; Comic B ist die Light-/Small-Produktionsbasis, Comic A die Medium-/Heavy-Formensprache.
 
 **Abhängigkeit:** BULK 3 ist abgeschlossen; `CombatImpact` bleibt die verbindliche Quelle für bestätigte Kontakte.
 
@@ -209,7 +209,7 @@ Eine visuelle Vorschau rendert jede Animation auf mindestens vier Testflächen: 
 
 **Priorität:** P0, vor jeder Serienproduktion
 
-**Status 2026-09-02:** technisch abgeschlossen; Nutzerfreigabe der empfohlenen Produktionsrichtung offen. Zwei transparente Varianten für Physical Light, Wizard Magic Light und Neutral Ground wurden erzeugt, automatisch geprüft und im Combat Gym als `VFX Ref → Comic A → Comic B` vergleichbar gemacht. Die Ingame-Prüfung umfasst Park/1×, Scrapyard/0,25× und Rooftop/0,5×. Empfehlung: Comic B als Light-/Small-Basis, Comic A als Medium-/Heavy-Formvokabular. Details, Style Board und Abnahme stehen in `28_BULK_4_0_VFX_STYLE_LOCK.md`.
+**Status 2026-09-02:** abgeschlossen und freigegeben. Die transparente Produktionsbibliothek nutzt Comic B für Light-/Small-Formen und die Comic-A-Formensprache für Medium/Heavy. Die frühere Vergleichsansicht wurde durch das produktive VFX Lab ersetzt: `V` rotiert die universellen Rezepte, `Q` schaltet Full/Reduced/Minimal. Details, Style Board und Abnahme stehen in `28_BULK_4_0_VFX_STYLE_LOCK.md`.
 
 Lieferumfang:
 
@@ -235,6 +235,8 @@ Abnahme:
 
 **Priorität:** P0
 
+**Status 2026-09-02:** abgeschlossen. `config/vfx-library.json` beschreibt Runtime-Canvas, Ursprung, Dauer, Blend Mode und Qualitätsklasse für Block, Armor, Invulnerable, Whiff Trail und Dust Medium. Die vorhandenen Style-Lock-Assets vervollständigen Physical/Magic Light–Ultimate sowie Ground Small–Heavy. `VfxRecipeRegistry` wählt ausschließlich aus Outcome und Stärke; `UniversalVfxDirector` poolt Image-Layer. Der Combat Gym bietet eine reproduzierbare Rezept-Laborauswahl (`V`) und Full/Reduced/Minimal (`Q`). `npm.cmd run vfx:refresh` prüft Style Lock und Bibliothek gemeinsam.
+
 Lieferumfang:
 
 - Atlas-/Manifest-Struktur,
@@ -258,7 +260,7 @@ Startbibliothek:
 
 Abnahme:
 
-- kein normaler Treffer benötigt Attack-ID-Sondercode,
+- kein normaler Treffer benötigt Attack-ID-Sondercode: `physical|magic|block|armor|invulnerable × light…ultimate` wird rezeptbasiert gewählt,
 - Whiff erzeugt keinen Contact Spark,
 - alle Rezepte sind im Combat Gym reproduzierbar,
 - Pause/Frame Step halten die Effektzeit deterministisch,
@@ -382,4 +384,4 @@ Jeder Commit muss für sich typecheck-/testbar sein. Änderungen an Wombat-Body-
 
 ## 12. Nächster konkreter Schritt
 
-Als Nächstes wird ausschließlich **BULK 4.0** umgesetzt: drei kleine Ingame-Prototypen und ein Style Board. Erst nach visueller Freigabe beginnt der Bibliotheks- und Roster-Ausbau.
+Als Nächstes folgt **BULK 4.2**: Wombat-Körper/World-FX sauber trennen und Earthshaker aus transparenten, universellen Layern neu aufbauen. Die Bibliotheks- und QA-Schnittstelle aus BULK 4.1 ist dafür verbindlich.

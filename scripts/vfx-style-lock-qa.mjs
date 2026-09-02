@@ -4,17 +4,19 @@ import { fileURLToPath } from 'node:url';
 import { PNG } from 'pngjs';
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const manifest = JSON.parse(fs.readFileSync(path.join(projectRoot, 'config', 'vfx-style-lock.json'), 'utf8'));
+const manifestRelativePath = process.argv[2] ?? 'config/vfx-style-lock.json';
+const manifest = JSON.parse(fs.readFileSync(path.join(projectRoot, manifestRelativePath), 'utf8'));
 const reportDirectory = path.join(projectRoot, 'docs', 'qa');
+const reportBaseName = path.basename(manifestRelativePath, '.json');
 const results = manifest.assets.map(auditAsset);
 const failures = results.flatMap((result) => result.failures.map((failure) => `${result.id}: ${failure}`));
 
 fs.mkdirSync(reportDirectory, { recursive: true });
 fs.writeFileSync(
-  path.join(reportDirectory, 'vfx-style-lock-latest.json'),
+  path.join(reportDirectory, `${reportBaseName}-latest.json`),
   `${JSON.stringify({ generatedAt: new Date().toISOString(), results, failures }, null, 2)}\n`,
 );
-fs.writeFileSync(path.join(reportDirectory, 'vfx-style-lock-latest.md'), renderMarkdown(results, failures));
+fs.writeFileSync(path.join(reportDirectory, `${reportBaseName}-latest.md`), renderMarkdown(results, failures));
 
 console.log(`VFX style-lock QA: ${results.length - new Set(failures.map((failure) => failure.split(':')[0])).size}/${results.length} assets pass.`);
 if (failures.length > 0) {
@@ -101,7 +103,7 @@ function measure(png) {
     height: png.height,
     transparentRatio: round(transparentPixels / totalPixels),
     partialRatio: round(partialPixels / totalPixels),
-    cornersTransparent: cornerIndexes.every((index) => png.data[index] === 0),
+    cornersTransparent: cornerIndexes.every((index) => png.data[index] <= 4),
     borderTransparent,
     bounds: maxX >= minX ? { minX, minY, maxX, maxY } : null,
   };

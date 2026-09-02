@@ -2,16 +2,19 @@ import Phaser from 'phaser';
 import type { AttackDefinition } from '../data/attacks';
 import { attacksById } from '../data/attacks';
 import type { Fighter, FighterBounds } from './Fighter';
-import type { CombatImpact, HitFeedbackProfile, PresentedImpactStyle } from './HitFeedback';
+import type { CombatImpact, HitFeedbackProfile } from './HitFeedback';
 import { MoveStartCueController } from './MoveStartCueController';
 import { getRectOverlapCenter, type Rect } from '../utils/Rect';
 import { canCombatFactionHit } from './CombatFaction';
 import {
-  cycleVfxStyleLockMode,
-  getStyleLockContactTexture,
-  getStyleLockGroundTexture,
-  type VfxStyleLockMode,
-} from './VfxStyleLock';
+  VFX_LAB_RECIPE_IDS,
+  cycleVfxQuality,
+  getImpactVfxRecipe,
+  getVfxLabRecipe,
+  type VfxLabRecipeId,
+  type VfxQuality,
+} from './VfxRecipeRegistry';
+import { UniversalVfxDirector } from './UniversalVfxDirector';
 
 type AxeRainStrike = {
   owner: Fighter;
@@ -24,15 +27,6 @@ type AxeRainStrike = {
   hitTargetInstanceIds: Set<number>;
 };
 
-type ActiveContactSpark = {
-  container: Phaser.GameObjects.Container;
-  elapsedMs: number;
-  durationMs: number;
-  startScale: number;
-  endScaleX: number;
-  endScaleY: number;
-};
-
 export type CombatPresentationContext = {
   getArenaBounds: () => FighterBounds;
   getCurrentTargets: () => Fighter[];
@@ -43,14 +37,16 @@ export type CombatPresentationContext = {
 
 export class CombatPresentationController {
   private readonly axeRainStrikes: AxeRainStrike[] = [];
-  private readonly contactSparks: ActiveContactSpark[] = [];
   private readonly moveStartCues: MoveStartCueController;
-  private vfxStyleLockMode: VfxStyleLockMode = 'reference';
+  private readonly universalVfx: UniversalVfxDirector;
+  private vfxQuality: VfxQuality = 'full';
+  private vfxLabRecipeIndex = 0;
 
   constructor(
     private readonly scene: Phaser.Scene,
     private readonly context: CombatPresentationContext,
   ) {
+    this.universalVfx = new UniversalVfxDirector(scene);
     this.moveStartCues = new MoveStartCueController({
       'wombat-earthshaker': (fighter) => {
         this.spawnFx('wombat-earthshaker-fx', fighter.x, fighter.y - 178, fighter.y - 6, false, 1.72, 'wombat-earthshaker-fx');
@@ -100,7 +96,14 @@ export class CombatPresentationController {
       this.spawnFx('discount-wizard-fx-hit-puff', contactX, contactY, target.y + 8, false, 0.96);
     }
 
-    this.spawnGenericContactSpark(contactX, contactY, target.y + 20, profile.sparkStyle, profile.sparkScale);
+    this.universalVfx.spawn(
+      getImpactVfxRecipe(profile),
+      contactX,
+      contactY,
+      target.y + 20,
+      this.vfxQuality,
+      impact.attacker?.facing === 'left' ? -1 : 1,
+    );
   }
 
   update(deltaMs: number): CombatImpact[] {
@@ -135,30 +138,34 @@ export class CombatPresentationController {
   }
 
   advancePresentation(deltaMs: number): void {
-    this.updateContactSparks(deltaMs);
+    this.universalVfx.update(deltaMs);
   }
 
-  cycleVfxStyleLockMode(): VfxStyleLockMode {
-    this.vfxStyleLockMode = cycleVfxStyleLockMode(this.vfxStyleLockMode);
-    if (this.vfxStyleLockMode !== 'reference') {
-      this.spawnVfxStyleLockPreview();
-    }
-    return this.vfxStyleLockMode;
+  cycleVfxLabRecipe(): VfxLabRecipeId {
+    this.vfxLabRecipeIndex = (this.vfxLabRecipeIndex + 1) % VFX_LAB_RECIPE_IDS.length;
+    this.spawnVfxLabPreview();
+    return this.getVfxLabRecipeId();
   }
 
-  getVfxStyleLockMode(): VfxStyleLockMode {
-    return this.vfxStyleLockMode;
+  getVfxLabRecipeId(): VfxLabRecipeId {
+    return VFX_LAB_RECIPE_IDS[this.vfxLabRecipeIndex];
+  }
+
+  cycleVfxQuality(): VfxQuality {
+    this.vfxQuality = cycleVfxQuality(this.vfxQuality);
+    return this.vfxQuality;
+  }
+
+  getVfxQuality(): VfxQuality {
+    return this.vfxQuality;
   }
 
   clearTransientEffects(): void {
+    this.universalVfx.clear();
     for (const strike of this.axeRainStrikes) {
       strike.warning.destroy();
     }
     this.axeRainStrikes.length = 0;
-    for (const spark of this.contactSparks) {
-      spark.container.destroy(true);
-    }
-    this.contactSparks.length = 0;
   }
 
   destroy(): void {
@@ -378,127 +385,11 @@ export class CombatPresentationController {
     sprite.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => sprite.destroy());
   }
 
-  private spawnGenericContactSpark(
-    x: number,
-    y: number,
-    depth: number,
-    style: PresentedImpactStyle,
-    scale: number,
-  ): void {
-    const styleLockTexture = getStyleLockContactTexture(this.vfxStyleLockMode, style);
-    if (styleLockTexture) {
-      this.spawnStyleLockContactSpark(x, y, depth, styleLockTexture, scale);
-      return;
-    }
-
-    const palette: Record<PresentedImpactStyle, { core: number; edge: number; rays: number }> = {
-      physical: { core: 0xfff7d1, edge: 0xff9f43, rays: 5 },
-      magic: { core: 0xffffff, edge: 0xd86cff, rays: 6 },
-      block: { core: 0xd7fbff, edge: 0x52c7e8, rays: 4 },
-      armor: { core: 0xffdf9e, edge: 0xb76b2d, rays: 5 },
-      invulnerable: { core: 0xe9fdff, edge: 0x77d9ff, rays: 3 },
-    };
-    const colors = palette[style];
-    const container = this.scene.add.container(x, y).setDepth(depth);
-    const ring = this.scene.add
-      .ellipse(0, 0, 30, 20, colors.edge, 0.08)
-      .setStrokeStyle(2, colors.edge, 0.9)
-      .setBlendMode(Phaser.BlendModes.ADD);
-    const core = this.scene.add
-      .ellipse(0, 0, 15, 11, colors.core, 0.96)
-      .setBlendMode(Phaser.BlendModes.ADD);
-    const rays: Phaser.GameObjects.Rectangle[] = [];
-
-    for (let index = 0; index < colors.rays; index += 1) {
-      const angle = (Math.PI * 2 * index) / colors.rays + (style === 'magic' ? 0.24 : 0);
-      const length = 15 + (index % 2) * 5;
-      const ray = this.scene.add
-        .rectangle(Math.cos(angle) * 12, Math.sin(angle) * 8, length, 3, colors.edge, 0.9)
-        .setRotation(angle)
-        .setBlendMode(Phaser.BlendModes.ADD);
-      rays.push(ray);
-    }
-
-    container.add([ring, ...rays, core]);
-    const startScale = scale * 0.68;
-    container.setScale(startScale);
-    this.contactSparks.push({
-      container,
-      elapsedMs: 0,
-      durationMs: style === 'invulnerable' ? 105 : 125,
-      startScale,
-      endScaleX: scale * 1.16,
-      endScaleY: scale * (style === 'block' ? 0.94 : 1.16),
-    });
-  }
-
-  private spawnStyleLockContactSpark(
-    x: number,
-    y: number,
-    depth: number,
-    textureKey: string,
-    scale: number,
-  ): void {
-    const container = this.scene.add.container(x, y).setDepth(depth);
-    const image = this.scene.add.image(0, 0, textureKey).setOrigin(0.5);
-    container.add(image);
-    const startScale = scale * 0.44;
-    this.contactSparks.push({
-      container: container.setScale(startScale),
-      elapsedMs: 0,
-      durationMs: 118,
-      startScale,
-      endScaleX: scale * 0.64,
-      endScaleY: scale * 0.64,
-    });
-  }
-
-  private spawnVfxStyleLockPreview(): void {
-    const physicalTexture = getStyleLockContactTexture(this.vfxStyleLockMode, 'physical');
-    const magicTexture = getStyleLockContactTexture(this.vfxStyleLockMode, 'magic');
-    const groundTexture = getStyleLockGroundTexture(this.vfxStyleLockMode);
-    if (!physicalTexture || !magicTexture || !groundTexture) {
-      return;
-    }
-
+  private spawnVfxLabPreview(): void {
+    const recipe = getVfxLabRecipe(this.getVfxLabRecipeId());
     const centerX = this.context.getVisibleCenterX();
-    const previews = [
-      { texture: physicalTexture, x: centerX - 150, y: 342, depth: 2230, scale: 0.6 },
-      { texture: magicTexture, x: centerX, y: 342, depth: 2230, scale: 0.6 },
-      { texture: groundTexture, x: centerX + 150, y: 408, depth: 2230, scale: 0.58 },
-    ];
-
-    for (const preview of previews) {
-      const container = this.scene.add.container(preview.x, preview.y).setDepth(preview.depth);
-      container.add(this.scene.add.image(0, 0, preview.texture).setOrigin(0.5));
-      this.contactSparks.push({
-        container: container.setScale(preview.scale),
-        elapsedMs: 0,
-        durationMs: 900,
-        startScale: preview.scale,
-        endScaleX: preview.scale * 1.04,
-        endScaleY: preview.scale * 1.04,
-      });
-    }
-  }
-
-  private updateContactSparks(deltaMs: number): void {
-    for (let index = this.contactSparks.length - 1; index >= 0; index -= 1) {
-      const spark = this.contactSparks[index];
-      spark.elapsedMs += Math.max(0, deltaMs);
-      const progress = Phaser.Math.Clamp(spark.elapsedMs / spark.durationMs, 0, 1);
-      const eased = 1 - (1 - progress) * (1 - progress);
-      spark.container
-        .setAlpha(1 - progress)
-        .setScale(
-          Phaser.Math.Linear(spark.startScale, spark.endScaleX, eased),
-          Phaser.Math.Linear(spark.startScale, spark.endScaleY, eased),
-        );
-      if (progress >= 1) {
-        spark.container.destroy(true);
-        this.contactSparks.splice(index, 1);
-      }
-    }
+    const y = recipe.anchor === 'ground' ? 408 : 342;
+    this.universalVfx.spawn(recipe, centerX, y, 2230, this.vfxQuality);
   }
 
   private shake(durationMs: number, intensity: number): void {

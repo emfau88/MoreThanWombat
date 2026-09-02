@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { PNG } from 'pngjs';
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const manifestPath = path.join(projectRoot, 'config', 'vfx-style-lock.json');
+const manifestPath = path.join(projectRoot, process.argv[2] ?? 'config/vfx-style-lock.json');
 const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
 const sourceRoot = path.join(projectRoot, manifest.sourceRoot);
 const runtimeRoot = path.join(projectRoot, manifest.runtimeRoot);

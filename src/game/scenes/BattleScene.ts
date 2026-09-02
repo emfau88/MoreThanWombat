@@ -663,8 +663,10 @@ export class BattleScene extends Phaser.Scene {
       onReset: () => this.restartBattle(),
       onToggleDebug: () => this.toggleDebug(),
       onCycleShakeMode: () => this.combatFeedback.cycleShakeMode(),
-      onCycleVfxStyle: () => this.combatPresentation.cycleVfxStyleLockMode(),
-      getVfxStyle: () => this.combatPresentation.getVfxStyleLockMode(),
+      onCycleVfxLabRecipe: () => this.combatPresentation.cycleVfxLabRecipe(),
+      getVfxLabRecipe: () => this.combatPresentation.getVfxLabRecipeId(),
+      onCycleVfxQuality: () => this.combatPresentation.cycleVfxQuality(),
+      getVfxQuality: () => this.combatPresentation.getVfxQuality(),
     });
   }
 
