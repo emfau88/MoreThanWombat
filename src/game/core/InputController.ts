@@ -12,7 +12,7 @@ export type PlayerInputState = {
   menuPressed: boolean;
 };
 
-type TouchInputState = Omit<PlayerInputState, 'debugTogglePressed' | 'restartPressed' | 'menuPressed'>;
+type TouchInputState = Omit<PlayerInputState, 'debugTogglePressed' | 'restartPressed'>;
 
 export class InputController {
   private readonly cursors: Phaser.Types.Input.Keyboard.CursorKeys;
@@ -33,6 +33,7 @@ export class InputController {
     specialPressed: false,
     ultimatePressed: false,
     jumpPressed: false,
+    menuPressed: false,
   };
 
   constructor(scene: Phaser.Scene) {
@@ -86,7 +87,7 @@ export class InputController {
     const keyboardJumpPressed = Phaser.Input.Keyboard.JustDown(this.actionKeys.jump);
     const debugTogglePressed = Phaser.Input.Keyboard.JustDown(this.actionKeys.debug);
     const restartPressed = Phaser.Input.Keyboard.JustDown(this.actionKeys.restart);
-    const menuPressed = Phaser.Input.Keyboard.JustDown(this.actionKeys.menu);
+    const keyboardMenuPressed = Phaser.Input.Keyboard.JustDown(this.actionKeys.menu);
 
     const inputState: PlayerInputState = {
       moveX: this.resolveAxis(moveX, this.touchState.moveX),
@@ -97,13 +98,14 @@ export class InputController {
       jumpPressed: keyboardJumpPressed || this.touchState.jumpPressed,
       debugTogglePressed,
       restartPressed,
-      menuPressed,
+      menuPressed: keyboardMenuPressed || this.touchState.menuPressed,
     };
 
     this.touchState.attackPressed = false;
     this.touchState.specialPressed = false;
     this.touchState.ultimatePressed = false;
     this.touchState.jumpPressed = false;
+    this.touchState.menuPressed = false;
 
     return inputState;
   }

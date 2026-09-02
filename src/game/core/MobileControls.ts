@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import type { PlayerInputState } from './InputController';
+import { resolveMobileControlTarget } from './MobileControlHitTest';
 
 type ControlElements = {
   baseShadow: Phaser.GameObjects.Arc;
@@ -75,6 +76,7 @@ export class MobileControls {
     this.touchState.specialPressed = false;
     this.touchState.ultimatePressed = false;
     this.touchState.jumpPressed = false;
+    this.touchState.menuPressed = false;
     return currentState;
   }
 
@@ -215,36 +217,49 @@ export class MobileControls {
 
   private handlePointerDown(pointer: Phaser.Input.Pointer): void {
     const width = this.scene.scale.width;
+    const target = resolveMobileControlTarget(pointer, {
+      screenWidth: width,
+      menu: this.controls.menuButton,
+      attack: this.controls.attackButton,
+      special: this.controls.specialButton,
+      ultimate: this.controls.ultimateButton,
+      jump: this.controls.jumpButton,
+      joystickAvailable: this.joystickPointerId === null,
+    });
 
-    if (pointer.x <= width * 0.5 && this.joystickPointerId === null) {
+    if (target === 'menu') {
+      this.touchState.menuPressed = true;
+      this.controls.menuButton.setScale(0.96);
+      return;
+    }
+
+    if (target === 'joystick') {
       this.joystickPointerId = pointer.id;
       this.updateJoystick(pointer);
       return;
     }
 
-    if (this.containsPointer(pointer, this.controls.attackButton)) {
+    if (target === 'attack') {
       this.touchState.attackPressed = true;
       this.setButtonScale('attack', 0.92);
+      return;
     }
 
-    if (this.containsPointer(pointer, this.controls.specialButton)) {
+    if (target === 'special') {
       this.touchState.specialPressed = true;
       this.setButtonScale('special', 0.92);
+      return;
     }
 
-    if (this.containsPointer(pointer, this.controls.ultimateButton)) {
+    if (target === 'ultimate') {
       this.touchState.ultimatePressed = true;
       this.setButtonScale('ultimate', 0.92);
+      return;
     }
 
-    if (this.containsPointer(pointer, this.controls.jumpButton)) {
+    if (target === 'jump') {
       this.touchState.jumpPressed = true;
       this.setButtonScale('jump', 0.92);
-    }
-
-    if (this.containsRectPointer(pointer, this.controls.menuButton)) {
-      this.touchState.menuPressed = true;
-      this.controls.menuButton.setScale(0.96);
     }
   }
 
@@ -366,13 +381,4 @@ export class MobileControls {
     this.controls.jumpRing.setScale(scale);
   }
 
-  private containsPointer(pointer: Phaser.Input.Pointer, target: Phaser.GameObjects.Arc): boolean {
-    return Phaser.Math.Distance.Between(pointer.x, pointer.y, target.x, target.y) <= target.radius;
-  }
-
-  private containsRectPointer(pointer: Phaser.Input.Pointer, target: Phaser.GameObjects.Rectangle): boolean {
-    const halfWidth = target.width * 0.5;
-    const halfHeight = target.height * 0.5;
-    return pointer.x >= target.x - halfWidth && pointer.x <= target.x + halfWidth && pointer.y >= target.y - halfHeight && pointer.y <= target.y + halfHeight;
-  }
 }

@@ -44,14 +44,6 @@ export const wombatDefinition: FighterDefinition = {
       air_bonk: 'wombat-air-bonk',
       wombat_earthshaker: 'wombat-belly-slam',
     },
-    frameOffsetSets: {
-      'wombat-idle': [
-        { x: 0, y: 0 },
-        { x: 3, y: 0 },
-        { x: 7, y: 0 },
-        { x: 10, y: 0 },
-      ],
-    },
   },
 };
 
@@ -91,14 +83,6 @@ export const angryPigeonDefinition: FighterDefinition = {
       special: 'angry-pigeon-peck',
       hitstun: 'angry-pigeon-hit',
       dead: 'angry-pigeon-dead',
-    },
-    frameOffsetSets: {
-      'angry-pigeon-idle': [
-        { x: 0, y: 0 },
-        { x: 2, y: 0 },
-        { x: 7, y: -2 },
-        { x: 7, y: -1 },
-      ],
     },
   },
 };
@@ -148,14 +132,6 @@ export const discountWizardDefinition: FighterDefinition = {
       discount_miscast: 'discount-wizard-miscast',
       discount_clearance_orb: 'discount-wizard-fireball',
     },
-    frameOffsetSets: {
-      'discount-wizard-idle': [
-        { x: 0, y: 0 },
-        { x: 10, y: 0 },
-        { x: 18, y: 0 },
-        { x: 16, y: 0 },
-      ],
-    },
   },
 };
 
@@ -204,23 +180,6 @@ export const budgetBarbarianDefinition: FighterDefinition = {
     attackAnimations: {
       air_bonk: 'budget-barbarian-air-bonk',
       budget_axe_rain: 'budget-barbarian-tiny-rage',
-    },
-    attackScaleOverrides: {
-      budget_cracked_axe_swing: 1.23,
-      budget_tiny_rage: 1.26,
-      budget_axe_rain: 1.26,
-    },
-    frameScaleSets: {
-      'budget-barbarian-axe-swing': [
-        1.01,
-        1.16,
-        1.18,
-      ],
-      'budget-barbarian-tiny-rage': [
-        0.99,
-        1.03,
-        1.7,
-      ],
     },
   },
 };

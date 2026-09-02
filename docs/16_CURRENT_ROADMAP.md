@@ -5,6 +5,17 @@ This file reflects the actual project state after the initial sandbox, roster, m
 The original roadmap in `05_ROADMAP.md` remains useful as the foundation plan.
 This document is the current execution roadmap based on what is already built.
 
+## 2026-09-02 Execution Update
+
+- BULK 0 Combat Gym is complete.
+- BULK 0.5 architecture safety work is complete: move timeline, contact resolution, input buffer, feedback, presentation FX, animation registration, mobile hit testing, and core tests are separated.
+- BULK 1 is complete: deterministic normalization, whole-sheet QA, enlarged loop previews, and visual review are integrated.
+- Five Body sheets, ten Idle/Walk groups, and all expected production cells pass hard asset gates.
+- Discount Wizard v2 was rebuilt from a canonical master and approved in Character Select and Combat Gym at 0.25×; body and spell VFX remain separate.
+- Pigeon palette variation and Wombat/Barbarian pose-height warnings were reviewed and accepted as intentional animation changes.
+- The active system block is BULK 2: data-driven hitbox/hurtbox/pushbox profiles on the shared move timeline.
+- New roster, stage, and meta content remains frozen until the polished combat slice proves these layers.
+
 ## Current State Summary
 
 Implemented and usable today:
@@ -13,7 +24,7 @@ Implemented and usable today:
 - Boot, preload, main menu, character select, battle scene
 - Duel mode
 - Waves mode
-- Test mode
+- Combat Gym with fighter/move/dummy/range/lane/mana presets, pause, frame step, slow motion, boxes, and telemetry
 - Arena select
 - Arena background and mobile-friendly scaling
 - Keyboard controls
@@ -37,6 +48,8 @@ Implemented and usable today:
 - Character select presentation pass
 - Main menu button presentation pass
 - GitHub Pages deployment setup
+- Deterministic character-sheet normalization and hard asset QA
+- Typecheck plus 17 automated combat/input/debug tests
 - First staged Wave mode flow:
   - `junkyard_run`
   - 3 horizontal sections

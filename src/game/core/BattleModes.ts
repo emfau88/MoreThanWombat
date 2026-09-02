@@ -1,5 +1,6 @@
 import type { ArenaId } from '../data/arenas';
 import type { WaveStageId } from '../data/stages';
+import type { CombatGymSettings } from '../debug/CombatGymModel';
 
 export type BattleMode = 'duel' | 'waves' | 'test';
 
@@ -24,4 +25,5 @@ export type BattleSceneData = {
   enemyFighterId?: FighterId;
   arenaId?: ArenaId;
   stageId?: WaveStageId;
+  combatGym?: CombatGymSettings;
 };

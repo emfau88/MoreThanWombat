@@ -1,0 +1,392 @@
+{
+  "generatedAt": "2026-09-02T08:53:23.288Z",
+  "manifestVersion": 1,
+  "sheets": [
+    {
+      "id": "discount-wizard",
+      "source": "public/assets/characters/discount-wizard/discount_wizard_spritesheet_v2_128.png",
+      "runtime": "public/assets/characters/discount-wizard/discount_wizard_spritesheet_v2_128_normalized.png",
+      "targetFootLine": 118,
+      "targetRootAnchorX": 64,
+      "loopScale": 1,
+      "shifts": [
+        {
+          "frameIndex": 0,
+          "dx": 0,
+          "dy": 0,
+          "sourceRootAnchorX": 64.2,
+          "sourceFootLine": 118
+        },
+        {
+          "frameIndex": 1,
+          "dx": 0,
+          "dy": 0,
+          "sourceRootAnchorX": 64.23,
+          "sourceFootLine": 118
+        },
+        {
+          "frameIndex": 2,
+          "dx": 0,
+          "dy": 0,
+          "sourceRootAnchorX": 64.17,
+          "sourceFootLine": 118
+        },
+        {
+          "frameIndex": 3,
+          "dx": 0,
+          "dy": 0,
+          "sourceRootAnchorX": 64.24,
+          "sourceFootLine": 118
+        },
+        {
+          "frameIndex": 4,
+          "dx": 0,
+          "dy": 0,
+          "sourceRootAnchorX": 63.97,
+          "sourceFootLine": 118
+        },
+        {
+          "frameIndex": 5,
+          "dx": 0,
+          "dy": 0,
+          "sourceRootAnchorX": 64.06,
+          "sourceFootLine": 118
+        },
+        {
+          "frameIndex": 6,
+          "dx": 0,
+          "dy": 0,
+          "sourceRootAnchorX": 64.03,
+          "sourceFootLine": 118
+        },
+        {
+          "frameIndex": 7,
+          "dx": 0,
+          "dy": 0,
+          "sourceRootAnchorX": 64.14,
+          "sourceFootLine": 118
+        }
+      ],
+      "marginAdjustments": []
+    },
+    {
+      "id": "wombat",
+      "source": "public/assets/characters/wombat/wombat_spritesheet_128.png",
+      "runtime": "public/assets/characters/wombat/wombat_spritesheet_128_normalized.png",
+      "targetFootLine": 120,
+      "targetRootAnchorX": 64,
+      "loopScale": 1,
+      "shifts": [
+        {
+          "frameIndex": 0,
+          "dx": -2,
+          "dy": 0,
+          "sourceRootAnchorX": 66.02,
+          "sourceFootLine": 120
+        },
+        {
+          "frameIndex": 1,
+          "dx": 1,
+          "dy": 0,
+          "sourceRootAnchorX": 63.02,
+          "sourceFootLine": 120
+        },
+        {
+          "frameIndex": 2,
+          "dx": 4,
+          "dy": 0,
+          "sourceRootAnchorX": 60.02,
+          "sourceFootLine": 120
+        },
+        {
+          "frameIndex": 3,
+          "dx": 7,
+          "dy": 0,
+          "sourceRootAnchorX": 57.04,
+          "sourceFootLine": 120
+        },
+        {
+          "frameIndex": 4,
+          "dx": -2,
+          "dy": 0,
+          "sourceRootAnchorX": 65.6,
+          "sourceFootLine": 120
+        },
+        {
+          "frameIndex": 5,
+          "dx": 0,
+          "dy": 0,
+          "sourceRootAnchorX": 64.5,
+          "sourceFootLine": 120
+        },
+        {
+          "frameIndex": 6,
+          "dx": 0,
+          "dy": 2,
+          "sourceRootAnchorX": 63.59,
+          "sourceFootLine": 118
+        },
+        {
+          "frameIndex": 7,
+          "dx": 3,
+          "dy": 3,
+          "sourceRootAnchorX": 61.18,
+          "sourceFootLine": 117
+        }
+      ],
+      "marginAdjustments": [
+        {
+          "frameIndex": 17,
+          "dx": -2,
+          "dy": 2,
+          "scale": 1
+        },
+        {
+          "frameIndex": 18,
+          "dx": 0,
+          "dy": 0,
+          "scale": 0.97
+        },
+        {
+          "frameIndex": 19,
+          "dx": 2,
+          "dy": 0,
+          "scale": 1
+        }
+      ]
+    },
+    {
+      "id": "budget-barbarian",
+      "source": "public/assets/characters/budget-barbarian/budget_barbarian_spritesheet_v2_160.png",
+      "runtime": "public/assets/characters/budget-barbarian/budget_barbarian_spritesheet_v3_160_normalized.png",
+      "targetFootLine": 147,
+      "targetRootAnchorX": 73,
+      "loopScale": 0.96,
+      "shifts": [
+        {
+          "frameIndex": 0,
+          "dx": 6,
+          "dy": 0,
+          "sourceRootAnchorX": 67,
+          "sourceFootLine": 147
+        },
+        {
+          "frameIndex": 1,
+          "dx": 7,
+          "dy": 0,
+          "sourceRootAnchorX": 66.03,
+          "sourceFootLine": 147
+        },
+        {
+          "frameIndex": 2,
+          "dx": -15,
+          "dy": 0,
+          "sourceRootAnchorX": 88,
+          "sourceFootLine": 147
+        },
+        {
+          "frameIndex": 3,
+          "dx": 8,
+          "dy": 0,
+          "sourceRootAnchorX": 65.09,
+          "sourceFootLine": 147
+        },
+        {
+          "frameIndex": 4,
+          "dx": -2,
+          "dy": 0,
+          "sourceRootAnchorX": 74.53,
+          "sourceFootLine": 147
+        },
+        {
+          "frameIndex": 5,
+          "dx": -2,
+          "dy": 0,
+          "sourceRootAnchorX": 75.47,
+          "sourceFootLine": 147
+        },
+        {
+          "frameIndex": 6,
+          "dx": 17,
+          "dy": 0,
+          "sourceRootAnchorX": 55.64,
+          "sourceFootLine": 147
+        },
+        {
+          "frameIndex": 7,
+          "dx": 1,
+          "dy": 0,
+          "sourceRootAnchorX": 71.58,
+          "sourceFootLine": 147
+        }
+      ],
+      "marginAdjustments": [
+        {
+          "frameIndex": 1,
+          "dx": -1,
+          "dy": 0,
+          "scale": 1
+        }
+      ]
+    },
+    {
+      "id": "buster-bulldog",
+      "source": "public/assets/characters/buster-bulldog/buster_bulldog_spritesheet_128.png",
+      "runtime": "public/assets/characters/buster-bulldog/buster_bulldog_spritesheet_128_normalized.png",
+      "targetFootLine": 122,
+      "targetRootAnchorX": 65,
+      "loopScale": 1,
+      "shifts": [
+        {
+          "frameIndex": 0,
+          "dx": -9,
+          "dy": 0,
+          "sourceRootAnchorX": 74.41,
+          "sourceFootLine": 122
+        },
+        {
+          "frameIndex": 1,
+          "dx": -9,
+          "dy": 0,
+          "sourceRootAnchorX": 73.57,
+          "sourceFootLine": 122
+        },
+        {
+          "frameIndex": 2,
+          "dx": -9,
+          "dy": 0,
+          "sourceRootAnchorX": 73.76,
+          "sourceFootLine": 122
+        },
+        {
+          "frameIndex": 3,
+          "dx": -9,
+          "dy": 0,
+          "sourceRootAnchorX": 74.5,
+          "sourceFootLine": 122
+        },
+        {
+          "frameIndex": 4,
+          "dx": -13,
+          "dy": 0,
+          "sourceRootAnchorX": 78.4,
+          "sourceFootLine": 122
+        },
+        {
+          "frameIndex": 5,
+          "dx": -15,
+          "dy": 0,
+          "sourceRootAnchorX": 80.14,
+          "sourceFootLine": 122
+        },
+        {
+          "frameIndex": 6,
+          "dx": -14,
+          "dy": 0,
+          "sourceRootAnchorX": 79.19,
+          "sourceFootLine": 122
+        },
+        {
+          "frameIndex": 7,
+          "dx": -10,
+          "dy": 0,
+          "sourceRootAnchorX": 75.1,
+          "sourceFootLine": 122
+        }
+      ],
+      "marginAdjustments": []
+    },
+    {
+      "id": "angry-pigeon",
+      "source": "public/assets/characters/angry-pigeon/angry_pigeon_spritesheet_128.png",
+      "runtime": "public/assets/characters/angry-pigeon/angry_pigeon_spritesheet_128_normalized.png",
+      "targetFootLine": 120,
+      "targetRootAnchorX": 68,
+      "loopScale": 1,
+      "shifts": [
+        {
+          "frameIndex": 0,
+          "dx": -7,
+          "dy": -1,
+          "sourceRootAnchorX": 75.13,
+          "sourceFootLine": 121
+        },
+        {
+          "frameIndex": 1,
+          "dx": -6,
+          "dy": -1,
+          "sourceRootAnchorX": 74.35,
+          "sourceFootLine": 121
+        },
+        {
+          "frameIndex": 2,
+          "dx": -2,
+          "dy": -2,
+          "sourceRootAnchorX": 70.2,
+          "sourceFootLine": 122
+        },
+        {
+          "frameIndex": 3,
+          "dx": -2,
+          "dy": -2,
+          "sourceRootAnchorX": 70.35,
+          "sourceFootLine": 122
+        },
+        {
+          "frameIndex": 4,
+          "dx": -5,
+          "dy": 1,
+          "sourceRootAnchorX": 73.32,
+          "sourceFootLine": 119
+        },
+        {
+          "frameIndex": 5,
+          "dx": -5,
+          "dy": 1,
+          "sourceRootAnchorX": 73.48,
+          "sourceFootLine": 119
+        },
+        {
+          "frameIndex": 6,
+          "dx": -4,
+          "dy": 1,
+          "sourceRootAnchorX": 72.15,
+          "sourceFootLine": 119
+        },
+        {
+          "frameIndex": 7,
+          "dx": -4,
+          "dy": 1,
+          "sourceRootAnchorX": 72.34,
+          "sourceFootLine": 119
+        }
+      ],
+      "marginAdjustments": [
+        {
+          "frameIndex": 9,
+          "dx": -2,
+          "dy": 0,
+          "scale": 1
+        },
+        {
+          "frameIndex": 10,
+          "dx": 2,
+          "dy": 0,
+          "scale": 1
+        },
+        {
+          "frameIndex": 17,
+          "dx": 2,
+          "dy": 0,
+          "scale": 1
+        },
+        {
+          "frameIndex": 18,
+          "dx": 2,
+          "dy": 0,
+          "scale": 1
+        }
+      ]
+    }
+  ]
+}

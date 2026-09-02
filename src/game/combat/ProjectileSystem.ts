@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import type { Fighter, FighterBounds, FighterFacing } from './Fighter';
 import type { ProjectileDefinition } from '../data/projectiles';
 import { intersectsRect, type Rect } from '../utils/Rect';
+import type { CombatOutcome } from './CombatResolver';
 
 type ActiveProjectile = {
   ownerInstanceId: number;
@@ -18,6 +19,8 @@ type ActiveProjectile = {
 
 export type ProjectileHit = {
   projectileId: string;
+  sourceAttackId: string;
+  outcome: CombatOutcome;
   impactAnimationKey: string;
   damage: number;
   x: number;
@@ -84,17 +87,27 @@ export class ProjectileSystem {
 
       if (target) {
         projectile.hitTargetInstanceIds.add(target.instanceId);
-        target.receiveHit({
-          damage: projectile.definition.damage,
-          hitstunMs: projectile.definition.hitstunMs,
-          knockbackX: projectile.definition.knockbackX,
-          knockbackY: projectile.definition.knockbackY,
-          sourceFacing: projectile.facing,
-        });
+        const response = target.getCombatResponse();
+        const outcome: CombatOutcome = response === 'guard'
+          ? 'blocked'
+          : response === 'invulnerable'
+            ? 'invulnerable'
+            : 'hit';
+        if (outcome === 'hit') {
+          target.receiveHit({
+            damage: projectile.definition.damage,
+            hitstunMs: projectile.definition.hitstunMs,
+            knockbackX: projectile.definition.knockbackX,
+            knockbackY: projectile.definition.knockbackY,
+            sourceFacing: projectile.facing,
+          });
+        }
         hits.push({
           projectileId: projectile.definition.id,
+          sourceAttackId: projectile.definition.sourceAttackId,
+          outcome,
           impactAnimationKey: projectile.definition.impactAnimationKey,
-          damage: projectile.definition.damage,
+          damage: outcome === 'hit' ? projectile.definition.damage : 0,
           x: projectile.x,
           y: projectile.y,
           target,

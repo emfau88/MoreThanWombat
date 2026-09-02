@@ -26,7 +26,7 @@ export class PreloadScene extends Phaser.Scene {
     this.load.image('cs-arrow-arena-left', `${assetBase}ui/character-select/arrow_arena_left.png`);
     this.load.image('cs-arrow-arena-right', `${assetBase}ui/character-select/arrow_arena_right.png`);
     this.load.image('cs-selection-glow', `${assetBase}ui/character-select/selection_glow.png`);
-    this.load.spritesheet('wombat', `${assetBase}characters/wombat/wombat_spritesheet_128.png`, {
+    this.load.spritesheet('wombat', `${assetBase}characters/wombat/wombat_spritesheet_128_normalized.png`, {
       frameWidth: 128,
       frameHeight: 128,
     });
@@ -38,19 +38,19 @@ export class PreloadScene extends Phaser.Scene {
       frameWidth: 256,
       frameHeight: 256,
     });
-    this.load.spritesheet('angry-pigeon', `${assetBase}characters/angry-pigeon/angry_pigeon_spritesheet_128.png`, {
+    this.load.spritesheet('angry-pigeon', `${assetBase}characters/angry-pigeon/angry_pigeon_spritesheet_128_normalized.png`, {
       frameWidth: 128,
       frameHeight: 128,
     });
-    this.load.spritesheet('discount-wizard', `${assetBase}characters/discount-wizard/discount_wizard_spritesheet_128.png`, {
+    this.load.spritesheet('discount-wizard', `${assetBase}characters/discount-wizard/discount_wizard_spritesheet_v2_128_normalized.png`, {
       frameWidth: 128,
       frameHeight: 128,
     });
-    this.load.spritesheet('budget-barbarian', `${assetBase}characters/budget-barbarian/budget_barbarian_spritesheet_v2_160.png`, {
+    this.load.spritesheet('budget-barbarian', `${assetBase}characters/budget-barbarian/budget_barbarian_spritesheet_v3_160_normalized.png`, {
       frameWidth: 160,
       frameHeight: 160,
     });
-    this.load.spritesheet('buster-bulldog', `${assetBase}characters/buster-bulldog/buster_bulldog_spritesheet_128.png`, {
+    this.load.spritesheet('buster-bulldog', `${assetBase}characters/buster-bulldog/buster_bulldog_spritesheet_128_normalized.png`, {
       frameWidth: 128,
       frameHeight: 128,
     });

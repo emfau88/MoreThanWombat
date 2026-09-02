@@ -1,0 +1,499 @@
+{
+  "generatedAt": "2026-09-02T08:53:01.333Z",
+  "output": "public/assets/characters/discount-wizard/discount_wizard_spritesheet_v2_128.png",
+  "frameSize": 128,
+  "targetGroundLine": 119,
+  "targetStandingHeight": 106,
+  "rows": [
+    {
+      "id": "idle",
+      "source": "public/assets/characters/discount-wizard/source/discount_wizard_idle_v2_raw.png",
+      "sourceDimensions": "2172x724",
+      "frameRanges": [
+        {
+          "startX": 0,
+          "endX": 543
+        },
+        {
+          "startX": 543,
+          "endX": 1086
+        },
+        {
+          "startX": 1086,
+          "endX": 1629
+        },
+        {
+          "startX": 1629,
+          "endX": 2172
+        }
+      ],
+      "rowScale": 0.22,
+      "frames": [
+        {
+          "frameIndex": 0,
+          "sourceBbox": {
+            "minX": 117,
+            "minY": 125,
+            "maxX": 483,
+            "maxY": 602,
+            "width": 367,
+            "height": 478
+          },
+          "rootX": 276.31,
+          "placement": {
+            "x": 28.78,
+            "y": 13.33,
+            "width": 81.13,
+            "height": 105.67
+          }
+        },
+        {
+          "frameIndex": 1,
+          "sourceBbox": {
+            "minX": 110,
+            "minY": 122,
+            "maxX": 463,
+            "maxY": 602,
+            "width": 354,
+            "height": 481
+          },
+          "rootX": 268.86,
+          "placement": {
+            "x": 28.88,
+            "y": 12.67,
+            "width": 78.26,
+            "height": 106.33
+          }
+        },
+        {
+          "frameIndex": 2,
+          "sourceBbox": {
+            "minX": 109,
+            "minY": 125,
+            "maxX": 463,
+            "maxY": 602,
+            "width": 355,
+            "height": 478
+          },
+          "rootX": 265.96,
+          "placement": {
+            "x": 29.3,
+            "y": 13.33,
+            "width": 78.48,
+            "height": 105.67
+          }
+        },
+        {
+          "frameIndex": 3,
+          "sourceBbox": {
+            "minX": 75,
+            "minY": 122,
+            "maxX": 430,
+            "maxY": 602,
+            "width": 356,
+            "height": 481
+          },
+          "rootX": 235.3,
+          "placement": {
+            "x": 28.56,
+            "y": 12.67,
+            "width": 78.7,
+            "height": 106.33
+          }
+        }
+      ]
+    },
+    {
+      "id": "walk",
+      "source": "public/assets/characters/discount-wizard/source/discount_wizard_walk_v2_raw.png",
+      "sourceDimensions": "1774x887",
+      "frameRanges": [
+        {
+          "startX": 0,
+          "endX": 443
+        },
+        {
+          "startX": 443,
+          "endX": 887
+        },
+        {
+          "startX": 887,
+          "endX": 1330
+        },
+        {
+          "startX": 1330,
+          "endX": 1774
+        }
+      ],
+      "rowScale": 0.21,
+      "frames": [
+        {
+          "frameIndex": 4,
+          "sourceBbox": {
+            "minX": 40,
+            "minY": 162,
+            "maxX": 438,
+            "maxY": 676,
+            "width": 399,
+            "height": 515
+          },
+          "rootX": 219.08,
+          "placement": {
+            "x": 25.96,
+            "y": 9.6,
+            "width": 84.76,
+            "height": 109.4
+          }
+        },
+        {
+          "frameIndex": 5,
+          "sourceBbox": {
+            "minX": 66,
+            "minY": 178,
+            "maxX": 433,
+            "maxY": 674,
+            "width": 368,
+            "height": 497
+          },
+          "rootX": 228.41,
+          "placement": {
+            "x": 29.5,
+            "y": 13.42,
+            "width": 78.17,
+            "height": 105.58
+          }
+        },
+        {
+          "frameIndex": 6,
+          "sourceBbox": {
+            "minX": 65,
+            "minY": 178,
+            "maxX": 431,
+            "maxY": 674,
+            "width": 367,
+            "height": 497
+          },
+          "rootX": 227.21,
+          "placement": {
+            "x": 29.54,
+            "y": 13.42,
+            "width": 77.96,
+            "height": 105.58
+          }
+        },
+        {
+          "frameIndex": 7,
+          "sourceBbox": {
+            "minX": 60,
+            "minY": 172,
+            "maxX": 428,
+            "maxY": 672,
+            "width": 369,
+            "height": 501
+          },
+          "rootX": 221.74,
+          "placement": {
+            "x": 29.64,
+            "y": 12.58,
+            "width": 78.38,
+            "height": 106.42
+          }
+        }
+      ]
+    },
+    {
+      "id": "attack",
+      "source": "public/assets/characters/discount-wizard/source/discount_wizard_attack_v2_raw.png",
+      "sourceDimensions": "1774x887",
+      "frameRanges": [
+        {
+          "startX": 0,
+          "endX": 443
+        },
+        {
+          "startX": 443,
+          "endX": 916
+        },
+        {
+          "startX": 916,
+          "endX": 1373
+        },
+        {
+          "startX": 1373,
+          "endX": 1774
+        }
+      ],
+      "rowScale": 0.26,
+      "frames": [
+        {
+          "frameIndex": 8,
+          "sourceBbox": {
+            "minX": 20,
+            "minY": 248,
+            "maxX": 407,
+            "maxY": 684,
+            "width": 388,
+            "height": 437
+          },
+          "rootX": 212.65,
+          "placement": {
+            "x": 14.73,
+            "y": 7.25,
+            "width": 99.22,
+            "height": 111.75
+          }
+        },
+        {
+          "frameIndex": 9,
+          "sourceBbox": {
+            "minX": 28,
+            "minY": 272,
+            "maxX": 472,
+            "maxY": 684,
+            "width": 445,
+            "height": 413
+          },
+          "rootX": 207.47,
+          "placement": {
+            "x": 10.2,
+            "y": 13.38,
+            "width": 113.8,
+            "height": 105.62
+          }
+        },
+        {
+          "frameIndex": 10,
+          "sourceBbox": {
+            "minX": 0,
+            "minY": 275,
+            "maxX": 453,
+            "maxY": 684,
+            "width": 454,
+            "height": 410
+          },
+          "rootX": 182.24,
+          "placement": {
+            "x": 7.9,
+            "y": 14.15,
+            "width": 116.1,
+            "height": 104.85
+          }
+        },
+        {
+          "frameIndex": 11,
+          "sourceBbox": {
+            "minX": 42,
+            "minY": 269,
+            "maxX": 385,
+            "maxY": 684,
+            "width": 344,
+            "height": 416
+          },
+          "rootX": 182.96,
+          "placement": {
+            "x": 27.95,
+            "y": 12.62,
+            "width": 87.97,
+            "height": 106.38
+          }
+        }
+      ]
+    },
+    {
+      "id": "miscast",
+      "source": "public/assets/characters/discount-wizard/source/discount_wizard_miscast_v2_raw.png",
+      "sourceDimensions": "2172x724",
+      "frameRanges": [
+        {
+          "startX": 0,
+          "endX": 543
+        },
+        {
+          "startX": 543,
+          "endX": 1086
+        },
+        {
+          "startX": 1086,
+          "endX": 1629
+        },
+        {
+          "startX": 1629,
+          "endX": 2172
+        }
+      ],
+      "rowScale": 0.22,
+      "frames": [
+        {
+          "frameIndex": 12,
+          "sourceBbox": {
+            "minX": 81,
+            "minY": 100,
+            "maxX": 523,
+            "maxY": 606,
+            "width": 443,
+            "height": 507
+          },
+          "rootX": 271.13,
+          "placement": {
+            "x": 22.74,
+            "y": 8.99,
+            "width": 96.13,
+            "height": 110.01
+          }
+        },
+        {
+          "frameIndex": 13,
+          "sourceBbox": {
+            "minX": 66,
+            "minY": 108,
+            "maxX": 522,
+            "maxY": 607,
+            "width": 457,
+            "height": 500
+          },
+          "rootX": 265.16,
+          "placement": {
+            "x": 20.78,
+            "y": 10.5,
+            "width": 99.16,
+            "height": 108.5
+          }
+        },
+        {
+          "frameIndex": 14,
+          "sourceBbox": {
+            "minX": 26,
+            "minY": 163,
+            "maxX": 511,
+            "maxY": 607,
+            "width": 486,
+            "height": 445
+          },
+          "rootX": 252.09,
+          "placement": {
+            "x": 14.94,
+            "y": 22.44,
+            "width": 105.46,
+            "height": 96.56
+          }
+        },
+        {
+          "frameIndex": 15,
+          "sourceBbox": {
+            "minX": 120,
+            "minY": 135,
+            "maxX": 479,
+            "maxY": 611,
+            "width": 360,
+            "height": 477
+          },
+          "rootX": 265.96,
+          "placement": {
+            "x": 32.33,
+            "y": 15.5,
+            "width": 78.12,
+            "height": 103.5
+          }
+        }
+      ]
+    },
+    {
+      "id": "damage",
+      "source": "public/assets/characters/discount-wizard/source/discount_wizard_damage_v2_raw.png",
+      "sourceDimensions": "1774x887",
+      "frameRanges": [
+        {
+          "startX": 0,
+          "endX": 412
+        },
+        {
+          "startX": 412,
+          "endX": 856
+        },
+        {
+          "startX": 856,
+          "endX": 1283
+        },
+        {
+          "startX": 1283,
+          "endX": 1774
+        }
+      ],
+      "rowScale": 0.26,
+      "frames": [
+        {
+          "frameIndex": 16,
+          "sourceBbox": {
+            "minX": 17,
+            "minY": 248,
+            "maxX": 383,
+            "maxY": 656,
+            "width": 367,
+            "height": 409
+          },
+          "rootX": 192.38,
+          "placement": {
+            "x": 18.21,
+            "y": 12.22,
+            "width": 95.82,
+            "height": 106.78
+          }
+        },
+        {
+          "frameIndex": 17,
+          "sourceBbox": {
+            "minX": 4,
+            "minY": 254,
+            "maxX": 384,
+            "maxY": 656,
+            "width": 381,
+            "height": 403
+          },
+          "rootX": 181.96,
+          "placement": {
+            "x": 17.54,
+            "y": 13.78,
+            "width": 99.47,
+            "height": 105.22
+          }
+        },
+        {
+          "frameIndex": 18,
+          "sourceBbox": {
+            "minX": 4,
+            "minY": 453,
+            "maxX": 404,
+            "maxY": 662,
+            "width": 401,
+            "height": 210
+          },
+          "rootX": 196.9,
+          "placement": {
+            "x": 11.65,
+            "y": 64.17,
+            "width": 104.69,
+            "height": 54.83
+          }
+        },
+        {
+          "frameIndex": 19,
+          "sourceBbox": {
+            "minX": 4,
+            "minY": 457,
+            "maxX": 444,
+            "maxY": 663,
+            "width": 441,
+            "height": 207
+          },
+          "rootX": 208.63,
+          "placement": {
+            "x": 6.43,
+            "y": 64.96,
+            "width": 115.14,
+            "height": 54.04
+          }
+        }
+      ]
+    }
+  ]
+}

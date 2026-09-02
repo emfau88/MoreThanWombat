@@ -4,6 +4,7 @@ import type { FighterDefinition } from '../combat/Fighter';
 import type { BattleMode, CharacterSelectSceneData, FighterId } from '../core/BattleModes';
 import { arenaDefinitions, arenaOrder, type ArenaId } from '../data/arenas';
 import { fighterDefinitions } from '../data/fighters';
+import { registerCharacterAnimations } from '../core/CharacterAnimationRegistry';
 
 type OptionCard = {
   id: FighterId;
@@ -117,7 +118,7 @@ export class CharacterSelectScene extends Phaser.Scene {
   }
 
   create(): void {
-    this.createCharacterAnimations();
+    registerCharacterAnimations(this);
     this.add.image(GAME_WIDTH / 2, GAME_HEIGHT / 2, 'cs-background').setDisplaySize(GAME_WIDTH, GAME_HEIGHT).setDepth(-20);
     this.add.rectangle(GAME_WIDTH / 2, GAME_HEIGHT / 2, GAME_WIDTH, GAME_HEIGHT, 0x061018, 0.2).setDepth(-10);
 
@@ -135,10 +136,10 @@ export class CharacterSelectScene extends Phaser.Scene {
         this.cycleEnemy(1);
       });
     } else if (this.mode === 'test') {
-      this.enemyCard = this.createPreviewCard(708, 306, 340, 292, 'SOLO SANDBOX', true, false, 0x67d5b5);
-      this.enemyCard.titleText.setText('No Enemy');
-      this.enemyCard.subtitleText.setText('Free practice');
-      this.enemyCard.sprite.setVisible(false);
+      this.enemyCard = this.createPreviewCard(708, 306, 340, 292, 'TRAINING TOOLS', true, false, 0x67d5b5);
+      this.updatePreviewCard(this.enemyCard, DUEL_ENEMY_OPTIONS[0], true);
+      this.enemyCard.titleText.setText('Combat Gym');
+      this.enemyCard.subtitleText.setText('Frame step + dummy presets');
       this.enemyCard.indexText?.setVisible(false);
     } else {
       this.enemyCard = this.createPreviewCard(708, 306, 340, 292, 'WAVE ENEMY', true, false, 0xff9a5a);
@@ -430,35 +431,6 @@ export class CharacterSelectScene extends Phaser.Scene {
       .on(Phaser.Input.Events.POINTER_UP, () => {
         onClick();
       });
-  }
-
-  private createCharacterAnimations(): void {
-    this.createAnimationOnce('wombat-idle', 'wombat', 0, 3, 5, -1);
-    this.createAnimationOnce('angry-pigeon-idle', 'angry-pigeon', 0, 3, 5, -1);
-    this.createAnimationOnce('discount-wizard-idle', 'discount-wizard', 0, 3, 5, -1);
-    this.createAnimationOnce('budget-barbarian-idle', 'budget-barbarian', 0, 3, 4, -1);
-    this.createAnimationOnce('buster-bulldog-idle', 'buster-bulldog', 0, 3, 5, -1);
-    this.createAnimationOnce('reference-fighter-idle', 'reference-fighter', 0, 3, 6, -1);
-  }
-
-  private createAnimationOnce(
-    key: string,
-    textureKey: string,
-    start: number,
-    end: number,
-    frameRate: number,
-    repeat: number,
-  ): void {
-    if (this.anims.exists(key)) {
-      return;
-    }
-
-    this.anims.create({
-      key,
-      frames: this.anims.generateFrameNumbers(textureKey, { start, end }),
-      frameRate,
-      repeat,
-    });
   }
 
   private findOptionIndex(options: OptionCard[], fighterId: FighterId): number {

@@ -1,5 +1,6 @@
 export type ProjectileDefinition = {
   id: string;
+  sourceAttackId: string;
   textureKey: string;
   animationKey: string;
   impactAnimationKey: string;
@@ -23,6 +24,7 @@ export type ProjectileDefinition = {
 
 export const discountFireballProjectile: ProjectileDefinition = {
   id: 'discount_fireball_projectile',
+  sourceAttackId: 'discount_fireball_cast',
   textureKey: 'discount-wizard-fx',
   animationKey: 'discount-wizard-fx-fireball',
   impactAnimationKey: 'discount-wizard-fx-hit-puff',
@@ -45,6 +47,7 @@ export const discountFireballProjectile: ProjectileDefinition = {
 
 export const discountUltimateOrbProjectile: ProjectileDefinition = {
   id: 'discount_ultimate_orb_projectile',
+  sourceAttackId: 'discount_clearance_orb',
   textureKey: 'discount-wizard-ultimate-fx',
   animationKey: 'discount-wizard-ultimate-orb',
   impactAnimationKey: 'discount-wizard-ultimate-impact',

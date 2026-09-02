@@ -145,6 +145,16 @@ Requirements:
 
 ## Current Project Status
 
+As of 2026-09-02, the production Body sheets use the deterministic pipeline documented in `24_BULK_1_CHARACTER_ASSET_IMPLEMENTATION.md`.
+
+- Wombat, Discount Wizard v2, Budget Barbarian, Buster Bulldog, and Angry Pigeon use generated normalized Runtime sheets.
+- All five pass hard Idle/Walk gates plus a whole-sheet gate for baseline, inferred root stability, empty cells, and frame-edge clipping.
+- Runtime offset patches for Wombat, Wizard, and Pigeon Idle have been removed.
+- Barbarian has dedicated jump/fall/landing/Air Bonk frames in its 160px main sheet; its old 1.7x frame-scale pop is removed.
+- Wizard still uses a fallback body animation for Air Bonk and needs a dedicated mini-sheet.
+- Discount Wizard v2 is derived from the retained master and five raw source rows under `public/assets/characters/discount-wizard/source/`; it must be rebuilt with `npm.cmd run assets:wizard`, never hand-edited in the composed or normalized sheet.
+- Palette and pose-height warnings remain visible in `docs/qa/character-assets-latest.md`; their current visual decisions are recorded in `24_BULK_1_CHARACTER_ASSET_IMPLEMENTATION.md`.
+
 Current roster:
 
 - `Wombat`
@@ -157,7 +167,7 @@ Current character coverage status:
 - `Wombat`: strong reference fighter, has dedicated air attack coverage
 - `Buster Bulldog`: has dedicated air attack coverage
 - `Discount Wizard`: functional air attack via fallback, should receive dedicated air attack frames later
-- `Budget Barbarian`: functional air attack via fallback, should receive dedicated air attack frames later
+- `Budget Barbarian`: dedicated jump, fall, landing, and air-attack coverage in the 160px main sheet
 
 Enemy-only currently:
 

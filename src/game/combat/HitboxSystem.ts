@@ -1,10 +1,16 @@
 import type { Fighter } from './Fighter';
-import { intersectsRect } from '../utils/Rect';
+import { resolveCombatContact, type CombatOutcome } from './CombatResolver';
 
 export type HitResolution = {
   didHit: boolean;
+  didConnect: boolean;
   damage: number;
   attackId?: string;
+  outcome?: CombatOutcome;
+  contactX?: number;
+  contactY?: number;
+  attacker?: Fighter;
+  defender?: Fighter;
 };
 
 export class HitboxSystem {
@@ -12,55 +18,48 @@ export class HitboxSystem {
     const activeHitbox = attacker.getActiveHitbox();
     const hurtbox = defender.getHurtbox();
 
-    if (!activeHitbox || !hurtbox) {
-      return { didHit: false, damage: 0 };
-    }
-
-    if (defender.state === 'dead') {
-      return { didHit: false, damage: 0 };
-    }
-
-    if (!intersectsRect(activeHitbox, hurtbox)) {
-      return { didHit: false, damage: 0 };
-    }
-
     const attack = attacker.getCurrentAttack();
-
-    if (!attack) {
-      return { didHit: false, damage: 0 };
-    }
-
-    if (attack.projectileId) {
-      return { didHit: false, damage: 0 };
-    }
-
     const defenderHitTargetId = String(defender.instanceId);
+    const resolution = resolveCombatContact({
+      attack,
+      activeHitbox,
+      defenderHurtbox: hurtbox,
+      defenderIsDead: defender.state === 'dead',
+      defenderResponse: defender.getCombatResponse(),
+      alreadyHit: attacker.hasHitTarget(defenderHitTargetId),
+      attackerX: attacker.x,
+      attackerY: attacker.y,
+      defenderX: defender.x,
+      defenderY: defender.y,
+      attackerFacing: attacker.facing,
+    });
 
-    if (attacker.hasHitTarget(defenderHitTargetId)) {
-      return { didHit: false, damage: 0 };
+    if (resolution.outcome === 'miss') {
+      return { didHit: false, didConnect: false, damage: 0 };
     }
 
-    const isRadialSlam = attack.id === 'wombat_earthshaker';
-    const sourceFacing = isRadialSlam
-      ? defender.x >= attacker.x
-        ? 'right'
-        : 'left'
-      : attacker.facing;
-    const verticalDirection = isRadialSlam && defender.y !== attacker.y ? Math.sign(defender.y - attacker.y) : 1;
+    if (resolution.outcome === 'hit' && attack) {
+      defender.receiveHit({
+        damage: resolution.damage,
+        hitstunMs: attack.hitstunMs,
+        knockbackX: attack.knockbackX,
+        knockbackY: attack.knockbackY * resolution.verticalKnockbackDirection,
+        sourceFacing: resolution.sourceFacing,
+        launchVelocityZ: resolution.launchVelocityZ,
+      });
+    }
 
-    defender.receiveHit({
-      damage: attack.damage,
-      hitstunMs: attack.hitstunMs,
-      knockbackX: attack.knockbackX,
-      knockbackY: attack.knockbackY * verticalDirection,
-      sourceFacing,
-      launchVelocityZ: isRadialSlam ? 500 : undefined,
-    });
     attacker.registerHit(defenderHitTargetId);
     return {
-      didHit: true,
-      damage: attack.damage,
-      attackId: attack.id,
+      didHit: resolution.outcome === 'hit',
+      didConnect: true,
+      damage: resolution.damage,
+      attackId: resolution.attackId,
+      outcome: resolution.outcome,
+      contactX: resolution.contactX,
+      contactY: resolution.contactY,
+      attacker,
+      defender,
     };
   }
 }

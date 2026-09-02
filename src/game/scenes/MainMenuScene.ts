@@ -12,7 +12,7 @@ export class MainMenuScene extends Phaser.Scene {
 
     this.createModeButton(GAME_WIDTH / 2, 258, 338, 84, 'Duel', 'Current 1v1 setup', 'duel');
     this.createModeButton(GAME_WIDTH / 2, 358, 338, 84, 'Waves', 'Three short enemy waves', 'waves');
-    this.createModeButton(GAME_WIDTH / 2, 458, 338, 84, 'Test', 'Solo move and attack sandbox', 'test');
+    this.createModeButton(GAME_WIDTH / 2, 458, 338, 84, 'Combat Gym', 'Frame step, boxes, presets, and dummy lab', 'test');
 
     this.add.text(GAME_WIDTH / 2, 516, 'Touch or click a mode to start', {
       color: '#d5dde4',

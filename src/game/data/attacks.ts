@@ -1,3 +1,5 @@
+import type { MoveTimelineDefinition } from '../combat/MoveTimeline';
+
 export type AttackDefinition = {
   id: string;
   label: string;
@@ -18,6 +20,9 @@ export type AttackDefinition = {
   canTurnDuringAttack?: boolean;
   manaCost?: number;
   projectileId?: string;
+  knockbackMode?: 'facing' | 'radial';
+  launchVelocityZ?: number;
+  timeline?: MoveTimelineDefinition;
 };
 
 export const wombatJab: AttackDefinition = {
@@ -36,6 +41,7 @@ export const wombatJab: AttackDefinition = {
     width: 42,
     height: 24,
   },
+  timeline: { feedbackClass: 'light' },
 };
 
 export const wombatBellySlam: AttackDefinition = {
@@ -55,6 +61,7 @@ export const wombatBellySlam: AttackDefinition = {
     height: 38,
   },
   manaCost: 25,
+  timeline: { feedbackClass: 'heavy' },
 };
 
 export const wombatEarthshaker: AttackDefinition = {
@@ -74,6 +81,15 @@ export const wombatEarthshaker: AttackDefinition = {
     height: 184,
   },
   manaCost: 100,
+  knockbackMode: 'radial',
+  launchVelocityZ: 500,
+  timeline: {
+    feedbackClass: 'ultimate',
+    startCue: 'wombat-earthshaker',
+    hitstopMs: 24,
+    shakeDurationMs: 130,
+    shakeIntensity: 0.008,
+  },
 };
 
 export const pigeonPeck: AttackDefinition = {
@@ -92,6 +108,7 @@ export const pigeonPeck: AttackDefinition = {
     width: 33,
     height: 18,
   },
+  timeline: { feedbackClass: 'light' },
 };
 
 export const discountWandSmack: AttackDefinition = {
@@ -110,6 +127,7 @@ export const discountWandSmack: AttackDefinition = {
     width: 38,
     height: 28,
   },
+  timeline: { feedbackClass: 'light' },
 };
 
 export const discountFireballCast: AttackDefinition = {
@@ -130,6 +148,7 @@ export const discountFireballCast: AttackDefinition = {
   },
   manaCost: 22,
   projectileId: 'discount_fireball_projectile',
+  timeline: { feedbackClass: 'light', startCue: 'discount-fireball' },
 };
 
 export const discountMiscast: AttackDefinition = {
@@ -149,6 +168,7 @@ export const discountMiscast: AttackDefinition = {
     height: 58,
   },
   canMoveDuringAttack: true,
+  timeline: { feedbackClass: 'medium', startCue: 'discount-miscast' },
 };
 
 export const discountClearanceOrb: AttackDefinition = {
@@ -169,6 +189,7 @@ export const discountClearanceOrb: AttackDefinition = {
   },
   manaCost: 100,
   projectileId: 'discount_ultimate_orb_projectile',
+  timeline: { feedbackClass: 'ultimate', startCue: 'discount-clearance-orb' },
 };
 
 export const budgetCrackedAxeSwing: AttackDefinition = {
@@ -187,6 +208,7 @@ export const budgetCrackedAxeSwing: AttackDefinition = {
     width: 64,
     height: 32,
   },
+  timeline: { feedbackClass: 'medium' },
 };
 
 export const budgetTinyRage: AttackDefinition = {
@@ -206,6 +228,7 @@ export const budgetTinyRage: AttackDefinition = {
     height: 42,
   },
   manaCost: 30,
+  timeline: { feedbackClass: 'heavy' },
 };
 
 export const budgetAxeRain: AttackDefinition = {
@@ -225,6 +248,7 @@ export const budgetAxeRain: AttackDefinition = {
     height: 1,
   },
   manaCost: 100,
+  timeline: { feedbackClass: 'ultimate', startCue: 'budget-axe-rain' },
 };
 
 export const busterUnderbiteJab: AttackDefinition = {
@@ -243,6 +267,7 @@ export const busterUnderbiteJab: AttackDefinition = {
     width: 46,
     height: 28,
   },
+  timeline: { feedbackClass: 'light' },
 };
 
 export const busterBulldogBash: AttackDefinition = {
@@ -262,6 +287,7 @@ export const busterBulldogBash: AttackDefinition = {
     height: 38,
   },
   manaCost: 28,
+  timeline: { feedbackClass: 'medium' },
 };
 
 export const busterUnderbiteBulldozer: AttackDefinition = {
@@ -281,6 +307,7 @@ export const busterUnderbiteBulldozer: AttackDefinition = {
     height: 48,
   },
   manaCost: 100,
+  timeline: { feedbackClass: 'ultimate', startCue: 'buster-bulldozer' },
 };
 
 export const airBonk: AttackDefinition = {
@@ -300,6 +327,7 @@ export const airBonk: AttackDefinition = {
     height: 92,
   },
   canTurnDuringAttack: false,
+  timeline: { feedbackClass: 'light' },
 };
 
 export const attacksById: Record<string, AttackDefinition> = {

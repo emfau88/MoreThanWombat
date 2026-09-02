@@ -3,6 +3,12 @@ import { applyDepthSort } from '../core/DepthSort';
 import type { AttackDefinition } from '../data/attacks';
 import { attacksById } from '../data/attacks';
 import type { Rect } from '../utils/Rect';
+import type { CombatResponse } from './CombatResolver';
+import {
+  getAttackPhaseAtElapsed,
+  getMoveTimelineSnapshot,
+  type AttackPhase as TimelineAttackPhase,
+} from './MoveTimeline';
 
 export type FighterFacing = 'left' | 'right';
 export type FighterState =
@@ -17,7 +23,7 @@ export type FighterState =
   | 'airAttack'
   | 'landing'
   | 'dead';
-export type AttackPhase = 'startup' | 'active' | 'recovery' | 'none';
+export type AttackPhase = TimelineAttackPhase;
 type LocalBox = {
   offsetX: number;
   offsetY: number;
@@ -110,6 +116,7 @@ export class Fighter {
   private attackInstanceId = 0;
   private landingRemainingMs = 0;
   private hasUsedAirAttack = false;
+  private combatResponse: CombatResponse = 'normal';
 
   constructor(scene: Phaser.Scene, definition: FighterDefinition, spawn: { x: number; y: number }) {
     this.definition = definition;
@@ -304,12 +311,39 @@ export class Fighter {
     return this.attackInstanceId;
   }
 
+  getAttackElapsedMs(): number {
+    return this.attackElapsedMs;
+  }
+
+  getAttackPhaseRemainingMs(): number {
+    if (!this.currentAttack) {
+      return 0;
+    }
+
+    return getMoveTimelineSnapshot(this.currentAttack, this.attackElapsedMs).phaseRemainingMs;
+  }
+
+  getAnimationDebugInfo(): { animationKey: string; frameIndex: number } {
+    return {
+      animationKey: this.sprite?.anims.currentAnim?.key ?? 'none',
+      frameIndex: this.sprite?.anims.currentFrame?.index ? this.sprite.anims.currentFrame.index - 1 : 0,
+    };
+  }
+
   hasHitTarget(targetId: string): boolean {
     return this.hitTargets.has(targetId);
   }
 
   registerHit(targetId: string): void {
     this.hitTargets.add(targetId);
+  }
+
+  getCombatResponse(): CombatResponse {
+    return this.combatResponse;
+  }
+
+  setCombatResponse(response: CombatResponse): void {
+    this.combatResponse = response;
   }
 
   getHurtbox(): Rect | null {
@@ -397,6 +431,11 @@ export class Fighter {
     this.updateVisuals();
   }
 
+  setManaForDebug(mana: number): void {
+    this.mana = Phaser.Math.Clamp(mana, 0, this.maxMana);
+    this.updateVisuals();
+  }
+
   destroy(): void {
     this.container.destroy(true);
   }
@@ -480,16 +519,11 @@ export class Fighter {
     this.applyKnockback(deltaSeconds, bounds);
     this.attackElapsedMs += deltaSeconds * 1000;
 
-    if (this.attackElapsedMs < attack.startupMs) {
-      this.attackPhase = 'startup';
-    } else if (this.attackElapsedMs < attack.startupMs + attack.activeMs) {
-      this.attackPhase = 'active';
-    } else if (this.attackElapsedMs < attack.startupMs + attack.activeMs + attack.recoveryMs) {
-      this.attackPhase = 'recovery';
-    } else {
+    this.attackPhase = getAttackPhaseAtElapsed(attack, this.attackElapsedMs);
+
+    if (this.attackPhase === 'none') {
       this.currentAttack = null;
       this.attackElapsedMs = 0;
-      this.attackPhase = 'none';
       this.hitTargets.clear();
       this.state = this.isGrounded ? 'idle' : 'fall';
     }
@@ -629,12 +663,8 @@ export class Fighter {
 
     if (this.flashRemainingMs > 0) {
       this.sprite.setTint(0xfff1bf);
-    } else if (this.state === 'hitstun') {
-      this.sprite.setTint(0xffb4a2);
-    } else if (this.state === 'airAttack') {
-      this.sprite.setTint(0xffd166);
     } else {
-      this.sprite.setTint(0xffffff);
+      this.sprite.clearTint();
     }
 
     const attackAnimationKey = this.currentAttack

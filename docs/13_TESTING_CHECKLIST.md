@@ -2,15 +2,37 @@
 
 ## Before Every Commit / Agent Step
 
-Run if available:
+Run:
 
 ```bash
 npm run build
 npm run typecheck
-npm run lint
+npm test
 ```
 
-If a script does not exist, state that it does not exist instead of pretending it was run.
+There is currently no `lint` script. State that explicitly if lint coverage is relevant.
+
+## Combat Gym Regression
+
+- Main Menu -> Combat Gym -> Start Battle.
+- Cycle player, move, dummy, range, lane, MP, and dummy mode.
+- For Discount Wizard, verify Wand Smack, Fireball, Miscast, Clearance Orb, and Air Bonk are individually selectable.
+- Verify every changed preset restarts into `BattleScene`, not the main menu.
+- Pause, fire a move, and advance with single-frame steps.
+- Verify startup, active, recovery, animation frame, and hitstop telemetry.
+- Toggle boxes and verify hurtbox, pushbox, and active hitbox are distinguishable.
+- Verify a guarding dummy takes no damage.
+- Verify an invulnerable dummy takes no damage.
+- Verify an idle dummy takes damage exactly once per attack instance.
+- Test the `MENU` touch target in a landscape mobile viewport; it must win over joystick capture.
+
+## Character Asset Regression
+
+- Run `npm.cmd run assets:refresh` after any Body-sheet, raw Wizard-row, or character manifest change.
+- Confirm 5/5 sheets pass and the whole-sheet gate reports no unexpected empty or edge-clipped frames.
+- Review enlarged Idle/Walk loops both original and mirrored in `docs/qa/character-loop-previews/`.
+- Review changed attacks in the Combat Gym at 0.25× with boxes off and on.
+- Confirm Body and contact/cast VFX remain separate layers.
 
 ## Desktop Manual Test
 

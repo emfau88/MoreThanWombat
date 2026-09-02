@@ -1,0 +1,1087 @@
+{
+  "generatedAt": "2026-09-02T09:13:18.834Z",
+  "manifestVersion": 1,
+  "thresholds": {
+    "alpha": 8,
+    "footLineDriftPx": 1,
+    "rootAnchorDriftPx": 2,
+    "heightDeltaPercentWarning": 4,
+    "paletteDistanceWarning": 0.07
+  },
+  "sheets": [
+    {
+      "id": "discount-wizard",
+      "label": "Discount Wizard",
+      "runtime": "public/assets/characters/discount-wizard/discount_wizard_spritesheet_v2_128_normalized.png",
+      "dimensions": {
+        "width": 512,
+        "height": 640
+      },
+      "allFrameGate": {
+        "checkedFrames": 20,
+        "allowedEmptyFrames": [],
+        "unexpectedEmptyFrames": [],
+        "edgeFrames": []
+      },
+      "baselineGroups": [
+        {
+          "name": "idle",
+          "footLineDriftPx": 0,
+          "rootAnchorDriftPx": 0.07,
+          "coreCenterDriftPx": 0.07,
+          "heightDeltaPercent": 0.95,
+          "paletteDistance": 0.03,
+          "edgePixelCount": 0,
+          "hardFailures": [],
+          "warnings": [],
+          "passed": true
+        },
+        {
+          "name": "walk",
+          "footLineDriftPx": 0,
+          "rootAnchorDriftPx": 0.17,
+          "coreCenterDriftPx": 0.17,
+          "heightDeltaPercent": 3.79,
+          "paletteDistance": 0.03,
+          "edgePixelCount": 0,
+          "hardFailures": [],
+          "warnings": [],
+          "passed": true
+        }
+      ],
+      "groups": [
+        {
+          "name": "idle",
+          "footLineDriftPx": 0,
+          "rootAnchorDriftPx": 0.07,
+          "coreCenterDriftPx": 0.07,
+          "heightDeltaPercent": 0.95,
+          "paletteDistance": 0.03,
+          "edgePixelCount": 0,
+          "hardFailures": [],
+          "warnings": [],
+          "passed": true,
+          "frames": [
+            {
+              "frameIndex": 0,
+              "empty": false,
+              "edgePixelCount": 0,
+              "bbox": {
+                "minX": 29,
+                "minY": 14,
+                "maxX": 109,
+                "maxY": 118,
+                "width": 81,
+                "height": 105
+              },
+              "footLine": 118,
+              "footAnchorX": 65,
+              "rootAnchorX": 64.2,
+              "coreCenterX": 64.2
+            },
+            {
+              "frameIndex": 1,
+              "empty": false,
+              "edgePixelCount": 0,
+              "bbox": {
+                "minX": 29,
+                "minY": 13,
+                "maxX": 107,
+                "maxY": 118,
+                "width": 79,
+                "height": 106
+              },
+              "footLine": 118,
+              "footAnchorX": 64,
+              "rootAnchorX": 64.23,
+              "coreCenterX": 64.23
+            },
+            {
+              "frameIndex": 2,
+              "empty": false,
+              "edgePixelCount": 0,
+              "bbox": {
+                "minX": 30,
+                "minY": 14,
+                "maxX": 107,
+                "maxY": 118,
+                "width": 78,
+                "height": 105
+              },
+              "footLine": 118,
+              "footAnchorX": 63,
+              "rootAnchorX": 64.17,
+              "coreCenterX": 64.17
+            },
+            {
+              "frameIndex": 3,
+              "empty": false,
+              "edgePixelCount": 0,
+              "bbox": {
+                "minX": 29,
+                "minY": 13,
+                "maxX": 107,
+                "maxY": 118,
+                "width": 79,
+                "height": 106
+              },
+              "footLine": 118,
+              "footAnchorX": 65,
+              "rootAnchorX": 64.24,
+              "coreCenterX": 64.24
+            }
+          ]
+        },
+        {
+          "name": "walk",
+          "footLineDriftPx": 0,
+          "rootAnchorDriftPx": 0.17,
+          "coreCenterDriftPx": 0.17,
+          "heightDeltaPercent": 3.79,
+          "paletteDistance": 0.03,
+          "edgePixelCount": 0,
+          "hardFailures": [],
+          "warnings": [],
+          "passed": true,
+          "frames": [
+            {
+              "frameIndex": 4,
+              "empty": false,
+              "edgePixelCount": 0,
+              "bbox": {
+                "minX": 26,
+                "minY": 10,
+                "maxX": 110,
+                "maxY": 118,
+                "width": 85,
+                "height": 109
+              },
+              "footLine": 118,
+              "footAnchorX": 59,
+              "rootAnchorX": 63.97,
+              "coreCenterX": 63.97
+            },
+            {
+              "frameIndex": 5,
+              "empty": false,
+              "edgePixelCount": 0,
+              "bbox": {
+                "minX": 30,
+                "minY": 14,
+                "maxX": 107,
+                "maxY": 118,
+                "width": 78,
+                "height": 105
+              },
+              "footLine": 118,
+              "footAnchorX": 59,
+              "rootAnchorX": 64.06,
+              "coreCenterX": 64.06
+            },
+            {
+              "frameIndex": 6,
+              "empty": false,
+              "edgePixelCount": 0,
+              "bbox": {
+                "minX": 30,
+                "minY": 14,
+                "maxX": 107,
+                "maxY": 118,
+                "width": 78,
+                "height": 105
+              },
+              "footLine": 118,
+              "footAnchorX": 68,
+              "rootAnchorX": 64.03,
+              "coreCenterX": 64.03
+            },
+            {
+              "frameIndex": 7,
+              "empty": false,
+              "edgePixelCount": 0,
+              "bbox": {
+                "minX": 30,
+                "minY": 13,
+                "maxX": 108,
+                "maxY": 118,
+                "width": 79,
+                "height": 106
+              },
+              "footLine": 118,
+              "footAnchorX": 71,
+              "rootAnchorX": 64.14,
+              "coreCenterX": 64.14
+            }
+          ]
+        }
+      ],
+      "hardFailures": [],
+      "passed": true
+    },
+    {
+      "id": "wombat",
+      "label": "Wombat",
+      "runtime": "public/assets/characters/wombat/wombat_spritesheet_128_normalized.png",
+      "dimensions": {
+        "width": 512,
+        "height": 640
+      },
+      "allFrameGate": {
+        "checkedFrames": 20,
+        "allowedEmptyFrames": [],
+        "unexpectedEmptyFrames": [],
+        "edgeFrames": []
+      },
+      "baselineGroups": [
+        {
+          "name": "idle",
+          "footLineDriftPx": 0,
+          "rootAnchorDriftPx": 8.98,
+          "coreCenterDriftPx": 8.98,
+          "heightDeltaPercent": 2.11,
+          "paletteDistance": 0.04,
+          "edgePixelCount": 0,
+          "hardFailures": [
+            "root anchor drift 8.98px > 2px"
+          ],
+          "warnings": [],
+          "passed": false
+        },
+        {
+          "name": "walk",
+          "footLineDriftPx": 3,
+          "rootAnchorDriftPx": 4.42,
+          "coreCenterDriftPx": 4.42,
+          "heightDeltaPercent": 4.95,
+          "paletteDistance": 0.05,
+          "edgePixelCount": 0,
+          "hardFailures": [
+            "foot line drift 3px > 1px",
+            "root anchor drift 4.42px > 2px"
+          ],
+          "warnings": [
+            "height delta 4.95% > 4%"
+          ],
+          "passed": false
+        }
+      ],
+      "groups": [
+        {
+          "name": "idle",
+          "footLineDriftPx": 0,
+          "rootAnchorDriftPx": 0.02,
+          "coreCenterDriftPx": 0.02,
+          "heightDeltaPercent": 2.11,
+          "paletteDistance": 0.04,
+          "edgePixelCount": 0,
+          "hardFailures": [],
+          "warnings": [],
+          "passed": true,
+          "frames": [
+            {
+              "frameIndex": 0,
+              "empty": false,
+              "edgePixelCount": 0,
+              "bbox": {
+                "minX": 19,
+                "minY": 25,
+                "maxX": 106,
+                "maxY": 120,
+                "width": 88,
+                "height": 96
+              },
+              "footLine": 120,
+              "footAnchorX": 44,
+              "rootAnchorX": 64.02,
+              "coreCenterX": 64.02
+            },
+            {
+              "frameIndex": 1,
+              "empty": false,
+              "edgePixelCount": 0,
+              "bbox": {
+                "minX": 19,
+                "minY": 27,
+                "maxX": 107,
+                "maxY": 120,
+                "width": 89,
+                "height": 94
+              },
+              "footLine": 120,
+              "footAnchorX": 44,
+              "rootAnchorX": 64.02,
+              "coreCenterX": 64.02
+            },
+            {
+              "frameIndex": 2,
+              "empty": false,
+              "edgePixelCount": 0,
+              "bbox": {
+                "minX": 17,
+                "minY": 26,
+                "maxX": 107,
+                "maxY": 120,
+                "width": 91,
+                "height": 95
+              },
+              "footLine": 120,
+              "footAnchorX": 44,
+              "rootAnchorX": 64.02,
+              "coreCenterX": 64.02
+            },
+            {
+              "frameIndex": 3,
+              "empty": false,
+              "edgePixelCount": 0,
+              "bbox": {
+                "minX": 18,
+                "minY": 26,
+                "maxX": 106,
+                "maxY": 120,
+                "width": 89,
+                "height": 95
+              },
+              "footLine": 120,
+              "footAnchorX": 43,
+              "rootAnchorX": 64.04,
+              "coreCenterX": 64.04
+            }
+          ]
+        },
+        {
+          "name": "walk",
+          "footLineDriftPx": 0,
+          "rootAnchorDriftPx": 0.91,
+          "coreCenterDriftPx": 0.91,
+          "heightDeltaPercent": 4.95,
+          "paletteDistance": 0.05,
+          "edgePixelCount": 0,
+          "hardFailures": [],
+          "warnings": [
+            "height delta 4.95% > 4%"
+          ],
+          "passed": true,
+          "frames": [
+            {
+              "frameIndex": 4,
+              "empty": false,
+              "edgePixelCount": 0,
+              "bbox": {
+                "minX": 13,
+                "minY": 18,
+                "maxX": 108,
+                "maxY": 120,
+                "width": 96,
+                "height": 103
+              },
+              "footLine": 120,
+              "footAnchorX": 63,
+              "rootAnchorX": 63.6,
+              "coreCenterX": 63.6
+            },
+            {
+              "frameIndex": 5,
+              "empty": false,
+              "edgePixelCount": 0,
+              "bbox": {
+                "minX": 11,
+                "minY": 19,
+                "maxX": 111,
+                "maxY": 120,
+                "width": 101,
+                "height": 102
+              },
+              "footLine": 120,
+              "footAnchorX": 61,
+              "rootAnchorX": 64.5,
+              "coreCenterX": 64.5
+            },
+            {
+              "frameIndex": 6,
+              "empty": false,
+              "edgePixelCount": 0,
+              "bbox": {
+                "minX": 11,
+                "minY": 21,
+                "maxX": 106,
+                "maxY": 120,
+                "width": 96,
+                "height": 100
+              },
+              "footLine": 120,
+              "footAnchorX": 58,
+              "rootAnchorX": 63.59,
+              "coreCenterX": 63.59
+            },
+            {
+              "frameIndex": 7,
+              "empty": false,
+              "edgePixelCount": 0,
+              "bbox": {
+                "minX": 14,
+                "minY": 23,
+                "maxX": 105,
+                "maxY": 120,
+                "width": 92,
+                "height": 98
+              },
+              "footLine": 120,
+              "footAnchorX": 40,
+              "rootAnchorX": 64.18,
+              "coreCenterX": 64.18
+            }
+          ]
+        }
+      ],
+      "hardFailures": [],
+      "passed": true
+    },
+    {
+      "id": "budget-barbarian",
+      "label": "Budget Barbarian",
+      "runtime": "public/assets/characters/budget-barbarian/budget_barbarian_spritesheet_v3_160_normalized.png",
+      "dimensions": {
+        "width": 640,
+        "height": 1120
+      },
+      "allFrameGate": {
+        "checkedFrames": 28,
+        "allowedEmptyFrames": [
+          23,
+          27
+        ],
+        "unexpectedEmptyFrames": [],
+        "edgeFrames": []
+      },
+      "baselineGroups": [
+        {
+          "name": "idle",
+          "footLineDriftPx": 0,
+          "rootAnchorDriftPx": 21.96,
+          "coreCenterDriftPx": 21.96,
+          "heightDeltaPercent": 1.59,
+          "paletteDistance": 0.03,
+          "edgePixelCount": 0,
+          "hardFailures": [
+            "root anchor drift 21.96px > 2px"
+          ],
+          "warnings": [],
+          "passed": false
+        },
+        {
+          "name": "walk",
+          "footLineDriftPx": 0,
+          "rootAnchorDriftPx": 19.72,
+          "coreCenterDriftPx": 19.72,
+          "heightDeltaPercent": 6.45,
+          "paletteDistance": 0.03,
+          "edgePixelCount": 25,
+          "hardFailures": [
+            "root anchor drift 19.72px > 2px",
+            "25 visible edge pixels"
+          ],
+          "warnings": [
+            "height delta 6.45% > 4%"
+          ],
+          "passed": false
+        }
+      ],
+      "groups": [
+        {
+          "name": "idle",
+          "footLineDriftPx": 0,
+          "rootAnchorDriftPx": 1.06,
+          "coreCenterDriftPx": 1.06,
+          "heightDeltaPercent": 1.64,
+          "paletteDistance": 0.03,
+          "edgePixelCount": 0,
+          "hardFailures": [],
+          "warnings": [],
+          "passed": true,
+          "frames": [
+            {
+              "frameIndex": 0,
+              "empty": false,
+              "edgePixelCount": 0,
+              "bbox": {
+                "minX": 13,
+                "minY": 28,
+                "maxX": 157,
+                "maxY": 147,
+                "width": 145,
+                "height": 120
+              },
+              "footLine": 147,
+              "footAnchorX": 60,
+              "rootAnchorX": 73,
+              "coreCenterX": 73
+            },
+            {
+              "frameIndex": 1,
+              "empty": false,
+              "edgePixelCount": 0,
+              "bbox": {
+                "minX": 13,
+                "minY": 26,
+                "maxX": 157,
+                "maxY": 147,
+                "width": 145,
+                "height": 122
+              },
+              "footLine": 147,
+              "footAnchorX": 59,
+              "rootAnchorX": 72.03,
+              "coreCenterX": 72.03
+            },
+            {
+              "frameIndex": 2,
+              "empty": false,
+              "edgePixelCount": 0,
+              "bbox": {
+                "minX": 15,
+                "minY": 26,
+                "maxX": 114,
+                "maxY": 147,
+                "width": 100,
+                "height": 122
+              },
+              "footLine": 147,
+              "footAnchorX": 58,
+              "rootAnchorX": 73,
+              "coreCenterX": 73
+            },
+            {
+              "frameIndex": 3,
+              "empty": false,
+              "edgePixelCount": 0,
+              "bbox": {
+                "minX": 16,
+                "minY": 26,
+                "maxX": 157,
+                "maxY": 147,
+                "width": 142,
+                "height": 122
+              },
+              "footLine": 147,
+              "footAnchorX": 61,
+              "rootAnchorX": 73.09,
+              "coreCenterX": 73.09
+            }
+          ]
+        },
+        {
+          "name": "walk",
+          "footLineDriftPx": 0,
+          "rootAnchorDriftPx": 0.94,
+          "coreCenterDriftPx": 0.94,
+          "heightDeltaPercent": 6.67,
+          "paletteDistance": 0.03,
+          "edgePixelCount": 0,
+          "hardFailures": [],
+          "warnings": [
+            "height delta 6.67% > 4%"
+          ],
+          "passed": true,
+          "frames": [
+            {
+              "frameIndex": 4,
+              "empty": false,
+              "edgePixelCount": 0,
+              "bbox": {
+                "minX": 3,
+                "minY": 34,
+                "maxX": 152,
+                "maxY": 147,
+                "width": 150,
+                "height": 114
+              },
+              "footLine": 147,
+              "footAnchorX": 81,
+              "rootAnchorX": 72.53,
+              "coreCenterX": 72.53
+            },
+            {
+              "frameIndex": 5,
+              "empty": false,
+              "edgePixelCount": 0,
+              "bbox": {
+                "minX": 3,
+                "minY": 30,
+                "maxX": 152,
+                "maxY": 147,
+                "width": 150,
+                "height": 118
+              },
+              "footLine": 147,
+              "footAnchorX": 82,
+              "rootAnchorX": 73.47,
+              "coreCenterX": 73.47
+            },
+            {
+              "frameIndex": 6,
+              "empty": false,
+              "edgePixelCount": 0,
+              "bbox": {
+                "minX": 19,
+                "minY": 26,
+                "maxX": 152,
+                "maxY": 147,
+                "width": 134,
+                "height": 122
+              },
+              "footLine": 147,
+              "footAnchorX": 83,
+              "rootAnchorX": 72.64,
+              "coreCenterX": 72.64
+            },
+            {
+              "frameIndex": 7,
+              "empty": false,
+              "edgePixelCount": 0,
+              "bbox": {
+                "minX": 19,
+                "minY": 26,
+                "maxX": 141,
+                "maxY": 147,
+                "width": 123,
+                "height": 122
+              },
+              "footLine": 147,
+              "footAnchorX": 81,
+              "rootAnchorX": 72.58,
+              "coreCenterX": 72.58
+            }
+          ]
+        }
+      ],
+      "hardFailures": [],
+      "passed": true
+    },
+    {
+      "id": "buster-bulldog",
+      "label": "Buster Bulldog",
+      "runtime": "public/assets/characters/buster-bulldog/buster_bulldog_spritesheet_128_normalized.png",
+      "dimensions": {
+        "width": 512,
+        "height": 640
+      },
+      "allFrameGate": {
+        "checkedFrames": 20,
+        "allowedEmptyFrames": [],
+        "unexpectedEmptyFrames": [],
+        "edgeFrames": []
+      },
+      "baselineGroups": [
+        {
+          "name": "idle",
+          "footLineDriftPx": 0,
+          "rootAnchorDriftPx": 0.93,
+          "coreCenterDriftPx": 0.93,
+          "heightDeltaPercent": 1.61,
+          "paletteDistance": 0.02,
+          "edgePixelCount": 0,
+          "hardFailures": [],
+          "warnings": [],
+          "passed": true
+        },
+        {
+          "name": "walk",
+          "footLineDriftPx": 0,
+          "rootAnchorDriftPx": 5.04,
+          "coreCenterDriftPx": 5.04,
+          "heightDeltaPercent": 1.79,
+          "paletteDistance": 0.02,
+          "edgePixelCount": 0,
+          "hardFailures": [
+            "root anchor drift 5.04px > 2px"
+          ],
+          "warnings": [],
+          "passed": false
+        }
+      ],
+      "groups": [
+        {
+          "name": "idle",
+          "footLineDriftPx": 0,
+          "rootAnchorDriftPx": 0.93,
+          "coreCenterDriftPx": 0.93,
+          "heightDeltaPercent": 1.61,
+          "paletteDistance": 0.02,
+          "edgePixelCount": 0,
+          "hardFailures": [],
+          "warnings": [],
+          "passed": true,
+          "frames": [
+            {
+              "frameIndex": 0,
+              "empty": false,
+              "edgePixelCount": 0,
+              "bbox": {
+                "minX": 14,
+                "minY": 61,
+                "maxX": 95,
+                "maxY": 122,
+                "width": 82,
+                "height": 62
+              },
+              "footLine": 122,
+              "footAnchorX": 47,
+              "rootAnchorX": 65.41,
+              "coreCenterX": 65.41
+            },
+            {
+              "frameIndex": 1,
+              "empty": false,
+              "edgePixelCount": 0,
+              "bbox": {
+                "minX": 16,
+                "minY": 60,
+                "maxX": 92,
+                "maxY": 122,
+                "width": 77,
+                "height": 63
+              },
+              "footLine": 122,
+              "footAnchorX": 46,
+              "rootAnchorX": 64.57,
+              "coreCenterX": 64.57
+            },
+            {
+              "frameIndex": 2,
+              "empty": false,
+              "edgePixelCount": 0,
+              "bbox": {
+                "minX": 16,
+                "minY": 61,
+                "maxX": 93,
+                "maxY": 122,
+                "width": 78,
+                "height": 62
+              },
+              "footLine": 122,
+              "footAnchorX": 47,
+              "rootAnchorX": 64.76,
+              "coreCenterX": 64.76
+            },
+            {
+              "frameIndex": 3,
+              "empty": false,
+              "edgePixelCount": 0,
+              "bbox": {
+                "minX": 16,
+                "minY": 61,
+                "maxX": 93,
+                "maxY": 122,
+                "width": 78,
+                "height": 62
+              },
+              "footLine": 122,
+              "footAnchorX": 47,
+              "rootAnchorX": 65.5,
+              "coreCenterX": 65.5
+            }
+          ]
+        },
+        {
+          "name": "walk",
+          "footLineDriftPx": 0,
+          "rootAnchorDriftPx": 0.3,
+          "coreCenterDriftPx": 0.3,
+          "heightDeltaPercent": 1.79,
+          "paletteDistance": 0.02,
+          "edgePixelCount": 0,
+          "hardFailures": [],
+          "warnings": [],
+          "passed": true,
+          "frames": [
+            {
+              "frameIndex": 4,
+              "empty": false,
+              "edgePixelCount": 0,
+              "bbox": {
+                "minX": 7,
+                "minY": 67,
+                "maxX": 94,
+                "maxY": 122,
+                "width": 88,
+                "height": 56
+              },
+              "footLine": 122,
+              "footAnchorX": 46,
+              "rootAnchorX": 65.4,
+              "coreCenterX": 65.4
+            },
+            {
+              "frameIndex": 5,
+              "empty": false,
+              "edgePixelCount": 0,
+              "bbox": {
+                "minX": 3,
+                "minY": 67,
+                "maxX": 93,
+                "maxY": 122,
+                "width": 91,
+                "height": 56
+              },
+              "footLine": 122,
+              "footAnchorX": 53,
+              "rootAnchorX": 65.14,
+              "coreCenterX": 65.14
+            },
+            {
+              "frameIndex": 6,
+              "empty": false,
+              "edgePixelCount": 0,
+              "bbox": {
+                "minX": 5,
+                "minY": 67,
+                "maxX": 94,
+                "maxY": 122,
+                "width": 90,
+                "height": 56
+              },
+              "footLine": 122,
+              "footAnchorX": 49,
+              "rootAnchorX": 65.19,
+              "coreCenterX": 65.19
+            },
+            {
+              "frameIndex": 7,
+              "empty": false,
+              "edgePixelCount": 0,
+              "bbox": {
+                "minX": 10,
+                "minY": 66,
+                "maxX": 96,
+                "maxY": 122,
+                "width": 87,
+                "height": 57
+              },
+              "footLine": 122,
+              "footAnchorX": 46,
+              "rootAnchorX": 65.1,
+              "coreCenterX": 65.1
+            }
+          ]
+        }
+      ],
+      "hardFailures": [],
+      "passed": true
+    },
+    {
+      "id": "angry-pigeon",
+      "label": "Angry Pigeon",
+      "runtime": "public/assets/characters/angry-pigeon/angry_pigeon_spritesheet_128_normalized.png",
+      "dimensions": {
+        "width": 512,
+        "height": 640
+      },
+      "allFrameGate": {
+        "checkedFrames": 20,
+        "allowedEmptyFrames": [],
+        "unexpectedEmptyFrames": [],
+        "edgeFrames": []
+      },
+      "baselineGroups": [
+        {
+          "name": "idle",
+          "footLineDriftPx": 1,
+          "rootAnchorDriftPx": 4.93,
+          "coreCenterDriftPx": 4.93,
+          "heightDeltaPercent": 3.05,
+          "paletteDistance": 0.11,
+          "edgePixelCount": 0,
+          "hardFailures": [
+            "root anchor drift 4.93px > 2px"
+          ],
+          "warnings": [
+            "palette distance 0.11 > 0.07"
+          ],
+          "passed": false
+        },
+        {
+          "name": "walk",
+          "footLineDriftPx": 0,
+          "rootAnchorDriftPx": 1.33,
+          "coreCenterDriftPx": 1.33,
+          "heightDeltaPercent": 0,
+          "paletteDistance": 0.06,
+          "edgePixelCount": 0,
+          "hardFailures": [],
+          "warnings": [],
+          "passed": true
+        }
+      ],
+      "groups": [
+        {
+          "name": "idle",
+          "footLineDriftPx": 0,
+          "rootAnchorDriftPx": 0.22,
+          "coreCenterDriftPx": 0.22,
+          "heightDeltaPercent": 3.05,
+          "paletteDistance": 0.11,
+          "edgePixelCount": 0,
+          "hardFailures": [],
+          "warnings": [
+            "palette distance 0.11 > 0.07"
+          ],
+          "passed": true,
+          "frames": [
+            {
+              "frameIndex": 0,
+              "empty": false,
+              "edgePixelCount": 0,
+              "bbox": {
+                "minX": 12,
+                "minY": 20,
+                "maxX": 96,
+                "maxY": 120,
+                "width": 85,
+                "height": 101
+              },
+              "footLine": 120,
+              "footAnchorX": 58,
+              "rootAnchorX": 68.13,
+              "coreCenterX": 68.13
+            },
+            {
+              "frameIndex": 1,
+              "empty": false,
+              "edgePixelCount": 0,
+              "bbox": {
+                "minX": 11,
+                "minY": 23,
+                "maxX": 97,
+                "maxY": 120,
+                "width": 87,
+                "height": 98
+              },
+              "footLine": 120,
+              "footAnchorX": 56,
+              "rootAnchorX": 68.35,
+              "coreCenterX": 68.35
+            },
+            {
+              "frameIndex": 2,
+              "empty": false,
+              "edgePixelCount": 0,
+              "bbox": {
+                "minX": 10,
+                "minY": 23,
+                "maxX": 96,
+                "maxY": 120,
+                "width": 87,
+                "height": 98
+              },
+              "footLine": 120,
+              "footAnchorX": 55,
+              "rootAnchorX": 68.2,
+              "coreCenterX": 68.2
+            },
+            {
+              "frameIndex": 3,
+              "empty": false,
+              "edgePixelCount": 0,
+              "bbox": {
+                "minX": 10,
+                "minY": 22,
+                "maxX": 97,
+                "maxY": 120,
+                "width": 88,
+                "height": 99
+              },
+              "footLine": 120,
+              "footAnchorX": 57,
+              "rootAnchorX": 68.35,
+              "coreCenterX": 68.35
+            }
+          ]
+        },
+        {
+          "name": "walk",
+          "footLineDriftPx": 0,
+          "rootAnchorDriftPx": 0.33,
+          "coreCenterDriftPx": 0.33,
+          "heightDeltaPercent": 0,
+          "paletteDistance": 0.06,
+          "edgePixelCount": 0,
+          "hardFailures": [],
+          "warnings": [],
+          "passed": true,
+          "frames": [
+            {
+              "frameIndex": 4,
+              "empty": false,
+              "edgePixelCount": 0,
+              "bbox": {
+                "minX": 3,
+                "minY": 22,
+                "maxX": 97,
+                "maxY": 120,
+                "width": 95,
+                "height": 99
+              },
+              "footLine": 120,
+              "footAnchorX": 43,
+              "rootAnchorX": 68.32,
+              "coreCenterX": 68.32
+            },
+            {
+              "frameIndex": 5,
+              "empty": false,
+              "edgePixelCount": 0,
+              "bbox": {
+                "minX": 3,
+                "minY": 22,
+                "maxX": 98,
+                "maxY": 120,
+                "width": 96,
+                "height": 99
+              },
+              "footLine": 120,
+              "footAnchorX": 44,
+              "rootAnchorX": 68.48,
+              "coreCenterX": 68.48
+            },
+            {
+              "frameIndex": 6,
+              "empty": false,
+              "edgePixelCount": 0,
+              "bbox": {
+                "minX": 5,
+                "minY": 22,
+                "maxX": 97,
+                "maxY": 120,
+                "width": 93,
+                "height": 99
+              },
+              "footLine": 120,
+              "footAnchorX": 72,
+              "rootAnchorX": 68.15,
+              "coreCenterX": 68.15
+            },
+            {
+              "frameIndex": 7,
+              "empty": false,
+              "edgePixelCount": 0,
+              "bbox": {
+                "minX": 4,
+                "minY": 22,
+                "maxX": 98,
+                "maxY": 120,
+                "width": 95,
+                "height": 99
+              },
+              "footLine": 120,
+              "footAnchorX": 73,
+              "rootAnchorX": 68.34,
+              "coreCenterX": 68.34
+            }
+          ]
+        }
+      ],
+      "hardFailures": [],
+      "passed": true
+    }
+  ]
+}

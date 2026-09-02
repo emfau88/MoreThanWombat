@@ -2,6 +2,33 @@
 
 This is the current practical task list based on the implemented build, not the original zero-state backlog.
 
+## P0 - Current Arcade-Quality Work
+
+### TASK-AQ-002 - Implement BULK 2 Box Profiles
+
+Goal:
+Move from one static attack rectangle toward timeline-bound Early/Main/Late profiles without re-coupling logic to `BattleScene`.
+
+Acceptance:
+
+- Box profile data schema exists
+- At least Wombat Jab and one heavy/special move use authored phase profiles
+- Standing, moving, airborne, hit, and future knockdown hurtbox requirements are documented
+- Combat Gym displays the active profile and contact point
+- Existing 17 tests stay green and new profile-boundary tests are added
+
+## Completed Arcade-Quality Milestones
+
+### TASK-AQ-001 - Close BULK 1 Art Review Warnings
+
+Completed 2026-09-02:
+
+- Discount Wizard v2 uses one approved costume identity across 20 valid body frames.
+- Angry Pigeon palette variation was reviewed as a pose-dependent wing-area change.
+- Wombat Walk height variation was accepted as intentional gait with stable root and baseline.
+- Budget Barbarian height variation and `[4, 6, 5, 7]` sequence were accepted as intentional heavy movement.
+- `npm.cmd run assets:refresh` passes 5/5 sheets and the whole-sheet gate.
+
 ## P0 - Immediate Verification
 
 ### TASK-CUR-001 - Verify GitHub Pages Live Build

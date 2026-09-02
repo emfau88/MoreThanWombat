@@ -1,6 +1,22 @@
 # More Than Wombat - Handoff For New Chat
 
-Last updated: 2026-05-21
+Last updated: 2026-09-02
+
+## 2026-09-01 Priority Update
+
+BULK 0 and the architecture safety pass BULK 0.5 from `23_ARCADE_QUALITY_COMBAT_VFX_PLAN.md` are complete.
+
+- Test mode is now a full Combat Gym with fighter/move/dummy/range/lane/mana presets.
+- Pause, frame step, slow motion, box overlays, telemetry, guard, invulnerability, and attack-loop dummy modes exist.
+- Move timeline, input buffering, contact resolution, hit feedback, presentation FX, animation registration, and mobile hit testing were separated into focused modules.
+- Melee, projectile, and Axe Rain contacts share hit/blocked/invulnerable outcomes.
+- `npm.cmd run typecheck`, `npm.cmd test`, and `npm.cmd run build` are required checks; 17 tests currently pass.
+- The touch `MENU` control has priority over joystick capture and has been verified in a mobile landscape viewport.
+- BULK 1 is complete: deterministic normalization, loop previews, whole-sheet gates, and visual review pass for all five production Body sheets.
+- Discount Wizard v2 was rebuilt from a canonical master; all 20 cells pass, and Wand Smack plus Miscast were approved in the Combat Gym at 0.25×.
+- Runtime Idle offsets and Barbarian scale-pop repairs were removed in favor of generated normalized sheets.
+- Read `24_BULK_1_CHARACTER_ASSET_IMPLEMENTATION.md` and `docs/qa/character-assets-latest.md` before changing character art.
+- The active priority is BULK 2 hitbox/hurtbox/pushbox data work. No additional architecture rewrite is required before it; extend the separated timeline/resolver systems incrementally.
 
 ## Purpose
 
