@@ -1,0 +1,73 @@
+{
+  "version": 1,
+  "sourceRoot": "art-source/vfx/style-lock",
+  "runtimeRoot": "public/assets/fx/style-lock",
+  "assets": [
+    {
+      "id": "physical-light-a",
+      "category": "contact",
+      "source": "physical-light-a-source.png",
+      "output": "physical-light-a.png",
+      "canvasWidth": 128,
+      "canvasHeight": 128,
+      "fitWidth": 106,
+      "fitHeight": 106,
+      "alignment": "center"
+    },
+    {
+      "id": "physical-light-b",
+      "category": "contact",
+      "source": "physical-light-b-source.png",
+      "output": "physical-light-b.png",
+      "canvasWidth": 128,
+      "canvasHeight": 128,
+      "fitWidth": 110,
+      "fitHeight": 96,
+      "alignment": "center"
+    },
+    {
+      "id": "magic-light-a",
+      "category": "contact",
+      "source": "magic-light-a-source.png",
+      "output": "magic-light-a.png",
+      "canvasWidth": 128,
+      "canvasHeight": 128,
+      "fitWidth": 104,
+      "fitHeight": 104,
+      "alignment": "center"
+    },
+    {
+      "id": "magic-light-b",
+      "category": "contact",
+      "source": "magic-light-b-source.png",
+      "output": "magic-light-b.png",
+      "canvasWidth": 128,
+      "canvasHeight": 128,
+      "fitWidth": 100,
+      "fitHeight": 100,
+      "alignment": "center"
+    },
+    {
+      "id": "ground-impact-a",
+      "category": "ground",
+      "source": "ground-impact-a-source.png",
+      "output": "ground-impact-a.png",
+      "canvasWidth": 256,
+      "canvasHeight": 128,
+      "fitWidth": 238,
+      "fitHeight": 112,
+      "alignment": "ground"
+    },
+    {
+      "id": "ground-impact-b",
+      "category": "ground",
+      "source": "ground-impact-b-source.png",
+      "output": "ground-impact-b.png",
+      "canvasWidth": 256,
+      "canvasHeight": 128,
+      "fitWidth": 238,
+      "fitHeight": 96,
+      "alignment": "ground"
+    }
+  ]
+}

@@ -13,7 +13,10 @@
     "assets:normalize": "node scripts/normalize-character-sheets.mjs",
     "assets:previews": "node scripts/render-character-loop-previews.mjs",
     "assets:qa": "node scripts/character-asset-qa.mjs --strict",
-    "assets:refresh": "npm run assets:wizard && npm run assets:normalize && npm run assets:previews && npm run assets:qa"
+    "assets:refresh": "npm run assets:wizard && npm run assets:normalize && npm run assets:previews && npm run assets:qa",
+    "vfx:build": "node scripts/build-vfx-style-lock.mjs",
+    "vfx:qa": "node scripts/vfx-style-lock-qa.mjs",
+    "vfx:refresh": "npm run vfx:build && npm run vfx:qa"
   },
   "dependencies": {
     "phaser": "latest"

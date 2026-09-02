@@ -1,0 +1,216 @@
+{
+  "generatedAt": "2026-09-02T18:21:46.654Z",
+  "results": [
+    {
+      "id": "physical-light-a",
+      "category": "contact",
+      "source": "physical-light-a-source.png",
+      "output": "physical-light-a.png",
+      "sourceMetrics": {
+        "width": 1254,
+        "height": 1254,
+        "transparentRatio": 0.923,
+        "partialRatio": 0.0766,
+        "cornersTransparent": true,
+        "borderTransparent": true,
+        "bounds": {
+          "minX": 295,
+          "minY": 264,
+          "maxX": 1028,
+          "maxY": 919
+        }
+      },
+      "runtimeMetrics": {
+        "width": 128,
+        "height": 128,
+        "transparentRatio": 0.8426,
+        "partialRatio": 0.1574,
+        "cornersTransparent": true,
+        "borderTransparent": true,
+        "bounds": {
+          "minX": 12,
+          "minY": 18,
+          "maxX": 116,
+          "maxY": 111
+        }
+      },
+      "failures": []
+    },
+    {
+      "id": "physical-light-b",
+      "category": "contact",
+      "source": "physical-light-b-source.png",
+      "output": "physical-light-b.png",
+      "sourceMetrics": {
+        "width": 1254,
+        "height": 1254,
+        "transparentRatio": 0.8715,
+        "partialRatio": 0.1273,
+        "cornersTransparent": true,
+        "borderTransparent": true,
+        "bounds": {
+          "minX": 168,
+          "minY": 189,
+          "maxX": 1093,
+          "maxY": 946
+        }
+      },
+      "runtimeMetrics": {
+        "width": 128,
+        "height": 128,
+        "transparentRatio": 0.8218,
+        "partialRatio": 0.1782,
+        "cornersTransparent": true,
+        "borderTransparent": true,
+        "bounds": {
+          "minX": 10,
+          "minY": 19,
+          "maxX": 118,
+          "maxY": 108
+        }
+      },
+      "failures": []
+    },
+    {
+      "id": "magic-light-a",
+      "category": "contact",
+      "source": "magic-light-a-source.png",
+      "output": "magic-light-a.png",
+      "sourceMetrics": {
+        "width": 1254,
+        "height": 1254,
+        "transparentRatio": 0.797,
+        "partialRatio": 0.2023,
+        "cornersTransparent": true,
+        "borderTransparent": true,
+        "bounds": {
+          "minX": 193,
+          "minY": 55,
+          "maxX": 1094,
+          "maxY": 1050
+        }
+      },
+      "runtimeMetrics": {
+        "width": 128,
+        "height": 128,
+        "transparentRatio": 0.7834,
+        "partialRatio": 0.2166,
+        "cornersTransparent": true,
+        "borderTransparent": true,
+        "bounds": {
+          "minX": 18,
+          "minY": 13,
+          "maxX": 110,
+          "maxY": 115
+        }
+      },
+      "failures": []
+    },
+    {
+      "id": "magic-light-b",
+      "category": "contact",
+      "source": "magic-light-b-source.png",
+      "output": "magic-light-b.png",
+      "sourceMetrics": {
+        "width": 1254,
+        "height": 1254,
+        "transparentRatio": 0.9244,
+        "partialRatio": 0.0752,
+        "cornersTransparent": true,
+        "borderTransparent": true,
+        "bounds": {
+          "minX": 379,
+          "minY": 360,
+          "maxX": 890,
+          "maxY": 863
+        }
+      },
+      "runtimeMetrics": {
+        "width": 128,
+        "height": 128,
+        "transparentRatio": 0.7173,
+        "partialRatio": 0.2826,
+        "cornersTransparent": true,
+        "borderTransparent": true,
+        "bounds": {
+          "minX": 14,
+          "minY": 15,
+          "maxX": 113,
+          "maxY": 113
+        }
+      },
+      "failures": []
+    },
+    {
+      "id": "ground-impact-a",
+      "category": "ground",
+      "source": "ground-impact-a-source.png",
+      "output": "ground-impact-a.png",
+      "sourceMetrics": {
+        "width": 1254,
+        "height": 1254,
+        "transparentRatio": 0.8236,
+        "partialRatio": 0.176,
+        "cornersTransparent": true,
+        "borderTransparent": true,
+        "bounds": {
+          "minX": 23,
+          "minY": 316,
+          "maxX": 1241,
+          "maxY": 892
+        }
+      },
+      "runtimeMetrics": {
+        "width": 256,
+        "height": 128,
+        "transparentRatio": 0.6769,
+        "partialRatio": 0.3231,
+        "cornersTransparent": true,
+        "borderTransparent": true,
+        "bounds": {
+          "minX": 10,
+          "minY": 10,
+          "maxX": 246,
+          "maxY": 121
+        }
+      },
+      "failures": []
+    },
+    {
+      "id": "ground-impact-b",
+      "category": "ground",
+      "source": "ground-impact-b-source.png",
+      "output": "ground-impact-b.png",
+      "sourceMetrics": {
+        "width": 1672,
+        "height": 941,
+        "transparentRatio": 0.8703,
+        "partialRatio": 0.1285,
+        "cornersTransparent": true,
+        "borderTransparent": true,
+        "bounds": {
+          "minX": 9,
+          "minY": 276,
+          "maxX": 1655,
+          "maxY": 663
+        }
+      },
+      "runtimeMetrics": {
+        "width": 256,
+        "height": 128,
+        "transparentRatio": 0.8675,
+        "partialRatio": 0.1325,
+        "cornersTransparent": true,
+        "borderTransparent": true,
+        "bounds": {
+          "minX": 9,
+          "minY": 66,
+          "maxX": 246,
+          "maxY": 121
+        }
+      },
+      "failures": []
+    }
+  ],
+  "failures": []
+}
