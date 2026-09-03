@@ -258,10 +258,10 @@ Diese Reihenfolge enthält ausschließlich Arbeit, die lokal, reproduzierbar und
 
 ### A0 — Technische Baseline für die Wave-Route
 
-**Status:** als nächstes. **Umfang:** klein und risikoarm.
+**Status 2026-09-03:** technische Datenvalidierung und Tests abgeschlossen; visuelle Browser-Screenshot-Captures werden mit A4 als echter Browser-Gate umgesetzt. **Umfang:** klein und risikoarm.
 
-- Bestehende Wave-Section-, Kamera-, Spawn- und Bounds-Logik präzise erfassen und durch zielgerichtete Tests absichern.
-- Automatisierte Screenshot-Baselines für Park, Rooftop, Scrapyard sowie die drei Junkyard-Positionen erzeugen; StageVisualContract und Debug-Bodenlinie als Prüforakel verwenden.
+- Bestehende Wave-Section-, Kamera-, Spawn- und Bounds-Logik präzise erfassen und durch zielgerichtete Tests absichern. **Erledigt:** `WaveStageValidation` prüft Weltgrenzen, Abschnittsreihenfolge, Spawnräume und sichere Startdistanz ohne Phaser-Laufzeit.
+- Automatisierte Screenshot-Baselines für Park, Rooftop, Scrapyard sowie die drei Junkyard-Positionen erzeugen; StageVisualContract und Debug-Bodenlinie als Prüforakel verwenden. **Verschoben nach A4:** Ohne vorhandenen Browser-Test-Runner wären bloße lokale Bilddateien keine verlässliche CI-Baseline.
 - Aktuelle Build-, Typecheck- und Test-Baseline dokumentieren.
 
 **Ergebnis:** Künftige Route-/Kameraänderungen können die bereits korrigierte Bodenprojektion nicht unbemerkt verschlechtern.
