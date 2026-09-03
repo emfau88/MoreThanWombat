@@ -92,7 +92,7 @@ export const junkyardRunStage: StageDefinition = {
         },
         {
           fighterId: 'budget_barbarian',
-          spawnX: 1450,
+          spawnX: 1310,
           spawnY: 350,
           hpOverride: 70,
           moveSpeedOverride: 132,
@@ -111,14 +111,14 @@ export const junkyardRunStage: StageDefinition = {
       enemies: [
         {
           fighterId: 'angry_pigeon',
-          spawnX: 2110,
+          spawnX: 1900,
           spawnY: 362,
           hpOverride: 54,
           moveSpeedOverride: 126,
         },
         {
           fighterId: 'discount_wizard',
-          spawnX: 2310,
+          spawnX: 2080,
           spawnY: 314,
           hpOverride: 86,
           moveSpeedOverride: 144,

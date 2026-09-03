@@ -4,6 +4,7 @@ import type { FighterDefinition } from '../combat/Fighter';
 import type { BattleMode, CharacterSelectSceneData, FighterId } from '../core/BattleModes';
 import { arenaDefinitions, arenaOrder, type ArenaId } from '../data/arenas';
 import { fighterDefinitions } from '../data/fighters';
+import { PROTOTYPE_FIGHTERS, SHIPPABLE_DUEL_ENEMIES, SHIPPABLE_PLAYER_FIGHTERS } from '../data/roster';
 import { registerCharacterAnimations } from '../core/CharacterAnimationRegistry';
 
 type OptionCard = {
@@ -43,18 +44,6 @@ const PLAYER_OPTIONS: OptionCard[] = [
     subtitle: 'Slow axe bruiser',
     description: 'Large damage, slower feet, and heavy melee timing.',
   },
-  {
-    id: 'buster_bulldog',
-    title: 'Buster Bulldog',
-    subtitle: 'Underbite bruiser',
-    description: 'Short, dense bulldog pressure with high knockback and stubborn HP.',
-  },
-  {
-    id: 'reference_fighter',
-    title: 'Reference Fighter',
-    subtitle: 'Animation test',
-    description: 'Development-only animation reference for motion checks.',
-  },
 ];
 
 const DUEL_ENEMY_OPTIONS: OptionCard[] = [
@@ -76,19 +65,17 @@ const DUEL_ENEMY_OPTIONS: OptionCard[] = [
     subtitle: 'Heavy melee fighter',
     description: 'Slower enemy with a punishing swing if you stand in front of him.',
   },
-  {
-    id: 'buster_bulldog',
-    title: 'Buster Bulldog',
-    subtitle: 'Short heavy bruiser',
-    description: 'Compact tank that trades speed for impact and crowding pressure.',
-  },
-  {
-    id: 'reference_fighter',
-    title: 'Reference Fighter',
-    subtitle: 'Animation test',
-    description: 'Development-only opponent for motion and hit timing checks.',
-  },
 ];
+
+if (!PLAYER_OPTIONS.every((option) => SHIPPABLE_PLAYER_FIGHTERS.includes(option.id as (typeof SHIPPABLE_PLAYER_FIGHTERS)[number]))) {
+  throw new Error('Character Select may only expose the shippable player roster.');
+}
+if (!DUEL_ENEMY_OPTIONS.every((option) => SHIPPABLE_DUEL_ENEMIES.includes(option.id as (typeof SHIPPABLE_DUEL_ENEMIES)[number]))) {
+  throw new Error('Character Select may only expose the shippable Duel enemy roster.');
+}
+if (PROTOTYPE_FIGHTERS.some((fighterId) => PLAYER_OPTIONS.some((option) => option.id === fighterId) || DUEL_ENEMY_OPTIONS.some((option) => option.id === fighterId))) {
+  throw new Error('Diagnostic fighter prototypes must stay out of Character Select.');
+}
 
 export class CharacterSelectScene extends Phaser.Scene {
   private mode: BattleMode = 'duel';

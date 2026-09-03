@@ -281,7 +281,7 @@ Diese Reihenfolge enthält ausschließlich Arbeit, die lokal, reproduzierbar und
 
 ### A2 — B5.3-B: Faire Director-Sicherheitsregeln
 
-**Status:** nach A1. **Umfang:** deterministische Schutzregeln.
+**Status 2026-09-03:** technische Sicherheitsregeln umgesetzt; finale Schwierigkeit bleibt bewusst bis zum echten Wave-Test konservativ. **Umfang:** deterministische Schutzregeln.
 
 - Harte Regeln gegen Spawn-Overlap, Spawn direkt hinter der Kamera, gleichzeitigen untelegraphierten Druck und feindliche Projektile während einer Travel-Phase ergänzen.
 - Gegnergruppen für Entry, Engpass und Finale als klar getrennte Daten definieren, zunächst mit konservativen HP-/Anzahlwerten.
@@ -293,7 +293,7 @@ Diese Reihenfolge enthält ausschließlich Arbeit, die lokal, reproduzierbar und
 
 ### A3 — Roster-Bereinigung: Bulldog technisch ausliefern verhindern
 
-**Status:** kann parallel zu A1/A2 erfolgen. **Umfang:** klarer Produktbeschluss, keine Neugestaltung.
+**Status 2026-09-03:** umgesetzt. Buster Bulldog und Reference Fighter bleiben ausschließlich Combat-Gym-Prototypen; normaler Select zeigt Wombat, Wizard und Barbarian. **Umfang:** klarer Produktbeschluss, keine Neugestaltung.
 
 - Buster Bulldog aus Character Select, zufälliger Gegnerwahl und Wave-Rotation entfernen.
 - Seine Definition, Moves und Assets als ungenutzten Prototyp erhalten, damit nichts destruktiv gelöscht wird und der spätere Ersatz unabhängig entstehen kann.

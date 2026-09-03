@@ -846,7 +846,7 @@ export class BattleScene extends Phaser.Scene {
     }
 
     this.waveTraversalPhase = 'transition';
-    this.waveTransitionRemainingMs = 260;
+    this.waveTransitionRemainingMs = 500;
     this.resultText.setText(`Entering\n${nextSection.title}`).setVisible(true);
     this.resultHintText.setText(this.describeSectionEncounter(nextSection)).setVisible(true);
   }

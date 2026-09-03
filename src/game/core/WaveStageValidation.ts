@@ -1,6 +1,8 @@
 import type { StageDefinition } from '../data/stages';
 
 export const MINIMUM_WAVE_SPAWN_DISTANCE = 96;
+export const MAXIMUM_WAVE_SPAWN_DISTANCE = 480;
+export const MAXIMUM_WAVE_ENEMIES = 2;
 
 /**
  * Validates static Wave data without needing a Phaser scene. These rules keep
@@ -40,6 +42,9 @@ export function getWaveStageValidationViolations(stage: StageDefinition): string
 
     const playerSpawnX = bounds.minX + 140;
     const playerSpawnY = Math.min(Math.max(340, bounds.minY + 48), bounds.maxY - 48);
+    if (section.enemies.length > MAXIMUM_WAVE_ENEMIES) {
+      violations.push(`${section.id}: encounter exceeds the simultaneous enemy budget`);
+    }
     for (const spawn of section.enemies) {
       if (spawn.spawnX < bounds.minX || spawn.spawnX > bounds.maxX || spawn.spawnY < bounds.minY || spawn.spawnY > bounds.maxY) {
         violations.push(`${section.id}: enemy spawn must stay inside its section bounds`);
@@ -48,6 +53,19 @@ export function getWaveStageValidationViolations(stage: StageDefinition): string
       const distance = Math.hypot(spawn.spawnX - playerSpawnX, spawn.spawnY - playerSpawnY);
       if (distance < MINIMUM_WAVE_SPAWN_DISTANCE) {
         violations.push(`${section.id}: enemy spawn is too close to the section player spawn`);
+      }
+      if (distance > MAXIMUM_WAVE_SPAWN_DISTANCE) {
+        violations.push(`${section.id}: enemy spawn is outside the initial camera-safe range`);
+      }
+    }
+
+    for (let spawnIndex = 0; spawnIndex < section.enemies.length; spawnIndex += 1) {
+      const spawn = section.enemies[spawnIndex];
+      for (let otherIndex = spawnIndex + 1; otherIndex < section.enemies.length; otherIndex += 1) {
+        const other = section.enemies[otherIndex];
+        if (Math.hypot(spawn.spawnX - other.spawnX, spawn.spawnY - other.spawnY) < MINIMUM_WAVE_SPAWN_DISTANCE) {
+          violations.push(`${section.id}: enemy spawns are too close together`);
+        }
       }
     }
 

@@ -1,11 +1,18 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { canEnterNextWaveSection, getWaveTraversalBounds } from '../src/game/core/WaveTraversal';
-import { getWaveStageValidationViolations, MINIMUM_WAVE_SPAWN_DISTANCE } from '../src/game/core/WaveStageValidation';
+import {
+  getWaveStageValidationViolations,
+  MAXIMUM_WAVE_ENEMIES,
+  MAXIMUM_WAVE_SPAWN_DISTANCE,
+  MINIMUM_WAVE_SPAWN_DISTANCE,
+} from '../src/game/core/WaveStageValidation';
 import { junkyardRunStage, type StageDefinition } from '../src/game/data/stages';
 
 test('Junkyard Run has ordered, reachable sections and safe enemy spawns', () => {
   assert.equal(MINIMUM_WAVE_SPAWN_DISTANCE, 96);
+  assert.equal(MAXIMUM_WAVE_SPAWN_DISTANCE, 480);
+  assert.equal(MAXIMUM_WAVE_ENEMIES, 2);
   assert.deepEqual(getWaveStageValidationViolations(junkyardRunStage), []);
 });
 
@@ -43,7 +50,7 @@ test('wave stage validation rejects overlapping sections, invalid spawns and uns
         ...junkyardRunStage.sections[1],
         id: junkyardRunStage.sections[0].id,
         bounds: { minX: 420, maxX: 900, minY: 474, maxY: 248 },
-        enemies: [{ fighterId: 'budget_barbarian', spawnX: 1000, spawnY: 200 }],
+        enemies: [{ fighterId: 'budget_barbarian', spawnX: 2000, spawnY: 200 }],
       },
     ],
   };
@@ -57,5 +64,6 @@ test('wave stage validation rejects overlapping sections, invalid spawns and uns
     'yard-entry: vertical bounds must be ordered and non-negative',
     'yard-entry: section overlaps the previous section',
     'yard-entry: enemy spawn must stay inside its section bounds',
+    'yard-entry: enemy spawn is outside the initial camera-safe range',
   ]);
 });
