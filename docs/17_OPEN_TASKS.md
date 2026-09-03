@@ -10,7 +10,7 @@ Goal:
 Replace the restrained code-native contact-spark reference with a coherent, reusable, mobile-budgeted VFX library on the completed `CombatImpact` event.
 
 Execution plan:
-`27_BULK_4_UNIFIED_VFX_PRODUCTION_PLAN.md`. BULK 4.0 and 4.1 are implemented and documented in `28_BULK_4_0_VFX_STYLE_LOCK.md`; BULK 4.3 has started and BULK 4.4 has the technical budget pass. The next P0 VFX task is BULK 4.2 Wombat layer separation.
+`27_BULK_4_UNIFIED_VFX_PRODUCTION_PLAN.md`. BULK 4.0 through 4.3 are implemented and documented; BULK 4.4 has the technical budget pass. The remaining VFX acceptance task is a measurement on the weakest intended target device.
 
 Current BULK 4.0/4.1 result:
 

@@ -2,7 +2,7 @@ export type ProjectileDefinition = {
   id: string;
   sourceAttackId: string;
   textureKey: string;
-  animationKey: string;
+  animationKey?: string;
   impactAnimationKey: string;
   speed: number;
   lifetimeMs: number;
@@ -13,6 +13,8 @@ export type ProjectileDefinition = {
   spawnOffsetX: number;
   spawnOffsetY: number;
   scale: number;
+  /** Decorative rotation for static transparent VFX textures. */
+  spinRadiansPerSecond?: number;
   laneTolerance: number;
   heightTolerance: number;
   homingStrength?: number;
@@ -27,9 +29,8 @@ export type ProjectileDefinition = {
 export const discountFireballProjectile: ProjectileDefinition = {
   id: 'discount_fireball_projectile',
   sourceAttackId: 'discount_fireball_cast',
-  textureKey: 'discount-wizard-fx',
-  animationKey: 'discount-wizard-fx-fireball',
-  impactAnimationKey: 'discount-wizard-fx-hit-puff',
+  textureKey: 'vfx-roster-wizard-cast',
+  impactAnimationKey: 'magic.cast',
   speed: 330,
   lifetimeMs: 850,
   damage: 9,
@@ -38,7 +39,8 @@ export const discountFireballProjectile: ProjectileDefinition = {
   knockbackY: 12,
   spawnOffsetX: 54,
   spawnOffsetY: -50,
-  scale: 0.92,
+  scale: 0.48,
+  spinRadiansPerSecond: 5.2,
   laneTolerance: 38,
   heightTolerance: 92,
   hitbox: {
@@ -52,9 +54,8 @@ export const discountFireballProjectile: ProjectileDefinition = {
 export const discountUltimateOrbProjectile: ProjectileDefinition = {
   id: 'discount_ultimate_orb_projectile',
   sourceAttackId: 'discount_clearance_orb',
-  textureKey: 'discount-wizard-ultimate-fx',
-  animationKey: 'discount-wizard-ultimate-orb',
-  impactAnimationKey: 'discount-wizard-ultimate-impact',
+  textureKey: 'vfx-roster-wizard-cast',
+  impactAnimationKey: 'magic.phase',
   speed: 245,
   lifetimeMs: 2600,
   damage: 30,
@@ -63,7 +64,8 @@ export const discountUltimateOrbProjectile: ProjectileDefinition = {
   knockbackY: 62,
   spawnOffsetX: 72,
   spawnOffsetY: -54,
-  scale: 1.18,
+  scale: 0.82,
+  spinRadiansPerSecond: 2.3,
   laneTolerance: 64,
   heightTolerance: 180,
   homingStrength: 2.4,

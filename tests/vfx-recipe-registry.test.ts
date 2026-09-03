@@ -45,3 +45,14 @@ test('roster signature recipes use shared transparent primitives instead of aren
   assert.equal(shock.layers[1].importance, 'residue');
   assert.equal(phase.layers[0].textureKey, 'vfx-roster-wizard-phase');
 });
+
+test('Earthshaker keeps its contact core at every VFX quality level', () => {
+  const earthshaker = getAuxiliaryVfxRecipe('ground.earthshaker');
+
+  assert.equal(earthshaker.anchor, 'ground');
+  assert.equal(earthshaker.layers[0].textureKey, 'vfx-style-ground-impact-a');
+  assert.equal(earthshaker.layers[1].textureKey, 'vfx-roster-shock-ring');
+  assert.equal(earthshaker.layers.filter((layer) => shouldRenderVfxLayer(layer, 'full')).length, 4);
+  assert.equal(earthshaker.layers.filter((layer) => shouldRenderVfxLayer(layer, 'reduced')).length, 3);
+  assert.equal(earthshaker.layers.filter((layer) => shouldRenderVfxLayer(layer, 'minimal')).length, 2);
+});

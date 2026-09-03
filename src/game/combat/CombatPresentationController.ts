@@ -30,6 +30,16 @@ type AxeRainStrike = {
   hitTargetInstanceIds: Set<number>;
 };
 
+type TimedGroundCue = {
+  x: number;
+  y: number;
+  depth: number;
+  delayMs: number;
+  recipeId: AuxiliaryVfxRecipeId;
+  shakeDurationMs?: number;
+  shakeIntensity?: number;
+};
+
 export type CombatPresentationContext = {
   getArenaBounds: () => FighterBounds;
   getCurrentTargets: () => Fighter[];
@@ -40,6 +50,7 @@ export type CombatPresentationContext = {
 
 export class CombatPresentationController {
   private readonly axeRainStrikes: AxeRainStrike[] = [];
+  private readonly timedGroundCues: TimedGroundCue[] = [];
   private readonly moveStartCues: MoveStartCueController;
   private readonly universalVfx: UniversalVfxDirector;
   private vfxQuality: VfxQuality = 'full';
@@ -52,8 +63,16 @@ export class CombatPresentationController {
     this.universalVfx = new UniversalVfxDirector(scene);
     this.moveStartCues = new MoveStartCueController({
       'wombat-earthshaker': (fighter) => {
-        this.spawnFx('wombat-earthshaker-fx', fighter.x, fighter.y - 178, fighter.y - 6, false, 1.72, 'wombat-earthshaker-fx');
-        this.shake(90, 0.0032);
+        this.spawnAuxiliary('warning.ground', fighter.x, fighter.y + 2, fighter.y + 6);
+        this.timedGroundCues.push({
+          x: fighter.x,
+          y: fighter.y + 2,
+          depth: fighter.y + 14,
+          delayMs: 240,
+          recipeId: 'ground.earthshaker',
+          shakeDurationMs: 90,
+          shakeIntensity: 0.0032,
+        });
       },
       'discount-fireball': (fighter) => {
         this.spawnAuxiliary('magic.cast', fighter.x + 54 * (fighter.facing === 'right' ? 1 : -1), fighter.y - 52, fighter.y + 12, fighter.facing === 'right' ? 1 : -1);
@@ -93,8 +112,6 @@ export class CombatPresentationController {
       this.spawnAuxiliary('magic.cast', contactX, contactY, target.y + 8, impact.attacker?.facing === 'left' ? -1 : 1);
     } else if (outcome === 'hit' && attackId === 'discount_clearance_orb') {
       this.spawnAuxiliary('magic.phase', contactX, contactY - 18, target.y + 10);
-    } else if (outcome === 'hit' && attackId === 'wombat_earthshaker') {
-      this.spawnFx('wombat-earthshaker-fx', contactX, target.y - 130, target.y + 8, false, 1.35, 'wombat-earthshaker-fx');
     }
 
     this.universalVfx.spawn(
@@ -109,6 +126,17 @@ export class CombatPresentationController {
 
   update(deltaMs: number): CombatImpact[] {
     const impacts: CombatImpact[] = [];
+
+    for (let index = this.timedGroundCues.length - 1; index >= 0; index -= 1) {
+      const cue = this.timedGroundCues[index];
+      cue.delayMs -= deltaMs;
+      if (cue.delayMs > 0) {
+        continue;
+      }
+      this.spawnAuxiliary(cue.recipeId, cue.x, cue.y, cue.depth);
+      this.shake(cue.shakeDurationMs ?? 0, cue.shakeIntensity ?? 0);
+      this.timedGroundCues.splice(index, 1);
+    }
 
     for (let index = this.axeRainStrikes.length - 1; index >= 0; index -= 1) {
       const strike = this.axeRainStrikes[index];
@@ -172,6 +200,7 @@ export class CombatPresentationController {
   clearTransientEffects(): void {
     this.universalVfx.clear();
     this.axeRainStrikes.length = 0;
+    this.timedGroundCues.length = 0;
   }
 
   destroy(): void {
@@ -341,20 +370,6 @@ export class CombatPresentationController {
 
   private spawnAuxiliary(id: AuxiliaryVfxRecipeId, x: number, y: number, depth: number, direction = 1): void {
     this.universalVfx.spawn(getAuxiliaryVfxRecipe(id), x, y, depth, this.vfxQuality, direction);
-  }
-
-  private spawnFx(
-    animationKey: string,
-    x: number,
-    y: number,
-    depth: number,
-    flipX: boolean,
-    scale: number,
-    textureKey = 'discount-wizard-fx',
-  ): void {
-    const sprite = this.scene.add.sprite(x, y, textureKey).setOrigin(0.5).setDepth(depth).setFlipX(flipX).setScale(scale);
-    sprite.play(animationKey);
-    sprite.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => sprite.destroy());
   }
 
   private spawnVfxLabPreview(): void {

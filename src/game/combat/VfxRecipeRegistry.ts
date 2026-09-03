@@ -80,6 +80,12 @@ const AUXILIARY_RECIPES: Record<AuxiliaryVfxRecipeId, VfxRecipe> = {
     layer('vfx-roster-shock-ring', 260, 0.40, 0.76),
     layer('vfx-library-dust-medium', 300, 0.38, 0.62, { offsetY: 2, minQuality: 'reduced', importance: 'residue' }),
   ]),
+  'ground.earthshaker': recipe('ground.earthshaker', 'ground', [
+    layer('vfx-style-ground-impact-a', 260, 0.74, 1.06),
+    layer('vfx-roster-shock-ring', 340, 0.54, 1.04),
+    layer('vfx-library-dust-medium', 440, 0.56, 1.02, { offsetY: 4, minQuality: 'reduced', importance: 'residue' }),
+    layer('vfx-library-dust-medium', 520, 0.34, 0.82, { offsetX: 24, offsetY: 6, minQuality: 'full', importance: 'residue' }),
+  ]),
   'warning.ground': recipe('warning.ground', 'ground', [
     layer('vfx-roster-warning-ring', 240, 0.44, 0.72, { startAlpha: 0.80, endAlpha: 0.28 }),
   ]),
@@ -97,6 +103,7 @@ export type AuxiliaryVfxRecipeId =
   | 'ground.medium'
   | 'ground.heavy'
   | 'ground.shock'
+  | 'ground.earthshaker'
   | 'warning.ground'
   | 'magic.cast'
   | 'magic.phase';
@@ -118,6 +125,7 @@ export const VFX_LAB_RECIPE_IDS = [
   'ground.medium',
   'ground.heavy',
   'ground.shock',
+  'ground.earthshaker',
   'warning.ground',
   'magic.cast',
   'magic.phase',
@@ -162,6 +170,7 @@ export function getVfxLabLabel(id: VfxLabRecipeId): string {
     'ground.medium': 'G Medium',
     'ground.heavy': 'G Heavy',
     'ground.shock': 'G Shock',
+    'ground.earthshaker': 'Earth',
     'warning.ground': 'Warning',
     'magic.cast': 'M Cast',
     'magic.phase': 'M Phase',

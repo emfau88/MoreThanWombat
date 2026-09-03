@@ -1,8 +1,8 @@
 # 27 — BULK 4: Einheitliche, universelle VFX-Sprache
 
-**Status:** BULK 4.0 und BULK 4.1 abgeschlossen; BULK 4.2 noch offen. BULK 4.3 ist als Roster-Migration begonnen, BULK 4.4 ist technisch umgesetzt; eine Messung auf dem schwächsten Zielgerät bleibt offen.
+**Status:** BULK 4.0 bis BULK 4.3 sind implementiert und geprüft. BULK 4.4 ist technisch umgesetzt; eine Messung auf dem schwächsten Zielgerät bleibt als reale Abnahme offen.
 
-**Planungsstand:** 2026-09-02
+**Planungsstand:** 2026-09-03
 
 **Style-Lock-Ergebnis:** `28_BULK_4_0_VFX_STYLE_LOCK.md`; Comic B ist die Light-/Small-Produktionsbasis, Comic A die Medium-/Heavy-Formensprache.
 
@@ -75,19 +75,17 @@ Beispiele:
 | Bestand | Technischer Zustand | Visueller Zustand | Entscheidung für BULK 4 |
 |---|---|---|---|
 | code-native Contact Sparks | transparent, kontaktpunktgebunden, deterministisch | lesbare Systemreferenz, aber geometrisch und noch nicht final gezeichnet | als Timing-Referenz behalten, anschließend durch VFX-Rezepte ersetzen |
-| `wombat_air_bonk.png` / `_chroma.png` | 2172×724, vollständig deckender grüner Source-Hintergrund; liegen derzeit unter `public`, werden aber vom Preloader nicht referenziert | nicht für Runtime geeignet | aus dem öffentlichen Runtime-Pfad in einen klaren Source-Bereich verschieben; nie preloaden oder direkt ausliefern |
-| `wombat_air_bonk_128.png` | 384×128, echte Transparenz, transparente Ecken | Ground-Spark/Steine sind im mittleren Body-Frame eingebrannt | Wombat-Körper neu exportieren und Bodeneffekt als separates universelles Rezept ausgeben |
-| `wombat_earthshaker_sheet_256.png` | 1024×256, außen transparent | enthält eine feste grüne Grasfläche und braune Bodenplatte; auf anderen Arenen stilistisch falsch | vollständig ersetzen; Impact, Ring, Dust und Debris ohne Terrain neu aufbauen |
-| `discount_wizard_fx_64.png` | transparent und getrennt vom Body | deutlich pixeliger als Figuren und Arenen | in gleicher Funktion, aber in der neuen Comic-Sprache neu zeichnen |
-| `discount_wizard_ultimate_sheet_128.png` | transparent | sehr heller, glatter Neon-/Stock-FX-Look; hohe Detaildichte | in Portal Core, Ringe, Rauch und kleine Accent-Sparks zerlegen; Hot White begrenzen |
+| ehemalige Air-Bonk-Sheets | lossless unter `art-source/legacy/wombat/` archiviert | Ground-Spark/Steine waren im Body eingebrannt | nicht mehr produktiv geladen; Air Bonk nutzt saubere vorhandene Wombat-Frames plus universelles Ground-Rezept |
+| ehemaliges Earthshaker-Sheet | lossless unter `art-source/legacy/wombat/` archiviert | enthielt feste Gras- und Erdplatte | vollständig durch transparente Warning-, Impact-, Shock- und Dust-Layer ersetzt |
+| ehemalige Wizard-FX-Sheets | lossless unter `art-source/legacy/discount-wizard/` archiviert | pixelig beziehungsweise zu glatter Neon-Look | Cast, Phase, Teleport und beide Projektile nutzen transparente Roster-Primitives |
 | `budget_barbarian_ultimate_sheet_128.png` | transparent | Axe Impact enthält eine feste leuchtende Bodenfläche und wirkt stilistisch glänzender als die Figuren | Weapon-Layer behalten/neu angleichen; Ground Impact durch universelles Rezept ersetzen |
 | Buster Dust/Ring im Code | keine Texturabhängigkeit | funktional, aber einfache Ellipsen ohne gemeinsame Art Direction | durch Bibliotheksprimitive ersetzen |
 
 ### Bestätigter Wombat-Befund
 
-Die vom Nutzer beobachtete feste Umgebung ist sehr wahrscheinlich der Earthshaker: Das Sheet besitzt zwar transparenten Außenraum, malt aber Gras und rissige Erde direkt in alle Effektphasen. Dadurch sieht der Effekt im Park plausibler aus als auf Rooftop oder Scrapyard.
+Die vom Nutzer beobachtete feste Umgebung war der Earthshaker: Das Sheet besaß zwar transparenten Außenraum, malte aber Gras und rissige Erde direkt in alle Effektphasen. Es liegt jetzt ausschließlich als nachvollziehbare Altquelle unter `art-source/legacy/wombat/`; die Runtime lädt es nicht mehr.
 
-Beim Air Bonk ist im geladenen `_128`-Sheet kein grüner Hintergrund vorhanden. Der Fehler dort ist stattdessen die fehlende Layertrennung: weißer Bodenspark und Steine sind Teil des Wombat-Body-Frames. Die Sichtprüfung des produktiven normalisierten Wombat-Sheets zeigt außerdem eingebrannte Kontakt-/Bodenlinien in Jab- und Belly-Slam-Zellen. Diese Body-/VFX-Trennung und der Earthshaker-Terrainersatz werden in BULK 4.2 gemeinsam behoben.
+Beim Air Bonk war im geladenen `_128`-Sheet kein grüner Hintergrund vorhanden. Der Fehler war stattdessen die fehlende Layertrennung: weißer Bodenspark und Steine waren Teil des Wombat-Body-Frames. Jab, Belly Slam und Air Bonk überspringen nun die eingebrannten Kontaktzellen und benutzen saubere Frames aus dem normalisierten Hauptsheet; universelle Kontakt- und Ground-Rezepte liefern die Effekte getrennt.
 
 ## 4. Style Guide „Punchy Comic Impact“
 
@@ -270,6 +268,8 @@ Abnahme:
 
 **Priorität:** P0
 
+**Status 2026-09-03:** abgeschlossen. Die produktiven Wombat-Animationen verwenden ausschließlich saubere Hauptsheet-Frames; die eingebrannten Air-Bonk-/Jab-/Belly-Kontaktzellen werden nicht mehr abgespielt. Earthshaker telegraphiert mit `warning.ground` und löst nach derselben deterministischen Verzögerung das universelle Rezept `ground.earthshaker` aus: Ground Core, Shock Ring und qualitätsabhängigen Dust. Alle alten Wombat-VFX-Sheets wurden verlustfrei nach `art-source/legacy/wombat/` verschoben und sind weder preloaded noch Teil des Runtime-Pfads.
+
 Reihenfolge:
 
 1. Air-Bonk-Body ohne weißen Ground Spark und ohne Steine exportieren.
@@ -292,7 +292,7 @@ Abnahme:
 
 **Priorität:** P1
 
-**Status 2026-09-03:** begonnen. Wizard Cast/Miscast/Teleport, Axe-Rain-Warnung und Buster-Dash nutzen jetzt transparente, gepoolte Bibliotheksrezepte. Die vier neuen Roster-Primitives bestehen Alpha-/Rand-QA. Der alte Wizard-Projektilsheet ist bewusst noch als klarer Restpunkt offen und wird erst mit seiner bewegten Ersatzdarstellung entfernt; B4.2 bleibt unverändert der P0-Wombat-Schritt.
+**Status 2026-09-03:** abgeschlossen. Wizard Cast/Miscast/Teleport, beide Wizard-Projektile, Axe-Rain-Warnung und Buster-Dash nutzen transparente, gepoolte Bibliotheksrezepte. Statische Wizard-Projektile drehen die vorhandene transparente `vfx-roster-wizard-cast`-Primitive zur Laufzeit; Kontakt und Ultimate-Phase bleiben separate Rezepte. Die vier Roster-Primitives bestehen Alpha-/Rand-QA; die alten Wizard-FX-Sheets sind verlustfrei unter `art-source/legacy/discount-wizard/` archiviert und werden nicht geladen.
 
 - Block, Armor und Invulnerable in der freigegebenen Sprache finalisieren.
 - Wizard-Pixel-FX und überhelle Ultimate-Layer ersetzen.
@@ -341,18 +341,18 @@ Phaser-ParticleEmitter verwaltet Partikel gepoolt; `reserve` und `maxParticles` 
 BULK 4 ist erst abgeschlossen, wenn alle folgenden Punkte erfüllt sind:
 
 - [ ] Stilrichtung wurde anhand der drei Gold-Standard-Prototypen freigegeben.
-- [ ] Jeder produktive Runtime-Effekt besitzt echte Transparenz.
-- [ ] Kein VFX-Sheet enthält Arena-, Gras-, Erd-, Asphalt- oder Himmelsflächen.
-- [ ] Air-Bonk-Körper und Ground Impact sind getrennt.
-- [ ] Earthshaker besteht aus transparenten, wiederverwendbaren Layern.
+- [x] Jeder produktive Runtime-Effekt besitzt echte Transparenz.
+- [x] Kein produktiv geladener VFX-Sheet enthält Arena-, Gras-, Erd-, Asphalt- oder Himmelsflächen.
+- [x] Air-Bonk-Körper und Ground Impact sind getrennt.
+- [x] Earthshaker besteht aus transparenten, wiederverwendbaren Layern.
 - [ ] Physical Light/Medium/Heavy/Ultimate sind ohne Zahlen unterscheidbar.
 - [ ] Magic, Block, Armor und Invulnerable besitzen klare gemeinsame Grammatik.
 - [ ] Normale Treffer verdecken die Gegnerreaktion höchstens 2–3 Frames.
 - [ ] Kontakt-FX sitzt am durch BULK 2 ermittelten Kontaktpunkt.
 - [ ] Ground-FX sitzt auf der World-Ground-Plane.
 - [ ] Combat-Gym-Pause und Frame Step bleiben deterministisch.
-- [ ] VFX-Qualitätsmodi und Reduce Flash/Shake funktionieren.
-- [ ] `vfx:qa`, Typecheck, Tests und Produktionsbuild sind grün.
+- [x] VFX-Qualitätsmodi und Reduce Flash/Shake funktionieren.
+- [x] `vfx:qa`, Typecheck, Tests und Produktionsbuild sind grün.
 - [ ] Die dichteste vorgesehene Wave-Szene hält das vereinbarte Zielgerätebudget.
 - [ ] Dokumentation, Manifest, Quellen und Lizenzen sind aktuell.
 
@@ -388,4 +388,4 @@ Jeder Commit muss für sich typecheck-/testbar sein. Änderungen an Wombat-Body-
 
 ## 12. Nächster konkreter Schritt
 
-Als Nächstes folgt **BULK 4.2**: Wombat-Körper/World-FX sauber trennen und Earthshaker aus transparenten, universellen Layern neu aufbauen. Danach wird der verbliebene Wizard-Projektilsheet in BULK 4.3 mit einer bewegten transparenten Ersatzdarstellung abgeschlossen. Die Bibliotheks- und QA-Schnittstelle aus BULK 4.1 ist dafür verbindlich.
+Als Nächstes folgt die reale **BULK-4.4-Zielgeräte-Abnahme**: dichteste Wave, drei Arenen und Full/Reduced/Minimal auf dem schwächsten vorgesehenen Mobilgerät messen. Die Bibliotheks- und QA-Schnittstelle aus BULK 4.1 bleibt dafür verbindlich.

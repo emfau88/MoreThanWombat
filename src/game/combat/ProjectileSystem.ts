@@ -11,7 +11,7 @@ type ActiveProjectile = {
   ownerFaction: CombatFaction;
   facing: FighterFacing;
   definition: ProjectileDefinition;
-  sprite: Phaser.GameObjects.Sprite;
+  sprite: Phaser.GameObjects.Sprite | Phaser.GameObjects.Image;
   x: number;
   y: number;
   velocityX: number;
@@ -41,14 +41,19 @@ export class ProjectileSystem {
     const direction = owner.facing === 'right' ? 1 : -1;
     const x = owner.x + definition.spawnOffsetX * direction;
     const y = owner.y;
-    const sprite = this.scene.add
-      .sprite(x, y + definition.spawnOffsetY, definition.textureKey)
+    const sprite = definition.animationKey
+      ? this.scene.add.sprite(x, y + definition.spawnOffsetY, definition.textureKey)
+      : this.scene.add.image(x, y + definition.spawnOffsetY, definition.textureKey);
+
+    sprite
       .setOrigin(0.5)
       .setScale(definition.scale)
       .setFlipX(owner.facing === 'left')
       .setDepth(owner.y + 18);
 
-    sprite.play(definition.animationKey);
+    if (definition.animationKey) {
+      (sprite as Phaser.GameObjects.Sprite).play(definition.animationKey);
+    }
 
     this.projectiles.push({
       owner,
@@ -76,6 +81,12 @@ export class ProjectileSystem {
       projectile.x += projectile.velocityX * deltaSeconds;
       projectile.y += projectile.velocityY * deltaSeconds;
       projectile.sprite.setPosition(projectile.x, projectile.y + projectile.definition.spawnOffsetY);
+      if (projectile.definition.spinRadiansPerSecond) {
+        const direction = projectile.facing === 'right' ? 1 : -1;
+        projectile.sprite.setRotation(
+          projectile.ageMs * 0.001 * projectile.definition.spinRadiansPerSecond * direction,
+        );
+      }
 
       const hitbox = this.getHitbox(projectile);
       let targetContact: { x: number; y: number } | null = null;
