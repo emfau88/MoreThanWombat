@@ -14,7 +14,7 @@ import { BattleFlowController } from '../core/BattleFlowController';
 import { InputController } from '../core/InputController';
 import { MobileControls } from '../core/MobileControls';
 import { registerCharacterAnimations } from '../core/CharacterAnimationRegistry';
-import { getStageTileScale } from '../core/StageVisuals';
+import { FLAT_ARENA_VISUAL_CONTRACT, getStageTileScale } from '../core/StageVisuals';
 import type { ArenaId } from '../data/arenas';
 import { attacksById } from '../data/attacks';
 import { fighterDefinitions } from '../data/fighters';
@@ -34,18 +34,8 @@ import {
 } from '../debug/CombatGymModel';
 
 export class BattleScene extends Phaser.Scene {
-  private readonly defaultArenaBounds: FighterBounds = {
-    minX: 72,
-    maxX: 888,
-    minY: 248,
-    maxY: 474,
-  };
-  private arenaBounds: FighterBounds = {
-    minX: 72,
-    maxX: 888,
-    minY: 248,
-    maxY: 474,
-  };
+  private readonly defaultArenaBounds: FighterBounds = { ...FLAT_ARENA_VISUAL_CONTRACT.combatBounds };
+  private arenaBounds: FighterBounds = { ...FLAT_ARENA_VISUAL_CONTRACT.combatBounds };
   private inputController!: InputController;
   private mobileControls!: MobileControls;
   private player!: Fighter;

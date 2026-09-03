@@ -3,7 +3,7 @@
 **Stand:** 2026-09-03
 **Scope:** Audit, Plan und nachverfolgte Umsetzungsstände.
 
-**Implementierungsupdate 2026-09-03:** Der akute Wave-Rendererfehler ist behoben. `Junkyard Run` skaliert seine 1672×941-Scrapyard-Quelle nun proportional auf die 960×540-Kampfprojektion, bevor sie horizontal gekachelt wird. Typecheck, 40 Tests, Production Build und eine Laufzeitprüfung sind grün. Der umfassendere StageVisualContract mit Screenshot-Baselines bleibt der nächste Teil von BULK 5.0.
+**Implementierungsupdate 2026-09-03:** Der akute Wave-Rendererfehler ist behoben. `Junkyard Run` skaliert seine 1672×941-Scrapyard-Quelle nun proportional auf die 960×540-Kampfprojektion, bevor sie horizontal gekachelt wird. Ein gemeinsamer `StageVisualContract` definiert nun den fairen Flat-Arena-Korridor und validiert jede Junkyard-Section gegen ihre lokale Bodenfläche. Typecheck, 42 Tests, Production Build und eine Laufzeitprüfung sind grün. Screenshot-Baselines bleiben der nächste Teil von BULK 5.0.
 
 ## Kurzurteil
 
@@ -71,7 +71,7 @@ Die Wave-Stage besitzt dagegen drei echte Abschnitts-Bounds und einen Kamera-Scr
 **Priorität:** P0
 **Ziel:** Jede sichtbare Kampfposition passt zur gemalten Bodenebene; Stages bleiben fair und nachvollziehbar.
 
-**Status 2026-09-03:** akuter Rendererfix abgeschlossen; der strukturelle StageVisualContract und die Baselines bleiben offen.
+**Status 2026-09-03:** Rendererfix und struktureller StageVisualContract abgeschlossen; die Screenshot-Baselines bleiben offen.
 
 Lieferumfang:
 

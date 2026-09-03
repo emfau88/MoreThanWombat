@@ -1,5 +1,6 @@
 import type { FighterBounds } from '../combat/Fighter';
 import type { FighterId } from '../core/BattleModes';
+import { FLAT_ARENA_VISUAL_CONTRACT } from '../core/StageVisuals';
 
 export type WaveStageId = 'junkyard_run';
 
@@ -106,6 +107,10 @@ export const junkyardRunStage: StageDefinition = {
       ],
     },
   ],
+};
+
+export const stageVisualContracts: Record<WaveStageId, typeof FLAT_ARENA_VISUAL_CONTRACT> = {
+  junkyard_run: FLAT_ARENA_VISUAL_CONTRACT,
 };
 
 export const waveStages: Record<WaveStageId, StageDefinition> = {
