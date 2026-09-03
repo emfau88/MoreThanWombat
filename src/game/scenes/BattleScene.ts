@@ -14,6 +14,7 @@ import { BattleFlowController } from '../core/BattleFlowController';
 import { InputController } from '../core/InputController';
 import { MobileControls } from '../core/MobileControls';
 import { registerCharacterAnimations } from '../core/CharacterAnimationRegistry';
+import { getStageTileScale } from '../core/StageVisuals';
 import type { ArenaId } from '../data/arenas';
 import { attacksById } from '../data/attacks';
 import { fighterDefinitions } from '../data/fighters';
@@ -744,7 +745,12 @@ export class BattleScene extends Phaser.Scene {
   private renderArena(): void {
     if (this.mode === 'waves') {
       const backgroundKey = this.waveStage.backgroundKey;
-      this.add.tileSprite(this.waveStage.worldWidth / 2, GAME_HEIGHT / 2, this.waveStage.worldWidth, GAME_HEIGHT, backgroundKey).setDepth(-100);
+      const sourceImage = this.textures.get(backgroundKey).getSourceImage() as { width: number; height: number };
+      const tileScale = getStageTileScale(sourceImage, { width: GAME_WIDTH, height: GAME_HEIGHT });
+      this.add
+        .tileSprite(this.waveStage.worldWidth / 2, GAME_HEIGHT / 2, this.waveStage.worldWidth, GAME_HEIGHT, backgroundKey)
+        .setTileScale(tileScale)
+        .setDepth(-100);
       this.add.rectangle(this.waveStage.worldWidth / 2, 230, this.waveStage.worldWidth - 120, 10, 0xffd08a, 0.12).setDepth(-90);
       this.add.rectangle(this.waveStage.worldWidth / 2, 468, this.waveStage.worldWidth - 120, 10, 0x0a0b0f, 0.22).setDepth(-90);
       return;

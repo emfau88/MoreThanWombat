@@ -1,7 +1,9 @@
 # 29 — Projekt-Audit und Plan zum professionellen Vertical Slice
 
 **Stand:** 2026-09-03
-**Scope:** Audit und Plan. Dieses Dokument setzt noch keinen der beschriebenen Schritte um.
+**Scope:** Audit, Plan und nachverfolgte Umsetzungsstände.
+
+**Implementierungsupdate 2026-09-03:** Der akute Wave-Rendererfehler ist behoben. `Junkyard Run` skaliert seine 1672×941-Scrapyard-Quelle nun proportional auf die 960×540-Kampfprojektion, bevor sie horizontal gekachelt wird. Typecheck, 40 Tests, Production Build und eine Laufzeitprüfung sind grün. Der umfassendere StageVisualContract mit Screenshot-Baselines bleibt der nächste Teil von BULK 5.0.
 
 ## Kurzurteil
 
@@ -68,6 +70,8 @@ Die Wave-Stage besitzt dagegen drei echte Abschnitts-Bounds und einen Kamera-Scr
 
 **Priorität:** P0
 **Ziel:** Jede sichtbare Kampfposition passt zur gemalten Bodenebene; Stages bleiben fair und nachvollziehbar.
+
+**Status 2026-09-03:** akuter Rendererfix abgeschlossen; der strukturelle StageVisualContract und die Baselines bleiben offen.
 
 Lieferumfang:
 

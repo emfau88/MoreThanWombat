@@ -21,7 +21,7 @@ This document is the current execution roadmap based on what is already built.
 - BULK 4.2 and 4.3 are complete: Wombat body frames and ground effects are separated, Earthshaker is a transparent layered recipe, and all Wizard FX including projectiles use transparent pooled recipes.
 - BULK 4.4 has a technical budget pass: Full/Reduced/Minimal cap active VFX layers at 80/48/24 and expose diagnostics in the Combat Gym; a weakest-target-device measurement remains manual QA.
 - The remaining VFX acceptance block is a real weakest-target-device measurement for BULK 4.4; no productive effect may contain a baked arena or terrain background.
-- The professionalization audit identifies BULK 5.0 Stage Integrity as the next implementation block: `Junkyard Run` currently renders its taller Scrapyard source as an unscaled Wave `TileSprite`, so its painted floor does not align with combat positions. Details and the complete post-BULK-4 order are in `29_PROFESSIONALIZATION_AUDIT_AND_PLAN.md`.
+- BULK 5.0 Stage Integrity has started: `Junkyard Run` now proportionally scales its taller Scrapyard source before tiling, so its painted floor aligns with combat positions. The structural StageVisualContract and screenshot baselines remain open; details and the complete post-BULK-4 order are in `29_PROFESSIONALIZATION_AUDIT_AND_PLAN.md`.
 - New roster, stage, and meta content remains frozen until the polished combat slice proves these layers.
 
 ## Current State Summary

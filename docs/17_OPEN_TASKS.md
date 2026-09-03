@@ -12,7 +12,8 @@ Make every visible combat position agree with the arena's painted ground plane, 
 Current issue:
 
 - Duel/Test intentionally use one flat, fair combat rectangle across Park, Rooftop, and Scrapyard.
-- Wave uses the taller 1672×941 Scrapyard source as a 2640×540 `TileSprite`; the source is not scaled to the game projection, so fighters appear above the intended floor zone.
+- Wave formerly used the taller 1672×941 Scrapyard source unscaled as a 2640×540 `TileSprite`; the proportional tiling fix is complete and the painted floor now aligns with fighters.
+- The remaining work is to codify per-stage visual bounds and capture repeatable cross-arena baselines before more maps or Wave content are added.
 
 Acceptance:
 
