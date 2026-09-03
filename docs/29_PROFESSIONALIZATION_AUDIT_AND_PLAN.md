@@ -252,7 +252,93 @@ Abnahme:
 - Datengetriebene Moves, getrennte Hit-/Hurt-/Pushboxen, universelle transparente VFX, SFX und Mobile-UI ergänzen.
 - Vollständige Character-Asset-QA, Combat-Gym-Matrix, Wave-Test und Zielgeräteabnahme vor Aufnahme in den Roster.
 
-## 4. Empfohlene Reihenfolge
+## 4. Akute autonome Arbeitsroadmap
+
+Diese Reihenfolge enthält ausschließlich Arbeit, die lokal, reproduzierbar und ohne subjektive Freigabe durch den Nutzer durchgeführt werden kann. Sie ist bewusst von der vollständigen Produktroadmap getrennt: Manuelle Zielgeräte-, Spielgefühl-, Sound- und Art-Freigaben werden vorbereitet, aber nicht vorweggenommen.
+
+### A0 — Technische Baseline für die Wave-Route
+
+**Status:** als nächstes. **Umfang:** klein und risikoarm.
+
+- Bestehende Wave-Section-, Kamera-, Spawn- und Bounds-Logik präzise erfassen und durch zielgerichtete Tests absichern.
+- Automatisierte Screenshot-Baselines für Park, Rooftop, Scrapyard sowie die drei Junkyard-Positionen erzeugen; StageVisualContract und Debug-Bodenlinie als Prüforakel verwenden.
+- Aktuelle Build-, Typecheck- und Test-Baseline dokumentieren.
+
+**Ergebnis:** Künftige Route-/Kameraänderungen können die bereits korrigierte Bodenprojektion nicht unbemerkt verschlechtern.
+
+### A1 — B5.3-A: Bewegung zwischen Wave-Begegnungen
+
+**Status:** danach. **Umfang:** funktionale Umsetzung ohne Content-Entscheidung.
+
+- Einen kleinen datengetriebenen Stage Director mit `combat`, `travel` und `transition` einführen.
+- Die heutige Weltbreite in feste Kampf- und sichere Laufzonen gliedern; nach einem Clear wird nur der nächste Vorwärtskorridor freigegeben.
+- Kamera folgt dem Spieler durch den Laufkorridor; die nächste Gegnergruppe entsteht erst am klaren Ankunftstrigger.
+- Rückwärtsgrenze, Spawn-Pause und Debug-Anzeige implementieren und mit unit-/szenennahen Tests prüfen.
+
+**Nicht enthalten:** Fallen, Hindernisse, Sprungpassagen, neue Art oder endgültiges Encounter-Balancing.
+
+**Ergebnis:** Ein spielbarer, horizontaler Stage-Run statt eines Abschnitts-Teleports. Die spätere manuelle Abnahme entscheidet nur über Distanzen und Feintiming, nicht über die technische Richtung.
+
+### A2 — B5.3-B: Faire Director-Sicherheitsregeln
+
+**Status:** nach A1. **Umfang:** deterministische Schutzregeln.
+
+- Harte Regeln gegen Spawn-Overlap, Spawn direkt hinter der Kamera, gleichzeitigen untelegraphierten Druck und feindliche Projektile während einer Travel-Phase ergänzen.
+- Gegnergruppen für Entry, Engpass und Finale als klar getrennte Daten definieren, zunächst mit konservativen HP-/Anzahlwerten.
+- Invarianten automatisiert testen: aktiver Gegner nur im Encounter-Bereich, keine Spawn-Position innerhalb der Pushbox des Spielers, kein Angriff vor Encounter-Aktivierung.
+
+**Nicht enthalten:** finale Schadenswerte und Schwierigkeitsgrad; diese bleiben bis zum manuellen Wave-Test konservativ.
+
+**Ergebnis:** Der Wave-Modus wird objektiv fairer und testbar, ohne Spielgefühl zu erraten.
+
+### A3 — Roster-Bereinigung: Bulldog technisch ausliefern verhindern
+
+**Status:** kann parallel zu A1/A2 erfolgen. **Umfang:** klarer Produktbeschluss, keine Neugestaltung.
+
+- Buster Bulldog aus Character Select, zufälliger Gegnerwahl und Wave-Rotation entfernen.
+- Seine Definition, Moves und Assets als ungenutzten Prototyp erhalten, damit nichts destruktiv gelöscht wird und der spätere Ersatz unabhängig entstehen kann.
+- Auswahl-, Mode- und Fallback-Tests aktualisieren; Wombat, Wizard und Barbarian bleiben der sichtbare Kern-Roster.
+
+**Ergebnis:** Der sichtbare Build behauptet keine Produktionsqualität für eine Figur, die bewusst ersetzt werden soll.
+
+### A4 — Reproduzierbare Browser- und Asset-Gates
+
+**Status:** nach A1/A3. **Umfang:** Automatisierung und Schutz vor Regressionen.
+
+- Lokale Browser-Smoke-Abdeckung für Menü, Character Select, Duel, Combat Gym und den vollständigen Wave-Run ergänzen.
+- Asset-Manifest und Runtime-Dateien inventarisieren; erst einen sicheren Verschiebeplan erstellen, danach mögliche Source-/Chroma-Bereinigung als separaten Commit durchführen.
+- Build-Report für Runtime-Assetgrößen und fehlende Referenzen einführen.
+
+**Ergebnis:** Route-, Roster- oder Assetänderungen werden vor dem manuellen Gerätetest automatisch gegen die wichtigsten Fehler geprüft.
+
+### A5 — B5.4 vorbereiten, aber keine subjektiven Inhalte festlegen
+
+**Status:** nach A4. **Umfang:** Infrastruktur, keine finale Audio-/Art-Aussage.
+
+- Ereignisliste und technische SFX-Kategorien für Bewegung, Landung, Cast, Telegraphie, UI, Sieg und Niederlage definieren.
+- HUD- und Mobile-Safe-Area-Überlappungen automatisiert bzw. mit festen Layout-Checks prüfen.
+- Onboarding- und Rollenhinweise als Text-/Datenstruktur vorbereiten.
+
+**Ergebnis:** Audio, UX und Tutorial können danach gezielt ergänzt werden, ohne später Combat-Code oder HUD-Struktur umzubauen.
+
+### Danach: ausdrücklich Nutzer- oder Zielgeräteabhängig
+
+- B5.1: echter Touch-, Pages- und Leistungscheck auf mindestens zwei Geräteklassen.
+- B5.2: finale Balancezahlen, Hitstop-Stärke, Recovery und Mana-Rhythmus nach persönlichem Combat-Gym-/Wave-Feedback.
+- B5.3-C: Belohnungsart, Checkpoint-Strenge und Wiederholungsanreiz.
+- B5.4: endgültige Soundauswahl, Lautheit, Stilfreigabe und finaler HUD-Geschmack.
+- B6.2+: neue Stage-Art, neuer Gegner-Archetyp und der spätere zweibeinige Fighter.
+
+### Sinnvolle Commit-Grenzen
+
+1. `Add wave-route safety baseline` — A0, ohne Gameplay-Verhaltensänderung.
+2. `Add continuous wave traversal` — A1, inklusive Tests und Plan-Update.
+3. `Add fair wave encounter director` — A2, inklusive Invarianten.
+4. `Remove Bulldog from shippable roster` — A3, isoliert und reversibel.
+5. `Add browser and asset quality gates` — A4, ohne Asset-Löschung.
+6. `Prepare presentation quality infrastructure` — A5, ohne finale Sound-/Art-Assets.
+
+## 5. Empfohlene Reihenfolge
 
 1. **BULK 5.0** — Wave-Boden-/Rendererkorrektur und Stage-Vertrag (**weitgehend abgeschlossen; Screenshot-Baselines offen**).
 2. **BULK 5.1** — Pages- und Realgeräteabnahme, einschließlich B4.4 (**offen: manuelle Zielgeräteprüfung**).
@@ -267,13 +353,13 @@ Abnahme:
 11. **BULK 6.2** — genau eine zweite geprüfte Route/Arena.
 12. **BULK 7.0–7.1** — erst dann ein neuer, zweibeiniger Fighter von Konzept bis Produktion.
 
-## 5. Bewusste Nicht-Ziele bis dahin
+## 6. Bewusste Nicht-Ziele bis dahin
 
 - Keine weitere Map vor dem Stage-Renderer-Fix.
 - Keine zusätzlichen Figuren vor dem Balance- und Wave-Playtest; Buster Bulldog erhält ausdrücklich keine weitere Produktionsarbeit.
 - Keine echte Hindernis-, Jump-Over- oder Hazard-Mechanik, solange die gegenwärtigen Arenen bewusst flache Kampfboxen sind.
 - Kein großer Umbau des Combat-Kerns: Die vorhandene Trennung ist ein Vorteil und soll durch Daten/Tests erweitert werden.
 
-## 6. Messbare Zieldefinition für den nächsten Meilenstein
+## 7. Messbare Zieldefinition für den nächsten Meilenstein
 
 Der nächste professionelle Milestone ist erreicht, wenn `Junkyard Run` in einer realen Wave-Sitzung auf Zielgerät sauber aussieht und sich sauber spielt: sichtbarer Boden stimmt mit allen Fighter-Positionen überein, die Kamera bleibt ruhig, keine Assets fehlen, Touch reagiert sofort, VFX bleiben im Budget und der Spieler versteht den nächsten Gegnerdruck ohne Debug-UI.
