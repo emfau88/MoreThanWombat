@@ -128,6 +128,8 @@ Abnahme:
 - Keine offensichtliche „immer beste“ Aktion im Duel oder Wave-Test.
 - Ein neuer Move wird erst nach Treffer-, AI-, VFX-, Audio- und Mobile-Prüfung freigegeben.
 
+**Roster-Entscheidung (2026-09-03):** Buster Bulldog wird nicht weiter für die Auslieferung optimiert. Er bleibt nur als ersetzbarer technischer Prototyp erhalten und wird aus Character Select sowie Wave-Rotation entfernt, sobald diese Bereinigung umgesetzt wird. Seine heutige vierbeinige Silhouette und die Rollenüberschneidung mit dem Barbarian rechtfertigen keine weitere Produktionszeit. Ein späterer, zweibeiniger Nachfolger ist ein neuer Character-Production-Task: Rollenvertrag, saubere animierte Sheets, Move-Set, Boxen, VFX und vollständige Gym-/Mobile-Abnahme — kein Reskin des Bulldogs.
+
 ### BULK 5.3 — Wave als kuratierte Arcade-Route
 
 **Priorität:** P1
@@ -135,16 +137,44 @@ Abnahme:
 
 Lieferumfang:
 
-- Nach B5.0 drei visuell unterschiedliche, aber kollisionsfreie Abschnitte: Entry, Engpass, Finale.
+- `Junkyard Run` als zusammenhängender Side-Scrolling-Stage-Run: Kampf, kurzer freier Vorwärtsweg, nächste Begegnung. Das übernimmt den Rhythmus klassischer Beat-'em-ups, ohne deren Figuren, Assets oder konkrete Inhalte zu kopieren.
+- Nach einem geleerten Kampfbereich wird der Weg nach rechts freigegeben; Kamera folgt dem Spieler statt ihn in den nächsten Bereich zu versetzen. Die nächste Begegnung startet erst an einem klaren Ankunftstrigger.
+- Die bestehende Weltbreite wird in drei Bereiche mit Kampf- und Übergangszonen aufgeteilt: leichter Einstieg, gemischter Engpass, Wizard-/Heavy-Finale. Pro Übergang zunächst ungefähr eine Bildschirmbreite sichere Laufstrecke, kein unendliches Backtracking.
+- Übergänge haben lesbare Richtungs- und Raumhinweise; Gegner können während der reinen Laufpassage nicht unfair von außerhalb der Kamera treffen.
+- Erst nach erfolgreichem Laufgefühl: ein kleiner originaler Energie-/Schrott-Pickup, Fortschrittsanzeige und Section-Checkpoint.
 - Für jede Section eine klare Gegneridee: Einführung, Mischdruck, Wizard-/Heavy-Finale; Spawn-, Lane- und HP-Daten bewusst ausbalancieren.
 - Einfache Director-Regeln: keine unfairen Spawn-overlaps, keine Offscreen-Treffer, Telegraphe vor gleichzeitigem Druck.
-- Section-Übergänge mit kurzer, lesbarer Kamera- und Audio-Pause statt abruptem Reset.
+- Keine physischen Hindernisse, Fallen oder Sprungpassagen in diesem Bulk. Die flache Kampfgeometrie bleibt bis zur separaten Stage-Physics-Phase bewusst fair und testbar.
 
 Abnahme:
 
 - Die Kamera unterstützt den Kampf und überholt ihn nicht.
 - Jeder Abschnitt hat eine eigene taktische Aussage, ohne neue Kollisions- oder Hazard-Systeme zu erzwingen.
 - Ein kompletter Run bleibt kurz und lädt zum Wiederholen ein.
+
+### BULK 5.3-A — Stage-Run-Grundlage
+
+**Priorität:** P1. **Abhängigkeit:** B5.1 manuell abgenommen.
+
+- Combat-/Travel-/Transition-Zustände im Stage Director ergänzen.
+- Bestehende Wave-Sections in `combatBounds`, `travelBounds` und `arrivalTrigger` aufteilen.
+- Weg nach dem Clear freigeben, Kamera ruhig folgen lassen und Spawnlogik bis zur Ankunft pausieren.
+- Ein-/Ausgang visuell und im Debug eindeutig darstellen.
+
+### BULK 5.3-B — Encounter-Regie
+
+**Priorität:** P1. **Abhängigkeit:** B5.3-A.
+
+- Je Section Gegnerrollen, Spawn-Lanes, Mindestabstand, Telegraphie und maximale gleichzeitige Bedrohung definieren.
+- Finale als klar lesbarer Wizard-/Heavy-Peak umsetzen; keine Offscreen-Projektile oder ungekennzeichneten Spawn-Overlaps.
+- Vollständigen Run in der Combat-Feel-Matrix protokollieren.
+
+### BULK 5.3-C — Fortschritt und Wiederholung
+
+**Priorität:** P2. **Abhängigkeit:** B5.3-B.
+
+- Kleine originale Belohnung pro Abschnitt, Fortschrittsanzeige und Checkpoint ergänzen.
+- Score-/Zeit-/Restleben-Auswertung nur dann hinzufügen, wenn sie die Wiederholung motiviert und nicht den Kampf-HUD überlädt.
 
 ### BULK 5.4 — Präsentation, Audio und UX
 
@@ -182,19 +212,65 @@ Abnahme:
 - Neue Bühne/Figur kann den vorhandenen QA- und Balanceprozess durchlaufen.
 - Kein Content-Update verschlechtert Pages-Start, Mobile oder Wave-Lesbarkeit.
 
+### BULK 6.0 — Kern-Roster bereinigen und beweisen
+
+**Priorität:** P1. **Abhängigkeit:** B5.2 und B5.3-B.
+
+- Buster Bulldog aus dem normalen Character Select und Wave-Roster nehmen; bestehende Daten nur als ungenutzten Prototyp behalten.
+- Wombat, Wizard und Barbarian anhand der Combat-Feel-Matrix auf eine eindeutige Rollenidentität, faire Recovery und Mana-Rhythmus prüfen und gezielt nachjustieren.
+- Pigeon ausschließlich als leichter Wave-Archetyp behandeln; keine unnötige Ausbauarbeit zum Playable Fighter.
+- Jede Änderung im Combat Gym, Wave und auf Touch prüfen.
+
+### BULK 6.1 — Onboarding und erste spielbare Session
+
+**Priorität:** P2. **Abhängigkeit:** B5.4 und B6.0.
+
+- Kurzes Start-Tutorial direkt im ersten Run: Bewegung, Angriff, Spezial, Mana und sichtbare Gefahren jeweils einmal ohne Textwand vermitteln.
+- Character Select auf den finalen Kern-Roster reduzieren und pro Figur Rolle sowie zwei bis drei Move-Hinweise zeigen.
+- Sieg, Niederlage, Neustart und Rückkehr ins Menü als vollständigen Flow ausarbeiten.
+
+### BULK 6.2 — Zweite Route oder Arena-Variante
+
+**Priorität:** P2. **Abhängigkeit:** B5.5 und erfolgreiches B5.3-Playtesting.
+
+- Genau eine neue, visuell eigenständige Route oder Arena-Variante liefern, auf derselben flachen und validierten Kampfgeometrie.
+- Neue Gegnerkombinationen nur aus bestehenden, geprüften Archetypen bilden; keine neue Figur parallel produzieren.
+- StageVisualContract, Spawn-Regeln und Screenshot-Baselines verpflichtend anwenden.
+
+### BULK 7.0 — Neuer zweibeiniger Fighter (Vorproduktion)
+
+**Priorität:** P3. **Abhängigkeit:** stabiler Kern-Roster, B6.1 und B6.2.
+
+- Erst Rollenlücke bestimmen; kein Ersatz nur wegen einer fehlenden Figurenzahl.
+- Bewegungs- und Angriffssilhouette, Sheet-Standard, Paletten- und VFX-Familie vor der Implementierung verbindlich festlegen.
+- Vier Kernzustände plus Basic, Special und Ultimate als Animatic/Preview prüfen; erst dann Runtime-Sheets erstellen.
+
+### BULK 7.1 — Neuer zweibeiniger Fighter (Produktion)
+
+**Priorität:** P3. **Abhängigkeit:** freigegebenes B7.0-Konzept.
+
+- Datengetriebene Moves, getrennte Hit-/Hurt-/Pushboxen, universelle transparente VFX, SFX und Mobile-UI ergänzen.
+- Vollständige Character-Asset-QA, Combat-Gym-Matrix, Wave-Test und Zielgeräteabnahme vor Aufnahme in den Roster.
+
 ## 4. Empfohlene Reihenfolge
 
-1. **BULK 5.0** — Wave-Boden-/Rendererkorrektur und Stage-Vertrag.
-2. **BULK 5.1** — Pages- und Realgeräteabnahme, einschließlich B4.4.
-3. **BULK 5.2** — Combat-Feel-Matrix und Roster-Identität.
-4. **BULK 5.3** — eine vollständige, kuratierte Junkyard-Route.
-5. **BULK 5.4** — Audio/UX-Polish.
-6. **BULK 5.5** — Runtime-Asset-Hygiene und erst dann neuer Content.
+1. **BULK 5.0** — Wave-Boden-/Rendererkorrektur und Stage-Vertrag (**weitgehend abgeschlossen; Screenshot-Baselines offen**).
+2. **BULK 5.1** — Pages- und Realgeräteabnahme, einschließlich B4.4 (**offen: manuelle Zielgeräteprüfung**).
+3. **BULK 5.2** — Combat-Feel-Matrix und Roster-Identität (**Matrix vorhanden, Spieltests/Nachjustierung offen**).
+4. **BULK 5.3-A** — freies, kontrolliertes Vorwärtslaufen zwischen Wave-Begegnungen.
+5. **BULK 5.3-B** — Encounter-Regie und fairer Abschlusskampf.
+6. **BULK 5.3-C** — Progression, Belohnung und Checkpoints.
+7. **BULK 5.4** — Audio/UX-Polish.
+8. **BULK 5.5** — Runtime-Asset-Hygiene und kontrollierter neuer Content.
+9. **BULK 6.0** — Kern-Roster bereinigen, Bulldog ausliefern verhindern und Rollen beweisen.
+10. **BULK 6.1** — Onboarding und vollständiger erster Session-Flow.
+11. **BULK 6.2** — genau eine zweite geprüfte Route/Arena.
+12. **BULK 7.0–7.1** — erst dann ein neuer, zweibeiniger Fighter von Konzept bis Produktion.
 
 ## 5. Bewusste Nicht-Ziele bis dahin
 
 - Keine weitere Map vor dem Stage-Renderer-Fix.
-- Keine zusätzlichen Figuren vor dem Balance- und Wave-Playtest.
+- Keine zusätzlichen Figuren vor dem Balance- und Wave-Playtest; Buster Bulldog erhält ausdrücklich keine weitere Produktionsarbeit.
 - Keine echte Hindernis-, Jump-Over- oder Hazard-Mechanik, solange die gegenwärtigen Arenen bewusst flache Kampfboxen sind.
 - Kein großer Umbau des Combat-Kerns: Die vorhandene Trennung ist ein Vorteil und soll durch Daten/Tests erweitert werden.
 

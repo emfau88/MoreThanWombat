@@ -9,7 +9,7 @@
 | Wombat | schneller Bruiser | höchste Mobilität, klarer Heavy-/Ground-Peak | darf nicht durch Tempo plus Earthshaker alle Räume dominieren |
 | Discount Wizard | Glaskanonen-Zoner | Distanz, Mana, Projektil- und Miscast-Humor | Fireball braucht Raum; Nahkampf muss riskant bleiben |
 | Budget Barbarian | langsamer Flächen-Bruiser | breite Hitboxen, Axe-Rain-Telegraphie | Recovery und Gegnerdruck müssen seine Peaks rechtfertigen |
-| Buster Bulldog | zäher Nahdruck | viel HP, kurzer Dash-/Knockback-Peak | darf nicht ohne Commitment ständig Nahraum gewinnen |
+| Buster Bulldog | **Prototyp, nicht ausliefern** | technische Referenz für Dash-/Knockback-Peak | wird nicht weiter balanciert; aus Select und Wave entfernen, bevor der Kern-Roster freigegeben wird |
 | Angry Pigeon | leichter Gegner | Tempo und einfacher Druck | dient als lesbarer Baseline-Dummy, nicht als Boss |
 
 ## Feste Gym-Szenarien

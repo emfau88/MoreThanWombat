@@ -180,6 +180,8 @@ If Barbarian still visually jitters, inspect the v2 sheet frame anchors before c
 
 ### Buster Bulldog
 
+**Produktentscheidung 2026-09-03:** Nicht weiter optimieren und nicht ausliefern. Die vierbeinige Figur wird durch einen späteren, neu konzipierten zweibeinigen Fighter ersetzt. Bis dahin nur als technischer Prototyp behalten und aus Character Select sowie Wave-Rotation entfernen.
+
 Role: heavy bruiser.
 
 Implemented:
