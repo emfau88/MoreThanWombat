@@ -4,6 +4,24 @@ This is the current practical task list based on the implemented build, not the 
 
 ## P0 - Current Arcade-Quality Work
 
+### TASK-AQ-005 - Restore Stage Integrity Before New Content
+
+Goal:
+Make every visible combat position agree with the arena's painted ground plane, beginning with the Wave renderer for `Junkyard Run`.
+
+Current issue:
+
+- Duel/Test intentionally use one flat, fair combat rectangle across Park, Rooftop, and Scrapyard.
+- Wave uses the taller 1672×941 Scrapyard source as a 2640×540 `TileSprite`; the source is not scaled to the game projection, so fighters appear above the intended floor zone.
+
+Acceptance:
+
+- Wave background, camera, section bounds, and visible ground plane agree at every section.
+- Park stays the Combat Gym/balance reference; Rooftop and Scrapyard remain visually distinct but mechanically fair.
+- No new map, obstacle, or hazard ships before this visual contract is fixed and verified.
+
+Execution plan: `29_PROFESSIONALIZATION_AUDIT_AND_PLAN.md`, BULK 5.0.
+
 ### TASK-AQ-004 - Build BULK 4 Unified VFX Language
 
 Goal:
