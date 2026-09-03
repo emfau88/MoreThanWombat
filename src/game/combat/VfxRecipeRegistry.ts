@@ -14,6 +14,7 @@ export type VfxLayer = {
   offsetY?: number;
   minQuality?: VfxQuality;
   directional?: boolean;
+  importance?: 'core' | 'residue';
 };
 
 export type VfxRecipe = {
@@ -30,12 +31,12 @@ const CONTACT_RECIPES: Record<ContactFamily, Record<HitFeedbackClass, VfxRecipe>
     medium: recipe('physical.medium', 'contact', [layer('vfx-style-physical-light-a', 128, 0.60, 0.90)]),
     heavy: recipe('physical.heavy', 'contact', [
       layer('vfx-style-physical-light-a', 154, 0.78, 1.14),
-      layer('vfx-style-ground-impact-b', 180, 0.36, 0.52, { offsetY: 40, minQuality: 'reduced' }),
+      layer('vfx-style-ground-impact-b', 180, 0.36, 0.52, { offsetY: 40, minQuality: 'reduced', importance: 'residue' }),
     ]),
     ultimate: recipe('physical.ultimate', 'contact', [
       layer('vfx-style-physical-light-a', 208, 1.02, 1.48),
-      layer('vfx-style-ground-impact-a', 300, 0.60, 0.90, { offsetY: 44, minQuality: 'reduced' }),
-      layer('vfx-library-dust-medium', 330, 0.46, 0.72, { offsetY: 52, minQuality: 'full' }),
+      layer('vfx-style-ground-impact-a', 300, 0.60, 0.90, { offsetY: 44, minQuality: 'reduced', importance: 'residue' }),
+      layer('vfx-library-dust-medium', 330, 0.46, 0.72, { offsetY: 52, minQuality: 'full', importance: 'residue' }),
     ]),
   },
   magic: {
@@ -64,18 +65,41 @@ const CONTACT_RECIPES: Record<ContactFamily, Record<HitFeedbackClass, VfxRecipe>
   },
 };
 
-const AUXILIARY_RECIPES: Record<'motion.whiff' | 'ground.small' | 'ground.medium' | 'ground.heavy', VfxRecipe> = {
+const AUXILIARY_RECIPES: Record<AuxiliaryVfxRecipeId, VfxRecipe> = {
   'motion.whiff': recipe('motion.whiff', 'motion', [layer('vfx-library-whiff-trail', 84, 0.38, 0.62, { directional: true })]),
   'ground.small': recipe('ground.small', 'ground', [layer('vfx-style-ground-impact-b', 170, 0.30, 0.46)]),
   'ground.medium': recipe('ground.medium', 'ground', [
     layer('vfx-style-ground-impact-b', 210, 0.46, 0.68),
-    layer('vfx-library-dust-medium', 260, 0.34, 0.52, { minQuality: 'reduced' }),
+    layer('vfx-library-dust-medium', 260, 0.34, 0.52, { minQuality: 'reduced', importance: 'residue' }),
   ]),
   'ground.heavy': recipe('ground.heavy', 'ground', [
     layer('vfx-style-ground-impact-a', 300, 0.62, 0.90),
-    layer('vfx-library-dust-medium', 340, 0.54, 0.80, { minQuality: 'reduced' }),
+    layer('vfx-library-dust-medium', 340, 0.54, 0.80, { minQuality: 'reduced', importance: 'residue' }),
+  ]),
+  'ground.shock': recipe('ground.shock', 'ground', [
+    layer('vfx-roster-shock-ring', 260, 0.40, 0.76),
+    layer('vfx-library-dust-medium', 300, 0.38, 0.62, { offsetY: 2, minQuality: 'reduced', importance: 'residue' }),
+  ]),
+  'warning.ground': recipe('warning.ground', 'ground', [
+    layer('vfx-roster-warning-ring', 240, 0.44, 0.72, { startAlpha: 0.80, endAlpha: 0.28 }),
+  ]),
+  'magic.cast': recipe('magic.cast', 'contact', [
+    layer('vfx-roster-wizard-cast', 150, 0.30, 0.54, { directional: true }),
+  ]),
+  'magic.phase': recipe('magic.phase', 'contact', [
+    layer('vfx-roster-wizard-phase', 240, 0.32, 0.66, { startAlpha: 0.88, endAlpha: 0.08 }),
   ]),
 };
+
+export type AuxiliaryVfxRecipeId =
+  | 'motion.whiff'
+  | 'ground.small'
+  | 'ground.medium'
+  | 'ground.heavy'
+  | 'ground.shock'
+  | 'warning.ground'
+  | 'magic.cast'
+  | 'magic.phase';
 
 export const VFX_LAB_RECIPE_IDS = [
   'physical.light',
@@ -93,6 +117,10 @@ export const VFX_LAB_RECIPE_IDS = [
   'ground.small',
   'ground.medium',
   'ground.heavy',
+  'ground.shock',
+  'warning.ground',
+  'magic.cast',
+  'magic.phase',
 ] as const;
 
 export type VfxLabRecipeId = typeof VFX_LAB_RECIPE_IDS[number];
@@ -101,13 +129,13 @@ export function getImpactVfxRecipe(profile: HitFeedbackProfile): VfxRecipe {
   return CONTACT_RECIPES[profile.sparkStyle][profile.feedbackClass];
 }
 
-export function getAuxiliaryVfxRecipe(id: keyof typeof AUXILIARY_RECIPES): VfxRecipe {
+export function getAuxiliaryVfxRecipe(id: AuxiliaryVfxRecipeId): VfxRecipe {
   return AUXILIARY_RECIPES[id];
 }
 
 export function getVfxLabRecipe(id: VfxLabRecipeId): VfxRecipe {
   if (id in AUXILIARY_RECIPES) {
-    return AUXILIARY_RECIPES[id as keyof typeof AUXILIARY_RECIPES];
+    return AUXILIARY_RECIPES[id as AuxiliaryVfxRecipeId];
   }
   if (id === 'block' || id === 'armor' || id === 'invulnerable') {
     return CONTACT_RECIPES[id].light;
@@ -133,6 +161,10 @@ export function getVfxLabLabel(id: VfxLabRecipeId): string {
     'ground.small': 'G Small',
     'ground.medium': 'G Medium',
     'ground.heavy': 'G Heavy',
+    'ground.shock': 'G Shock',
+    'warning.ground': 'Warning',
+    'magic.cast': 'M Cast',
+    'magic.phase': 'M Phase',
   };
   return labels[id];
 }

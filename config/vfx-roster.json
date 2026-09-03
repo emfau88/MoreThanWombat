@@ -1,0 +1,67 @@
+{
+  "version": 1,
+  "sourceRoot": "art-source/vfx/roster",
+  "runtimeRoot": "public/assets/fx/roster",
+  "assets": [
+    {
+      "id": "wizard-cast",
+      "category": "contact",
+      "origin": "contact-center",
+      "durationMs": 150,
+      "blendMode": "normal",
+      "qualityClass": "core",
+      "source": "wizard-cast-source.png",
+      "output": "wizard-cast.png",
+      "canvasWidth": 128,
+      "canvasHeight": 128,
+      "fitWidth": 104,
+      "fitHeight": 104,
+      "alignment": "center"
+    },
+    {
+      "id": "wizard-phase",
+      "category": "contact",
+      "origin": "contact-center",
+      "durationMs": 240,
+      "blendMode": "normal",
+      "qualityClass": "core",
+      "source": "wizard-phase-source.png",
+      "output": "wizard-phase.png",
+      "canvasWidth": 128,
+      "canvasHeight": 192,
+      "fitWidth": 94,
+      "fitHeight": 164,
+      "alignment": "center"
+    },
+    {
+      "id": "warning-ring",
+      "category": "ground",
+      "origin": "ground-center",
+      "durationMs": 240,
+      "blendMode": "normal",
+      "qualityClass": "core",
+      "source": "warning-ring-source.png",
+      "output": "warning-ring.png",
+      "canvasWidth": 256,
+      "canvasHeight": 128,
+      "fitWidth": 238,
+      "fitHeight": 92,
+      "alignment": "ground"
+    },
+    {
+      "id": "shock-ring",
+      "category": "ground",
+      "origin": "ground-center",
+      "durationMs": 260,
+      "blendMode": "normal",
+      "qualityClass": "core",
+      "source": "shock-ring-source.png",
+      "output": "shock-ring.png",
+      "canvasWidth": 256,
+      "canvasHeight": 128,
+      "fitWidth": 238,
+      "fitHeight": 92,
+      "alignment": "ground"
+    }
+  ]
+}

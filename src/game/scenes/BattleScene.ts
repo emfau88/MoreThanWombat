@@ -667,6 +667,7 @@ export class BattleScene extends Phaser.Scene {
       getVfxLabRecipe: () => this.combatPresentation.getVfxLabRecipeId(),
       onCycleVfxQuality: () => this.combatPresentation.cycleVfxQuality(),
       getVfxQuality: () => this.combatPresentation.getVfxQuality(),
+      getVfxDiagnostics: () => this.combatPresentation.getVfxDiagnostics(),
     });
   }
 

@@ -1,0 +1,146 @@
+{
+  "generatedAt": "2026-09-03T14:39:38.108Z",
+  "results": [
+    {
+      "id": "wizard-cast",
+      "category": "contact",
+      "source": "wizard-cast-source.png",
+      "output": "wizard-cast.png",
+      "sourceMetrics": {
+        "width": 1254,
+        "height": 1254,
+        "transparentRatio": 0.8059,
+        "partialRatio": 0.1926,
+        "cornersTransparent": true,
+        "borderTransparent": true,
+        "bounds": {
+          "minX": 210,
+          "minY": 124,
+          "maxX": 1160,
+          "maxY": 980
+        }
+      },
+      "runtimeMetrics": {
+        "width": 128,
+        "height": 128,
+        "transparentRatio": 0.7729,
+        "partialRatio": 0.2271,
+        "cornersTransparent": true,
+        "borderTransparent": true,
+        "bounds": {
+          "minX": 13,
+          "minY": 18,
+          "maxX": 114,
+          "maxY": 110
+        }
+      },
+      "failures": []
+    },
+    {
+      "id": "wizard-phase",
+      "category": "contact",
+      "source": "wizard-phase-source.png",
+      "output": "wizard-phase.png",
+      "sourceMetrics": {
+        "width": 1024,
+        "height": 1536,
+        "transparentRatio": 0.8385,
+        "partialRatio": 0.1615,
+        "cornersTransparent": true,
+        "borderTransparent": true,
+        "bounds": {
+          "minX": 229,
+          "minY": 18,
+          "maxX": 843,
+          "maxY": 1481
+        }
+      },
+      "runtimeMetrics": {
+        "width": 128,
+        "height": 192,
+        "transparentRatio": 0.8693,
+        "partialRatio": 0.1307,
+        "cornersTransparent": true,
+        "borderTransparent": true,
+        "bounds": {
+          "minX": 30,
+          "minY": 18,
+          "maxX": 97,
+          "maxY": 175
+        }
+      },
+      "failures": []
+    },
+    {
+      "id": "warning-ring",
+      "category": "ground",
+      "source": "warning-ring-source.png",
+      "output": "warning-ring.png",
+      "sourceMetrics": {
+        "width": 1536,
+        "height": 1024,
+        "transparentRatio": 0.862,
+        "partialRatio": 0.138,
+        "cornersTransparent": true,
+        "borderTransparent": true,
+        "bounds": {
+          "minX": 17,
+          "minY": 80,
+          "maxX": 1518,
+          "maxY": 917
+        }
+      },
+      "runtimeMetrics": {
+        "width": 256,
+        "height": 128,
+        "transparentRatio": 0.9185,
+        "partialRatio": 0.0815,
+        "cornersTransparent": true,
+        "borderTransparent": true,
+        "bounds": {
+          "minX": 47,
+          "minY": 30,
+          "maxX": 209,
+          "maxY": 121
+        }
+      },
+      "failures": []
+    },
+    {
+      "id": "shock-ring",
+      "category": "ground",
+      "source": "shock-ring-source.png",
+      "output": "shock-ring.png",
+      "sourceMetrics": {
+        "width": 1536,
+        "height": 1024,
+        "transparentRatio": 0.8381,
+        "partialRatio": 0.1619,
+        "cornersTransparent": true,
+        "borderTransparent": true,
+        "bounds": {
+          "minX": 25,
+          "minY": 280,
+          "maxX": 1509,
+          "maxY": 714
+        }
+      },
+      "runtimeMetrics": {
+        "width": 256,
+        "height": 128,
+        "transparentRatio": 0.7983,
+        "partialRatio": 0.2017,
+        "cornersTransparent": true,
+        "borderTransparent": true,
+        "bounds": {
+          "minX": 10,
+          "minY": 53,
+          "maxX": 246,
+          "maxY": 121
+        }
+      },
+      "failures": []
+    }
+  ],
+  "failures": []
+}

@@ -9,11 +9,14 @@ import { canCombatFactionHit } from './CombatFaction';
 import {
   VFX_LAB_RECIPE_IDS,
   cycleVfxQuality,
+  getAuxiliaryVfxRecipe,
   getImpactVfxRecipe,
   getVfxLabRecipe,
+  type AuxiliaryVfxRecipeId,
   type VfxLabRecipeId,
   type VfxQuality,
 } from './VfxRecipeRegistry';
+import type { VfxPerformanceDiagnostics } from './VfxPerformanceBudget';
 import { UniversalVfxDirector } from './UniversalVfxDirector';
 
 type AxeRainStrike = {
@@ -23,7 +26,7 @@ type AxeRainStrike = {
   delayMs: number;
   activeMs: number;
   didImpact: boolean;
-  warning: Phaser.GameObjects.Ellipse;
+  warningPulseMs: number;
   hitTargetInstanceIds: Set<number>;
 };
 
@@ -53,10 +56,10 @@ export class CombatPresentationController {
         this.shake(90, 0.0032);
       },
       'discount-fireball': (fighter) => {
-        this.spawnCastFx('discount-wizard-fx-fireball', fighter, 66, -52, 1.08);
+        this.spawnAuxiliary('magic.cast', fighter.x + 54 * (fighter.facing === 'right' ? 1 : -1), fighter.y - 52, fighter.y + 12, fighter.facing === 'right' ? 1 : -1);
       },
       'discount-miscast': (fighter) => {
-        this.spawnCastFx('discount-wizard-fx-miscast', fighter, 42, -58, 1.18);
+        this.spawnAuxiliary('magic.phase', fighter.x, fighter.y - 54, fighter.y + 12);
       },
       'discount-clearance-orb': (fighter) => {
         this.startDiscountWizardUltimate(fighter);
@@ -87,13 +90,11 @@ export class CombatPresentationController {
     const outcome = impact.outcome ?? 'hit';
 
     if (outcome === 'hit' && attackId === 'discount_miscast') {
-      this.spawnFx('discount-wizard-fx-miscast', contactX, contactY, target.y + 8, false, 1.08);
+      this.spawnAuxiliary('magic.cast', contactX, contactY, target.y + 8, impact.attacker?.facing === 'left' ? -1 : 1);
     } else if (outcome === 'hit' && attackId === 'discount_clearance_orb') {
-      this.spawnFx('discount-wizard-ultimate-impact', contactX, contactY, target.y + 10, false, 1.28, 'discount-wizard-ultimate-fx');
+      this.spawnAuxiliary('magic.phase', contactX, contactY - 18, target.y + 10);
     } else if (outcome === 'hit' && attackId === 'wombat_earthshaker') {
       this.spawnFx('wombat-earthshaker-fx', contactX, target.y - 130, target.y + 8, false, 1.35, 'wombat-earthshaker-fx');
-    } else if (outcome === 'hit' && (attackId === 'discount_wand_smack' || attackId === 'discount_fireball_cast')) {
-      this.spawnFx('discount-wizard-fx-hit-puff', contactX, contactY, target.y + 8, false, 0.96);
     }
 
     this.universalVfx.spawn(
@@ -114,14 +115,17 @@ export class CombatPresentationController {
       strike.delayMs -= deltaMs;
 
       if (strike.delayMs > 0) {
-        const pulse = 0.82 + Math.sin(this.scene.time.now / 55) * 0.08;
-        strike.warning.setScale(pulse, pulse);
+        strike.warningPulseMs -= deltaMs;
+        if (strike.warningPulseMs <= 0) {
+          this.spawnAuxiliary('warning.ground', strike.x, strike.y - 8, strike.y + 6);
+          strike.warningPulseMs += 140;
+        }
         continue;
       }
 
       if (!strike.didImpact) {
         strike.didImpact = true;
-        strike.warning.destroy();
+        this.spawnAuxiliary('ground.shock', strike.x, strike.y, strike.y + 14);
         this.spawnAxeRainFx(strike.x, strike.y);
         this.shake(60, 0.0028);
       }
@@ -153,6 +157,7 @@ export class CombatPresentationController {
 
   cycleVfxQuality(): VfxQuality {
     this.vfxQuality = cycleVfxQuality(this.vfxQuality);
+    this.universalVfx.trimToBudget(this.vfxQuality);
     return this.vfxQuality;
   }
 
@@ -160,11 +165,12 @@ export class CombatPresentationController {
     return this.vfxQuality;
   }
 
+  getVfxDiagnostics(): VfxPerformanceDiagnostics {
+    return this.universalVfx.getDiagnostics(this.vfxQuality);
+  }
+
   clearTransientEffects(): void {
     this.universalVfx.clear();
-    for (const strike of this.axeRainStrikes) {
-      strike.warning.destroy();
-    }
     this.axeRainStrikes.length = 0;
   }
 
@@ -182,7 +188,7 @@ export class CombatPresentationController {
     const targetX = target?.x ?? visibleCenterX;
     const destinationX = targetX < visibleCenterX ? bounds.maxX - safeMargin : bounds.minX + safeMargin;
 
-    this.spawnFx('discount-wizard-ultimate-teleport', startX, startY - 70, startY + 14, false, 1.18, 'discount-wizard-ultimate-fx');
+    this.spawnAuxiliary('magic.phase', startX, startY - 70, startY + 14);
     fighter.nudge(destinationX - fighter.x, 0, bounds);
 
     if (target) {
@@ -192,7 +198,7 @@ export class CombatPresentationController {
       fighter.updateVisuals();
     }
 
-    this.spawnFx('discount-wizard-ultimate-teleport', fighter.x, fighter.y - 70, fighter.y + 14, false, 1.28, 'discount-wizard-ultimate-fx');
+    this.spawnAuxiliary('magic.phase', fighter.x, fighter.y - 70, fighter.y + 14);
     this.shake(90, 0.0035);
   }
 
@@ -204,11 +210,6 @@ export class CombatPresentationController {
     for (let index = 0; index < offsets.length; index += 1) {
       const x = Phaser.Math.Clamp(fighter.x + offsets[index] * direction, bounds.minX + 24, bounds.maxX - 24);
       const y = Phaser.Math.Clamp(fighter.y + (index - 1) * 10, bounds.minY + 12, bounds.maxY - 12);
-      const warning = this.scene.add
-        .ellipse(x, y - 8, 96, 36, 0xff3f1f, 0.16)
-        .setStrokeStyle(2, 0xffd166, 0.72)
-        .setDepth(y + 6);
-
       this.axeRainStrikes.push({
         owner: fighter,
         x,
@@ -216,9 +217,10 @@ export class CombatPresentationController {
         delayMs: 190 + index * 150,
         activeMs: 120,
         didImpact: false,
-        warning,
+        warningPulseMs: 0,
         hitTargetInstanceIds: new Set<number>(),
       });
+      this.spawnAuxiliary('warning.ground', x, y - 8, y + 6);
     }
   }
 
@@ -237,38 +239,9 @@ export class CombatPresentationController {
       const progress = index / 3;
       const x = startX + actualDistance * progress - 18 * direction;
       const y = fighter.y + 6 + (index % 2) * 4;
-      const dust = this.scene.add
-        .ellipse(x, y, 34 + index * 8, 14 + index * 2, 0xd8c2a2, 0.28 - index * 0.04)
-        .setDepth(fighter.y - 2)
-        .setRotation(direction * -0.12);
-
-      this.scene.tweens.add({
-        targets: dust,
-        alpha: 0,
-        scaleX: 1.45,
-        scaleY: 0.72,
-        x: x - direction * (18 + index * 5),
-        duration: 220 + index * 35,
-        ease: 'Quad.easeOut',
-        onComplete: () => dust.destroy(),
-      });
+      this.spawnAuxiliary('ground.small', x, y, fighter.y - 2, direction);
     }
-
-    const ring = this.scene.add
-      .ellipse(fighter.x + 48 * direction, fighter.y - 44, 92, 52, 0xffe39a, 0.18)
-      .setStrokeStyle(3, 0xffd166, 0.72)
-      .setDepth(fighter.y + 16)
-      .setRotation(direction * 0.08);
-
-    this.scene.tweens.add({
-      targets: ring,
-      alpha: 0,
-      scaleX: 1.55,
-      scaleY: 1.2,
-      duration: 260,
-      ease: 'Quad.easeOut',
-      onComplete: () => ring.destroy(),
-    });
+    this.spawnAuxiliary('ground.shock', fighter.x + 48 * direction, fighter.y - 2, fighter.y + 16, direction);
   }
 
   private resolveAxeRainStrike(strike: AxeRainStrike): CombatImpact[] {
@@ -366,9 +339,8 @@ export class CombatPresentationController {
     });
   }
 
-  private spawnCastFx(animationKey: string, caster: Fighter, offsetX: number, offsetY: number, scale: number): void {
-    const direction = caster.facing === 'right' ? 1 : -1;
-    this.spawnFx(animationKey, caster.x + offsetX * direction, caster.y + offsetY, caster.y + 12, caster.facing === 'left', scale);
+  private spawnAuxiliary(id: AuxiliaryVfxRecipeId, x: number, y: number, depth: number, direction = 1): void {
+    this.universalVfx.spawn(getAuxiliaryVfxRecipe(id), x, y, depth, this.vfxQuality, direction);
   }
 
   private spawnFx(

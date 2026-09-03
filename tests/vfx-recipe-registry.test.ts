@@ -33,3 +33,15 @@ test('quality modes retain the core and drop optional residue deterministically'
   assert.equal(heavyGround.layers.filter((layer) => shouldRenderVfxLayer(layer, 'full')).length, 2);
   assert.equal(heavyGround.layers.filter((layer) => shouldRenderVfxLayer(layer, 'minimal')).length, 1);
 });
+
+test('roster signature recipes use shared transparent primitives instead of arena art', () => {
+  const warning = getAuxiliaryVfxRecipe('warning.ground');
+  const shock = getAuxiliaryVfxRecipe('ground.shock');
+  const phase = getAuxiliaryVfxRecipe('magic.phase');
+
+  assert.equal(warning.anchor, 'ground');
+  assert.equal(warning.layers[0].textureKey, 'vfx-roster-warning-ring');
+  assert.equal(shock.layers[0].textureKey, 'vfx-roster-shock-ring');
+  assert.equal(shock.layers[1].importance, 'residue');
+  assert.equal(phase.layers[0].textureKey, 'vfx-roster-wizard-phase');
+});

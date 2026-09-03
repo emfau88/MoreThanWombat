@@ -1,6 +1,6 @@
 # 27 — BULK 4: Einheitliche, universelle VFX-Sprache
 
-**Status:** BULK 4.0 und BULK 4.1 abgeschlossen; BULK 4.2–4.4 noch nicht begonnen
+**Status:** BULK 4.0 und BULK 4.1 abgeschlossen; BULK 4.2 noch offen. BULK 4.3 ist als Roster-Migration begonnen, BULK 4.4 ist technisch umgesetzt; eine Messung auf dem schwächsten Zielgerät bleibt offen.
 
 **Planungsstand:** 2026-09-02
 
@@ -292,6 +292,8 @@ Abnahme:
 
 **Priorität:** P1
 
+**Status 2026-09-03:** begonnen. Wizard Cast/Miscast/Teleport, Axe-Rain-Warnung und Buster-Dash nutzen jetzt transparente, gepoolte Bibliotheksrezepte. Die vier neuen Roster-Primitives bestehen Alpha-/Rand-QA. Der alte Wizard-Projektilsheet ist bewusst noch als klarer Restpunkt offen und wird erst mit seiner bewegten Ersatzdarstellung entfernt; B4.2 bleibt unverändert der P0-Wombat-Schritt.
+
 - Block, Armor und Invulnerable in der freigegebenen Sprache finalisieren.
 - Wizard-Pixel-FX und überhelle Ultimate-Layer ersetzen.
 - Axe Rain von der festen Bodenfläche trennen; Warning und Impact geometrisch angleichen.
@@ -309,6 +311,8 @@ Abnahme:
 ### BULK 4.4 — Dichte, Performance, Accessibility und Endabnahme
 
 **Priorität:** P1
+
+**Status 2026-09-03:** technische Basis umgesetzt. `UniversalVfxDirector` erzwingt maximal 80/48/24 aktive Image-Layer für Full/Reduced/Minimal, verwirft zuerst Residue und trimmt beim Qualitätswechsel sofort. Combat Gym zeigt aktive/Peak-Layer sowie verworfene beziehungsweise zurückgewonnene Layer. Der pausierte Stresstest erreichte 80/80, 48/48 und 24/24 ohne Überschreitung. Die reale Framerate-Messung auf dem schwächsten Zielgerät bleibt eine manuelle Abschlussprüfung.
 
 Initiale Mobile-Budgets, anschließend auf Zielgerät messen:
 
@@ -384,4 +388,4 @@ Jeder Commit muss für sich typecheck-/testbar sein. Änderungen an Wombat-Body-
 
 ## 12. Nächster konkreter Schritt
 
-Als Nächstes folgt **BULK 4.2**: Wombat-Körper/World-FX sauber trennen und Earthshaker aus transparenten, universellen Layern neu aufbauen. Die Bibliotheks- und QA-Schnittstelle aus BULK 4.1 ist dafür verbindlich.
+Als Nächstes folgt **BULK 4.2**: Wombat-Körper/World-FX sauber trennen und Earthshaker aus transparenten, universellen Layern neu aufbauen. Danach wird der verbliebene Wizard-Projektilsheet in BULK 4.3 mit einer bewegten transparenten Ersatzdarstellung abgeschlossen. Die Bibliotheks- und QA-Schnittstelle aus BULK 4.1 ist dafür verbindlich.

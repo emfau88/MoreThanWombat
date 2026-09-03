@@ -18,7 +18,9 @@ This document is the current execution roadmap based on what is already built.
 - Pigeon palette variation and Wombat/Barbarian pose-height warnings were reviewed and accepted as intentional animation changes.
 - Wombat Jab and Belly Slam are the authored Early/Main/Late references; Air Bonk and Axe Rain use explicit data profiles, while unchanged moves retain a safe `main` fallback.
 - Block, Armor, Invulnerable, physical hits, magic hits, and whiffs are explicitly distinct; buffered inputs no longer age during hitstop.
-- The active system block is BULK 4.2: Wombat body/world-FX separation and Earthshaker replacement on top of the completed library. No effect may contain a baked arena or terrain background.
+- BULK 4.3 has started: Wizard Cast/Miscast/Teleport, Axe-Rain warning, and Buster dash now use transparent pooled recipes; the legacy Wizard projectile sheet remains a scoped follow-up.
+- BULK 4.4 has a technical budget pass: Full/Reduced/Minimal cap active VFX layers at 80/48/24 and expose diagnostics in the Combat Gym; a weakest-target-device measurement remains manual QA.
+- The active P0 system block remains BULK 4.2: Wombat body/world-FX separation and Earthshaker replacement on top of the completed library. No effect may contain a baked arena or terrain background.
 - New roster, stage, and meta content remains frozen until the polished combat slice proves these layers.
 
 ## Current State Summary

@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { GAME_WIDTH } from '../GameConfig';
 import type { Fighter } from '../combat/Fighter';
 import type { CombatFeedbackController } from '../combat/CombatFeedbackController';
+import type { VfxPerformanceDiagnostics } from '../combat/VfxPerformanceBudget';
 import { getVfxLabLabel, type VfxLabRecipeId, type VfxQuality } from '../combat/VfxRecipeRegistry';
 import { CombatClock } from './CombatClock';
 import { fighterDefinitions } from '../data/fighters';
@@ -30,6 +31,7 @@ type CombatGymCallbacks = {
   getVfxLabRecipe: () => VfxLabRecipeId;
   onCycleVfxQuality: () => VfxQuality;
   getVfxQuality: () => VfxQuality;
+  getVfxDiagnostics: () => VfxPerformanceDiagnostics;
 };
 
 export class CombatGymController {
@@ -146,8 +148,10 @@ export class CombatGymController {
     const impactLine = impact
       ? `impact ${impact.outcome}/${impact.feedbackClass} ${impact.sparkStyle} sfx ${impact.sound}`
       : 'impact none';
+    const vfx = this.callbacks.getVfxDiagnostics();
+    const vfxLine = `vfx ${vfx.activeLayers}/${vfx.layerLimit} peak ${vfx.peakActiveLayers} drop ${vfx.droppedResidue}/${vfx.forcedCoreReclaims}`;
     this.shakeButton.label.setText(`Shake ${feedback.getShakeMode()}`);
-    this.telemetryText.setText(`${playerLine}${freeze}\n${dummyLine} | ${impactLine}`);
+    this.telemetryText.setText(`${playerLine}${freeze}\n${dummyLine} | ${impactLine} | ${vfxLine}`);
 
     if (import.meta.env.DEV) {
       document.documentElement.dataset.combatGym = JSON.stringify({
@@ -176,6 +180,7 @@ export class CombatGymController {
         shakeMode: feedback.getShakeMode(),
         vfxRecipe: this.callbacks.getVfxLabRecipe(),
         vfxQuality: this.callbacks.getVfxQuality(),
+        vfxDiagnostics: vfx,
         lastImpact: impact,
       });
     }
