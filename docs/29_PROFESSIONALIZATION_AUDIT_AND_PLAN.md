@@ -303,11 +303,11 @@ Diese Reihenfolge enthält ausschließlich Arbeit, die lokal, reproduzierbar und
 
 ### A4 — Reproduzierbare Browser- und Asset-Gates
 
-**Status:** nach A1/A3. **Umfang:** Automatisierung und Schutz vor Regressionen.
+**Status 2026-09-03:** Asset-Inventar und Build-Report vorbereitet; der echte Browser-Runner bleibt offen und wird nicht durch unversionierte lokale Screenshots ersetzt. **Umfang:** Automatisierung und Schutz vor Regressionen.
 
 - Lokale Browser-Smoke-Abdeckung für Menü, Character Select, Duel, Combat Gym und den vollständigen Wave-Run ergänzen.
-- Asset-Manifest und Runtime-Dateien inventarisieren; erst einen sicheren Verschiebeplan erstellen, danach mögliche Source-/Chroma-Bereinigung als separaten Commit durchführen.
-- Build-Report für Runtime-Assetgrößen und fehlende Referenzen einführen.
+- Asset-Manifest und Runtime-Dateien inventarisieren; erst einen sicheren Verschiebeplan erstellen, danach mögliche Source-/Chroma-Bereinigung als separaten Commit durchführen. **Erledigt:** `npm.cmd run assets:report` meldet Referenzen, Kandidaten und Größen ohne Dateien anzufassen.
+- Build-Report für Runtime-Assetgrößen und fehlende Referenzen einführen. **Teilweise erledigt:** Größen- und Referenzreport vorhanden; ein CI-Browser-Gate folgt separat.
 
 **Ergebnis:** Route-, Roster- oder Assetänderungen werden vor dem manuellen Gerätetest automatisch gegen die wichtigsten Fehler geprüft.
 
