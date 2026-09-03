@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import type { PlayerInputState } from './InputController';
 import { resolveMobileControlTarget } from './MobileControlHitTest';
+import { getMobileControlLayout } from './MobileControlLayout';
 
 type ControlElements = {
   baseShadow: Phaser.GameObjects.Arc;
@@ -319,23 +320,25 @@ export class MobileControls {
   }
 
   private updateLayout(width: number, height: number): void {
-    this.joystickCenter.set(92, height - 92);
+    const layout = getMobileControlLayout(width, height);
+    this.joystickCenter.set(layout.joystick.x, layout.joystick.y);
     this.controls.baseShadow.setPosition(this.joystickCenter.x + 2, this.joystickCenter.y + 4);
     this.controls.base.setPosition(this.joystickCenter.x, this.joystickCenter.y);
     this.controls.baseRing.setPosition(this.joystickCenter.x, this.joystickCenter.y);
     this.controls.knob.setPosition(this.joystickCenter.x, this.joystickCenter.y);
     this.controls.knobHighlight.setPosition(this.joystickCenter.x - 6, this.joystickCenter.y - 8);
 
-    const attackX = width - 96;
-    const attackY = height - 86;
-    const specialX = width - 170;
-    const specialY = height - 146;
-    const ultimateX = width - 98;
-    const ultimateY = height - 178;
-    const jumpX = width - 176;
-    const jumpY = height - 68;
-    const menuX = 52;
-    const menuY = 30;
+    const { attack, special, ultimate, jump, menu } = layout;
+    const attackX = attack.x;
+    const attackY = attack.y;
+    const specialX = special.x;
+    const specialY = special.y;
+    const ultimateX = ultimate.x;
+    const ultimateY = ultimate.y;
+    const jumpX = jump.x;
+    const jumpY = jump.y;
+    const menuX = menu.x;
+    const menuY = menu.y;
 
     this.controls.attackShadow.setPosition(attackX + 2, attackY + 4);
     this.controls.attackButton.setPosition(attackX, attackY);

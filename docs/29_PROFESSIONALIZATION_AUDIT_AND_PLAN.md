@@ -313,10 +313,10 @@ Diese Reihenfolge enthält ausschließlich Arbeit, die lokal, reproduzierbar und
 
 ### A5 — B5.4 vorbereiten, aber keine subjektiven Inhalte festlegen
 
-**Status:** nach A4. **Umfang:** Infrastruktur, keine finale Audio-/Art-Aussage.
+**Status 2026-09-03:** Mobile-Layout-Infrastruktur und Event-Map vorbereitet. Der linke HUD-Balken liegt nun sichtbar unterhalb des `MENU`-Controls; kleine Landscape-Geometrie ist automatisiert geprüft. **Umfang:** Infrastruktur, keine finale Audio-/Art-Aussage.
 
-- Ereignisliste und technische SFX-Kategorien für Bewegung, Landung, Cast, Telegraphie, UI, Sieg und Niederlage definieren.
-- HUD- und Mobile-Safe-Area-Überlappungen automatisiert bzw. mit festen Layout-Checks prüfen.
+- Ereignisliste und technische SFX-Kategorien für Bewegung, Landung, Cast, Telegraphie, UI, Sieg und Niederlage definieren. **Erledigt:** `docs/qa/presentation-event-map.md`.
+- HUD- und Mobile-Safe-Area-Überlappungen automatisiert bzw. mit festen Layout-Checks prüfen. **Erledigt:** testbare Mobile-Control- und HUD-Layout-Geometrie für die kleinste Landscape-Klasse.
 - Onboarding- und Rollenhinweise als Text-/Datenstruktur vorbereiten.
 
 **Ergebnis:** Audio, UX und Tutorial können danach gezielt ergänzt werden, ohne später Combat-Code oder HUD-Struktur umzubauen.

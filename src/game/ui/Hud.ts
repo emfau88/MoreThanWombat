@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import type { Fighter } from '../combat/Fighter';
-import { GAME_WIDTH } from '../GameConfig';
+import { HUD_LAYOUT } from './HudLayout';
 
 type BarElements = {
   label: Phaser.GameObjects.Text;
@@ -20,8 +20,8 @@ export class Hud {
   private readonly enemyBar: BarElements;
 
   constructor(scene: Phaser.Scene) {
-    this.playerBar = this.createBar(scene, 28, 54, 'Wombat', 'left');
-    this.enemyBar = this.createBar(scene, GAME_WIDTH - 28, 54, 'Enemy', 'right');
+    this.playerBar = this.createBar(scene, HUD_LAYOUT.player.x, HUD_LAYOUT.player.y, 'Wombat', 'left');
+    this.enemyBar = this.createBar(scene, HUD_LAYOUT.enemy.x, HUD_LAYOUT.enemy.y, 'Enemy', 'right');
   }
 
   update(player: Fighter, enemy: Fighter | null): void {
@@ -40,10 +40,10 @@ export class Hud {
   private createBar(scene: Phaser.Scene, x: number, y: number, label: string, side: 'left' | 'right'): BarElements {
     const isLeft = side === 'left';
     const text = scene.add
-      .text(x, y - 20, label, {
+      .text(x, y + HUD_LAYOUT.labelOffsetY, label, {
         color: '#f5f0d8',
         fontFamily: 'Verdana, Geneva, sans-serif',
-        fontSize: '13px',
+        fontSize: `${HUD_LAYOUT.labelFontSize}px`,
       })
       .setOrigin(isLeft ? 0 : 1, 0)
       .setDepth(2000)
