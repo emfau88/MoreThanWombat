@@ -20,7 +20,7 @@ export function getWaveStageValidationViolations(stage: StageDefinition): string
     violations.push('stage must contain at least one section');
   }
 
-  for (const section of stage.sections) {
+  for (const [sectionIndex, section] of stage.sections.entries()) {
     if (knownSectionIds.has(section.id)) {
       violations.push(`${section.id}: section id must be unique`);
     }
@@ -49,6 +49,34 @@ export function getWaveStageValidationViolations(stage: StageDefinition): string
       if (distance < MINIMUM_WAVE_SPAWN_DISTANCE) {
         violations.push(`${section.id}: enemy spawn is too close to the section player spawn`);
       }
+    }
+
+    const nextSection = stage.sections[sectionIndex + 1];
+    if (!nextSection) {
+      continue;
+    }
+
+    if (!section.travelBounds || section.arrivalTriggerX === undefined) {
+      violations.push(`${section.id}: non-final section must define a travel corridor and arrival trigger`);
+      continue;
+    }
+
+    const travel = section.travelBounds;
+    if (
+      travel.minX > bounds.minX
+      || travel.maxX <= bounds.maxX
+      || travel.minY !== bounds.minY
+      || travel.maxY !== bounds.maxY
+      || travel.minX < 0
+      || travel.maxX > stage.worldWidth
+    ) {
+      violations.push(`${section.id}: travel bounds must extend the combat lane inside the world`);
+    }
+    if (section.arrivalTriggerX < travel.minX || section.arrivalTriggerX > travel.maxX) {
+      violations.push(`${section.id}: arrival trigger must stay inside the travel corridor`);
+    }
+    if (section.arrivalTriggerX < nextSection.bounds.minX || section.arrivalTriggerX > nextSection.bounds.maxX) {
+      violations.push(`${section.id}: arrival trigger must enter the next combat bounds without repositioning`);
     }
   }
 

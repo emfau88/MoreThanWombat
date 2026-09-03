@@ -20,6 +20,7 @@ import { attacksById } from '../data/attacks';
 import { fighterDefinitions } from '../data/fighters';
 import { projectilesById } from '../data/projectiles';
 import { defaultWaveStageId, waveStages, type StageDefinition, type StageSectionDefinition, type StageEnemySpawnDefinition, type WaveStageId } from '../data/stages';
+import { canEnterNextWaveSection, getWaveTraversalBounds, type WaveTraversalPhase } from '../core/WaveTraversal';
 import { Hud } from '../ui/Hud';
 import { CombatGymController } from '../debug/CombatGymController';
 import {
@@ -71,6 +72,7 @@ export class BattleScene extends Phaser.Scene {
   private waveStageId: WaveStageId = defaultWaveStageId;
   private waveStage!: StageDefinition;
   private waveIndex = 0;
+  private waveTraversalPhase: WaveTraversalPhase = 'combat';
   private waveTransitionRemainingMs = 0;
   private testDummyRegenDelayMs = 0;
   private testDummyLastHp = 0;
@@ -107,6 +109,7 @@ export class BattleScene extends Phaser.Scene {
     this.gymAirAttackPending = false;
     this.gymDummyAttackCooldownMs = 0;
     this.waveIndex = 0;
+    this.waveTraversalPhase = 'combat';
     this.waveTransitionRemainingMs = 0;
     this.testDummyRegenDelayMs = 0;
     this.testDummyLastHp = 0;
@@ -300,6 +303,11 @@ export class BattleScene extends Phaser.Scene {
       return;
     }
 
+    if (this.mode === 'waves' && this.waveTraversalPhase === 'travel') {
+      this.updateWaveTravel(deltaSeconds, inputState.moveX, inputState.moveY);
+      return;
+    }
+
     if (wasHitstopActive) {
       this.renderFrozenFrame();
       return;
@@ -446,12 +454,8 @@ export class BattleScene extends Phaser.Scene {
 
       if (lastWaveReached) {
         battleWon = true;
-      } else if (this.waveTransitionRemainingMs === 0) {
-        this.waveTransitionRemainingMs = 900;
-        const nextSection = this.waveStage.sections[this.waveIndex + 1];
-        const nextLabel = nextSection ? nextSection.title : `Wave ${this.waveIndex + 2}`;
-        this.resultText.setText(`Section Clear\n${nextLabel} incoming`).setVisible(true);
-        this.resultHintText.setText('Hold position').setVisible(true);
+      } else if (this.waveTraversalPhase === 'combat') {
+        this.beginWaveTravel();
       }
     }
 
@@ -693,14 +697,14 @@ export class BattleScene extends Phaser.Scene {
     }
 
     this.waveIndex += 1;
+    this.waveTraversalPhase = 'combat';
     this.updateWaveArenaBoundsForCurrentSection();
     this.projectileSystem.destroy();
     this.spawnedProjectileAttackInstances.clear();
     this.combatPresentation.clearTransientEffects();
     this.clearWaveEnemies();
     this.waveEnemies = this.createWaveEnemiesForCurrentSection();
-    const waveStartX = this.arenaBounds.minX + 140;
-    this.player.nudge(waveStartX - this.player.x, 0, this.arenaBounds);
+    this.player.nudge(0, 0, this.arenaBounds);
     this.syncPrimaryEnemy();
     for (const enemy of this.waveEnemies) {
       enemy.setDebugVisible(this.debugEnabled);
@@ -728,7 +732,9 @@ export class BattleScene extends Phaser.Scene {
       return;
     }
 
-    const sectionTitle = this.waveStage.sections[this.waveIndex]?.title ?? `Wave ${this.waveIndex + 1}`;
+    const sectionTitle = this.waveTraversalPhase === 'travel'
+      ? `Path to ${this.waveStage.sections[this.waveIndex + 1]?.title ?? 'exit'}`
+      : this.waveStage.sections[this.waveIndex]?.title ?? `Wave ${this.waveIndex + 1}`;
     this.modeText.setText(`${this.waveStage.title} ${this.waveIndex + 1}/${this.waveStage.sections.length} | ${sectionTitle}`);
   }
 
@@ -802,7 +808,47 @@ export class BattleScene extends Phaser.Scene {
       return;
     }
 
-    this.setArenaBounds(section.bounds);
+    const bounds = getWaveTraversalBounds(this.waveStage, this.waveIndex, this.waveTraversalPhase);
+    this.setArenaBounds(bounds ?? section.bounds);
+  }
+
+  private beginWaveTravel(): void {
+    const currentSection = this.waveStage.sections[this.waveIndex];
+    const nextSection = this.waveStage.sections[this.waveIndex + 1];
+    if (!currentSection || !nextSection || !currentSection.travelBounds || currentSection.arrivalTriggerX === undefined) {
+      return;
+    }
+
+    this.waveTraversalPhase = 'travel';
+    this.projectileSystem.destroy();
+    this.spawnedProjectileAttackInstances.clear();
+    this.combatPresentation.clearTransientEffects();
+    this.clearWaveEnemies();
+    this.updateWaveArenaBoundsForCurrentSection();
+    this.syncPrimaryEnemy();
+    this.resultText.setText(`Section Clear\nWalk to ${nextSection.title}`).setVisible(true);
+    this.resultHintText.setText('Path clear — move right').setVisible(true);
+    this.updateModeText();
+  }
+
+  private updateWaveTravel(deltaSeconds: number, moveX: number, moveY: number): void {
+    this.inputBuffer.clear();
+    this.player.update(deltaSeconds, moveX, moveY, this.arenaBounds);
+    this.hud.update(this.player, this.getHudEnemy());
+
+    if (!canEnterNextWaveSection(this.waveStage, this.waveIndex, this.player.x)) {
+      return;
+    }
+
+    const nextSection = this.waveStage.sections[this.waveIndex + 1];
+    if (!nextSection) {
+      return;
+    }
+
+    this.waveTraversalPhase = 'transition';
+    this.waveTransitionRemainingMs = 260;
+    this.resultText.setText(`Entering\n${nextSection.title}`).setVisible(true);
+    this.resultHintText.setText(this.describeSectionEncounter(nextSection)).setVisible(true);
   }
 
   private showWaveSectionIntro(): void {

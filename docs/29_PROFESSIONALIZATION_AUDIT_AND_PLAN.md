@@ -268,7 +268,7 @@ Diese Reihenfolge enthält ausschließlich Arbeit, die lokal, reproduzierbar und
 
 ### A1 — B5.3-A: Bewegung zwischen Wave-Begegnungen
 
-**Status:** danach. **Umfang:** funktionale Umsetzung ohne Content-Entscheidung.
+**Status 2026-09-03:** technisch umgesetzt und lokal gestartet geprüft; Typecheck, 45 Tests, Production Build und der lokale Wave-Start sind grün. Die vollständige Touch-/Spielgefühlabnahme bleibt bewusst B5.1. **Umfang:** funktionale Umsetzung ohne Content-Entscheidung.
 
 - Einen kleinen datengetriebenen Stage Director mit `combat`, `travel` und `transition` einführen.
 - Die heutige Weltbreite in feste Kampf- und sichere Laufzonen gliedern; nach einem Clear wird nur der nächste Vorwärtskorridor freigegeben.

@@ -15,7 +15,12 @@ export type StageEnemySpawnDefinition = {
 export type StageSectionDefinition = {
   id: string;
   title: string;
+  /** Bounds used while enemies are active. */
   bounds: FighterBounds;
+  /** Safe forward corridor unlocked after this section is cleared. */
+  travelBounds?: FighterBounds;
+  /** X coordinate at which the following encounter becomes active. */
+  arrivalTriggerX?: number;
   enemies: StageEnemySpawnDefinition[];
 };
 
@@ -40,14 +45,21 @@ export const junkyardRunStage: StageDefinition = {
       title: 'Entry Scrap',
       bounds: {
         minX: 72,
-        maxX: 888,
+        maxX: 720,
         minY: 248,
         maxY: 474,
       },
+      travelBounds: {
+        minX: 72,
+        maxX: 960,
+        minY: 248,
+        maxY: 474,
+      },
+      arrivalTriggerX: 850,
       enemies: [
         {
           fighterId: 'angry_pigeon',
-          spawnX: 690,
+          spawnX: 610,
           spawnY: 334,
           hpOverride: 56,
           moveSpeedOverride: 120,
@@ -58,11 +70,18 @@ export const junkyardRunStage: StageDefinition = {
       id: 'crusher-lane',
       title: 'Crusher Lane',
       bounds: {
-        minX: 888,
-        maxX: 1704,
+        minX: 816,
+        maxX: 1460,
         minY: 248,
         maxY: 474,
       },
+      travelBounds: {
+        minX: 816,
+        maxX: 1744,
+        minY: 248,
+        maxY: 474,
+      },
+      arrivalTriggerX: 1634,
       enemies: [
         {
           fighterId: 'angry_pigeon',
@@ -84,8 +103,8 @@ export const junkyardRunStage: StageDefinition = {
       id: 'wizard-pit',
       title: 'Wizard Pit',
       bounds: {
-        minX: 1704,
-        maxX: 2520,
+        minX: 1600,
+        maxX: 2416,
         minY: 248,
         maxY: 474,
       },
