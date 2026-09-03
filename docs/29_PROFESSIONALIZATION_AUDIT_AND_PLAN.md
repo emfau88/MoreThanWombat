@@ -112,6 +112,8 @@ Abnahme:
 **Priorität:** P1
 **Ziel:** Der vorhandene technische Kampfkern wird als bewusstes Arcade-System lesbar.
 
+**Status 2026-09-03:** gestartet. `docs/qa/combat-feel-matrix.md` definiert Rollenvertrag, zehn reproduzierbare Gym-/Wave-Szenarien und eine Freigaberegel vor jeder Zahlenänderung.
+
 Lieferumfang:
 
 - Für jede spielbare Figur eine knappe Rollenkarte: Reichweite, Tempo, sichere Optionen, Risiko, Mana-Rhythmus und Crowd-Funktion.
