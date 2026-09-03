@@ -1,6 +1,6 @@
 # 29 — Projekt-Audit und Plan zum professionellen Vertical Slice
 
-**Stand:** 2026-09-03  
+**Stand:** 2026-09-03
 **Scope:** Audit und Plan. Dieses Dokument setzt noch keinen der beschriebenen Schritte um.
 
 ## Kurzurteil
@@ -66,7 +66,7 @@ Die Wave-Stage besitzt dagegen drei echte Abschnitts-Bounds und einen Kamera-Scr
 
 ### BULK 5.0 — Stage-Integrität und Lesbarkeit
 
-**Priorität:** P0  
+**Priorität:** P0
 **Ziel:** Jede sichtbare Kampfposition passt zur gemalten Bodenebene; Stages bleiben fair und nachvollziehbar.
 
 Lieferumfang:
@@ -85,7 +85,7 @@ Abnahme:
 
 ### BULK 5.1 — Ausgelieferter Vertical Slice und echte Geräteabnahme
 
-**Priorität:** P0  
+**Priorität:** P0
 **Ziel:** „funktioniert lokal“ wird zu „funktioniert für Spielende“.
 
 Lieferumfang:
@@ -103,7 +103,7 @@ Abnahme:
 
 ### BULK 5.2 — Combat-Feel- und Balance-Labor
 
-**Priorität:** P1  
+**Priorität:** P1
 **Ziel:** Der vorhandene technische Kampfkern wird als bewusstes Arcade-System lesbar.
 
 Lieferumfang:
@@ -122,7 +122,7 @@ Abnahme:
 
 ### BULK 5.3 — Wave als kuratierte Arcade-Route
 
-**Priorität:** P1  
+**Priorität:** P1
 **Ziel:** `Junkyard Run` wird eine kurze, wiederholbar gute Session statt ein technischer Kameratest.
 
 Lieferumfang:
@@ -140,7 +140,7 @@ Abnahme:
 
 ### BULK 5.4 — Präsentation, Audio und UX
 
-**Priorität:** P2  
+**Priorität:** P2
 **Ziel:** Das Spiel wirkt geschlossen, nicht wie ein gutes Combat-Debugprojekt mit Art darüber.
 
 Lieferumfang:
@@ -158,7 +158,7 @@ Abnahme:
 
 ### BULK 5.5 — Produktionshygiene und kontrollierte Content-Erweiterung
 
-**Priorität:** P2, erst nach B5.0–5.3  
+**Priorität:** P2, erst nach B5.0–5.3
 **Ziel:** Weiterer Content bleibt günstig, testbar und auslieferbar.
 
 Lieferumfang:
