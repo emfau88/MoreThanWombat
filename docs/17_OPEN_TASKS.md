@@ -31,6 +31,8 @@ Replace the restrained code-native contact-spark reference with a coherent, reus
 Execution plan:
 `27_BULK_4_UNIFIED_VFX_PRODUCTION_PLAN.md`. BULK 4.0 through 4.3 are implemented and documented; BULK 4.4 has the technical budget pass. The remaining VFX acceptance task is a measurement on the weakest intended target device.
 
+Release and device checklist: `qa/vertical-slice-release-checklist.md`.
+
 Current BULK 4.0/4.1 result:
 
 - six transparent ImageGen Source-Master and six deterministic Runtime exports exist,

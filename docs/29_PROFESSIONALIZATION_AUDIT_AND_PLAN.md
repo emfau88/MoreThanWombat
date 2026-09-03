@@ -5,6 +5,8 @@
 
 **Implementierungsupdate 2026-09-03:** Der akute Wave-Rendererfehler ist behoben. `Junkyard Run` skaliert seine 1672×941-Scrapyard-Quelle nun proportional auf die 960×540-Kampfprojektion, bevor sie horizontal gekachelt wird. Ein gemeinsamer `StageVisualContract` definiert nun den fairen Flat-Arena-Korridor und validiert jede Junkyard-Section gegen ihre lokale Bodenfläche. Typecheck, 42 Tests, Production Build und eine Laufzeitprüfung sind grün. Screenshot-Baselines bleiben der nächste Teil von BULK 5.0.
 
+**Release-QA-Update 2026-09-03:** `docs/qa/vertical-slice-release-checklist.md` bündelt Local-, Pages- und Zielgeräte-Gates. Der Pages-Workflow des aktuellen Commits läuft; die vorherige Wave-Boden-Korrektur wurde bereits erfolgreich ausgeliefert. Die echte kleinste Zielgeräteklasse bleibt ein manueller Abschlusscheck.
+
 ## Kurzurteil
 
 *More Than Wombat* besitzt bereits ein ungewöhnlich gutes Fundament für einen kleinen Browser-Arcade-Brawler: deterministische Move-Timelines, profilierte Hit-/Hurt-/Pushboxes, einen reproduzierbaren Combat Gym, getrennte Combat-/VFX-Präsentation, Qualitätsbudgets für VFX, Asset-QA und GitHub-Pages-Deployment. Der nächste Qualitätssprung kommt deshalb **nicht** durch mehr Figuren oder mehr rohe Features, sondern durch einen belastbaren spielbaren Vertical Slice: korrekte Stages, geprüftes Spielgefühl, eine bewusst inszenierte Wave-Route und saubere reale Geräteabnahme.
