@@ -280,6 +280,8 @@ Abnahme:
 
 **Status 2026-09-04: umgesetzt.** Budget Barbarian 2.0 verwendet einen neuen zweibeinigen, comic-haften Heavy-Satz mit klarer Axt-Silhouette. Die generierte Konzeptquelle bleibt nachvollziehbar unter `art-source/concepts/`; ein lokales Build-Script erzeugt daraus die ausschließlich transparente Runtime-Sheet-Version. Der kuratierte Zwei-Schritt-Walk vermeidet die instabilen Referenzframes. Aktuelle strenge QA: Idle 0px Fußdrift / 0,31px Root-Drift / 1,03% Höhendifferenz; Walk 0px / 0,07px / 1,06%. Kein Frame ist beschnitten, leer oder mit Hintergrund gebacken.
 
+**Visuelle Abnahme 2026-09-04:** `docs/qa/budget-barbarian-2-walk.gif` zeigt den im Spiel registrierten Runtime-Walk. Der Loop ist stabil, sauber verankert und frei von Farbflackern. Er bleibt bewusst ein kuratierter Zwei-Schritt-Loop; ein späterer Charakter-Polish kann daraus einen handanimierten Vier- bis Sechs-Schritt-Walk mit stärkerem Gewichtstransfer machen, ohne wieder die heutigen Qualitätsgrenzen zu verletzen.
+
 - Nicht weiter am bestehenden Sheet flicken. Einen neuen zweibeinigen, comic-haften Heavy-Fighter als **Budget Barbarian 2.0** von der Silhouette aus planen: breite stabile Hüfte, lesbarer Kopf/Schultern, Axe als klare Diagonale, keine Farbblitze zwischen Frames.
 - Zuerst saubere Einzelanimationen als Style-/Motion-Probe entwickeln (Idle 4, Walk 6, Basic 4, Special 5, Ultimate Startup/Release/Recovery, Jump/Fall/Landing, Hit/KO). Danach anhand fester Fuß-/Root-Marker in ein 160px-Runtime-Sheet packen und normalisieren.
 - Der neue Fighter behält vorerst seine Rolle als langsamer Flächen-Bruiser, erhält aber keine alten Bildfragmente, eingebrannten Hintergrund oder ungeprüften Frame-Scale-Tricks.
