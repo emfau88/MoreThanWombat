@@ -22,15 +22,43 @@ export function getWaveStageValidationViolations(stage: StageDefinition): string
     violations.push('stage must contain at least one section');
   }
 
+  if (stage.zones.length === 0) {
+    violations.push('stage must contain at least one visual zone');
+  }
+
+  const knownZoneIds = new Set<string>();
+  let previousZoneMaxX = 0;
+  for (const zone of stage.zones) {
+    if (knownZoneIds.has(zone.id)) {
+      violations.push(`${zone.id}: zone id must be unique`);
+    }
+    knownZoneIds.add(zone.id);
+    if (!zone.backgroundKey || zone.minX !== previousZoneMaxX || zone.minX >= zone.maxX || zone.maxX > stage.worldWidth) {
+      violations.push(`${zone.id}: zones must tile the full world in order`);
+    }
+    previousZoneMaxX = zone.maxX;
+  }
+  if (stage.zones.length > 0 && previousZoneMaxX !== stage.worldWidth) {
+    violations.push('zones must cover the full world width');
+  }
+
   for (const [sectionIndex, section] of stage.sections.entries()) {
     if (knownSectionIds.has(section.id)) {
       violations.push(`${section.id}: section id must be unique`);
     }
     knownSectionIds.add(section.id);
 
+    const zone = stage.zones.find((candidate) => candidate.id === section.zoneId);
+    if (!zone) {
+      violations.push(`${section.id}: section must reference a known zone`);
+    }
+
     const { bounds } = section;
     if (bounds.minX < 0 || bounds.minX >= bounds.maxX || bounds.maxX > stage.worldWidth) {
       violations.push(`${section.id}: horizontal bounds must stay inside the world and be ordered`);
+    }
+    if (zone && (bounds.minX < zone.minX || bounds.maxX > zone.maxX)) {
+      violations.push(`${section.id}: combat bounds must stay inside its visual zone`);
     }
     if (bounds.minY < 0 || bounds.minY >= bounds.maxY) {
       violations.push(`${section.id}: vertical bounds must be ordered and non-negative`);

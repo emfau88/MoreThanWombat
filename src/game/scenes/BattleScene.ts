@@ -14,7 +14,7 @@ import { BattleFlowController } from '../core/BattleFlowController';
 import { InputController } from '../core/InputController';
 import { MobileControls } from '../core/MobileControls';
 import { registerCharacterAnimations } from '../core/CharacterAnimationRegistry';
-import { FLAT_ARENA_VISUAL_CONTRACT, getStageTileScale } from '../core/StageVisuals';
+import { FLAT_ARENA_VISUAL_CONTRACT } from '../core/StageVisuals';
 import type { ArenaId } from '../data/arenas';
 import { attacksById } from '../data/attacks';
 import { fighterDefinitions } from '../data/fighters';
@@ -740,13 +740,22 @@ export class BattleScene extends Phaser.Scene {
 
   private renderArena(): void {
     if (this.mode === 'waves') {
-      const backgroundKey = this.waveStage.backgroundKey;
-      const sourceImage = this.textures.get(backgroundKey).getSourceImage() as { width: number; height: number };
-      const tileScale = getStageTileScale(sourceImage, { width: this.getViewportWidth(), height: GAME_HEIGHT });
-      this.add
-        .tileSprite(this.waveStage.worldWidth / 2, GAME_HEIGHT / 2, this.waveStage.worldWidth, GAME_HEIGHT, backgroundKey)
-        .setTileScale(tileScale)
-        .setDepth(-100);
+      for (const zone of this.waveStage.zones) {
+        this.add
+          .image((zone.minX + zone.maxX) / 2, GAME_HEIGHT / 2, zone.backgroundKey)
+          .setDisplaySize(zone.maxX - zone.minX, GAME_HEIGHT)
+          .setDepth(-100);
+      }
+      for (let index = 0; index < this.waveStage.zones.length - 1; index += 1) {
+        const currentZone = this.waveStage.zones[index];
+        const nextZone = this.waveStage.zones[index + 1];
+        const boundary = currentZone.maxX;
+        this.add.rectangle(boundary, GAME_HEIGHT / 2, 92, GAME_HEIGHT, 0x07101b, 0.3).setDepth(-96);
+        this.add.rectangle(boundary - 38, GAME_HEIGHT / 2, 5, GAME_HEIGHT, currentZone.transitionColor, 0.42).setDepth(-95);
+        this.add.rectangle(boundary + 38, GAME_HEIGHT / 2, 5, GAME_HEIGHT, nextZone.transitionColor, 0.42).setDepth(-95);
+        this.add.rectangle(boundary, 230, 72, 10, 0xf5f0d8, 0.12).setDepth(-94);
+        this.add.rectangle(boundary, 468, 72, 10, 0x10151e, 0.3).setDepth(-94);
+      }
       this.add.rectangle(this.waveStage.worldWidth / 2, 230, this.waveStage.worldWidth - 120, 10, 0xffd08a, 0.12).setDepth(-90);
       this.add.rectangle(this.waveStage.worldWidth / 2, 468, this.waveStage.worldWidth - 120, 10, 0x0a0b0f, 0.22).setDepth(-90);
       return;

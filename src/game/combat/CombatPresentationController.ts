@@ -63,6 +63,7 @@ export class CombatPresentationController {
     this.universalVfx = new UniversalVfxDirector(scene);
     this.moveStartCues = new MoveStartCueController({
       'wombat-earthshaker': (fighter) => {
+        this.startWombatUltimate(fighter);
         this.spawnAuxiliary('warning.ground', fighter.x, fighter.y + 2, fighter.y + 6);
         this.timedGroundCues.push({
           x: fighter.x,
@@ -217,7 +218,19 @@ export class CombatPresentationController {
     const targetX = target?.x ?? visibleCenterX;
     const destinationX = targetX < visibleCenterX ? bounds.maxX - safeMargin : bounds.minX + safeMargin;
 
+    this.startUltimateCue(fighter, 'CLEARANCE ORB', 'CLEAR THE AISLE', 0x7be7ff, 0x244c72, 1);
+    this.spawnUltimateCharge(startX, startY - 58, 0x7be7ff, 1.15);
+    this.spawnAuxiliary('magic.cast', startX + 28 * (fighter.facing === 'right' ? 1 : -1), startY - 54, startY + 14, fighter.facing === 'right' ? 1 : -1);
     this.spawnAuxiliary('magic.phase', startX, startY - 70, startY + 14);
+    this.scene.tweens.add({
+      targets: fighter.container,
+      scaleX: 0.84,
+      scaleY: 1.12,
+      duration: 120,
+      ease: 'Quad.easeOut',
+      yoyo: true,
+      hold: 110,
+    });
     fighter.nudge(destinationX - fighter.x, 0, bounds);
 
     if (target) {
@@ -228,7 +241,97 @@ export class CombatPresentationController {
     }
 
     this.spawnAuxiliary('magic.phase', fighter.x, fighter.y - 70, fighter.y + 14);
+    this.spawnUltimateCharge(fighter.x, fighter.y - 58, 0xd68cff, 1.35);
     this.shake(90, 0.0035);
+  }
+
+  private startWombatUltimate(fighter: Fighter): void {
+    this.startUltimateCue(fighter, 'EARTHSHAKER', 'NAP SLAM', 0xffd166, 0x6e3b18, fighter.facing === 'right' ? 1 : -1);
+    this.spawnUltimateCharge(fighter.x, fighter.y - 42, 0xffd166, 1.5);
+    this.scene.tweens.add({
+      targets: fighter.container,
+      scaleX: 1.12,
+      scaleY: 0.9,
+      duration: 115,
+      ease: 'Quad.easeOut',
+      yoyo: true,
+      hold: 75,
+    });
+  }
+
+  private startUltimateCue(
+    fighter: Fighter,
+    title: string,
+    subtitle: string,
+    color: number,
+    shadowColor: number,
+    direction: number,
+  ): void {
+    const titleText = this.scene.add
+      .text(fighter.x + 18 * direction, fighter.y - 128, title, {
+        color: '#fff7e6',
+        fontFamily: 'Verdana, Geneva, sans-serif',
+        fontSize: '20px',
+        fontStyle: 'bold',
+        stroke: `#${shadowColor.toString(16).padStart(6, '0')}`,
+        strokeThickness: 7,
+      })
+      .setOrigin(0.5)
+      .setDepth(fighter.y + 84)
+      .setScale(0.58)
+      .setAlpha(0);
+    const subtitleText = this.scene.add
+      .text(fighter.x + 18 * direction, fighter.y - 105, subtitle, {
+        color: `#${color.toString(16).padStart(6, '0')}`,
+        fontFamily: 'Verdana, Geneva, sans-serif',
+        fontSize: '10px',
+        fontStyle: 'bold',
+        letterSpacing: 1.4,
+        stroke: '#10131d',
+        strokeThickness: 3,
+      })
+      .setOrigin(0.5)
+      .setDepth(fighter.y + 85)
+      .setScale(0.72)
+      .setAlpha(0);
+
+    this.scene.tweens.add({
+      targets: [titleText, subtitleText],
+      alpha: 1,
+      scaleX: 1,
+      scaleY: 1,
+      duration: 110,
+      ease: 'Back.Out',
+      hold: 270,
+      yoyo: true,
+      onComplete: () => {
+        titleText.destroy();
+        subtitleText.destroy();
+      },
+    });
+  }
+
+  private spawnUltimateCharge(x: number, y: number, color: number, scale: number): void {
+    const outer = this.scene.add.circle(x, y, 28, color, 0.12).setStrokeStyle(3, color, 0.82).setDepth(y + 16);
+    const inner = this.scene.add.circle(x, y, 12, 0xffffff, 0.3).setDepth(y + 17);
+    this.scene.tweens.add({
+      targets: outer,
+      scaleX: scale,
+      scaleY: scale,
+      alpha: 0,
+      duration: 230,
+      ease: 'Cubic.easeOut',
+      onComplete: () => outer.destroy(),
+    });
+    this.scene.tweens.add({
+      targets: inner,
+      scaleX: 0.25,
+      scaleY: 0.25,
+      alpha: 0,
+      duration: 180,
+      ease: 'Cubic.easeIn',
+      onComplete: () => inner.destroy(),
+    });
   }
 
   private startBudgetBarbarianUltimate(fighter: Fighter): void {

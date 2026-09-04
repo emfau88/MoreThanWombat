@@ -30,7 +30,7 @@ const ANIMATIONS: AnimationSpec[] = [
   { key: 'discount-wizard-hit', textureKey: 'discount-wizard', frames: { start: 16, end: 17 }, frameRate: 8, repeat: 0 },
   { key: 'discount-wizard-dead', textureKey: 'discount-wizard', frames: { start: 18, end: 19 }, frameRate: 5, repeat: 0 },
   { key: 'budget-barbarian-idle', textureKey: 'budget-barbarian', frames: { start: 0, end: 3 }, frameRate: 4, repeat: -1 },
-  { key: 'budget-barbarian-walk', textureKey: 'budget-barbarian', frames: [4, 6, 5, 7], frameRate: 7, repeat: -1 },
+  { key: 'budget-barbarian-walk', textureKey: 'budget-barbarian', frames: { start: 4, end: 7 }, frameRate: 7, repeat: -1 },
   { key: 'budget-barbarian-axe-swing', textureKey: 'budget-barbarian', frames: { start: 8, end: 10 }, frameRate: 11, repeat: 0 },
   { key: 'budget-barbarian-tiny-rage', textureKey: 'budget-barbarian', frames: { start: 12, end: 14 }, frameRate: 9, repeat: 0 },
   { key: 'budget-barbarian-hit', textureKey: 'budget-barbarian', frames: { start: 15, end: 15 }, frameRate: 8, repeat: 0 },

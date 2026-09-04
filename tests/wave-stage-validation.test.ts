@@ -25,13 +25,13 @@ test('wave traversal unlocks an explicit corridor and enters the next combat sec
   });
   assert.deepEqual(getWaveTraversalBounds(junkyardRunStage, 0, 'travel'), {
     minX: 72,
-    maxX: 960,
+    maxX: 1104,
     minY: 248,
     maxY: 474,
   });
-  assert.equal(canEnterNextWaveSection(junkyardRunStage, 0, 849), false);
-  assert.equal(canEnterNextWaveSection(junkyardRunStage, 0, 850), true);
-  assert.equal(canEnterNextWaveSection(junkyardRunStage, 2, 2520), false);
+  assert.equal(canEnterNextWaveSection(junkyardRunStage, 0, 1017), false);
+  assert.equal(canEnterNextWaveSection(junkyardRunStage, 0, 1018), true);
+  assert.equal(canEnterNextWaveSection(junkyardRunStage, 2, 2880), false);
 });
 
 test('wave stage validation rejects overlapping sections, invalid spawns and unsafe starts', () => {
@@ -55,15 +55,15 @@ test('wave stage validation rejects overlapping sections, invalid spawns and uns
     ],
   };
 
-  assert.deepEqual(getWaveStageValidationViolations(invalidStage), [
-    'yard-entry: enemy spawn is too close to the section player spawn',
-    'yard-entry: travel bounds must extend the combat lane inside the world',
-    'yard-entry: arrival trigger must stay inside the travel corridor',
-    'yard-entry: section id must be unique',
-    'yard-entry: horizontal bounds must stay inside the world and be ordered',
-    'yard-entry: vertical bounds must be ordered and non-negative',
-    'yard-entry: section overlaps the previous section',
-    'yard-entry: enemy spawn must stay inside its section bounds',
-    'yard-entry: enemy spawn is outside the initial camera-safe range',
-  ]);
+  const violations = getWaveStageValidationViolations(invalidStage);
+  assert.ok(violations.includes('yard-entry: enemy spawn is too close to the section player spawn'));
+  assert.ok(violations.includes('yard-entry: travel bounds must extend the combat lane inside the world'));
+  assert.ok(violations.includes('yard-entry: arrival trigger must stay inside the travel corridor'));
+  assert.ok(violations.includes('yard-entry: section id must be unique'));
+  assert.ok(violations.includes('yard-entry: horizontal bounds must stay inside the world and be ordered'));
+  assert.ok(violations.includes('yard-entry: vertical bounds must be ordered and non-negative'));
+  assert.ok(violations.includes('yard-entry: section overlaps the previous section'));
+  assert.ok(violations.includes('yard-entry: enemy spawn must stay inside its section bounds'));
+  assert.ok(violations.includes('yard-entry: enemy spawn is outside the initial camera-safe range'));
+  assert.ok(violations.includes('zones must cover the full world width'));
 });

@@ -15,6 +15,7 @@ export type StageEnemySpawnDefinition = {
 export type StageSectionDefinition = {
   id: string;
   title: string;
+  zoneId: string;
   /** Bounds used while enemies are active. */
   bounds: FighterBounds;
   /** Safe forward corridor unlocked after this section is cleared. */
@@ -24,25 +25,39 @@ export type StageSectionDefinition = {
   enemies: StageEnemySpawnDefinition[];
 };
 
+export type StageZoneDefinition = {
+  id: string;
+  title: string;
+  backgroundKey: string;
+  minX: number;
+  maxX: number;
+  transitionColor: number;
+};
+
 export type StageDefinition = {
   id: WaveStageId;
   title: string;
-  backgroundKey: string;
   worldWidth: number;
   scrollMode: 'fixed' | 'side_scroll';
+  zones: StageZoneDefinition[];
   sections: StageSectionDefinition[];
 };
 
 export const junkyardRunStage: StageDefinition = {
   id: 'junkyard_run',
   title: 'Junkyard Run',
-  backgroundKey: 'scrapyard-background',
-  worldWidth: 2640,
+  worldWidth: 2880,
   scrollMode: 'side_scroll',
+  zones: [
+    { id: 'scrap-gate', title: 'Scrap Gate', backgroundKey: 'junkyard-run-scrap-gate', minX: 0, maxX: 960, transitionColor: 0xc77935 },
+    { id: 'furnace-yard', title: 'Furnace Yard', backgroundKey: 'junkyard-run-furnace-yard', minX: 960, maxX: 1920, transitionColor: 0xd34c47 },
+    { id: 'neon-dump', title: 'Neon Dump', backgroundKey: 'junkyard-run-neon-dump', minX: 1920, maxX: 2880, transitionColor: 0xb55cff },
+  ],
   sections: [
     {
       id: 'yard-entry',
-      title: 'Entry Scrap',
+      title: 'Scrap Gate',
+      zoneId: 'scrap-gate',
       bounds: {
         minX: 72,
         maxX: 720,
@@ -51,11 +66,11 @@ export const junkyardRunStage: StageDefinition = {
       },
       travelBounds: {
         minX: 72,
-        maxX: 960,
+        maxX: 1104,
         minY: 248,
         maxY: 474,
       },
-      arrivalTriggerX: 850,
+      arrivalTriggerX: 1018,
       enemies: [
         {
           fighterId: 'angry_pigeon',
@@ -68,31 +83,32 @@ export const junkyardRunStage: StageDefinition = {
     },
     {
       id: 'crusher-lane',
-      title: 'Crusher Lane',
+      title: 'Furnace Yard',
+      zoneId: 'furnace-yard',
       bounds: {
-        minX: 816,
-        maxX: 1460,
+        minX: 984,
+        maxX: 1656,
         minY: 248,
         maxY: 474,
       },
       travelBounds: {
-        minX: 816,
-        maxX: 1744,
+        minX: 984,
+        maxX: 2064,
         minY: 248,
         maxY: 474,
       },
-      arrivalTriggerX: 1634,
+      arrivalTriggerX: 1978,
       enemies: [
         {
           fighterId: 'angry_pigeon',
-          spawnX: 1180,
+          spawnX: 1340,
           spawnY: 308,
           hpOverride: 52,
           moveSpeedOverride: 122,
         },
         {
           fighterId: 'budget_barbarian',
-          spawnX: 1310,
+          spawnX: 1478,
           spawnY: 350,
           hpOverride: 70,
           moveSpeedOverride: 132,
@@ -101,24 +117,25 @@ export const junkyardRunStage: StageDefinition = {
     },
     {
       id: 'wizard-pit',
-      title: 'Wizard Pit',
+      title: 'Neon Dump',
+      zoneId: 'neon-dump',
       bounds: {
-        minX: 1600,
-        maxX: 2416,
+        minX: 1944,
+        maxX: 2808,
         minY: 248,
         maxY: 474,
       },
       enemies: [
         {
           fighterId: 'angry_pigeon',
-          spawnX: 1900,
+          spawnX: 2240,
           spawnY: 362,
           hpOverride: 54,
           moveSpeedOverride: 126,
         },
         {
           fighterId: 'discount_wizard',
-          spawnX: 2080,
+          spawnX: 2430,
           spawnY: 314,
           hpOverride: 86,
           moveSpeedOverride: 144,

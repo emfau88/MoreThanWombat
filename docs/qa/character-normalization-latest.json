@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-03T16:59:34.252Z",
+  "generatedAt": "2026-09-04T08:36:52.376Z",
   "manifestVersion": 1,
   "sheets": [
     {
@@ -157,77 +157,70 @@
     },
     {
       "id": "budget-barbarian",
-      "source": "public/assets/characters/budget-barbarian/budget_barbarian_spritesheet_v2_160.png",
-      "runtime": "public/assets/characters/budget-barbarian/budget_barbarian_spritesheet_v3_160_normalized.png",
-      "targetFootLine": 147,
-      "targetRootAnchorX": 73,
-      "loopScale": 0.96,
+      "source": "public/assets/characters/budget-barbarian/budget_barbarian_2_spritesheet_160.png",
+      "runtime": "public/assets/characters/budget-barbarian/budget_barbarian_2_spritesheet_160_normalized.png",
+      "targetFootLine": 150,
+      "targetRootAnchorX": 80,
+      "loopScale": 0.92,
       "shifts": [
         {
           "frameIndex": 0,
-          "dx": 6,
+          "dx": 18,
           "dy": 0,
-          "sourceRootAnchorX": 67,
-          "sourceFootLine": 147
+          "sourceRootAnchorX": 62.18,
+          "sourceFootLine": 150
         },
         {
           "frameIndex": 1,
-          "dx": 7,
+          "dx": 19,
           "dy": 0,
-          "sourceRootAnchorX": 66.03,
-          "sourceFootLine": 147
+          "sourceRootAnchorX": 61.39,
+          "sourceFootLine": 150
         },
         {
           "frameIndex": 2,
-          "dx": -15,
+          "dx": 23,
           "dy": 0,
-          "sourceRootAnchorX": 88,
-          "sourceFootLine": 147
+          "sourceRootAnchorX": 57.08,
+          "sourceFootLine": 150
         },
         {
           "frameIndex": 3,
-          "dx": 8,
+          "dx": 19,
           "dy": 0,
-          "sourceRootAnchorX": 65.09,
-          "sourceFootLine": 147
+          "sourceRootAnchorX": 61.37,
+          "sourceFootLine": 150
         },
         {
           "frameIndex": 4,
-          "dx": -2,
+          "dx": -16,
           "dy": 0,
-          "sourceRootAnchorX": 74.53,
-          "sourceFootLine": 147
+          "sourceRootAnchorX": 95.63,
+          "sourceFootLine": 150
         },
         {
           "frameIndex": 5,
-          "dx": -2,
+          "dx": 3,
           "dy": 0,
-          "sourceRootAnchorX": 75.47,
-          "sourceFootLine": 147
+          "sourceRootAnchorX": 76.56,
+          "sourceFootLine": 150
         },
         {
           "frameIndex": 6,
-          "dx": 17,
+          "dx": -16,
           "dy": 0,
-          "sourceRootAnchorX": 55.64,
-          "sourceFootLine": 147
+          "sourceRootAnchorX": 95.63,
+          "sourceFootLine": 150
         },
         {
           "frameIndex": 7,
-          "dx": 1,
+          "dx": 3,
           "dy": 0,
-          "sourceRootAnchorX": 71.58,
-          "sourceFootLine": 147
+          "sourceRootAnchorX": 76.56,
+          "sourceFootLine": 150
         }
       ],
-      "marginAdjustments": [
-        {
-          "frameIndex": 1,
-          "dx": -1,
-          "dy": 0,
-          "scale": 1
-        }
-      ]
+      "marginAdjustments": []
     },
     {
       "id": "buster-bulldog",

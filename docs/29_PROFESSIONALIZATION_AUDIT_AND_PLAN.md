@@ -182,6 +182,8 @@ Abnahme:
 
 **Befund 2026-09-04:** `Junkyard Run` folgt nun technisch dem Spieler, verwendet aber weiterhin ein einziges wiederholtes Scrapyard-`TileSprite`. Das ist eine Scroll-Strecke, noch keine glaubwürdige Reise durch verschiedene Orte.
 
+**Status 2026-09-04: umgesetzt.** `Junkyard Run` besteht jetzt aus der endlichen Originalroute **Scrap Gate → Furnace Yard → Neon Dump**. Jede Zone besitzt ein eigenes 16:9-Stage-Asset, einen festen Weltabschnitt und klar einer Zone zugeordnete Begegnungen. Dezente dunkle Übergangstore verbinden die Orte, ohne die flache Kampfgeometrie, Hitboxen oder die sichere Laufroute zu verändern. Die Datenvalidierung erzwingt eindeutige, lückenlos geordnete Zonen, vollständige Weltabdeckung und Encounter innerhalb ihrer Zone.
+
 - Den bisherigen Weltverlauf als originale, zusammenhängende drei-Zonen-Route aufbauen: **Scrap Gate → Furnace Yard → Neon Dump**. Bodenlinie, Perspektive und der flache Kampf-Korridor bleiben identisch; keine direkte Übernahme von Little-Fighter-2-Art oder -Maps.
 - Pro Zone getrennte, transparente Parallax-Layer (Ferne, Mittelgrund, Boden) erzeugen und im Stage-Composer über kurze Übergangsbereiche überblenden. Keine in Angriff-VFX eingebrannten Hintergrundelemente.
 - Section-Metadaten um Zonen-ID, Übergangslänge, visuelle Stimmung und spätere Ambient-Event-ID erweitern; Encounter-/Spawn-Daten bleiben von Art-Daten getrennt.
@@ -196,6 +198,8 @@ Abnahme:
 **Befund 2026-09-04:** Das Spiel besitzt ein festes 960×540-Logikraster mit `Phaser.Scale.FIT`. Breite Landscape-Displays erhalten daher korrekte, aber ungenutzte seitliche Ränder. Ein Wechsel zu `ENVELOP` würde sie nur durch vertikales Abschneiden ersetzen und ist keine Lösung.
 
 **Status 2026-09-04 (Teil 1 umgesetzt):** Frische Starts auf breiten Landscape-Displays berechnen nun bei unveränderter 540px-Höhe eine kontrolliert breitere Logikfläche (960–1280px). Menü, Auswahl, Duel, Gym-HUD, Kamera, Touch-Controls und die sichtbaren Duel-Grenzen verwenden diese Breite. Der `ULT`-Button zeigt für die echte Wombat-/Wizard-Ultimate nun die Kosten (aktuell 100 MP), leuchtet nur bei wirklich möglichem Start und wird nach einem Einsatz sofort gedimmt. Pure Viewport-Regeln sind mit drei Grenzfalltests abgesichert; Typecheck, 52 Unit-Tests und Production Build sind grün. Eine laufende Session übernimmt eine nachträgliche Geräte-Rotation noch nicht als neue Logikbreite — das bleibt ein kleiner, separater Resize-Follow-up statt einer unsichtbaren Behauptung.
+
+**Status 2026-09-04 (Ultimate-Lesbarkeit umgesetzt):** Earthshaker und Clearance Orb erhalten beim Start einen eindeutigen Move-Namen, Farbcode, transparenten Charge-Ring und eine kurze, unterschiedliche Körper-Antizipation. Wombat verdichtet sich sichtbar in die Slam-Pose; der Wizard streckt sich in den Teleport-/Orb-Cast. Die Effekte sind reine Phaser-/universelle transparente VFX-Layer und enthalten weder Arena-Art noch eingebrannte Hintergründe.
 
 Lieferumfang:
 
@@ -273,6 +277,8 @@ Abnahme:
 **Priorität:** P1. **Abhängigkeit:** B5.6 und freigegebene Kern-Roster-Balance.
 
 **Befund 2026-09-04:** Die aktuelle Normalisierung verhindert technischen Fußlinien-Drift, aber der Walk bleibt mit 6,67 % Höhendifferenz sichtbar unruhig. Seine heutigen Posen liefern deshalb keine ausreichend hochwertige spielbare Figur.
+
+**Status 2026-09-04: umgesetzt.** Budget Barbarian 2.0 verwendet einen neuen zweibeinigen, comic-haften Heavy-Satz mit klarer Axt-Silhouette. Die generierte Konzeptquelle bleibt nachvollziehbar unter `art-source/concepts/`; ein lokales Build-Script erzeugt daraus die ausschließlich transparente Runtime-Sheet-Version. Der kuratierte Zwei-Schritt-Walk vermeidet die instabilen Referenzframes. Aktuelle strenge QA: Idle 0px Fußdrift / 0,31px Root-Drift / 1,03% Höhendifferenz; Walk 0px / 0,07px / 1,06%. Kein Frame ist beschnitten, leer oder mit Hintergrund gebacken.
 
 - Nicht weiter am bestehenden Sheet flicken. Einen neuen zweibeinigen, comic-haften Heavy-Fighter als **Budget Barbarian 2.0** von der Silhouette aus planen: breite stabile Hüfte, lesbarer Kopf/Schultern, Axe als klare Diagonale, keine Farbblitze zwischen Frames.
 - Zuerst saubere Einzelanimationen als Style-/Motion-Probe entwickeln (Idle 4, Walk 6, Basic 4, Special 5, Ultimate Startup/Release/Recovery, Jump/Fall/Landing, Hit/KO). Danach anhand fester Fuß-/Root-Marker in ein 160px-Runtime-Sheet packen und normalisieren.

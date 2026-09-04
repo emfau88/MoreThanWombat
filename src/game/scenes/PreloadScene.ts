@@ -13,6 +13,9 @@ export class PreloadScene extends Phaser.Scene {
     this.load.image('main-menu-button-panel', `${assetBase}ui/main-menu/menu_button_panel.png`);
     this.load.image('duel-park-background', `${assetBase}arenas/park/duel_park_background.png`);
     this.load.image('scrapyard-background', `${assetBase}arenas/scrapyard/scrapyard_background.png`);
+    this.load.image('junkyard-run-scrap-gate', `${assetBase}arenas/junkyard-run/scrap_gate.png`);
+    this.load.image('junkyard-run-furnace-yard', `${assetBase}arenas/junkyard-run/furnace_yard.png`);
+    this.load.image('junkyard-run-neon-dump', `${assetBase}arenas/junkyard-run/neon_dump.png`);
     this.load.image('rooftop-background', `${assetBase}arenas/rooftop/rooftop_background.png`);
     this.load.image('cs-background', `${assetBase}ui/character-select/character_select_backstage.png`);
     this.load.image('cs-panel-player', `${assetBase}ui/character-select/panel_player.png`);
@@ -39,7 +42,7 @@ export class PreloadScene extends Phaser.Scene {
       frameWidth: 128,
       frameHeight: 128,
     });
-    this.load.spritesheet('budget-barbarian', `${assetBase}characters/budget-barbarian/budget_barbarian_spritesheet_v3_160_normalized.png`, {
+    this.load.spritesheet('budget-barbarian', `${assetBase}characters/budget-barbarian/budget_barbarian_2_spritesheet_160_normalized.png`, {
       frameWidth: 160,
       frameHeight: 160,
     });

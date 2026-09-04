@@ -41,8 +41,8 @@
     {
       "id": "budget-barbarian",
       "label": "Budget Barbarian",
-      "source": "public/assets/characters/budget-barbarian/budget_barbarian_spritesheet_v2_160.png",
-      "runtime": "public/assets/characters/budget-barbarian/budget_barbarian_spritesheet_v3_160_normalized.png",
+      "source": "public/assets/characters/budget-barbarian/budget_barbarian_2_spritesheet_160.png",
+      "runtime": "public/assets/characters/budget-barbarian/budget_barbarian_2_spritesheet_160_normalized.png",
       "frameWidth": 160,
       "frameHeight": 160,
       "columns": 4,

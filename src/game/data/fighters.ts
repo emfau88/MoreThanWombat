@@ -226,7 +226,7 @@ export const budgetBarbarianDefinition: FighterDefinition = {
   },
   sprite: {
     textureKey: 'budget-barbarian',
-    scale: 0.72,
+    scale: 0.9,
     animations: {
       idle: 'budget-barbarian-idle',
       walk: 'budget-barbarian-walk',

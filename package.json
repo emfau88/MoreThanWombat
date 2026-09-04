@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit",
     "test": "tsx --test tests/*.test.ts",
     "assets:wizard": "node scripts/build-discount-wizard-sheet.mjs",
+    "assets:barbarian2": "node scripts/build-budget-barbarian-2-sheet.mjs",
     "assets:normalize": "node scripts/normalize-character-sheets.mjs",
     "assets:previews": "node scripts/render-character-loop-previews.mjs",
     "assets:qa": "node scripts/character-asset-qa.mjs --strict",
