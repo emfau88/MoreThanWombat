@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
   COMBAT_GYM_DUMMY_MODES,
+  COMBAT_GYM_DUMMY_SIDES,
   COMBAT_GYM_RANGES,
   createDefaultCombatGymSettings,
   cycleCombatGymSetting,
@@ -37,6 +38,8 @@ test('combat gym setting cycles wrap and reset move choice for a new player', ()
   assert.equal(settings.rangeIndex, COMBAT_GYM_RANGES.length - 1);
   settings = cycleCombatGymSetting(settings, 'dummyMode', -1);
   assert.equal(settings.dummyModeIndex, COMBAT_GYM_DUMMY_MODES.length - 1);
+  settings = cycleCombatGymSetting(settings, 'dummySide', -1);
+  assert.equal(settings.dummySideIndex, COMBAT_GYM_DUMMY_SIDES.length - 1);
   settings = { ...settings, moveIndex: 2 };
   settings = cycleCombatGymSetting(settings, 'player', 1);
   assert.equal(settings.playerId, 'discount_wizard');
@@ -46,4 +49,11 @@ test('combat gym setting cycles wrap and reset move choice for a new player', ()
 
 test('combat gym exposes armor as a deterministic contact response', () => {
   assert.ok(COMBAT_GYM_DUMMY_MODES.includes('armor'));
+});
+
+test('combat gym defaults an older settings payload to the right-side dummy', () => {
+  const oldSettings = { ...createDefaultCombatGymSettings('mara_breach', 'angry_pigeon') } as Record<string, unknown>;
+  delete oldSettings.dummySideIndex;
+  const restored = cycleCombatGymSetting(oldSettings as ReturnType<typeof createDefaultCombatGymSettings>, 'dummySide', 0);
+  assert.equal(restored.dummySideIndex, 0);
 });

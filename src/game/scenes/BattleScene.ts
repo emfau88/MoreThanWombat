@@ -25,6 +25,7 @@ import { Hud } from '../ui/Hud';
 import { CombatGymController } from '../debug/CombatGymController';
 import {
   COMBAT_GYM_DUMMY_MODES,
+  COMBAT_GYM_DUMMY_SIDES,
   COMBAT_GYM_LANE_GAPS,
   COMBAT_GYM_MANA_RATIOS,
   COMBAT_GYM_RANGES,
@@ -606,6 +607,8 @@ export class BattleScene extends Phaser.Scene {
       const playerSpawn = this.getPlayerSpawnPoint();
       const range = COMBAT_GYM_RANGES[settings.rangeIndex];
       const laneGap = COMBAT_GYM_LANE_GAPS[settings.laneIndex];
+      const dummySide = COMBAT_GYM_DUMMY_SIDES[settings.dummySideIndex];
+      const direction = dummySide === 'left' ? -1 : 1;
       const sourceDefinition = fighterDefinitions[settings.dummyId];
       const trainingDummyDefinition = {
         ...sourceDefinition,
@@ -613,10 +616,10 @@ export class BattleScene extends Phaser.Scene {
         moveSpeed: 0,
       };
       const dummy = new Fighter(this, trainingDummyDefinition, {
-        x: Phaser.Math.Clamp(playerSpawn.x + range, this.arenaBounds.minX, this.arenaBounds.maxX),
+        x: Phaser.Math.Clamp(playerSpawn.x + range * direction, this.arenaBounds.minX, this.arenaBounds.maxX),
         y: Phaser.Math.Clamp(playerSpawn.y + laneGap, this.arenaBounds.minY, this.arenaBounds.maxY),
       }, 'enemy');
-      dummy.facing = 'left';
+      dummy.facing = direction === 1 ? 'left' : 'right';
       return dummy;
     }
 

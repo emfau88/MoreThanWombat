@@ -7,6 +7,7 @@ import { CombatClock } from './CombatClock';
 import { fighterDefinitions } from '../data/fighters';
 import {
   COMBAT_GYM_DUMMY_MODES,
+  COMBAT_GYM_DUMMY_SIDES,
   COMBAT_GYM_LANE_GAPS,
   COMBAT_GYM_MANA_RATIOS,
   COMBAT_GYM_RANGES,
@@ -46,6 +47,7 @@ export class CombatGymController {
   private readonly playerButton: GymButton;
   private readonly moveButton: GymButton;
   private readonly dummyButton: GymButton;
+  private readonly dummySideButton: GymButton;
   private readonly rangeButton: GymButton;
   private readonly laneButton: GymButton;
   private readonly manaButton: GymButton;
@@ -97,6 +99,7 @@ export class CombatGymController {
     this.playerButton = this.createButton(-342, -16, 178, () => this.cycleSetting('player'));
     this.moveButton = this.createButton(-112, -16, 270, () => this.cycleSetting('move'));
     this.dummyButton = this.createButton(166, -16, 178, () => this.cycleSetting('dummy'));
+    this.dummySideButton = this.createButton(356, -16, 100, () => this.cycleSetting('dummySide'));
     this.rangeButton = this.createButton(-346, 22, 146, () => this.cycleSetting('range'));
     this.laneButton = this.createButton(-188, 22, 144, () => this.cycleSetting('lane'));
     this.manaButton = this.createButton(-48, 22, 116, () => this.cycleSetting('mana'));
@@ -247,6 +250,7 @@ export class CombatGymController {
     this.playerButton.label.setText(`Player: ${fighterDefinitions[this.settings.playerId].label}`);
     this.moveButton.label.setText(`Move: ${move.attack.label}`);
     this.dummyButton.label.setText(`Dummy: ${fighterDefinitions[this.settings.dummyId].label}`);
+    this.dummySideButton.label.setText(`Side: ${COMBAT_GYM_DUMMY_SIDES[this.settings.dummySideIndex]}`);
     this.rangeButton.label.setText(`Range: ${COMBAT_GYM_RANGES[this.settings.rangeIndex]}px`);
     this.laneButton.label.setText(`Lane: ${COMBAT_GYM_LANE_GAPS[this.settings.laneIndex]}px`);
     this.manaButton.label.setText(`MP: ${COMBAT_GYM_MANA_RATIOS[this.settings.manaIndex] * 100}%`);

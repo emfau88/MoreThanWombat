@@ -226,7 +226,7 @@ export const budgetBarbarianDefinition: FighterDefinition = {
   },
   sprite: {
     textureKey: 'budget-barbarian',
-    scale: 0.74,
+    scale: 0.9,
     animations: {
       idle: 'budget-barbarian-idle',
       walk: 'budget-barbarian-walk',
@@ -279,7 +279,7 @@ export const maraBreachDefinition: FighterDefinition = {
   },
   sprite: {
     textureKey: 'mara-breach',
-    scale: 0.74,
+    scale: 0.92,
     animations: {
       idle: 'mara-breach-idle',
       walk: 'mara-breach-walk',
@@ -294,11 +294,6 @@ export const maraBreachDefinition: FighterDefinition = {
     attackAnimations: {
       air_bonk: 'mara-breach-air-kick',
       mara_red_line_barrage: 'mara-breach-red-line-barrage',
-    },
-    // Keep the one raised-support-leg ultimate frame on the same ground plane.
-    // Horizontal travel is encoded by the pose itself and must not be cancelled.
-    frameOffsetSets: {
-      'mara-breach-red-line-barrage': [{ x: 0, y: 0 }, { x: 0, y: 9 }, { x: 0, y: 0 }, { x: 0, y: 0 }],
     },
   },
 };

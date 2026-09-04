@@ -3,25 +3,25 @@ import path from 'node:path';
 import { PNG } from 'pngjs';
 
 const projectRoot = process.cwd();
-// v2 is the original production source for the replacement animation sheet.
+// v3 is the reviewed production source for the replacement animation sheet.
 // Keep this input unmodified; this builder owns cropping, alpha extraction and
 // shared-scale placement in the runtime atlas.
-const sourcePath = path.join(projectRoot, 'art-source', 'concepts', 'mara', 'mara_breach_animation_source_v2.png');
+const sourcePath = path.join(projectRoot, 'art-source', 'concepts', 'mara', 'mara_breach_animation_source_v3.png');
 const outputPath = path.join(projectRoot, 'public', 'assets', 'characters', 'mara', 'mara_breach_spritesheet_160.png');
 const columns = 4;
 const rows = 7;
-// The generated source is already a 4 × 7 grid of 237 px cells. Retaining
-// that native cell size avoids the soft resample that degraded the otherwise
-// crisp source art at 160 px.
-const frameSize = 237;
-const groundLine = 229;
-const rootX = 118;
+// Runtime fighters use the same 128px atlas contract as Wombat and Wizard.
+// Downsampling once during the asset build gives them a shared readable pixel
+// density and avoids magnifying the source's high-resolution brush detail.
+const frameSize = 128;
+const groundLine = 119;
+const rootX = 64;
 const source = PNG.sync.read(fs.readFileSync(sourcePath));
 const output = new PNG({ width: columns * frameSize, height: rows * frameSize });
 
-function getSourcePixel(x, y) {
-  const index = (y * source.width + x) * 4;
-  return [source.data[index], source.data[index + 1], source.data[index + 2], source.data[index + 3]];
+function getSourcePixel(image, x, y) {
+  const index = (y * image.width + x) * 4;
+  return [image.data[index], image.data[index + 1], image.data[index + 2], image.data[index + 3]];
 }
 
 function setOutputPixel(x, y, rgba) {
@@ -45,19 +45,22 @@ function isGeneratedGridBackground(rgba) {
   // every neutral near-white exterior pixel, not merely pure white, so that
   // it cannot survive as a bright halo after the character is composited in
   // Phaser. Saturated costume and skin highlights remain foreground.
+  // Only remove the light checker cells at the exterior. Treating dark neutral
+  // tones as a key also cuts holes into Mara's charcoal jacket and boots.
   return alpha > 8 && brightest >= 165 && brightest - darkest <= 32;
 }
 
 function isOpaqueWhiteMatte(rgba) {
   const [red, green, blue, alpha] = rgba;
-  return alpha > 8 && red >= 240 && green >= 240 && blue >= 240;
+  return alpha > 8 && red >= 205 && green >= 205 && blue >= 205
+    && Math.max(red, green, blue) - Math.min(red, green, blue) <= 44;
 }
 
-function extractCell(column, row) {
-  const left = Math.floor(column * source.width / columns);
-  const right = Math.floor((column + 1) * source.width / columns);
-  const top = Math.floor(row * source.height / rows);
-  const bottom = Math.floor((row + 1) * source.height / rows);
+function extractCell(column, row, image = source, imageColumns = columns, imageRows = rows) {
+  const left = Math.floor(column * image.width / imageColumns);
+  const right = Math.floor((column + 1) * image.width / imageColumns);
+  const top = Math.floor(row * image.height / imageRows);
+  const bottom = Math.floor((row + 1) * image.height / imageRows);
   const width = right - left;
   const height = bottom - top;
   const background = new Uint8Array(width * height);
@@ -65,7 +68,7 @@ function extractCell(column, row) {
   const enqueueBackground = (x, y) => {
     if (x < 0 || y < 0 || x >= width || y >= height) return;
     const index = y * width + x;
-    if (background[index] || !isGeneratedGridBackground(getSourcePixel(left + x, top + y))) return;
+    if (background[index] || !isGeneratedGridBackground(getSourcePixel(image, left + x, top + y))) return;
     background[index] = 1;
     queue.push([x, y]);
   };
@@ -93,7 +96,7 @@ function extractCell(column, row) {
   const foreground = new Uint8Array(width * height);
   for (let y = 0; y < height; y += 1) {
     for (let x = 0; x < width; x += 1) {
-      const rgba = getSourcePixel(left + x, top + y);
+      const rgba = getSourcePixel(image, left + x, top + y);
       if (rgba[3] > 8 && !background[y * width + x] && !isOpaqueWhiteMatte(rgba)) {
         foreground[y * width + x] = 1;
       }
@@ -134,7 +137,7 @@ function extractCell(column, row) {
   let maxY = -1;
 
   for (const [localX, localY] of largestComponent) {
-    const rgba = getSourcePixel(left + localX, top + localY);
+    const rgba = getSourcePixel(image, left + localX, top + localY);
     pixels.push({ x: localX, y: localY, rgba });
     minX = Math.min(minX, localX);
     minY = Math.min(minY, localY);
@@ -162,36 +165,52 @@ function extractCell(column, row) {
   };
 }
 
-const cells = [];
+const baseCells = [];
 for (let row = 0; row < rows; row += 1) {
   for (let column = 0; column < columns; column += 1) {
-    cells.push(extractCell(column, row));
+    baseCells.push(extractCell(column, row));
   }
 }
+const cells = baseCells;
 
 // One shared scale across the whole body sheet prevents scale pops when
 // transitioning between idle, movement, kicks, hit reactions and landings.
-const maxWidth = Math.max(...cells.map((cell) => cell.maxX - cell.minX + 1));
-const maxHeight = Math.max(...cells.map((cell) => cell.maxY - cell.minY + 1));
-const scale = Math.min(1, 225 / maxWidth, 223 / maxHeight);
+const maxWidth = Math.max(...baseCells.map((cell) => cell.maxX - cell.minX + 1));
+const maxHeight = Math.max(...baseCells.map((cell) => cell.maxY - cell.minY + 1));
+const scale = Math.min(1, 118 / maxWidth, 116 / maxHeight);
 const airborneFrameOffsets = new Map([
-  [20, -28], // jump
-  [21, -18], // fall
-  [22, -24], // air kick
-  [25, -12], // spinning knee in the ultimate
+  [20, -14], // jump
+  [21, -9], // fall
+  [22, -12], // air kick
+  [25, -6], // spinning knee in the ultimate
 ]);
 
 for (let frameIndex = 0; frameIndex < cells.length; frameIndex += 1) {
   const cell = cells[frameIndex];
+  const cellScale = scale;
   const frameColumn = frameIndex % columns;
   const frameRow = Math.floor(frameIndex / columns);
   const offsetY = airborneFrameOffsets.get(frameIndex) ?? 0;
-  const destinationRootX = frameColumn * frameSize + rootX;
+  // A stretched kick can reach much farther to one side than its torso. Keep
+  // the complete pose inside its own atlas cell: otherwise an overhanging boot
+  // is drawn into the next frame and flashes beside Mara on the return frame.
+  const relativeLeft = (cell.minX - cell.rootX) * cellScale;
+  const relativeRight = (cell.maxX - cell.rootX) * cellScale;
+  const cellInset = 3;
+  const minimumRootX = cellInset - relativeLeft;
+  const maximumRootX = frameSize - cellInset - relativeRight;
+  const anchoredRootX = Math.max(minimumRootX, Math.min(rootX, maximumRootX));
+  const destinationRootX = frameColumn * frameSize + anchoredRootX;
   const destinationFootY = frameRow * frameSize + groundLine + offsetY;
 
   for (const pixel of cell.pixels) {
-    const x = Math.round(destinationRootX + (pixel.x - cell.rootX) * scale);
-    const y = Math.round(destinationFootY + (pixel.y - cell.maxY) * scale);
+    const x = Math.round(destinationRootX + (pixel.x - cell.rootX) * cellScale);
+    const y = Math.round(destinationFootY + (pixel.y - cell.maxY) * cellScale);
+    // Atlas frames must never write into a neighbour. This is deliberately
+    // checked before the global write so a long kick cannot pollute the guard
+    // frame that follows it.
+    if (x < frameColumn * frameSize + cellInset || x >= (frameColumn + 1) * frameSize - cellInset) continue;
+    if (y < frameRow * frameSize + cellInset || y >= (frameRow + 1) * frameSize - cellInset) continue;
     setOutputPixel(x, y, pixel.rgba);
   }
 }

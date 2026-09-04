@@ -4,6 +4,7 @@ import { fighterDefinitions } from '../data/fighters';
 import type { FighterId } from '../core/BattleModes';
 
 export type CombatGymDummyMode = 'idle' | 'guard' | 'armor' | 'invulnerable' | 'attack-loop';
+export type CombatGymDummySide = 'right' | 'left';
 export type CombatGymMoveKind = 'basic' | 'special' | 'ultimate' | 'air';
 
 export type CombatGymSettings = {
@@ -14,6 +15,7 @@ export type CombatGymSettings = {
   laneIndex: number;
   manaIndex: number;
   dummyModeIndex: number;
+  dummySideIndex: number;
 };
 
 export type CombatGymMove = {
@@ -35,6 +37,7 @@ export const COMBAT_GYM_RANGES = [58, 92, 150] as const;
 export const COMBAT_GYM_LANE_GAPS = [0, 34, 68] as const;
 export const COMBAT_GYM_MANA_RATIOS = [0, 0.5, 1] as const;
 export const COMBAT_GYM_DUMMY_MODES: CombatGymDummyMode[] = ['idle', 'guard', 'armor', 'invulnerable', 'attack-loop'];
+export const COMBAT_GYM_DUMMY_SIDES: CombatGymDummySide[] = ['right', 'left'];
 
 export function createDefaultCombatGymSettings(playerId: FighterId, dummyId: FighterId): CombatGymSettings {
   return {
@@ -45,6 +48,7 @@ export function createDefaultCombatGymSettings(playerId: FighterId, dummyId: Fig
     laneIndex: 0,
     manaIndex: 2,
     dummyModeIndex: 0,
+    dummySideIndex: 0,
   };
 }
 
@@ -61,6 +65,7 @@ export function normalizeCombatGymSettings(settings: CombatGymSettings): CombatG
     laneIndex: wrapIndex(settings.laneIndex, COMBAT_GYM_LANE_GAPS.length),
     manaIndex: wrapIndex(settings.manaIndex, COMBAT_GYM_MANA_RATIOS.length),
     dummyModeIndex: wrapIndex(settings.dummyModeIndex, COMBAT_GYM_DUMMY_MODES.length),
+    dummySideIndex: wrapIndex(settings.dummySideIndex, COMBAT_GYM_DUMMY_SIDES.length),
   };
 }
 
@@ -91,7 +96,7 @@ export function getSelectedCombatGymMove(settings: CombatGymSettings): CombatGym
 
 export function cycleCombatGymSetting(
   settings: CombatGymSettings,
-  key: 'player' | 'dummy' | 'move' | 'range' | 'lane' | 'mana' | 'dummyMode',
+  key: 'player' | 'dummy' | 'move' | 'range' | 'lane' | 'mana' | 'dummyMode' | 'dummySide',
   direction = 1,
 ): CombatGymSettings {
   const next = { ...settings };
@@ -111,6 +116,8 @@ export function cycleCombatGymSetting(
     next.laneIndex = wrapIndex(settings.laneIndex + direction, COMBAT_GYM_LANE_GAPS.length);
   } else if (key === 'mana') {
     next.manaIndex = wrapIndex(settings.manaIndex + direction, COMBAT_GYM_MANA_RATIOS.length);
+  } else if (key === 'dummySide') {
+    next.dummySideIndex = wrapIndex(settings.dummySideIndex + direction, COMBAT_GYM_DUMMY_SIDES.length);
   } else {
     next.dummyModeIndex = wrapIndex(settings.dummyModeIndex + direction, COMBAT_GYM_DUMMY_MODES.length);
   }
@@ -123,5 +130,6 @@ function wrapIndex(index: number, length: number): number {
     return 0;
   }
 
-  return ((index % length) + length) % length;
+  const safeIndex = Number.isFinite(index) ? index : 0;
+  return ((safeIndex % length) + length) % length;
 }

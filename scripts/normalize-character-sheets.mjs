@@ -24,6 +24,22 @@ for (const sheet of manifest.sheets) {
     throw new Error(`${sheet.id}: expected ${expectedWidth}x${expectedHeight}, got ${source.width}x${source.height}`);
   }
 
+  // Mara's atlas is already aligned as a whole in its dedicated build step.
+  // Re-centering only idle/walk afterwards leaves action frames on a different
+  // baseline and can introduce interpolation artefacts into transparent gaps.
+  if (sheet.preserveRuntimeAtlas) {
+    writePng(sheet.runtime, source);
+    report.sheets.push({
+      id: sheet.id,
+      source: sheet.source,
+      runtime: sheet.runtime,
+      preservedRuntimeAtlas: true,
+      shifts: [],
+      marginAdjustments: [],
+    });
+    continue;
+  }
+
   const normalized = normalizeLoopFrames(source, sheet, manifest.thresholds.alpha);
   const fitted = fitSheetFramesToMargins(
     normalized.output,

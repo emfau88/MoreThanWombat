@@ -17,11 +17,15 @@ const outputDirectory = path.join(projectRoot, 'docs', 'qa', 'character-loop-pre
 fs.mkdirSync(outputDirectory, { recursive: true });
 
 for (const sheet of manifest.sheets) {
-  const source = readPng(sheet.runtime);
   const previewGroups = sheet.previewGroups ?? sheet.groups;
-  for (const [groupName, frameIndexes] of Object.entries(previewGroups)) {
-    const frameWidth = sheet.frameWidth * scale;
-    const frameHeight = sheet.frameHeight * scale;
+  for (const [groupName, group] of Object.entries(previewGroups)) {
+    const frameIndexes = Array.isArray(group) ? group : group.frames;
+    const previewSheet = Array.isArray(group)
+      ? sheet
+      : { ...sheet, runtime: group.runtime ?? sheet.runtime, columns: group.columns ?? sheet.columns, rows: group.rows ?? sheet.rows };
+    const source = readPng(previewSheet.runtime);
+    const frameWidth = previewSheet.frameWidth * scale;
+    const frameHeight = previewSheet.frameHeight * scale;
     const preview = new PNG({
       width: gap + frameIndexes.length * (frameWidth + gap),
       height: gap + 2 * (frameHeight + gap),
@@ -32,7 +36,7 @@ for (const sheet of manifest.sheets) {
       drawFrame({
         destination: preview,
         source,
-        sheet,
+        sheet: previewSheet,
         frameIndex,
         destinationX: gap + position * (frameWidth + gap),
         destinationY: gap,
@@ -41,7 +45,7 @@ for (const sheet of manifest.sheets) {
       drawFrame({
         destination: preview,
         source,
-        sheet,
+        sheet: previewSheet,
         frameIndex,
         destinationX: gap + position * (frameWidth + gap),
         destinationY: gap + frameHeight + gap,

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-04T13:06:01.032Z",
+  "generatedAt": "2026-09-04T16:01:38.911Z",
   "manifestVersion": 1,
   "sheets": [
     {
@@ -157,67 +157,67 @@
     },
     {
       "id": "budget-barbarian",
-      "source": "public/assets/characters/budget-barbarian/budget_barbarian_2_spritesheet_160.png",
-      "runtime": "public/assets/characters/budget-barbarian/budget_barbarian_2_spritesheet_160_normalized.png",
-      "targetFootLine": 228,
-      "targetRootAnchorX": 99,
-      "loopScale": 0.94,
+      "source": "public/assets/characters/budget-barbarian/budget_barbarian_spritesheet_128_normalized.png",
+      "runtime": "public/assets/characters/budget-barbarian/budget_barbarian_spritesheet_128_normalized.png",
+      "targetFootLine": 119,
+      "targetRootAnchorX": 41,
+      "loopScale": 1,
       "shifts": [
         {
           "frameIndex": 0,
-          "dx": 14,
+          "dx": 0,
           "dy": 0,
-          "sourceRootAnchorX": 85.28,
-          "sourceFootLine": 228
+          "sourceRootAnchorX": 40.77,
+          "sourceFootLine": 119
         },
         {
           "frameIndex": 1,
-          "dx": 13,
+          "dx": 0,
           "dy": 0,
-          "sourceRootAnchorX": 86.41,
-          "sourceFootLine": 228
+          "sourceRootAnchorX": 41.25,
+          "sourceFootLine": 119
         },
         {
           "frameIndex": 2,
-          "dx": 13,
+          "dx": 0,
           "dy": 0,
-          "sourceRootAnchorX": 86.29,
-          "sourceFootLine": 228
+          "sourceRootAnchorX": 40.82,
+          "sourceFootLine": 119
         },
         {
           "frameIndex": 3,
-          "dx": 14,
+          "dx": 0,
           "dy": 0,
-          "sourceRootAnchorX": 85.4,
-          "sourceFootLine": 228
+          "sourceRootAnchorX": 40.79,
+          "sourceFootLine": 119
         },
         {
           "frameIndex": 4,
-          "dx": 10,
+          "dx": 0,
           "dy": 0,
-          "sourceRootAnchorX": 89.16,
-          "sourceFootLine": 228
+          "sourceRootAnchorX": 41.42,
+          "sourceFootLine": 119
         },
         {
           "frameIndex": 5,
-          "dx": -12,
+          "dx": 0,
           "dy": 0,
-          "sourceRootAnchorX": 110.98,
-          "sourceFootLine": 228
+          "sourceRootAnchorX": 40.55,
+          "sourceFootLine": 119
         },
         {
           "frameIndex": 6,
-          "dx": 21,
+          "dx": 0,
           "dy": 0,
-          "sourceRootAnchorX": 78.38,
-          "sourceFootLine": 228
+          "sourceRootAnchorX": 41.43,
+          "sourceFootLine": 119
         },
         {
           "frameIndex": 7,
-          "dx": 9,
+          "dx": 0,
           "dy": 0,
-          "sourceRootAnchorX": 90.45,
-          "sourceFootLine": 228
+          "sourceRootAnchorX": 41.13,
+          "sourceFootLine": 119
         }
       ],
       "marginAdjustments": []
@@ -226,117 +226,9 @@
       "id": "mara-breach",
       "source": "public/assets/characters/mara/mara_breach_spritesheet_160.png",
       "runtime": "public/assets/characters/mara/mara_breach_spritesheet_160_normalized.png",
-      "targetFootLine": 229,
-      "targetRootAnchorX": 119,
-      "loopScale": 1,
-      "shifts": [
-        {
-          "frameIndex": 0,
-          "dx": 1,
-          "dy": 0,
-          "sourceRootAnchorX": 117.94,
-          "sourceFootLine": 229
-        },
-        {
-          "frameIndex": 1,
-          "dx": 3,
-          "dy": 0,
-          "sourceRootAnchorX": 115.79,
-          "sourceFootLine": 229
-        },
-        {
-          "frameIndex": 2,
-          "dx": 2,
-          "dy": 0,
-          "sourceRootAnchorX": 116.68,
-          "sourceFootLine": 229
-        },
-        {
-          "frameIndex": 3,
-          "dx": 1,
-          "dy": 0,
-          "sourceRootAnchorX": 118.07,
-          "sourceFootLine": 229
-        },
-        {
-          "frameIndex": 4,
-          "dx": 3,
-          "dy": 0,
-          "sourceRootAnchorX": 116.39,
-          "sourceFootLine": 229
-        },
-        {
-          "frameIndex": 5,
-          "dx": 2,
-          "dy": 0,
-          "sourceRootAnchorX": 117.08,
-          "sourceFootLine": 229
-        },
-        {
-          "frameIndex": 6,
-          "dx": 1,
-          "dy": 0,
-          "sourceRootAnchorX": 117.61,
-          "sourceFootLine": 229
-        },
-        {
-          "frameIndex": 7,
-          "dx": 2,
-          "dy": 0,
-          "sourceRootAnchorX": 117.09,
-          "sourceFootLine": 229
-        }
-      ],
-      "marginAdjustments": [
-        {
-          "frameIndex": 10,
-          "dx": -2,
-          "dy": 0,
-          "scale": 1
-        },
-        {
-          "frameIndex": 11,
-          "dx": 2,
-          "dy": 0,
-          "scale": 1
-        },
-        {
-          "frameIndex": 13,
-          "dx": -2,
-          "dy": 0,
-          "scale": 1
-        },
-        {
-          "frameIndex": 14,
-          "dx": 2,
-          "dy": 0,
-          "scale": 1
-        },
-        {
-          "frameIndex": 18,
-          "dx": -2,
-          "dy": 0,
-          "scale": 1
-        },
-        {
-          "frameIndex": 19,
-          "dx": 0,
-          "dy": 0,
-          "scale": 0.98
-        },
-        {
-          "frameIndex": 25,
-          "dx": -2,
-          "dy": 0,
-          "scale": 1
-        },
-        {
-          "frameIndex": 26,
-          "dx": 0,
-          "dy": 0,
-          "scale": 0.98
-        }
-      ]
+      "preservedRuntimeAtlas": true,
+      "shifts": [],
+      "marginAdjustments": []
     },
     {
       "id": "buster-bulldog",
