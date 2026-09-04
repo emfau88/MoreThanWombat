@@ -189,6 +189,10 @@ export class CombatGymController {
     return { ...this.settings };
   }
 
+  layout(viewportWidth: number): void {
+    this.container.setPosition(viewportWidth / 2, 128);
+  }
+
   destroy(): void {
     if (import.meta.env.DEV) {
       delete document.documentElement.dataset.combatGym;

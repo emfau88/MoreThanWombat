@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { GAME_HEIGHT, getBrowserAdaptiveGameViewport, shouldResizeAdaptiveViewport } from './game/core/AdaptiveViewport';
 
 const FULLSCREEN_BUTTON_CLASS = 'fullscreen-button';
 
@@ -14,6 +15,14 @@ export function setupMobileViewport(game: Phaser.Game): void {
 
   const refreshScale = (): void => {
     window.requestAnimationFrame(() => {
+      const nextViewport = getBrowserAdaptiveGameViewport();
+      const currentViewport = {
+        width: game.scale.gameSize.width,
+        height: GAME_HEIGHT,
+      };
+      if (shouldResizeAdaptiveViewport(currentViewport, nextViewport)) {
+        game.scale.resize(nextViewport.width, nextViewport.height);
+      }
       game.scale.refresh();
     });
   };

@@ -4,9 +4,10 @@ Diese Checkliste trennt reproduzierbare lokale Gates von echter Geräteabnahme. 
 
 ## Lokales Gate (bei jedem Release)
 
-- [ ] `npm.cmd run typecheck` grün
-- [ ] `npm.cmd test` grün
-- [ ] `npm.cmd run build` grün
+- [ ] `npm.cmd run typecheck` grün (für den Release-Commit erneut ausführen)
+- [ ] `npm.cmd test` grün (für den Release-Commit erneut ausführen)
+- [ ] `npm.cmd run build` grün (für den Release-Commit erneut ausführen)
+- [ ] Laufende Duel-, Gym- und Wave-Session bei Landscape-Resize/Rotation prüfen: HUD, Kamera, Arena, Controls und Fighter bleiben im sichtbaren Raum
 - [ ] Main Menu → Character Select → Duel → Menu ohne Konsolenfehler
 - [ ] Combat Gym: Park, Rooftop und Scrapyard; Pause, Frame Step, Boxes und VFX-Qualität prüfen
 - [ ] Waves: `Junkyard Run` Entry, Crusher Lane und Wizard Pit; Boden, Kamera, HUD und Wave-Übergang prüfen
@@ -33,3 +34,4 @@ Diese Checkliste trennt reproduzierbare lokale Gates von echter Geräteabnahme. 
 | Datum | Commit | Umgebung/Gerät | Gate | Ergebnis | Befund / Follow-up |
 |---|---|---|---|---|---|
 | 2026-09-03 | `a35d541` | Lokal, Chromium | Local Gate | bestanden | Typecheck, 42 Tests, Production Build und Wave-Sichtprüfung grün. |
+| 2026-09-04 | ausstehend | Lokal, Codex Chromium | Preflight | bestanden | Typecheck, 54 Tests, Production Build, Asset- und VFX-QA grün. Main Menu, laufendes Duel, Combat Gym und Waves bei zwei Landscape-Größen ohne Konsolenfehler geprüft; Zielgeräteabnahme bleibt offen. |

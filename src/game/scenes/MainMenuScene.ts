@@ -22,6 +22,15 @@ export class MainMenuScene extends Phaser.Scene {
       stroke: '#111820',
       strokeThickness: 4,
     }).setOrigin(0.5).setDepth(5);
+
+    this.scale.on(Phaser.Scale.Events.RESIZE, this.restartForViewport, this);
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+      this.scale.off(Phaser.Scale.Events.RESIZE, this.restartForViewport, this);
+    });
+  }
+
+  private restartForViewport(): void {
+    this.scene.restart();
   }
 
   private createModeButton(

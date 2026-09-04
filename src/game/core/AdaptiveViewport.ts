@@ -4,7 +4,7 @@ export const MAX_LANDSCAPE_GAME_WIDTH = 1280;
 
 export type GameViewport = {
   width: number;
-  height: typeof GAME_HEIGHT;
+  height: number;
 };
 
 /**
@@ -26,4 +26,13 @@ export function getAdaptiveGameViewport(viewportWidth: number, viewportHeight: n
 
 export function getBrowserAdaptiveGameViewport(): GameViewport {
   return getAdaptiveGameViewport(window.innerWidth, window.innerHeight);
+}
+
+/**
+ * Keeps resize work idempotent: browser chrome can emit several resize events
+ * for one rotation, but the Phaser logical canvas only needs one update when
+ * its actual game-space dimensions change.
+ */
+export function shouldResizeAdaptiveViewport(current: GameViewport, next: GameViewport): boolean {
+  return current.width !== next.width || current.height !== next.height;
 }

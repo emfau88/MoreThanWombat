@@ -166,6 +166,20 @@ export class CharacterSelectScene extends Phaser.Scene {
         arenaId: this.selectedArena,
       });
     });
+
+    this.scale.on(Phaser.Scale.Events.RESIZE, this.restartForViewport, this);
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+      this.scale.off(Phaser.Scale.Events.RESIZE, this.restartForViewport, this);
+    });
+  }
+
+  private restartForViewport(): void {
+    this.scene.restart({
+      mode: this.mode,
+      selectedPlayer: this.selectedPlayer,
+      selectedEnemy: this.selectedEnemy,
+      selectedArena: this.selectedArena,
+    });
   }
 
   private createPreviewCard(

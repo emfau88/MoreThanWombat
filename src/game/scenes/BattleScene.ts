@@ -49,6 +49,7 @@ export class BattleScene extends Phaser.Scene {
   private hud!: Hud;
   private resultText!: Phaser.GameObjects.Text;
   private resultHintText!: Phaser.GameObjects.Text;
+  private readonly arenaVisuals: Phaser.GameObjects.GameObject[] = [];
   private debugEnabled = false;
   private hitboxSystem!: HitboxSystem;
   private projectileSystem!: ProjectileSystem;
@@ -204,7 +205,9 @@ export class BattleScene extends Phaser.Scene {
     this.inputController = new InputController(this);
     this.mobileControls = new MobileControls(this);
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+      this.scale.off(Phaser.Scale.Events.RESIZE, this.handleViewportResize, this);
       this.clearWaveEnemies();
+      this.clearArenaVisuals();
       this.mobileControls.destroy();
       this.projectileSystem.destroy();
       this.combatPresentation.destroy();
@@ -232,6 +235,7 @@ export class BattleScene extends Phaser.Scene {
     this.updateModeText();
     this.updateCombatHud();
     this.createCombatGymIfNeeded();
+    this.scale.on(Phaser.Scale.Events.RESIZE, this.handleViewportResize, this);
     if (this.mode === 'waves') {
       this.showWaveSectionIntro();
     }
@@ -739,40 +743,78 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private renderArena(): void {
+    this.clearArenaVisuals();
+
     if (this.mode === 'waves') {
       for (const zone of this.waveStage.zones) {
-        this.add
+        this.trackArenaVisual(this.add
           .image((zone.minX + zone.maxX) / 2, GAME_HEIGHT / 2, zone.backgroundKey)
           .setDisplaySize(zone.maxX - zone.minX, GAME_HEIGHT)
-          .setDepth(-100);
+          .setDepth(-100));
       }
       for (let index = 0; index < this.waveStage.zones.length - 1; index += 1) {
         const currentZone = this.waveStage.zones[index];
         const nextZone = this.waveStage.zones[index + 1];
         const boundary = currentZone.maxX;
-        this.add.rectangle(boundary, GAME_HEIGHT / 2, 92, GAME_HEIGHT, 0x07101b, 0.3).setDepth(-96);
-        this.add.rectangle(boundary - 38, GAME_HEIGHT / 2, 5, GAME_HEIGHT, currentZone.transitionColor, 0.42).setDepth(-95);
-        this.add.rectangle(boundary + 38, GAME_HEIGHT / 2, 5, GAME_HEIGHT, nextZone.transitionColor, 0.42).setDepth(-95);
-        this.add.rectangle(boundary, 230, 72, 10, 0xf5f0d8, 0.12).setDepth(-94);
-        this.add.rectangle(boundary, 468, 72, 10, 0x10151e, 0.3).setDepth(-94);
+        this.trackArenaVisual(this.add.rectangle(boundary, GAME_HEIGHT / 2, 92, GAME_HEIGHT, 0x07101b, 0.3).setDepth(-96));
+        this.trackArenaVisual(this.add.rectangle(boundary - 38, GAME_HEIGHT / 2, 5, GAME_HEIGHT, currentZone.transitionColor, 0.42).setDepth(-95));
+        this.trackArenaVisual(this.add.rectangle(boundary + 38, GAME_HEIGHT / 2, 5, GAME_HEIGHT, nextZone.transitionColor, 0.42).setDepth(-95));
+        this.trackArenaVisual(this.add.rectangle(boundary, 230, 72, 10, 0xf5f0d8, 0.12).setDepth(-94));
+        this.trackArenaVisual(this.add.rectangle(boundary, 468, 72, 10, 0x10151e, 0.3).setDepth(-94));
       }
-      this.add.rectangle(this.waveStage.worldWidth / 2, 230, this.waveStage.worldWidth - 120, 10, 0xffd08a, 0.12).setDepth(-90);
-      this.add.rectangle(this.waveStage.worldWidth / 2, 468, this.waveStage.worldWidth - 120, 10, 0x0a0b0f, 0.22).setDepth(-90);
+      this.trackArenaVisual(this.add.rectangle(this.waveStage.worldWidth / 2, 230, this.waveStage.worldWidth - 120, 10, 0xffd08a, 0.12).setDepth(-90));
+      this.trackArenaVisual(this.add.rectangle(this.waveStage.worldWidth / 2, 468, this.waveStage.worldWidth - 120, 10, 0x0a0b0f, 0.22).setDepth(-90));
       return;
     }
 
     if (this.arenaId === 'park') {
-      this.add.image(this.getViewportWidth() / 2, GAME_HEIGHT / 2, 'duel-park-background').setDisplaySize(this.getViewportWidth(), GAME_HEIGHT).setDepth(-100);
-      this.add.rectangle(this.getViewportWidth() / 2, 232, this.getViewportWidth() - 140, 8, 0xf5f0d8, 0.16).setDepth(-90);
-      this.add.rectangle(this.getViewportWidth() / 2, 468, this.getViewportWidth() - 140, 8, 0x141821, 0.18).setDepth(-90);
+      this.trackArenaVisual(this.add.image(this.getViewportWidth() / 2, GAME_HEIGHT / 2, 'duel-park-background').setDisplaySize(this.getViewportWidth(), GAME_HEIGHT).setDepth(-100));
+      this.trackArenaVisual(this.add.rectangle(this.getViewportWidth() / 2, 232, this.getViewportWidth() - 140, 8, 0xf5f0d8, 0.16).setDepth(-90));
+      this.trackArenaVisual(this.add.rectangle(this.getViewportWidth() / 2, 468, this.getViewportWidth() - 140, 8, 0x141821, 0.18).setDepth(-90));
       return;
     }
 
     const backgroundKey = this.arenaId === 'rooftop' ? 'rooftop-background' : 'scrapyard-background';
     const laneColor = this.arenaId === 'rooftop' ? 0xcfe8ff : 0xffd08a;
-    this.add.image(this.getViewportWidth() / 2, GAME_HEIGHT / 2, backgroundKey).setDisplaySize(this.getViewportWidth(), GAME_HEIGHT).setDepth(-100);
-    this.add.rectangle(this.getViewportWidth() / 2, 230, this.getViewportWidth() - 140, 10, laneColor, 0.12).setDepth(-90);
-    this.add.rectangle(this.getViewportWidth() / 2, 468, this.getViewportWidth() - 140, 10, 0x0a0b0f, 0.22).setDepth(-90);
+    this.trackArenaVisual(this.add.image(this.getViewportWidth() / 2, GAME_HEIGHT / 2, backgroundKey).setDisplaySize(this.getViewportWidth(), GAME_HEIGHT).setDepth(-100));
+    this.trackArenaVisual(this.add.rectangle(this.getViewportWidth() / 2, 230, this.getViewportWidth() - 140, 10, laneColor, 0.12).setDepth(-90));
+    this.trackArenaVisual(this.add.rectangle(this.getViewportWidth() / 2, 468, this.getViewportWidth() - 140, 10, 0x0a0b0f, 0.22).setDepth(-90));
+  }
+
+  private trackArenaVisual<T extends Phaser.GameObjects.GameObject>(visual: T): T {
+    this.arenaVisuals.push(visual);
+    return visual;
+  }
+
+  private clearArenaVisuals(): void {
+    for (const visual of this.arenaVisuals) {
+      visual.destroy();
+    }
+    this.arenaVisuals.length = 0;
+  }
+
+  private handleViewportResize(): void {
+    if (!this.player || !this.hud) {
+      return;
+    }
+
+    this.renderArena();
+    this.updateWaveArenaBoundsForCurrentSection();
+    this.player.nudge(0, 0, this.arenaBounds);
+    for (const enemy of this.getCurrentEnemies()) {
+      enemy.nudge(0, 0, this.arenaBounds);
+    }
+
+    const viewportWidth = this.getViewportWidth();
+    this.modeText.setPosition(viewportWidth - 28, 28);
+    this.debugToggleButton.setPosition(viewportWidth / 2, 84);
+    this.debugToggleLabel.setPosition(viewportWidth / 2, 84);
+    this.resultText.setPosition(viewportWidth / 2, 112);
+    this.resultHintText.setPosition(viewportWidth / 2, 170);
+    this.hud.layout(viewportWidth);
+    this.combatGym?.layout(viewportWidth);
+    this.configureCameraForCurrentMode();
+    this.updateCombatHud();
   }
 
   private getArenaLabel(): string {
