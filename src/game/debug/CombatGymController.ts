@@ -1,5 +1,4 @@
 import Phaser from 'phaser';
-import { GAME_WIDTH } from '../GameConfig';
 import type { Fighter } from '../combat/Fighter';
 import type { CombatFeedbackController } from '../combat/CombatFeedbackController';
 import type { VfxPerformanceDiagnostics } from '../combat/VfxPerformanceBudget';
@@ -70,7 +69,7 @@ export class CombatGymController {
     private readonly callbacks: CombatGymCallbacks,
   ) {
     this.settings = settings;
-    this.container = scene.add.container(GAME_WIDTH / 2, 128).setDepth(2400).setScrollFactor(0);
+    this.container = scene.add.container(scene.scale.width / 2, 128).setDepth(2400).setScrollFactor(0);
     const background = scene.add
       .rectangle(0, 0, 920, 148, 0x07111c, 0.92)
       .setStrokeStyle(2, 0x67d5b5, 0.78);

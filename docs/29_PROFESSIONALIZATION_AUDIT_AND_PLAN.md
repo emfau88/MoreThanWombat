@@ -195,13 +195,15 @@ Abnahme:
 
 **Befund 2026-09-04:** Das Spiel besitzt ein festes 960×540-Logikraster mit `Phaser.Scale.FIT`. Breite Landscape-Displays erhalten daher korrekte, aber ungenutzte seitliche Ränder. Ein Wechsel zu `ENVELOP` würde sie nur durch vertikales Abschneiden ersetzen und ist keine Lösung.
 
+**Status 2026-09-04 (Teil 1 umgesetzt):** Frische Starts auf breiten Landscape-Displays berechnen nun bei unveränderter 540px-Höhe eine kontrolliert breitere Logikfläche (960–1280px). Menü, Auswahl, Duel, Gym-HUD, Kamera, Touch-Controls und die sichtbaren Duel-Grenzen verwenden diese Breite. Der `ULT`-Button zeigt für die echte Wombat-/Wizard-Ultimate nun die Kosten (aktuell 100 MP), leuchtet nur bei wirklich möglichem Start und wird nach einem Einsatz sofort gedimmt. Pure Viewport-Regeln sind mit drei Grenzfalltests abgesichert; Typecheck, 52 Unit-Tests und Production Build sind grün. Eine laufende Session übernimmt eine nachträgliche Geräte-Rotation noch nicht als neue Logikbreite — das bleibt ein kleiner, separater Resize-Follow-up statt einer unsichtbaren Behauptung.
+
 Lieferumfang:
 
-- Einen adaptiven Gameplay-Viewport einführen: 540 logische Pixel Höhe bleiben erhalten, die logische Breite wächst auf breiten Landscape-Displays kontrolliert. Kamera, Hintergrund, HUD und Touch-Controls verwenden dieselbe zur Laufzeit ermittelte sichtbare Breite.
-- Den sicheren Kampfkorridor und die Weltbreite relativ zum sichtbaren Viewport validieren; Duel, Gym und Wave dürfen weder gestreckt noch vertikal beschnitten werden.
-- Wombat- und Wizard-Ultimates als echte, automatisiert geprüfte Player-Aktionen abnehmen: Input → Mana-Abzug → klarer Start-Cue → Treffer/Projektil bzw. Fläche → Recovery.
-- Ultimate-Button mit Kosten, verfügbarem/nicht verfügbarem Zustand und fehlendem-Mana-Feedback versehen. Die heutigen Kosten von 100 Mana werden erst nach Gym-/Wave-Test auf einen sinnvollen Peak-Rhythmus angepasst.
-- Für Wombat und Wizard eine eigene Startup-/Release-Lesbarkeit schaffen: Wombat erhält eine eindeutige Heavy-Pose statt nur Belly-Slam-Reuse; Wizard unterscheidet Teleport und Orb-Release klar von seinem normalen Fireball. Universelle transparente VFX bleiben vom Hintergrund getrennt.
+- Einen adaptiven Gameplay-Viewport einführen: 540 logische Pixel Höhe bleiben erhalten, die logische Breite wächst auf breiten Landscape-Displays kontrolliert. Kamera, Hintergrund, HUD und Touch-Controls verwenden dieselbe zur Laufzeit ermittelte sichtbare Breite. **Erledigt für frischen Landscape-Start; Resize während einer laufenden Session offen.**
+- Den sicheren Kampfkorridor und die Weltbreite relativ zum sichtbaren Viewport validieren; Duel, Gym und Wave dürfen weder gestreckt noch vertikal beschnitten werden. **Duel/Gym und Viewport-Grenzwerte erledigt; Wave-Panorama folgt bewusst erst mit B5.3-D.**
+- Wombat- und Wizard-Ultimates als echte, automatisiert geprüfte Player-Aktionen abnehmen: Input → Mana-Abzug → klarer Start-Cue → Treffer/Projektil bzw. Fläche → Recovery. **Technischer Ablauf vorhanden; gezielte automatisierte End-to-End-Abnahme offen.**
+- Ultimate-Button mit Kosten, verfügbarem/nicht verfügbarem Zustand und fehlendem-Mana-Feedback versehen. Die heutigen Kosten von 100 Mana werden erst nach Gym-/Wave-Test auf einen sinnvollen Peak-Rhythmus angepasst. **Erledigt.**
+- Für Wombat und Wizard eine eigene Startup-/Release-Lesbarkeit schaffen: Wombat erhält eine eindeutige Heavy-Pose statt nur Belly-Slam-Reuse; Wizard unterscheidet Teleport und Orb-Release klar von seinem normalen Fireball. Universelle transparente VFX bleiben vom Hintergrund getrennt. **Offen: hierfür sind bewusst neue, freigegebene Fighter-Posen statt weiterer Sheet-Flickarbeit nötig.**
 
 **Abnahme:** Breite Mobile-Screens nutzen ihre Breite ohne Stretch/Crop; ein Spieler erkennt und löst beide Ultimates verlässlich aus, auch ohne Debug-UI.
 

@@ -9,6 +9,7 @@ type BarElements = {
   manaBackground: Phaser.GameObjects.Rectangle;
   manaFill: Phaser.GameObjects.Rectangle;
   side: 'left' | 'right';
+  y: number;
 };
 
 const BAR_WIDTH = 220;
@@ -19,9 +20,9 @@ export class Hud {
   private readonly playerBar: BarElements;
   private readonly enemyBar: BarElements;
 
-  constructor(scene: Phaser.Scene) {
+  constructor(scene: Phaser.Scene, viewportWidth: number) {
     this.playerBar = this.createBar(scene, HUD_LAYOUT.player.x, HUD_LAYOUT.player.y, 'Wombat', 'left');
-    this.enemyBar = this.createBar(scene, HUD_LAYOUT.enemy.x, HUD_LAYOUT.enemy.y, 'Enemy', 'right');
+    this.enemyBar = this.createBar(scene, viewportWidth - 28, HUD_LAYOUT.enemy.y, 'Enemy', 'right');
   }
 
   update(player: Fighter, enemy: Fighter | null): void {
@@ -35,6 +36,11 @@ export class Hud {
 
     this.setBarVisible(this.enemyBar, true);
     this.updateBar(this.enemyBar, enemy.label, enemy.hp, enemy.maxHp, enemy.mana, enemy.maxMana);
+  }
+
+  layout(viewportWidth: number): void {
+    this.layoutBar(this.playerBar, HUD_LAYOUT.player.x);
+    this.layoutBar(this.enemyBar, viewportWidth - 28);
   }
 
   private createBar(scene: Phaser.Scene, x: number, y: number, label: string, side: 'left' | 'right'): BarElements {
@@ -71,7 +77,17 @@ export class Hud {
       .setDepth(2001)
       .setScrollFactor(0);
 
-    return { label: text, hpBackground, hpFill, manaBackground, manaFill, side };
+    return { label: text, hpBackground, hpFill, manaBackground, manaFill, side, y };
+  }
+
+  private layoutBar(bar: BarElements, x: number): void {
+    const isLeft = bar.side === 'left';
+    const fillX = isLeft ? x + 2 : x - 2;
+    bar.label.setPosition(x, bar.y + HUD_LAYOUT.labelOffsetY);
+    bar.hpBackground.setPosition(x, bar.y);
+    bar.hpFill.setPosition(fillX, bar.y);
+    bar.manaBackground.setPosition(x, bar.y + 15);
+    bar.manaFill.setPosition(fillX, bar.y + 15);
   }
 
   private updateBar(bar: BarElements, label: string, hp: number, maxHp: number, mana: number, maxMana: number): void {

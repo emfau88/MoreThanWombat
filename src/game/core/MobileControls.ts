@@ -81,6 +81,14 @@ export class MobileControls {
     return currentState;
   }
 
+  setUltimateAvailability(available: boolean, manaCost: number | null): void {
+    const label = manaCost === null ? 'ULT\n—' : `ULT\n${manaCost}`;
+    this.controls.ultimateLabel.setText(label);
+    this.controls.ultimateLabel.setFontSize(manaCost === null ? '12px' : '10px');
+    this.controls.ultimateButton.setFillStyle(available ? 0xa23bd6 : 0x3b3147, available ? 0.94 : 0.66);
+    this.controls.ultimateRing.setAlpha(available ? 1 : 0.36);
+  }
+
   private createControls(): ControlElements {
     const baseShadow = this.scene.add.circle(0, 0, JOYSTICK_RADIUS + 6, 0x02060b, 0.28).setScrollFactor(0).setDepth(996);
     const base = this.scene.add

@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { GAME_HEIGHT, GAME_WIDTH } from '../GameConfig';
+import { GAME_HEIGHT } from '../GameConfig';
 import type { BattleMode } from '../core/BattleModes';
 
 export class MainMenuScene extends Phaser.Scene {
@@ -8,13 +8,14 @@ export class MainMenuScene extends Phaser.Scene {
   }
 
   create(): void {
-    this.add.image(GAME_WIDTH / 2, GAME_HEIGHT / 2, 'main-menu-background').setDisplaySize(GAME_WIDTH, GAME_HEIGHT).setDepth(0);
+    const viewportWidth = this.scale.width;
+    this.add.image(viewportWidth / 2, GAME_HEIGHT / 2, 'main-menu-background').setDisplaySize(viewportWidth, GAME_HEIGHT).setDepth(0);
 
-    this.createModeButton(GAME_WIDTH / 2, 258, 338, 84, 'Duel', 'Current 1v1 setup', 'duel');
-    this.createModeButton(GAME_WIDTH / 2, 358, 338, 84, 'Waves', 'Three short enemy waves', 'waves');
-    this.createModeButton(GAME_WIDTH / 2, 458, 338, 84, 'Combat Gym', 'Frame step, boxes, presets, and dummy lab', 'test');
+    this.createModeButton(viewportWidth / 2, 258, 338, 84, 'Duel', 'Current 1v1 setup', 'duel');
+    this.createModeButton(viewportWidth / 2, 358, 338, 84, 'Waves', 'Three short enemy waves', 'waves');
+    this.createModeButton(viewportWidth / 2, 458, 338, 84, 'Combat Gym', 'Frame step, boxes, presets, and dummy lab', 'test');
 
-    this.add.text(GAME_WIDTH / 2, 516, 'Touch or click a mode to start', {
+    this.add.text(viewportWidth / 2, 516, 'Touch or click a mode to start', {
       color: '#d5dde4',
       fontFamily: 'Verdana, Geneva, sans-serif',
       fontSize: '13px',

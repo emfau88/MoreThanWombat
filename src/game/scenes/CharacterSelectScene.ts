@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { GAME_HEIGHT, GAME_WIDTH } from '../GameConfig';
+import { GAME_HEIGHT } from '../GameConfig';
 import type { FighterDefinition } from '../combat/Fighter';
 import type { BattleMode, CharacterSelectSceneData, FighterId } from '../core/BattleModes';
 import { arenaDefinitions, arenaOrder, type ArenaId } from '../data/arenas';
@@ -105,32 +105,34 @@ export class CharacterSelectScene extends Phaser.Scene {
   }
 
   create(): void {
+    const viewportWidth = this.scale.width;
+    const centerX = viewportWidth / 2;
     registerCharacterAnimations(this);
-    this.add.image(GAME_WIDTH / 2, GAME_HEIGHT / 2, 'cs-background').setDisplaySize(GAME_WIDTH, GAME_HEIGHT).setDepth(-20);
-    this.add.rectangle(GAME_WIDTH / 2, GAME_HEIGHT / 2, GAME_WIDTH, GAME_HEIGHT, 0x061018, 0.2).setDepth(-10);
+    this.add.image(centerX, GAME_HEIGHT / 2, 'cs-background').setDisplaySize(viewportWidth, GAME_HEIGHT).setDepth(-20);
+    this.add.rectangle(centerX, GAME_HEIGHT / 2, viewportWidth, GAME_HEIGHT, 0x061018, 0.2).setDepth(-10);
 
     this.createArenaSelector();
-    this.playerCard = this.createPreviewCard(252, 306, 340, 292, 'PLAYER', false, true, 0x88c0ff, () => {
+    this.playerCard = this.createPreviewCard(centerX - 228, 306, 340, 292, 'PLAYER', false, true, 0x88c0ff, () => {
       this.cyclePlayer(-1);
     }, () => {
       this.cyclePlayer(1);
     });
 
     if (this.mode === 'duel') {
-      this.enemyCard = this.createPreviewCard(708, 306, 340, 292, 'OPPONENT', true, true, 0xff9a5a, () => {
+      this.enemyCard = this.createPreviewCard(centerX + 228, 306, 340, 292, 'OPPONENT', true, true, 0xff9a5a, () => {
         this.cycleEnemy(-1);
       }, () => {
         this.cycleEnemy(1);
       });
     } else if (this.mode === 'test') {
-      this.enemyCard = this.createPreviewCard(708, 306, 340, 292, 'TRAINING TOOLS', true, false, 0x67d5b5);
+      this.enemyCard = this.createPreviewCard(centerX + 228, 306, 340, 292, 'TRAINING TOOLS', true, false, 0x67d5b5);
       this.updatePreviewCard(this.enemyCard, DUEL_ENEMY_OPTIONS[0], true);
       this.enemyCard.titleText.setText('Combat Gym');
       this.enemyCard.subtitleText.setText('Frame step + dummy presets');
       this.enemyCard.indexText?.setVisible(false);
     } else {
-      this.enemyCard = this.createPreviewCard(708, 306, 340, 292, 'WAVE ENEMY', true, false, 0xff9a5a);
-      this.enemyCard.lockText = this.add.text(708, 446, 'Fixed for this mode', {
+      this.enemyCard = this.createPreviewCard(centerX + 228, 306, 340, 292, 'WAVE ENEMY', true, false, 0xff9a5a);
+      this.enemyCard.lockText = this.add.text(centerX + 228, 446, 'Fixed for this mode', {
         color: '#8da1b5',
         fontFamily: 'Verdana, Geneva, sans-serif',
         fontSize: '12px',
@@ -141,10 +143,10 @@ export class CharacterSelectScene extends Phaser.Scene {
     this.refreshEnemyCard();
     this.refreshArenaSelection();
 
-    this.createActionButton(286, 512, 212, 42, 'Back', () => {
+    this.createActionButton(centerX - 194, 512, 212, 42, 'Back', () => {
       this.scene.start('MainMenuScene');
     });
-    this.createActionButton(674, 512, 252, 42, 'Start Battle', () => {
+    this.createActionButton(centerX + 194, 512, 252, 42, 'Start Battle', () => {
       this.scene.start('BattleScene', {
         mode: this.mode,
         playerFighterId: this.selectedPlayer,
@@ -354,31 +356,32 @@ export class CharacterSelectScene extends Phaser.Scene {
   }
 
   private createArenaSelector(): void {
+    const centerX = this.scale.width / 2;
     const arenaY = 76;
-    this.add.image(GAME_WIDTH / 2, arenaY, 'cs-arena-strip').setDisplaySize(456, 74).setDepth(1);
-    this.add.text(GAME_WIDTH / 2, arenaY - 17, 'ARENA', {
+    this.add.image(centerX, arenaY, 'cs-arena-strip').setDisplaySize(456, 74).setDepth(1);
+    this.add.text(centerX, arenaY - 17, 'ARENA', {
       color: '#9fb5c9',
       fontFamily: 'Verdana, Geneva, sans-serif',
       fontSize: '12px',
       fontStyle: 'bold',
     }).setOrigin(0.5).setDepth(6);
-    this.arenaTitleText = this.add.text(GAME_WIDTH / 2, arenaY - 2, '', {
+    this.arenaTitleText = this.add.text(centerX, arenaY - 2, '', {
       color: '#fff7e6',
       fontFamily: 'Verdana, Geneva, sans-serif',
       fontSize: '18px',
       stroke: '#101720',
       strokeThickness: 3,
     }).setOrigin(0.5).setDepth(6);
-    this.arenaSubtitleText = this.add.text(GAME_WIDTH / 2, arenaY + 16, '', {
+    this.arenaSubtitleText = this.add.text(centerX, arenaY + 16, '', {
       color: '#e9c46a',
       fontFamily: 'Verdana, Geneva, sans-serif',
       fontSize: '11px',
     }).setOrigin(0.5).setDepth(6);
 
-    this.createArrowButton(GAME_WIDTH / 2 - 258, arenaY, '<', 'arena', 0x67d5b5, () => {
+    this.createArrowButton(centerX - 258, arenaY, '<', 'arena', 0x67d5b5, () => {
       this.cycleArena(-1);
     });
-    this.createArrowButton(GAME_WIDTH / 2 + 258, arenaY, '>', 'arena', 0x67d5b5, () => {
+    this.createArrowButton(centerX + 258, arenaY, '>', 'arena', 0x67d5b5, () => {
       this.cycleArena(1);
     });
   }

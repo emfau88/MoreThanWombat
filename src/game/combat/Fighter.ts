@@ -262,6 +262,25 @@ export class Fighter {
     return attackId ? this.tryStartAttackById(attackId, kind) : false;
   }
 
+  getAttackManaCost(kind: 'basic' | 'special' | 'ultimate'): number | null {
+    const attackId =
+      kind === 'basic'
+        ? this.definition.attacks.basic
+        : kind === 'special'
+          ? this.definition.attacks.special
+          : this.definition.attacks.ultimate;
+    const attack = attackId ? attacksById[attackId] : undefined;
+    return attack ? attack.manaCost ?? 0 : null;
+  }
+
+  canStartAttack(kind: 'basic' | 'special' | 'ultimate'): boolean {
+    if (this.state === 'hitstun' || this.state === 'dead' || this.currentAttack || !this.isGrounded || this.landingRemainingMs > 0) {
+      return false;
+    }
+    const manaCost = this.getAttackManaCost(kind);
+    return manaCost !== null && this.mana >= manaCost;
+  }
+
   tryStartAttackById(attackId: string, kind: 'basic' | 'special' | 'ultimate'): boolean {
     if (this.state === 'hitstun' || this.state === 'dead' || this.currentAttack || !this.isGrounded || this.landingRemainingMs > 0) {
       return false;

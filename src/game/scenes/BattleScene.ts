@@ -127,7 +127,7 @@ export class BattleScene extends Phaser.Scene {
       getArenaBounds: () => this.arenaBounds,
       getCurrentTargets: () => [this.player, ...this.getCurrentEnemies()],
       getTargetFor: (fighter) => fighter === this.player ? this.getPreferredEnemyTarget() : this.player,
-      getVisibleCenterX: () => this.mode === 'waves' ? this.cameras.main.worldView.centerX : GAME_WIDTH / 2,
+      getVisibleCenterX: () => this.mode === 'waves' ? this.cameras.main.worldView.centerX : this.getViewportWidth() / 2,
       getShakeScale: () => this.combatFeedback.getAccessibilityScale(),
     });
     this.combatImpact = new CombatImpactOrchestrator(this, this.combatFeedback, this.combatPresentation);
@@ -138,14 +138,14 @@ export class BattleScene extends Phaser.Scene {
       fontFamily: 'Verdana, Geneva, sans-serif',
       fontSize: '14px',
     });
-    this.modeText = this.add.text(GAME_WIDTH - 28, 28, '', {
+    this.modeText = this.add.text(this.getViewportWidth() - 28, 28, '', {
       color: '#f5f0d8',
       fontFamily: 'Verdana, Geneva, sans-serif',
       fontSize: '16px',
       align: 'right',
     }).setOrigin(1, 0.5);
     this.debugToggleButton = this.add
-      .rectangle(GAME_WIDTH / 2, 84, 124, 30, 0x223042, 0.94)
+      .rectangle(this.getViewportWidth() / 2, 84, 124, 30, 0x223042, 0.94)
       .setStrokeStyle(2, 0xe9c46a, 0.86)
       .setDepth(2100)
       .setScrollFactor(0)
@@ -162,7 +162,7 @@ export class BattleScene extends Phaser.Scene {
       .setVisible(false)
       .disableInteractive();
     this.debugToggleLabel = this.add
-      .text(GAME_WIDTH / 2, 84, '', {
+      .text(this.getViewportWidth() / 2, 84, '', {
         color: '#fff7e6',
         fontFamily: 'Verdana, Geneva, sans-serif',
         fontSize: '13px',
@@ -172,7 +172,7 @@ export class BattleScene extends Phaser.Scene {
       .setScrollFactor(0)
       .setVisible(false);
     this.resultText = this.add
-      .text(GAME_WIDTH / 2, 112, '', {
+      .text(this.getViewportWidth() / 2, 112, '', {
         color: '#fff7e6',
         fontFamily: 'Verdana, Geneva, sans-serif',
         fontSize: '30px',
@@ -187,7 +187,7 @@ export class BattleScene extends Phaser.Scene {
         this.restartBattle();
       });
     this.resultHintText = this.add
-      .text(GAME_WIDTH / 2, 170, '', {
+      .text(this.getViewportWidth() / 2, 170, '', {
         color: '#c9d6df',
         fontFamily: 'Verdana, Geneva, sans-serif',
         fontSize: '15px',
@@ -227,10 +227,10 @@ export class BattleScene extends Phaser.Scene {
     }
     this.instructionText.setVisible(this.debugEnabled && this.mode !== 'test');
     this.syncDebugToggleUi();
-    this.hud = new Hud(this);
+    this.hud = new Hud(this, this.getViewportWidth());
     this.configureCameraForCurrentMode();
     this.updateModeText();
-    this.hud.update(this.player, this.getHudEnemy());
+    this.updateCombatHud();
     this.createCombatGymIfNeeded();
     if (this.mode === 'waves') {
       this.showWaveSectionIntro();
@@ -430,7 +430,7 @@ export class BattleScene extends Phaser.Scene {
     this.updateTestDummyRegen(simulationDeltaMs);
     this.combatImpact.apply(impacts);
     this.syncPrimaryEnemy();
-    this.hud.update(this.player, this.getHudEnemy());
+    this.updateCombatHud();
 
     if (this.getCurrentEnemies().length > 0 && this.mode !== 'test') {
       this.updateBattleResult();
@@ -527,7 +527,7 @@ export class BattleScene extends Phaser.Scene {
     for (const enemy of this.getCurrentEnemies()) {
       enemy.updateVisuals();
     }
-    this.hud.update(this.player, this.getHudEnemy());
+    this.updateCombatHud();
   }
 
   private restartBattle(): void {
@@ -578,7 +578,7 @@ export class BattleScene extends Phaser.Scene {
     for (const enemy of this.getCurrentEnemies()) {
       enemy.updateVisuals();
     }
-    this.hud.update(this.player, this.getHudEnemy());
+    this.updateCombatHud();
   }
 
   private createCombatImpact(hit: HitResolution): CombatImpact {
@@ -715,7 +715,7 @@ export class BattleScene extends Phaser.Scene {
     this.resultText.setVisible(false);
     this.resultHintText.setVisible(false);
     this.updateModeText();
-    this.hud.update(this.player, this.getHudEnemy());
+    this.updateCombatHud();
     this.showWaveSectionIntro();
   }
 
@@ -742,7 +742,7 @@ export class BattleScene extends Phaser.Scene {
     if (this.mode === 'waves') {
       const backgroundKey = this.waveStage.backgroundKey;
       const sourceImage = this.textures.get(backgroundKey).getSourceImage() as { width: number; height: number };
-      const tileScale = getStageTileScale(sourceImage, { width: GAME_WIDTH, height: GAME_HEIGHT });
+      const tileScale = getStageTileScale(sourceImage, { width: this.getViewportWidth(), height: GAME_HEIGHT });
       this.add
         .tileSprite(this.waveStage.worldWidth / 2, GAME_HEIGHT / 2, this.waveStage.worldWidth, GAME_HEIGHT, backgroundKey)
         .setTileScale(tileScale)
@@ -753,17 +753,17 @@ export class BattleScene extends Phaser.Scene {
     }
 
     if (this.arenaId === 'park') {
-      this.add.image(GAME_WIDTH / 2, GAME_HEIGHT / 2, 'duel-park-background').setDepth(-100);
-      this.add.rectangle(GAME_WIDTH / 2, 232, 820, 8, 0xf5f0d8, 0.16).setDepth(-90);
-      this.add.rectangle(GAME_WIDTH / 2, 468, 820, 8, 0x141821, 0.18).setDepth(-90);
+      this.add.image(this.getViewportWidth() / 2, GAME_HEIGHT / 2, 'duel-park-background').setDisplaySize(this.getViewportWidth(), GAME_HEIGHT).setDepth(-100);
+      this.add.rectangle(this.getViewportWidth() / 2, 232, this.getViewportWidth() - 140, 8, 0xf5f0d8, 0.16).setDepth(-90);
+      this.add.rectangle(this.getViewportWidth() / 2, 468, this.getViewportWidth() - 140, 8, 0x141821, 0.18).setDepth(-90);
       return;
     }
 
     const backgroundKey = this.arenaId === 'rooftop' ? 'rooftop-background' : 'scrapyard-background';
     const laneColor = this.arenaId === 'rooftop' ? 0xcfe8ff : 0xffd08a;
-    this.add.image(GAME_WIDTH / 2, GAME_HEIGHT / 2, backgroundKey).setDisplaySize(GAME_WIDTH, GAME_HEIGHT).setDepth(-100);
-    this.add.rectangle(GAME_WIDTH / 2, 230, 820, 10, laneColor, 0.12).setDepth(-90);
-    this.add.rectangle(GAME_WIDTH / 2, 468, 820, 10, 0x0a0b0f, 0.22).setDepth(-90);
+    this.add.image(this.getViewportWidth() / 2, GAME_HEIGHT / 2, backgroundKey).setDisplaySize(this.getViewportWidth(), GAME_HEIGHT).setDepth(-100);
+    this.add.rectangle(this.getViewportWidth() / 2, 230, this.getViewportWidth() - 140, 10, laneColor, 0.12).setDepth(-90);
+    this.add.rectangle(this.getViewportWidth() / 2, 468, this.getViewportWidth() - 140, 10, 0x0a0b0f, 0.22).setDepth(-90);
   }
 
   private getArenaLabel(): string {
@@ -786,7 +786,12 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private resetArenaBounds(): void {
-    this.setArenaBounds(this.defaultArenaBounds);
+    this.setArenaBounds({
+      minX: this.defaultArenaBounds.minX,
+      maxX: this.getViewportWidth() - this.defaultArenaBounds.minX,
+      minY: this.defaultArenaBounds.minY,
+      maxY: this.defaultArenaBounds.maxY,
+    });
   }
 
   private setArenaBounds(bounds: FighterBounds): void {
@@ -834,7 +839,7 @@ export class BattleScene extends Phaser.Scene {
   private updateWaveTravel(deltaSeconds: number, moveX: number, moveY: number): void {
     this.inputBuffer.clear();
     this.player.update(deltaSeconds, moveX, moveY, this.arenaBounds);
-    this.hud.update(this.player, this.getHudEnemy());
+    this.updateCombatHud();
 
     if (!canEnterNextWaveSection(this.waveStage, this.waveIndex, this.player.x)) {
       return;
@@ -927,13 +932,13 @@ export class BattleScene extends Phaser.Scene {
 
     if (this.mode !== 'waves') {
       camera.stopFollow();
-      camera.setBounds(0, 0, GAME_WIDTH, GAME_HEIGHT);
+      camera.setBounds(0, 0, this.getViewportWidth(), GAME_HEIGHT);
       camera.setScroll(0, 0);
       return;
     }
 
     camera.setBounds(0, 0, this.waveStage.worldWidth, GAME_HEIGHT);
-    camera.setDeadzone(GAME_WIDTH * 0.28, GAME_HEIGHT * 0.42);
+    camera.setDeadzone(this.getViewportWidth() * 0.28, GAME_HEIGHT * 0.42);
     camera.startFollow(this.player.container, true, 0.12, 0.1);
     camera.centerOn(this.player.x, GAME_HEIGHT / 2);
   }
@@ -988,6 +993,18 @@ export class BattleScene extends Phaser.Scene {
 
   private getHudEnemy(): Fighter | null {
     return this.getPreferredEnemyTarget() ?? this.enemy;
+  }
+
+  private getViewportWidth(): number {
+    return Math.max(GAME_WIDTH, this.scale.width);
+  }
+
+  private updateCombatHud(): void {
+    this.hud.update(this.player, this.getHudEnemy());
+    this.mobileControls.setUltimateAvailability(
+      this.player.canStartAttack('ultimate'),
+      this.player.getAttackManaCost('ultimate'),
+    );
   }
 
   private getControllerForEnemy(enemy: Fighter): EnemyController {
