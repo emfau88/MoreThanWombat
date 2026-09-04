@@ -9,9 +9,9 @@ import {
 } from '../src/game/data/roster';
 import { junkyardRunStage } from '../src/game/data/stages';
 
-test('normal play exposes only the three-fighter core roster and its approved Duel opponents', () => {
-  assert.deepEqual(SHIPPABLE_PLAYER_FIGHTERS, ['wombat', 'discount_wizard', 'budget_barbarian']);
-  assert.deepEqual(SHIPPABLE_DUEL_ENEMIES, ['angry_pigeon', 'discount_wizard', 'budget_barbarian']);
+test('normal play exposes the four-fighter core roster and its approved Duel opponents', () => {
+  assert.deepEqual(SHIPPABLE_PLAYER_FIGHTERS, ['wombat', 'discount_wizard', 'budget_barbarian', 'mara_breach']);
+  assert.deepEqual(SHIPPABLE_DUEL_ENEMIES, ['angry_pigeon', 'discount_wizard', 'budget_barbarian', 'mara_breach']);
   assert.equal(isShippableFighter('buster_bulldog'), false);
   assert.equal(isShippableFighter('reference_fighter'), false);
 });

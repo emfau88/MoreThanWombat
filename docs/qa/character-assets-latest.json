@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-04T08:36:53.751Z",
+  "generatedAt": "2026-09-04T09:33:14.051Z",
   "manifestVersion": 1,
   "thresholds": {
     "alpha": 8,
@@ -645,6 +645,219 @@
               "footAnchorX": 104,
               "rootAnchorX": 79.56,
               "coreCenterX": 79.56
+            }
+          ]
+        }
+      ],
+      "hardFailures": [],
+      "passed": true
+    },
+    {
+      "id": "mara-breach",
+      "label": "Mara Breach",
+      "runtime": "public/assets/characters/mara/mara_breach_spritesheet_160_normalized.png",
+      "dimensions": {
+        "width": 640,
+        "height": 1120
+      },
+      "allFrameGate": {
+        "checkedFrames": 28,
+        "allowedEmptyFrames": [],
+        "unexpectedEmptyFrames": [],
+        "edgeFrames": []
+      },
+      "baselineGroups": [
+        {
+          "name": "idle",
+          "footLineDriftPx": 0,
+          "rootAnchorDriftPx": 0.83,
+          "coreCenterDriftPx": 0.83,
+          "heightDeltaPercent": 3.11,
+          "paletteDistance": 0.06,
+          "edgePixelCount": 0,
+          "hardFailures": [],
+          "warnings": [],
+          "passed": true
+        },
+        {
+          "name": "walk",
+          "footLineDriftPx": 0,
+          "rootAnchorDriftPx": 0.27,
+          "coreCenterDriftPx": 0.27,
+          "heightDeltaPercent": 0,
+          "paletteDistance": 0.08,
+          "edgePixelCount": 0,
+          "hardFailures": [],
+          "warnings": [
+            "palette distance 0.08 > 0.07"
+          ],
+          "passed": true
+        }
+      ],
+      "groups": [
+        {
+          "name": "idle",
+          "footLineDriftPx": 0,
+          "rootAnchorDriftPx": 0.83,
+          "coreCenterDriftPx": 0.83,
+          "heightDeltaPercent": 3.11,
+          "paletteDistance": 0.06,
+          "edgePixelCount": 0,
+          "hardFailures": [],
+          "warnings": [],
+          "passed": true,
+          "frames": [
+            {
+              "frameIndex": 0,
+              "empty": false,
+              "edgePixelCount": 0,
+              "bbox": {
+                "minX": 52,
+                "minY": 25,
+                "maxX": 110,
+                "maxY": 154,
+                "width": 59,
+                "height": 130
+              },
+              "footLine": 154,
+              "footAnchorX": 67,
+              "rootAnchorX": 80.12,
+              "coreCenterX": 80.12
+            },
+            {
+              "frameIndex": 1,
+              "empty": false,
+              "edgePixelCount": 0,
+              "bbox": {
+                "minX": 53,
+                "minY": 25,
+                "maxX": 111,
+                "maxY": 154,
+                "width": 59,
+                "height": 130
+              },
+              "footLine": 154,
+              "footAnchorX": 68,
+              "rootAnchorX": 80.35,
+              "coreCenterX": 80.35
+            },
+            {
+              "frameIndex": 2,
+              "empty": false,
+              "edgePixelCount": 0,
+              "bbox": {
+                "minX": 52,
+                "minY": 29,
+                "maxX": 111,
+                "maxY": 154,
+                "width": 60,
+                "height": 126
+              },
+              "footLine": 154,
+              "footAnchorX": 67,
+              "rootAnchorX": 79.7,
+              "coreCenterX": 79.7
+            },
+            {
+              "frameIndex": 3,
+              "empty": false,
+              "edgePixelCount": 0,
+              "bbox": {
+                "minX": 49,
+                "minY": 28,
+                "maxX": 110,
+                "maxY": 154,
+                "width": 62,
+                "height": 127
+              },
+              "footLine": 154,
+              "footAnchorX": 65,
+              "rootAnchorX": 79.52,
+              "coreCenterX": 79.52
+            }
+          ]
+        },
+        {
+          "name": "walk",
+          "footLineDriftPx": 0,
+          "rootAnchorDriftPx": 0.86,
+          "coreCenterDriftPx": 0.86,
+          "heightDeltaPercent": 0,
+          "paletteDistance": 0.08,
+          "edgePixelCount": 0,
+          "hardFailures": [],
+          "warnings": [
+            "palette distance 0.08 > 0.07"
+          ],
+          "passed": true,
+          "frames": [
+            {
+              "frameIndex": 4,
+              "empty": false,
+              "edgePixelCount": 0,
+              "bbox": {
+                "minX": 45,
+                "minY": 52,
+                "maxX": 115,
+                "maxY": 154,
+                "width": 71,
+                "height": 103
+              },
+              "footLine": 154,
+              "footAnchorX": 66,
+              "rootAnchorX": 79.6,
+              "coreCenterX": 79.6
+            },
+            {
+              "frameIndex": 5,
+              "empty": false,
+              "edgePixelCount": 0,
+              "bbox": {
+                "minX": 45,
+                "minY": 52,
+                "maxX": 113,
+                "maxY": 154,
+                "width": 69,
+                "height": 103
+              },
+              "footLine": 154,
+              "footAnchorX": 66,
+              "rootAnchorX": 79.59,
+              "coreCenterX": 79.59
+            },
+            {
+              "frameIndex": 6,
+              "empty": false,
+              "edgePixelCount": 0,
+              "bbox": {
+                "minX": 51,
+                "minY": 52,
+                "maxX": 113,
+                "maxY": 154,
+                "width": 63,
+                "height": 103
+              },
+              "footLine": 154,
+              "footAnchorX": 69,
+              "rootAnchorX": 80.33,
+              "coreCenterX": 80.33
+            },
+            {
+              "frameIndex": 7,
+              "empty": false,
+              "edgePixelCount": 0,
+              "bbox": {
+                "minX": 48,
+                "minY": 52,
+                "maxX": 112,
+                "maxY": 154,
+                "width": 65,
+                "height": 103
+              },
+              "footLine": 154,
+              "footAnchorX": 68,
+              "rootAnchorX": 80.45,
+              "coreCenterX": 80.45
             }
           ]
         }

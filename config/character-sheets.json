@@ -55,6 +55,21 @@
       }
     },
     {
+      "id": "mara-breach",
+      "label": "Mara Breach",
+      "source": "public/assets/characters/mara/mara_breach_spritesheet_160.png",
+      "runtime": "public/assets/characters/mara/mara_breach_spritesheet_160_normalized.png",
+      "frameWidth": 160,
+      "frameHeight": 160,
+      "columns": 4,
+      "rows": 7,
+      "normalizeGroups": ["idle", "walk"],
+      "groups": {
+        "idle": [0, 1, 2, 3],
+        "walk": [4, 5, 6, 7]
+      }
+    },
+    {
       "id": "buster-bulldog",
       "label": "Buster Bulldog",
       "source": "public/assets/characters/buster-bulldog/buster_bulldog_spritesheet_128.png",

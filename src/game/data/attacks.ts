@@ -331,6 +331,101 @@ export const budgetAxeRain: AttackDefinition = {
   timeline: { feedbackClass: 'ultimate', startCue: 'budget-axe-rain' },
 };
 
+export const maraGateKick: AttackDefinition = {
+  id: 'mara_gate_kick',
+  label: 'Gate Kick',
+  startupMs: 95,
+  activeMs: 78,
+  recoveryMs: 185,
+  damage: 8,
+  hitstunMs: 185,
+  knockbackX: 142,
+  knockbackY: 16,
+  hitbox: {
+    offsetX: 24,
+    offsetY: -58,
+    width: 62,
+    height: 28,
+  },
+  hitboxProfile: {
+    laneTolerance: 34,
+    heightTolerance: 76,
+    windows: [
+      { id: 'early', startMs: 0, endMs: 24, boxes: [{ offsetX: 20, offsetY: -56, width: 38, height: 24 }] },
+      { id: 'main', startMs: 24, endMs: 58, boxes: [{ offsetX: 26, offsetY: -60, width: 66, height: 30 }] },
+      { id: 'late', startMs: 58, endMs: 78, boxes: [{ offsetX: 30, offsetY: -56, width: 48, height: 24 }] },
+    ],
+  },
+  timeline: { feedbackClass: 'light' },
+};
+
+export const maraBreachStep: AttackDefinition = {
+  id: 'mara_breach_step',
+  label: 'Breach Step',
+  startupMs: 155,
+  activeMs: 115,
+  recoveryMs: 280,
+  damage: 15,
+  hitstunMs: 330,
+  knockbackX: 230,
+  knockbackY: 42,
+  hitbox: {
+    offsetX: 22,
+    offsetY: -60,
+    width: 92,
+    height: 36,
+  },
+  hitboxProfile: {
+    laneTolerance: 38,
+    heightTolerance: 80,
+    windows: [
+      { id: 'early', startMs: 0, endMs: 35, boxes: [{ offsetX: 18, offsetY: -56, width: 56, height: 30 }] },
+      { id: 'main', startMs: 35, endMs: 92, boxes: [{ offsetX: 28, offsetY: -62, width: 96, height: 40 }] },
+      { id: 'late', startMs: 92, endMs: 115, boxes: [{ offsetX: 22, offsetY: -58, width: 66, height: 30 }] },
+    ],
+  },
+  manaCost: 28,
+  timeline: { feedbackClass: 'medium', startCue: 'mara-breach-step' },
+};
+
+export const maraRedLineBarrage: AttackDefinition = {
+  id: 'mara_red_line_barrage',
+  label: 'Red-Line Barrage',
+  startupMs: 275,
+  activeMs: 150,
+  recoveryMs: 460,
+  damage: 27,
+  hitstunMs: 535,
+  knockbackX: 360,
+  knockbackY: 88,
+  hitbox: {
+    offsetX: 18,
+    offsetY: -78,
+    width: 132,
+    height: 66,
+  },
+  hitboxProfile: {
+    laneTolerance: 44,
+    heightTolerance: 92,
+    windows: [
+      { id: 'early', startMs: 0, endMs: 42, boxes: [{ offsetX: 20, offsetY: -64, width: 78, height: 42 }] },
+      { id: 'main', startMs: 42, endMs: 116, boxes: [{ offsetX: 28, offsetY: -82, width: 142, height: 70 }] },
+      { id: 'late', startMs: 116, endMs: 150, boxes: [{ offsetX: 18, offsetY: -70, width: 92, height: 52 }] },
+    ],
+  },
+  manaCost: 100,
+  launchVelocityZ: 330,
+  timeline: {
+    feedbackClass: 'ultimate',
+    startCue: 'mara-red-line-barrage',
+    hitstopMs: 96,
+    shakeDurationMs: 102,
+    shakeIntensity: 0.0058,
+    defenderFlashMs: 62,
+    hapticMs: 22,
+  },
+};
+
 export const busterUnderbiteJab: AttackDefinition = {
   id: 'buster_underbite_jab',
   label: 'Underbite Jab',
@@ -434,6 +529,9 @@ export const attacksById: Record<string, AttackDefinition> = {
   [budgetCrackedAxeSwing.id]: budgetCrackedAxeSwing,
   [budgetTinyRage.id]: budgetTinyRage,
   [budgetAxeRain.id]: budgetAxeRain,
+  [maraGateKick.id]: maraGateKick,
+  [maraBreachStep.id]: maraBreachStep,
+  [maraRedLineBarrage.id]: maraRedLineBarrage,
   [busterUnderbiteJab.id]: busterUnderbiteJab,
   [busterBulldogBash.id]: busterBulldogBash,
   [busterUnderbiteBulldozer.id]: busterUnderbiteBulldozer,

@@ -25,6 +25,7 @@ export const COMBAT_GYM_FIGHTERS: FighterId[] = [
   'wombat',
   'discount_wizard',
   'budget_barbarian',
+  'mara_breach',
   'buster_bulldog',
   'angry_pigeon',
   'reference_fighter',

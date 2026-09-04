@@ -245,6 +245,59 @@ export const budgetBarbarianDefinition: FighterDefinition = {
   },
 };
 
+export const maraBreachDefinition: FighterDefinition = {
+  id: 'mara_breach',
+  label: 'Mara Breach',
+  fillColor: 0xa5a846,
+  outlineColor: 0x17202a,
+  maxHp: 88,
+  maxMana: 100,
+  manaRegenPerSecond: 5.2,
+  moveSpeed: 201,
+  width: 50,
+  height: 68,
+  hurtbox: {
+    offsetX: -18,
+    offsetY: -60,
+    width: 36,
+    height: 56,
+  },
+  pushbox: {
+    offsetX: -15,
+    offsetY: -21,
+    width: 30,
+    height: 19,
+  },
+  ...createFighterBoxProfiles(
+    { offsetX: -18, offsetY: -60, width: 36, height: 56 },
+    { offsetX: -15, offsetY: -21, width: 30, height: 19 },
+  ),
+  attacks: {
+    basic: 'mara_gate_kick',
+    special: 'mara_breach_step',
+    ultimate: 'mara_red_line_barrage',
+  },
+  sprite: {
+    textureKey: 'mara-breach',
+    scale: 0.92,
+    animations: {
+      idle: 'mara-breach-idle',
+      walk: 'mara-breach-walk',
+      attack: 'mara-breach-gate-kick',
+      special: 'mara-breach-step',
+      jump: 'mara-breach-jump',
+      fall: 'mara-breach-fall',
+      landing: 'mara-breach-landing',
+      hitstun: 'mara-breach-hit',
+      dead: 'mara-breach-dead',
+    },
+    attackAnimations: {
+      air_bonk: 'mara-breach-air-kick',
+      mara_red_line_barrage: 'mara-breach-red-line-barrage',
+    },
+  },
+};
+
 export const busterBulldogDefinition: FighterDefinition = {
   id: 'buster_bulldog',
   label: 'Buster Bulldog',
@@ -356,6 +409,7 @@ export const fighterDefinitions: Record<FighterId, FighterDefinition> = {
   angry_pigeon: angryPigeonDefinition,
   discount_wizard: discountWizardDefinition,
   budget_barbarian: budgetBarbarianDefinition,
+  mara_breach: maraBreachDefinition,
   buster_bulldog: busterBulldogDefinition,
   reference_fighter: referenceFighterDefinition,
 };

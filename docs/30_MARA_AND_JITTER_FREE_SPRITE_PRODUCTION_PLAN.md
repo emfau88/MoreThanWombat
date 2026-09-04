@@ -1,6 +1,6 @@
 # 30 – Mara und jitterfreie Character-Produktion
 
-**Status:** M0-Konzept erstellt; keine Runtime-Integration  
+**Status:** M0–M3 implementiert und automatisiert abgenommen
 **Stand:** 2026-09-04  
 **Ziel:** Eine eigene, professionell lesbare weibliche Kämpferin produzieren, ohne die alten Probleme mit transparentem Leerraum, Root-Drift, Farbwechseln und scheinbar seitlichem Jitter zu wiederholen.
 
@@ -143,3 +143,46 @@ Eine neue Figur gilt erst dann als hochwertig integriert, wenn:
 ## Bewusste Reihenfolge
 
 **M0 → M1 → M2 → M3.** Der entscheidende Schutz ist M1: Erst wenn der Lauf als kurze, echte Animation überzeugt, lohnt es sich, die restliche Figur zu produzieren. Das verhindert, dass ein hübsches Konzept erneut auf einem unruhigen Kern landet.
+
+## Umsetzungsprotokoll – Mara "Breach" Vale (2026-09-04)
+
+Mara ist als vollwertige spielbare Figur integriert: Character Select, Duel-Gegneroption, Combat Gym, Preload, Animationsregistrierung, Fighter-Daten, drei eigene Moves, Boxprofile und reine Runtime-VFX-Cues.
+
+### Produktionsartefakte
+
+- Konzept: `art-source/concepts/mara/mara_breach_model_sheet_v1.png`
+- Originale Posenquelle: `art-source/concepts/mara/mara_breach_animation_source_v1.png`
+- Deterministischer Builder: `scripts/build-mara-sheet.mjs` (`npm.cmd run assets:mara`)
+- Runtime-Sheet: `public/assets/characters/mara/mara_breach_spritesheet_160_normalized.png`
+- Laufvorschau: `docs/qa/character-loop-previews/mara-breach-walk.png`
+
+Der Builder entfernt bewusst die vom Generator als echte Pixel ausgegebene Transparenz-Vorschau über eine kantenverbundene Freistellung. Zusätzlich verwirft er isolierte Pixelgruppen, die durch einen Überstand aus einer benachbarten Generatorzelle entstehen können. Erst danach werden alle 28 Body-Frames mit **einem einzigen Sheet-Maßstab**, einem geschätzten Torso-Root x=80 und einer Ground-Line y=154 exportiert. Dadurch gibt es keine per-State-Skalierung und keine versteckten Runtime-Offsets.
+
+### M1 – Animation
+
+- Idle: 4 Guard-/Atemframes.
+- Walk: 4 echte Phasen (Kontakt links, Passing, Kontakt rechts, Passing), keine A–B–A–B-Wiederholung.
+- Basic: `Gate Kick`, 4 Keyposes.
+- Special: `Breach Step`, 4 Keyposes mit begrenzter tatsächlicher Vorwärtsbewegung von 46 World-Pixeln.
+- Ultimate: `Red-Line Barrage`, 4 Keyposes.
+- Dedicated Jump, Fall, Air Kick, Landing, Hit und K.O.
+
+### M2 – Kampfprofil
+
+| Move | Rolle | Kosten | Besonderheit |
+|---|---|---:|---|
+| Gate Kick | schneller Poke | 0 | Drei Hitbox-Fenster, klarer Kick-Ausleger |
+| Breach Step | mittlerer Engage | 28 Mana | 46 px begrenzter Schritt + universeller Dust |
+| Red-Line Barrage | Ultimate | 100 Mana | großer finaler Kick, Launch, Charge/Impact aus universeller VFX-Bibliothek |
+
+Mara ist bewusst mobil (201 Move Speed), aber mit 88 HP und schmalem Hurt-/Pushboxprofil verletzlicher als die Bruiser. Ihre aktiven Hitboxen decken die visuell ausgestreckten Kickphasen ab, nicht den Leerraum vor der Antizipation.
+
+### M3 – Abnahme
+
+- `npm.cmd run typecheck` – bestanden
+- `npm.cmd run test` – 52/52 bestanden
+- `npm.cmd run assets:qa` – 6/6 Character-Sheets bestehen harte Anchor-, Fußlinien-, Rand- und Leerzellen-Gates
+- `npm.cmd run build` – bestanden (bekannte Vite-Chunk-Größenwarnung, kein Fehler)
+- Lokales Browser-Duell: Mara-Auswahl und Attack-Inputs geprüft, keine Console-Fehler.
+
+**Visuelle Entscheidung:** Der Walk ist technisch sauber verankert und als 4-Phasen-Zyklus lesbar. Das Produktionsblatt ist eine starke spielbare Erstfassung; ein späterer reiner Art-Polish kann einzelne Zwischenbilder noch glätten, ohne Daten, Boxen, Ground-Line oder Integration erneut anzufassen.

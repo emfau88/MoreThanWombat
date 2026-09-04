@@ -46,6 +46,10 @@ export class PreloadScene extends Phaser.Scene {
       frameWidth: 160,
       frameHeight: 160,
     });
+    this.load.spritesheet('mara-breach', `${assetBase}characters/mara/mara_breach_spritesheet_160_normalized.png`, {
+      frameWidth: 160,
+      frameHeight: 160,
+    });
     this.load.spritesheet('buster-bulldog', `${assetBase}characters/buster-bulldog/buster_bulldog_spritesheet_128_normalized.png`, {
       frameWidth: 128,
       frameHeight: 128,

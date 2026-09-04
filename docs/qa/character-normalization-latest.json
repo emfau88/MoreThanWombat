@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-04T08:36:52.376Z",
+  "generatedAt": "2026-09-04T09:29:44.323Z",
   "manifestVersion": 1,
   "sheets": [
     {
@@ -221,6 +221,80 @@
         }
       ],
       "marginAdjustments": []
+    },
+    {
+      "id": "mara-breach",
+      "source": "public/assets/characters/mara/mara_breach_spritesheet_160.png",
+      "runtime": "public/assets/characters/mara/mara_breach_spritesheet_160_normalized.png",
+      "targetFootLine": 154,
+      "targetRootAnchorX": 80,
+      "loopScale": 1,
+      "shifts": [
+        {
+          "frameIndex": 0,
+          "dx": 0,
+          "dy": 0,
+          "sourceRootAnchorX": 80.12,
+          "sourceFootLine": 154
+        },
+        {
+          "frameIndex": 1,
+          "dx": 0,
+          "dy": 0,
+          "sourceRootAnchorX": 80.35,
+          "sourceFootLine": 154
+        },
+        {
+          "frameIndex": 2,
+          "dx": 0,
+          "dy": 0,
+          "sourceRootAnchorX": 79.7,
+          "sourceFootLine": 154
+        },
+        {
+          "frameIndex": 3,
+          "dx": 0,
+          "dy": 0,
+          "sourceRootAnchorX": 79.52,
+          "sourceFootLine": 154
+        },
+        {
+          "frameIndex": 4,
+          "dx": 0,
+          "dy": 0,
+          "sourceRootAnchorX": 79.6,
+          "sourceFootLine": 154
+        },
+        {
+          "frameIndex": 5,
+          "dx": 0,
+          "dy": 0,
+          "sourceRootAnchorX": 79.59,
+          "sourceFootLine": 154
+        },
+        {
+          "frameIndex": 6,
+          "dx": 1,
+          "dy": 0,
+          "sourceRootAnchorX": 79.33,
+          "sourceFootLine": 154
+        },
+        {
+          "frameIndex": 7,
+          "dx": 1,
+          "dy": 0,
+          "sourceRootAnchorX": 79.45,
+          "sourceFootLine": 154
+        }
+      ],
+      "marginAdjustments": [
+        {
+          "frameIndex": 19,
+          "dx": -2,
+          "dy": 0,
+          "scale": 1
+        }
+      ]
     },
     {
       "id": "buster-bulldog",

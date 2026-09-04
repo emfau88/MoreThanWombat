@@ -10,6 +10,8 @@ export type MoveStartCue =
   | 'discount-miscast'
   | 'discount-clearance-orb'
   | 'budget-axe-rain'
+  | 'mara-breach-step'
+  | 'mara-red-line-barrage'
   | 'buster-bulldozer';
 
 export type MoveTimelineDefinition = {

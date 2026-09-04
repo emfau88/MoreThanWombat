@@ -9,6 +9,7 @@ export type FighterId =
   | 'angry_pigeon'
   | 'discount_wizard'
   | 'budget_barbarian'
+  | 'mara_breach'
   | 'buster_bulldog'
   | 'reference_fighter';
 

@@ -88,6 +88,12 @@ export class CombatPresentationController {
         this.startBudgetBarbarianUltimate(fighter);
         this.shake(65, 0.0022);
       },
+      'mara-breach-step': (fighter) => {
+        this.startMaraBreachStep(fighter);
+      },
+      'mara-red-line-barrage': (fighter) => {
+        this.startMaraUltimate(fighter);
+      },
       'buster-bulldozer': (fighter) => {
         this.startBusterBulldogUltimate(fighter);
       },
@@ -354,6 +360,41 @@ export class CombatPresentationController {
       });
       this.spawnAuxiliary('warning.ground', x, y - 8, y + 6);
     }
+  }
+
+  private startMaraBreachStep(fighter: Fighter): void {
+    const bounds = this.context.getArenaBounds();
+    const direction = fighter.facing === 'right' ? 1 : -1;
+    const dashDistance = 46;
+    const startX = fighter.x;
+    const destinationX = Phaser.Math.Clamp(startX + dashDistance * direction, bounds.minX + 24, bounds.maxX - 24);
+
+    fighter.nudge(destinationX - fighter.x, 0, bounds);
+    this.spawnAuxiliary('ground.small', startX - 8 * direction, fighter.y + 4, fighter.y + 6, -direction);
+    this.spawnAuxiliary('ground.small', fighter.x + 22 * direction, fighter.y + 4, fighter.y + 8, direction);
+  }
+
+  private startMaraUltimate(fighter: Fighter): void {
+    const bounds = this.context.getArenaBounds();
+    const direction = fighter.facing === 'right' ? 1 : -1;
+    const startX = fighter.x;
+    const destinationX = Phaser.Math.Clamp(startX + 34 * direction, bounds.minX + 24, bounds.maxX - 24);
+
+    this.startUltimateCue(fighter, 'RED-LINE', 'BARRAGE', 0xf6cf4d, 0x3d4a1c, direction);
+    this.spawnUltimateCharge(startX + 8 * direction, fighter.y - 60, 0xf6cf4d, 1.18);
+    this.spawnAuxiliary('ground.small', startX - 12 * direction, fighter.y + 4, fighter.y + 6, -direction);
+    fighter.nudge(destinationX - fighter.x, 0, bounds);
+    this.spawnAuxiliary('ground.shock', fighter.x + 42 * direction, fighter.y - 2, fighter.y + 18, direction);
+    this.scene.tweens.add({
+      targets: fighter.container,
+      scaleX: 1.1,
+      scaleY: 0.92,
+      duration: 100,
+      ease: 'Quad.easeOut',
+      yoyo: true,
+      hold: 90,
+    });
+    this.shake(82, 0.0034);
   }
 
   private startBusterBulldogUltimate(fighter: Fighter): void {
