@@ -176,6 +176,35 @@ Abnahme:
 - Kleine originale Belohnung pro Abschnitt, Fortschrittsanzeige und Checkpoint ergänzen.
 - Score-/Zeit-/Restleben-Auswertung nur dann hinzufügen, wenn sie die Wiederholung motiviert und nicht den Kampf-HUD überlädt.
 
+### BULK 5.3-D — Durchgehende Wave-Panorama-Route
+
+**Priorität:** P1. **Abhängigkeit:** B5.3-A/B und B5.6.
+
+**Befund 2026-09-04:** `Junkyard Run` folgt nun technisch dem Spieler, verwendet aber weiterhin ein einziges wiederholtes Scrapyard-`TileSprite`. Das ist eine Scroll-Strecke, noch keine glaubwürdige Reise durch verschiedene Orte.
+
+- Den bisherigen Weltverlauf als originale, zusammenhängende drei-Zonen-Route aufbauen: **Scrap Gate → Furnace Yard → Neon Dump**. Bodenlinie, Perspektive und der flache Kampf-Korridor bleiben identisch; keine direkte Übernahme von Little-Fighter-2-Art oder -Maps.
+- Pro Zone getrennte, transparente Parallax-Layer (Ferne, Mittelgrund, Boden) erzeugen und im Stage-Composer über kurze Übergangsbereiche überblenden. Keine in Angriff-VFX eingebrannten Hintergrundelemente.
+- Section-Metadaten um Zonen-ID, Übergangslänge, visuelle Stimmung und spätere Ambient-Event-ID erweitern; Encounter-/Spawn-Daten bleiben von Art-Daten getrennt.
+- Erst mit drei funktionierenden, getesteten Zonen neue Hindernisse oder Höhenspiele bewerten. Das erste Ziel ist räumliche Abwechslung bei unverändert fairer Kampfgeometrie.
+
+**Abnahme:** Ein kompletter Run wirkt wie eine fortlaufende Reise durch mehrere klar unterschiedliche Orte, ohne sichtbare harte Hintergrundkante, Kamera-Ruckler oder veränderte Hitbox-/Bodenregeln.
+
+### BULK 5.6 — Adaptiver Landscape-Viewport und Ultimate-Lesbarkeit
+
+**Priorität:** P0. **Abhängigkeit:** keine; vor weiterer Stage-Art umsetzen.
+
+**Befund 2026-09-04:** Das Spiel besitzt ein festes 960×540-Logikraster mit `Phaser.Scale.FIT`. Breite Landscape-Displays erhalten daher korrekte, aber ungenutzte seitliche Ränder. Ein Wechsel zu `ENVELOP` würde sie nur durch vertikales Abschneiden ersetzen und ist keine Lösung.
+
+Lieferumfang:
+
+- Einen adaptiven Gameplay-Viewport einführen: 540 logische Pixel Höhe bleiben erhalten, die logische Breite wächst auf breiten Landscape-Displays kontrolliert. Kamera, Hintergrund, HUD und Touch-Controls verwenden dieselbe zur Laufzeit ermittelte sichtbare Breite.
+- Den sicheren Kampfkorridor und die Weltbreite relativ zum sichtbaren Viewport validieren; Duel, Gym und Wave dürfen weder gestreckt noch vertikal beschnitten werden.
+- Wombat- und Wizard-Ultimates als echte, automatisiert geprüfte Player-Aktionen abnehmen: Input → Mana-Abzug → klarer Start-Cue → Treffer/Projektil bzw. Fläche → Recovery.
+- Ultimate-Button mit Kosten, verfügbarem/nicht verfügbarem Zustand und fehlendem-Mana-Feedback versehen. Die heutigen Kosten von 100 Mana werden erst nach Gym-/Wave-Test auf einen sinnvollen Peak-Rhythmus angepasst.
+- Für Wombat und Wizard eine eigene Startup-/Release-Lesbarkeit schaffen: Wombat erhält eine eindeutige Heavy-Pose statt nur Belly-Slam-Reuse; Wizard unterscheidet Teleport und Orb-Release klar von seinem normalen Fireball. Universelle transparente VFX bleiben vom Hintergrund getrennt.
+
+**Abnahme:** Breite Mobile-Screens nutzen ihre Breite ohne Stretch/Crop; ein Spieler erkennt und löst beide Ultimates verlässlich aus, auch ohne Debug-UI.
+
 ### BULK 5.4 — Präsentation, Audio und UX
 
 **Priorität:** P2
@@ -236,6 +265,19 @@ Abnahme:
 - Genau eine neue, visuell eigenständige Route oder Arena-Variante liefern, auf derselben flachen und validierten Kampfgeometrie.
 - Neue Gegnerkombinationen nur aus bestehenden, geprüften Archetypen bilden; keine neue Figur parallel produzieren.
 - StageVisualContract, Spawn-Regeln und Screenshot-Baselines verpflichtend anwenden.
+
+### BULK 6.3 — Budget Barbarian 2.0
+
+**Priorität:** P1. **Abhängigkeit:** B5.6 und freigegebene Kern-Roster-Balance.
+
+**Befund 2026-09-04:** Die aktuelle Normalisierung verhindert technischen Fußlinien-Drift, aber der Walk bleibt mit 6,67 % Höhendifferenz sichtbar unruhig. Seine heutigen Posen liefern deshalb keine ausreichend hochwertige spielbare Figur.
+
+- Nicht weiter am bestehenden Sheet flicken. Einen neuen zweibeinigen, comic-haften Heavy-Fighter als **Budget Barbarian 2.0** von der Silhouette aus planen: breite stabile Hüfte, lesbarer Kopf/Schultern, Axe als klare Diagonale, keine Farbblitze zwischen Frames.
+- Zuerst saubere Einzelanimationen als Style-/Motion-Probe entwickeln (Idle 4, Walk 6, Basic 4, Special 5, Ultimate Startup/Release/Recovery, Jump/Fall/Landing, Hit/KO). Danach anhand fester Fuß-/Root-Marker in ein 160px-Runtime-Sheet packen und normalisieren.
+- Der neue Fighter behält vorerst seine Rolle als langsamer Flächen-Bruiser, erhält aber keine alten Bildfragmente, eingebrannten Hintergrund oder ungeprüften Frame-Scale-Tricks.
+- Character-Asset-QA verschärfen: Walk-Höhendifferenz unter 3 %, Foot- und Root-Drift unter 1px, keine Palette-/Kostümwechsel außerhalb absichtlicher VFX-Frames.
+
+**Abnahme:** Die Figur bleibt im Walk, Angriff und Landen stabil; ihre Silhouette und Axtbewegung sind auf Mobile sofort lesbar und ihr Ultimate wirkt größer als Special, ohne Jitter.
 
 ### BULK 7.0 — Neuer zweibeiniger Fighter (Vorproduktion)
 
@@ -346,12 +388,15 @@ Diese Reihenfolge enthält ausschließlich Arbeit, die lokal, reproduzierbar und
 4. **BULK 5.3-A** — freies, kontrolliertes Vorwärtslaufen zwischen Wave-Begegnungen.
 5. **BULK 5.3-B** — Encounter-Regie und fairer Abschlusskampf.
 6. **BULK 5.3-C** — Progression, Belohnung und Checkpoints.
-7. **BULK 5.4** — Audio/UX-Polish.
-8. **BULK 5.5** — Runtime-Asset-Hygiene und kontrollierter neuer Content.
-9. **BULK 6.0** — Kern-Roster bereinigen, Bulldog ausliefern verhindern und Rollen beweisen.
-10. **BULK 6.1** — Onboarding und vollständiger erster Session-Flow.
-11. **BULK 6.2** — genau eine zweite geprüfte Route/Arena.
-12. **BULK 7.0–7.1** — erst dann ein neuer, zweibeiniger Fighter von Konzept bis Produktion.
+7. **BULK 5.6** — adaptiver Mobile-Viewport und sofort sichtbare Ultimates.
+8. **BULK 5.3-D** — durchgehende Wave-Panorama-Route mit drei originalen Zonen.
+9. **BULK 5.4** — Audio/UX-Polish.
+10. **BULK 5.5** — Runtime-Asset-Hygiene und kontrollierter neuer Content.
+11. **BULK 6.0** — Kern-Roster bereinigen, Bulldog ausliefern verhindern und Rollen beweisen.
+12. **BULK 6.1** — Onboarding und vollständiger erster Session-Flow.
+13. **BULK 6.3** — Budget Barbarian 2.0, erst als Motion-Probe und dann als Produktion.
+14. **BULK 6.2** — genau eine zweite geprüfte Route/Arena.
+15. **BULK 7.0–7.1** — erst dann ein neuer, zweibeiniger Fighter von Konzept bis Produktion.
 
 ## 6. Bewusste Nicht-Ziele bis dahin
 
