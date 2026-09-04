@@ -64,13 +64,14 @@ function extractCell(column, row) {
   if (rawPixels.length === 0) {
     throw new Error(`Budget Barbarian source cell ${row},${column} is empty.`);
   }
-  // Old chroma-keyed exports contain a few isolated coloured pixels. Keep
-  // every meaningful silhouette part (body, axe and cape) while dropping
-  // detached specks, which avoids visible single-pixel artefacts in motion.
+  // The old export stores ground sparkles as detached coloured components
+  // below some attack poses. The axe, body and cape are one silhouette, so
+  // retain only the largest connected component and never let those embedded
+  // ground effects travel with the Barbarian during Air Bonk.
   const width = right - left;
   const height = bottom - top;
   const visited = new Uint8Array(width * height);
-  const retained = new Uint8Array(width * height);
+  let largestComponent = [];
   for (let startY = 0; startY < height; startY += 1) {
     for (let startX = 0; startX < width; startX += 1) {
       const startIndex = startY * width + startX;
@@ -87,10 +88,11 @@ function extractCell(column, row) {
           component.push([nextX, nextY]);
         }
       }
-      if (component.length < 6) continue;
-      for (const [x, y] of component) retained[y * width + x] = 1;
+      if (component.length > largestComponent.length) largestComponent = component;
     }
   }
+  const retained = new Uint8Array(width * height);
+  for (const [x, y] of largestComponent) retained[y * width + x] = 1;
   const pixels = rawPixels.filter((pixel) => retained[pixel.y * width + pixel.x]);
   for (const pixel of pixels) {
     minX = Math.min(minX, pixel.x);
@@ -98,31 +100,57 @@ function extractCell(column, row) {
     maxX = Math.max(maxX, pixel.x);
     maxY = Math.max(maxY, pixel.y);
   }
-  return { pixels, minX, minY, maxX, maxY };
+  // Anchor to the dense torso band rather than the full bounds. Wide axe
+  // swings then keep the Barbarian's body in the same world position instead
+  // of shifting him left merely because the weapon reaches farther right.
+  const torsoTop = minY + (maxY - minY) * 0.24;
+  const torsoBottom = minY + (maxY - minY) * 0.62;
+  const torsoPixels = pixels.filter((pixel) => pixel.y >= torsoTop && pixel.y <= torsoBottom);
+  const torsoWeight = torsoPixels.reduce((sum, pixel) => sum + pixel.rgba[3], 0);
+  const weightedRootX = torsoPixels.reduce((sum, pixel) => sum + pixel.x * pixel.rgba[3], 0) / torsoWeight;
+
+  return {
+    pixels,
+    minX,
+    minY,
+    maxX,
+    maxY,
+    rootX: Number.isFinite(weightedRootX) ? weightedRootX : (minX + maxX) / 2,
+  };
 }
 
 const cells = Array.from({ length: rows * columns }, (_, frameIndex) => (
   extractCell(frameIndex % columns, Math.floor(frameIndex / columns))
 ));
-const loopCells = cells.slice(0, 8);
-const loopWidth = Math.max(...loopCells.map((cell) => cell.maxX - cell.minX + 1));
-const loopHeight = Math.max(...loopCells.map((cell) => cell.maxY - cell.minY + 1));
-const loopScale = Math.min(1, 118 / loopWidth, 116 / loopHeight);
+// Source frame 2 is the one historical idle pose that omitted the axe. Keep
+// the timing slot, but use the adjacent calm stance so every gameplay pose
+// keeps the weapon visible.
+cells[2] = cells[0];
+
+// Mara's runtime atlas keeps a shared body scale across every state. Apply
+// the same contract here: the long axe may approach a frame edge on a lunge,
+// but it must never make Attack or Air Bonk inflate relative to Idle/Walk.
+// At this scale the Barbarian's standing body matches the Pigeon's combat
+// height after each fighter's authored display scale is applied.
+const sharedScale = 0.5;
+const rootX = 64;
+const frameInset = 2;
 
 for (const [frameIndex, cell] of cells.entries()) {
-  const width = cell.maxX - cell.minX + 1;
-  const height = cell.maxY - cell.minY + 1;
-  const scale = frameIndex < 8 ? loopScale : Math.min(1, 118 / width, 116 / height);
-  const destinationWidth = width * scale;
-  const left = (frameSize - destinationWidth) / 2;
-  const top = Math.min(groundLine - height * scale, frameSize - height * scale - 3);
   const cellX = (frameIndex % columns) * frameSize;
   const cellY = Math.floor(frameIndex / columns) * frameSize;
+  const relativeLeft = (cell.minX - cell.rootX) * sharedScale;
+  const relativeRight = (cell.maxX - cell.rootX) * sharedScale;
+  const minimumRootX = frameInset - relativeLeft;
+  const maximumRootX = frameSize - frameInset - relativeRight;
+  const anchoredRootX = minimumRootX <= maximumRootX
+    ? Math.max(minimumRootX, Math.min(rootX, maximumRootX))
+    : rootX;
 
   for (const pixel of cell.pixels) {
-    const x = Math.round(cellX + left + (pixel.x - cell.minX) * scale);
-    const y = Math.round(cellY + top + (pixel.y - cell.minY) * scale);
-    if (x < cellX || y < cellY || x >= cellX + frameSize || y >= cellY + frameSize) continue;
+    const x = Math.round(cellX + anchoredRootX + (pixel.x - cell.rootX) * sharedScale);
+    const y = Math.round(cellY + groundLine + (pixel.y - cell.maxY) * sharedScale);
+    if (x < cellX + frameInset || y < cellY + frameInset || x >= cellX + frameSize - frameInset || y >= cellY + frameSize - frameInset) continue;
     const index = (y * output.width + x) * 4;
     if (pixel.rgba[3] < output.data[index + 3]) continue;
     output.data[index] = pixel.rgba[0];

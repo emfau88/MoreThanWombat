@@ -22,7 +22,7 @@
         "idle": [0, 1, 2, 3],
         "walk": [4, 5, 6, 7]
       }
-    },
+      },
     {
       "id": "wombat",
       "label": "Wombat",
@@ -51,6 +51,18 @@
       "groups": {
         "idle": [0, 1, 2, 3],
         "walk": [4, 5, 6, 7]
+      },
+      "previewGroups": {
+        "idle": [0, 1, 2, 3],
+        "walk": {
+          "frames": [0, 1, 2, 3, 4, 5],
+          "runtime": "public/assets/characters/budget-barbarian/budget_barbarian_walk_128.png",
+          "columns": 6,
+          "rows": 1
+        },
+        "axeSwing": [8, 9, 11],
+        "tinyRage": [12, 13, 14],
+        "airBonk": [8, 9, 11]
       }
     },
     {

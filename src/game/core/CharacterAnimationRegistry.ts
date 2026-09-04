@@ -29,8 +29,12 @@ const ANIMATIONS: AnimationSpec[] = [
   { key: 'discount-wizard-miscast', textureKey: 'discount-wizard', frames: { start: 12, end: 15 }, frameRate: 9, repeat: 0 },
   { key: 'discount-wizard-hit', textureKey: 'discount-wizard', frames: { start: 16, end: 17 }, frameRate: 8, repeat: 0 },
   { key: 'discount-wizard-dead', textureKey: 'discount-wizard', frames: { start: 18, end: 19 }, frameRate: 5, repeat: 0 },
-  { key: 'budget-barbarian-idle', textureKey: 'budget-barbarian', frames: { start: 0, end: 3 }, frameRate: 4, repeat: -1 },
-  { key: 'budget-barbarian-walk', textureKey: 'budget-barbarian', frames: { start: 4, end: 7 }, frameRate: 7, repeat: -1 },
+  // Frame 2 in the legacy source omitted the axe. Reuse the matching calm
+  // stance so the equipped weapon does not blink out during Idle.
+  { key: 'budget-barbarian-idle', textureKey: 'budget-barbarian', frames: [0, 1, 2, 3], frameRate: 4, repeat: -1 },
+  // A full six-step gait, kept in its own atlas so the weapon-bearing walk
+  // can be inspected and maintained independently from combat poses.
+  { key: 'budget-barbarian-walk', textureKey: 'budget-barbarian-walk', frames: { start: 0, end: 5 }, frameRate: 9, repeat: -1 },
   { key: 'budget-barbarian-axe-swing', textureKey: 'budget-barbarian', frames: [8, 9, 11], frameRate: 11, repeat: 0 },
   { key: 'budget-barbarian-tiny-rage', textureKey: 'budget-barbarian', frames: { start: 12, end: 14 }, frameRate: 9, repeat: 0 },
   { key: 'budget-barbarian-hit', textureKey: 'budget-barbarian', frames: [15], frameRate: 8, repeat: 0 },

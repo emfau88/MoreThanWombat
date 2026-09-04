@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-04T16:01:38.911Z",
+  "generatedAt": "2026-09-04T18:15:18.465Z",
   "manifestVersion": 1,
   "sheets": [
     {
@@ -160,63 +160,63 @@
       "source": "public/assets/characters/budget-barbarian/budget_barbarian_spritesheet_128_normalized.png",
       "runtime": "public/assets/characters/budget-barbarian/budget_barbarian_spritesheet_128_normalized.png",
       "targetFootLine": 119,
-      "targetRootAnchorX": 41,
+      "targetRootAnchorX": 60,
       "loopScale": 1,
       "shifts": [
         {
           "frameIndex": 0,
-          "dx": 0,
+          "dx": 7,
           "dy": 0,
-          "sourceRootAnchorX": 40.77,
+          "sourceRootAnchorX": 53.03,
           "sourceFootLine": 119
         },
         {
           "frameIndex": 1,
-          "dx": 0,
+          "dx": 7,
           "dy": 0,
-          "sourceRootAnchorX": 41.25,
+          "sourceRootAnchorX": 53.05,
           "sourceFootLine": 119
         },
         {
           "frameIndex": 2,
-          "dx": 0,
+          "dx": 7,
           "dy": 0,
-          "sourceRootAnchorX": 40.82,
+          "sourceRootAnchorX": 53.03,
           "sourceFootLine": 119
         },
         {
           "frameIndex": 3,
-          "dx": 0,
+          "dx": 7,
           "dy": 0,
-          "sourceRootAnchorX": 40.79,
+          "sourceRootAnchorX": 53,
           "sourceFootLine": 119
         },
         {
           "frameIndex": 4,
-          "dx": 0,
+          "dx": 3,
           "dy": 0,
-          "sourceRootAnchorX": 41.42,
+          "sourceRootAnchorX": 56.55,
           "sourceFootLine": 119
         },
         {
           "frameIndex": 5,
-          "dx": 0,
+          "dx": 2,
           "dy": 0,
-          "sourceRootAnchorX": 40.55,
+          "sourceRootAnchorX": 57.55,
           "sourceFootLine": 119
         },
         {
           "frameIndex": 6,
-          "dx": 0,
+          "dx": 3,
           "dy": 0,
-          "sourceRootAnchorX": 41.43,
+          "sourceRootAnchorX": 57.01,
           "sourceFootLine": 119
         },
         {
           "frameIndex": 7,
-          "dx": 0,
+          "dx": 4,
           "dy": 0,
-          "sourceRootAnchorX": 41.13,
+          "sourceRootAnchorX": 55.86,
           "sourceFootLine": 119
         }
       ],
