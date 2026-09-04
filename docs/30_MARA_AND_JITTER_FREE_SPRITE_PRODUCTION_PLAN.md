@@ -146,7 +146,7 @@ Eine neue Figur gilt erst dann als hochwertig integriert, wenn:
 
 ## Umsetzungsprotokoll – Mara "Breach" Vale (2026-09-04)
 
-Mara ist als vollwertige spielbare Figur integriert: Character Select, Duel-Gegneroption, Combat Gym, Preload, Animationsregistrierung, Fighter-Daten, drei eigene Moves, Boxprofile und reine Runtime-VFX-Cues.
+Mara besitzt weiterhin Daten, Moves, Boxprofile und reine Runtime-VFX-Cues, ist jedoch **nicht freigegeben**: Die sichtbare Prüfung am 2026-09-04 hat weiße Matte-/Fragmentpixel, unscharfe Skalierung und keine glaubwürdige Fußarbeit im Walk gezeigt. Sie bleibt nur im Combat Gym als Rework-Prototyp und ist aus Character Select, Duel und Waves entfernt, bis sie vollständig neu produziert und visuell abgenommen wurde.
 
 ### Produktionsartefakte
 

@@ -38,18 +38,6 @@ const PLAYER_OPTIONS: OptionCard[] = [
     subtitle: 'Cheap ranged magic',
     description: 'Ranged pressure with cheap fireballs and unstable miscasts.',
   },
-  {
-    id: 'budget_barbarian',
-    title: 'Budget Barbarian',
-    subtitle: 'Slow axe bruiser',
-    description: 'Large damage, slower feet, and heavy melee timing.',
-  },
-  {
-    id: 'mara_breach',
-    title: 'Mara Breach',
-    subtitle: 'Fast kick specialist',
-    description: 'Fast footwork, precise kick range, and a high-commitment barrage.',
-  },
 ];
 
 const DUEL_ENEMY_OPTIONS: OptionCard[] = [
@@ -64,18 +52,6 @@ const DUEL_ENEMY_OPTIONS: OptionCard[] = [
     title: 'Discount Wizard',
     subtitle: 'Unreliable spellcaster',
     description: 'Risky caster that can still zone with cheap fireballs.',
-  },
-  {
-    id: 'budget_barbarian',
-    title: 'Budget Barbarian',
-    subtitle: 'Heavy melee fighter',
-    description: 'Slower enemy with a punishing swing if you stand in front of him.',
-  },
-  {
-    id: 'mara_breach',
-    title: 'Mara Breach',
-    subtitle: 'Mobile kick fighter',
-    description: 'Fast pressure fighter with long kick range and quick movement.',
   },
 ];
 

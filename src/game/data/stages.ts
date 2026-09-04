@@ -107,11 +107,11 @@ export const junkyardRunStage: StageDefinition = {
           moveSpeedOverride: 122,
         },
         {
-          fighterId: 'budget_barbarian',
+          fighterId: 'angry_pigeon',
           spawnX: 1478,
           spawnY: 350,
           hpOverride: 70,
-          moveSpeedOverride: 132,
+          moveSpeedOverride: 110,
         },
       ],
     },

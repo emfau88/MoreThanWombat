@@ -4,6 +4,7 @@ import { COMBAT_GYM_FIGHTERS } from '../src/game/debug/CombatGymModel';
 import {
   isShippableFighter,
   PROTOTYPE_FIGHTERS,
+  REWORK_FIGHTERS,
   SHIPPABLE_DUEL_ENEMIES,
   SHIPPABLE_PLAYER_FIGHTERS,
 } from '../src/game/data/roster';
@@ -11,18 +12,24 @@ import { junkyardRunStage } from '../src/game/data/stages';
 import { attacksById } from '../src/game/data/attacks';
 import { fighterDefinitions } from '../src/game/data/fighters';
 
-test('normal play exposes the four-fighter core roster and its approved Duel opponents', () => {
-  assert.deepEqual(SHIPPABLE_PLAYER_FIGHTERS, ['wombat', 'discount_wizard', 'budget_barbarian', 'mara_breach']);
-  assert.deepEqual(SHIPPABLE_DUEL_ENEMIES, ['angry_pigeon', 'discount_wizard', 'budget_barbarian', 'mara_breach']);
+test('normal play exposes only the asset-approved roster and its approved Duel opponents', () => {
+  assert.deepEqual(SHIPPABLE_PLAYER_FIGHTERS, ['wombat', 'discount_wizard']);
+  assert.deepEqual(SHIPPABLE_DUEL_ENEMIES, ['angry_pigeon', 'discount_wizard']);
   assert.equal(isShippableFighter('buster_bulldog'), false);
   assert.equal(isShippableFighter('reference_fighter'), false);
+  assert.equal(isShippableFighter('budget_barbarian'), false);
+  assert.equal(isShippableFighter('mara_breach'), false);
 });
 
 test('diagnostic prototypes remain available to the Combat Gym but never appear in Wave data', () => {
   assert.deepEqual(PROTOTYPE_FIGHTERS, ['buster_bulldog', 'reference_fighter']);
+  assert.deepEqual(REWORK_FIGHTERS, ['budget_barbarian', 'mara_breach']);
   assert.ok(COMBAT_GYM_FIGHTERS.includes('buster_bulldog'));
   assert.ok(COMBAT_GYM_FIGHTERS.includes('reference_fighter'));
-  assert.ok(junkyardRunStage.sections.every((section) => section.enemies.every((spawn) => !PROTOTYPE_FIGHTERS.includes(spawn.fighterId as (typeof PROTOTYPE_FIGHTERS)[number]))));
+  assert.ok(COMBAT_GYM_FIGHTERS.includes('budget_barbarian'));
+  assert.ok(COMBAT_GYM_FIGHTERS.includes('mara_breach'));
+  const unavailableWaveFighters = [...PROTOTYPE_FIGHTERS, ...REWORK_FIGHTERS];
+  assert.ok(junkyardRunStage.sections.every((section) => section.enemies.every((spawn) => !unavailableWaveFighters.includes(spawn.fighterId as (typeof unavailableWaveFighters)[number]))));
 });
 
 test('every shippable player has an authored basic, special, and ultimate with a real mana gate', () => {

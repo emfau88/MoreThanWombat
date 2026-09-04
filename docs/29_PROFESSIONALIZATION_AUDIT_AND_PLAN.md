@@ -280,7 +280,7 @@ Abnahme:
 
 **Befund 2026-09-04:** Die aktuelle Normalisierung verhindert technischen Fußlinien-Drift, aber der Walk bleibt mit 6,67 % Höhendifferenz sichtbar unruhig. Seine heutigen Posen liefern deshalb keine ausreichend hochwertige spielbare Figur.
 
-**Status 2026-09-04: umgesetzt.** Budget Barbarian 2.0 verwendet einen neuen zweibeinigen, comic-haften Heavy-Satz mit klarer Axt-Silhouette. Die generierte Konzeptquelle bleibt nachvollziehbar unter `art-source/concepts/`; ein lokales Build-Script erzeugt daraus die ausschließlich transparente Runtime-Sheet-Version. Der kuratierte Zwei-Schritt-Walk vermeidet die instabilen Referenzframes. Aktuelle strenge QA: Idle 0px Fußdrift / 0,31px Root-Drift / 1,03% Höhendifferenz; Walk 0px / 0,07px / 1,06%. Kein Frame ist beschnitten, leer oder mit Hintergrund gebacken.
+**Status 2026-09-04: Freigabe zurückgezogen.** Die sichtbare Prüfung hat weiße Matte-/Fragmentpixel, unvollständige Fußformen und keinen glaubwürdigen Walk offengelegt. Der bisherige Builder wiederholt darüber hinaus Quellframes für den Walk. Die reine Positions-QA war dafür unzureichend und wird nicht mehr als visuelle Freigabe interpretiert. Budget Barbarian ist bis zu einer echten Neuproduktion nur Combat-Gym-Rework-Prototyp, nicht Teil normaler Spielmodi oder Waves.
 
 **Visuelle Abnahme 2026-09-04:** `docs/qa/budget-barbarian-2-walk.gif` zeigt den im Spiel registrierten Runtime-Walk. Der Loop ist stabil, sauber verankert und frei von Farbflackern. Er bleibt bewusst ein kuratierter Zwei-Schritt-Loop; ein späterer Charakter-Polish kann daraus einen handanimierten Vier- bis Sechs-Schritt-Walk mit stärkerem Gewichtstransfer machen, ohne wieder die heutigen Qualitätsgrenzen zu verletzen.
 
