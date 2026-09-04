@@ -3,11 +3,16 @@ import path from 'node:path';
 import { PNG } from 'pngjs';
 
 const projectRoot = process.cwd();
-const sourcePath = path.join(projectRoot, 'art-source', 'concepts', 'budget-barbarian-2', 'budget_barbarian_2_generated_reference.png');
+// v2 is the original production source for the replacement animation sheet.
+// Keep this input unmodified; this builder owns alpha extraction and placement
+// in the runtime atlas.
+const sourcePath = path.join(projectRoot, 'art-source', 'concepts', 'budget-barbarian-2', 'budget_barbarian_2_generated_reference_v2.png');
 const outputPath = path.join(projectRoot, 'public', 'assets', 'characters', 'budget-barbarian', 'budget_barbarian_2_spritesheet_160.png');
 const columns = 4;
 const rows = 7;
-const frameSize = 160;
+// Match the source cells (948 / 4 = 237, 1659 / 7 = 237). Do not shrink the
+// artwork before Phaser receives it: that would blur the pixel rendering.
+const frameSize = 237;
 const source = PNG.sync.read(fs.readFileSync(sourcePath));
 const output = new PNG({ width: columns * frameSize, height: rows * frameSize });
 
@@ -24,8 +29,9 @@ function setOutputPixel(x, y, rgba) {
   output.data[index + 3] = rgba[3];
 }
 
-function colorDistance(a, b) {
-  return Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1]) + Math.abs(a[2] - b[2]);
+function isOpaqueWhiteMatte(rgba) {
+  const [red, green, blue, alpha] = rgba;
+  return alpha > 8 && red >= 240 && green >= 240 && blue >= 240;
 }
 
 function isBackgroundCandidate(x, y, left, top, width, height) {
@@ -35,19 +41,14 @@ function isBackgroundCandidate(x, y, left, top, width, height) {
   const maximum = Math.max(r, g, b);
   const minimum = Math.min(r, g, b);
   const chroma = maximum - minimum;
-  if (chroma > 126 && maximum > 135) return false;
-
-  // The reference background is a soft studio gradient. Its local color changes
-  // are small, while an inked contour has a strong change to at least one of its
-  // neighbours. Flooding only this low-detail edge-connected region preserves
-  // the character and turns the generated reference into a real alpha sheet.
-  const neighbours = [
-    [x - 1, y], [x + 1, y], [x, y - 1], [x, y + 1],
-  ].filter(([sampleX, sampleY]) => sampleX >= 0 && sampleY >= 0 && sampleX < width && sampleY < height);
-  const maximumNeighbourDistance = Math.max(
-    ...neighbours.map(([sampleX, sampleY]) => colorDistance(rgba, sourcePixel(left + sampleX, top + sampleY))),
-  );
-  return maximumNeighbourDistance < 76;
+  // Clear the neutral display matte that surrounds generated sprite edges.
+  // Only edge-connected pixels are flooded, preserving internal light metal
+  // details while removing the white outline visible in-game.
+  if (maximum >= 165 && chroma <= 32) return true;
+  // This source uses an opaque white display matte, not a gradient. Do not
+  // infer a background from low-detail/dark pixels: the previous heuristic
+  // incorrectly removed the Barbarian's charcoal trousers and boots.
+  return false;
 }
 
 function extractCell(column, row) {
@@ -84,6 +85,10 @@ function extractCell(column, row) {
     pushIfBackground(x + 1, y);
     pushIfBackground(x, y - 1);
     pushIfBackground(x, y + 1);
+    pushIfBackground(x - 1, y - 1);
+    pushIfBackground(x + 1, y - 1);
+    pushIfBackground(x - 1, y + 1);
+    pushIfBackground(x + 1, y + 1);
   }
 
   const pixels = [];
@@ -96,6 +101,7 @@ function extractCell(column, row) {
       if (transparent[y * width + x]) continue;
       const rgba = sourcePixel(left + x, top + y);
       if (rgba[3] < 32) continue;
+      if (isOpaqueWhiteMatte(rgba)) continue;
       pixels.push({ x, y, rgba });
       minX = Math.min(minX, x);
       minY = Math.min(minY, y);
@@ -117,13 +123,14 @@ for (let row = 0; row < rows; row += 1) {
   }
 }
 
-// A compact two-step loop deliberately prioritizes a stable body silhouette
-// over the generated reference's exaggerated camera-scale changes.
-const walkSourceFrameIndexes = [4, 6, 4, 6];
+// The authored four-frame cycle has real opposing weight shifts. Preserve all
+// four poses rather than repeating two frames, which was the source of the
+// previous stuttering walk.
+const walkSourceFrameIndexes = [4, 5, 6, 7];
 const loopFrames = [0, 1, 2, 3, ...walkSourceFrameIndexes].map((frameIndex) => cellsByFrame.get(frameIndex));
 const loopMaxWidth = Math.max(...loopFrames.map((cell) => cell.maxX - cell.minX + 1));
 const loopMaxHeight = Math.max(...loopFrames.map((cell) => cell.maxY - cell.minY + 1));
-const loopScale = Math.min(140 / loopMaxWidth, 142 / loopMaxHeight);
+const loopScale = Math.min(1, 220 / loopMaxWidth, 222 / loopMaxHeight);
 
 for (let row = 0; row < rows; row += 1) {
   for (let column = 0; column < columns; column += 1) {
@@ -138,11 +145,13 @@ for (let row = 0; row < rows; row += 1) {
 
     const sourceWidth = cell.maxX - cell.minX + 1;
     const sourceHeight = cell.maxY - cell.minY + 1;
-    const scale = frameIndex < 8 ? loopScale : Math.min(148 / sourceWidth, 146 / sourceHeight);
+    const scale = frameIndex < 8
+      ? loopScale
+      : Math.min(1, 225 / sourceWidth, 223 / sourceHeight);
     const destinationWidth = sourceWidth * scale;
     const destinationHeight = sourceHeight * scale;
     const destinationLeft = (frameSize - destinationWidth) / 2;
-    const destinationTop = Math.min(151 - destinationHeight, frameSize - destinationHeight - 4);
+    const destinationTop = Math.min(229 - destinationHeight, frameSize - destinationHeight - 4);
 
     for (const pixel of cell.pixels) {
       const x = Math.round(destinationLeft + (pixel.x - cell.minX) * scale);

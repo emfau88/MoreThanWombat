@@ -43,8 +43,8 @@
       "label": "Budget Barbarian",
       "source": "public/assets/characters/budget-barbarian/budget_barbarian_2_spritesheet_160.png",
       "runtime": "public/assets/characters/budget-barbarian/budget_barbarian_2_spritesheet_160_normalized.png",
-      "frameWidth": 160,
-      "frameHeight": 160,
+      "frameWidth": 237,
+      "frameHeight": 237,
       "columns": 4,
       "rows": 7,
       "allowEmptyFrames": [23, 27],
@@ -59,14 +59,21 @@
       "label": "Mara Breach",
       "source": "public/assets/characters/mara/mara_breach_spritesheet_160.png",
       "runtime": "public/assets/characters/mara/mara_breach_spritesheet_160_normalized.png",
-      "frameWidth": 160,
-      "frameHeight": 160,
+      "frameWidth": 237,
+      "frameHeight": 237,
       "columns": 4,
       "rows": 7,
       "normalizeGroups": ["idle", "walk"],
       "groups": {
         "idle": [0, 1, 2, 3],
         "walk": [4, 5, 6, 7]
+      },
+      "previewGroups": {
+        "idle": [0, 1, 2, 3],
+        "walk": [4, 5, 6, 7],
+        "gateKick": [8, 9, 10, 11],
+        "breachStep": [12, 13, 14, 15],
+        "redLineBarrage": [24, 25, 26, 27]
       }
     },
     {

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-04T09:29:44.323Z",
+  "generatedAt": "2026-09-04T13:06:01.032Z",
   "manifestVersion": 1,
   "sheets": [
     {
@@ -159,65 +159,65 @@
       "id": "budget-barbarian",
       "source": "public/assets/characters/budget-barbarian/budget_barbarian_2_spritesheet_160.png",
       "runtime": "public/assets/characters/budget-barbarian/budget_barbarian_2_spritesheet_160_normalized.png",
-      "targetFootLine": 150,
-      "targetRootAnchorX": 80,
-      "loopScale": 0.92,
+      "targetFootLine": 228,
+      "targetRootAnchorX": 99,
+      "loopScale": 0.94,
       "shifts": [
         {
           "frameIndex": 0,
-          "dx": 18,
+          "dx": 14,
           "dy": 0,
-          "sourceRootAnchorX": 62.18,
-          "sourceFootLine": 150
+          "sourceRootAnchorX": 85.28,
+          "sourceFootLine": 228
         },
         {
           "frameIndex": 1,
-          "dx": 19,
+          "dx": 13,
           "dy": 0,
-          "sourceRootAnchorX": 61.39,
-          "sourceFootLine": 150
+          "sourceRootAnchorX": 86.41,
+          "sourceFootLine": 228
         },
         {
           "frameIndex": 2,
-          "dx": 23,
+          "dx": 13,
           "dy": 0,
-          "sourceRootAnchorX": 57.08,
-          "sourceFootLine": 150
+          "sourceRootAnchorX": 86.29,
+          "sourceFootLine": 228
         },
         {
           "frameIndex": 3,
-          "dx": 19,
+          "dx": 14,
           "dy": 0,
-          "sourceRootAnchorX": 61.37,
-          "sourceFootLine": 150
+          "sourceRootAnchorX": 85.4,
+          "sourceFootLine": 228
         },
         {
           "frameIndex": 4,
-          "dx": -16,
+          "dx": 10,
           "dy": 0,
-          "sourceRootAnchorX": 95.63,
-          "sourceFootLine": 150
+          "sourceRootAnchorX": 89.16,
+          "sourceFootLine": 228
         },
         {
           "frameIndex": 5,
-          "dx": 3,
+          "dx": -12,
           "dy": 0,
-          "sourceRootAnchorX": 76.56,
-          "sourceFootLine": 150
+          "sourceRootAnchorX": 110.98,
+          "sourceFootLine": 228
         },
         {
           "frameIndex": 6,
-          "dx": -16,
+          "dx": 21,
           "dy": 0,
-          "sourceRootAnchorX": 95.63,
-          "sourceFootLine": 150
+          "sourceRootAnchorX": 78.38,
+          "sourceFootLine": 228
         },
         {
           "frameIndex": 7,
-          "dx": 3,
+          "dx": 9,
           "dy": 0,
-          "sourceRootAnchorX": 76.56,
-          "sourceFootLine": 150
+          "sourceRootAnchorX": 90.45,
+          "sourceFootLine": 228
         }
       ],
       "marginAdjustments": []
@@ -226,73 +226,115 @@
       "id": "mara-breach",
       "source": "public/assets/characters/mara/mara_breach_spritesheet_160.png",
       "runtime": "public/assets/characters/mara/mara_breach_spritesheet_160_normalized.png",
-      "targetFootLine": 154,
-      "targetRootAnchorX": 80,
+      "targetFootLine": 229,
+      "targetRootAnchorX": 119,
       "loopScale": 1,
       "shifts": [
         {
           "frameIndex": 0,
-          "dx": 0,
+          "dx": 1,
           "dy": 0,
-          "sourceRootAnchorX": 80.12,
-          "sourceFootLine": 154
+          "sourceRootAnchorX": 117.94,
+          "sourceFootLine": 229
         },
         {
           "frameIndex": 1,
-          "dx": 0,
+          "dx": 3,
           "dy": 0,
-          "sourceRootAnchorX": 80.35,
-          "sourceFootLine": 154
+          "sourceRootAnchorX": 115.79,
+          "sourceFootLine": 229
         },
         {
           "frameIndex": 2,
-          "dx": 0,
+          "dx": 2,
           "dy": 0,
-          "sourceRootAnchorX": 79.7,
-          "sourceFootLine": 154
+          "sourceRootAnchorX": 116.68,
+          "sourceFootLine": 229
         },
         {
           "frameIndex": 3,
-          "dx": 0,
+          "dx": 1,
           "dy": 0,
-          "sourceRootAnchorX": 79.52,
-          "sourceFootLine": 154
+          "sourceRootAnchorX": 118.07,
+          "sourceFootLine": 229
         },
         {
           "frameIndex": 4,
-          "dx": 0,
+          "dx": 3,
           "dy": 0,
-          "sourceRootAnchorX": 79.6,
-          "sourceFootLine": 154
+          "sourceRootAnchorX": 116.39,
+          "sourceFootLine": 229
         },
         {
           "frameIndex": 5,
-          "dx": 0,
+          "dx": 2,
           "dy": 0,
-          "sourceRootAnchorX": 79.59,
-          "sourceFootLine": 154
+          "sourceRootAnchorX": 117.08,
+          "sourceFootLine": 229
         },
         {
           "frameIndex": 6,
           "dx": 1,
           "dy": 0,
-          "sourceRootAnchorX": 79.33,
-          "sourceFootLine": 154
+          "sourceRootAnchorX": 117.61,
+          "sourceFootLine": 229
         },
         {
           "frameIndex": 7,
-          "dx": 1,
+          "dx": 2,
           "dy": 0,
-          "sourceRootAnchorX": 79.45,
-          "sourceFootLine": 154
+          "sourceRootAnchorX": 117.09,
+          "sourceFootLine": 229
         }
       ],
       "marginAdjustments": [
         {
-          "frameIndex": 19,
+          "frameIndex": 10,
           "dx": -2,
           "dy": 0,
           "scale": 1
+        },
+        {
+          "frameIndex": 11,
+          "dx": 2,
+          "dy": 0,
+          "scale": 1
+        },
+        {
+          "frameIndex": 13,
+          "dx": -2,
+          "dy": 0,
+          "scale": 1
+        },
+        {
+          "frameIndex": 14,
+          "dx": 2,
+          "dy": 0,
+          "scale": 1
+        },
+        {
+          "frameIndex": 18,
+          "dx": -2,
+          "dy": 0,
+          "scale": 1
+        },
+        {
+          "frameIndex": 19,
+          "dx": 0,
+          "dy": 0,
+          "scale": 0.98
+        },
+        {
+          "frameIndex": 25,
+          "dx": -2,
+          "dy": 0,
+          "scale": 1
+        },
+        {
+          "frameIndex": 26,
+          "dx": 0,
+          "dy": 0,
+          "scale": 0.98
         }
       ]
     },

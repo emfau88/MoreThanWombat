@@ -18,7 +18,8 @@ fs.mkdirSync(outputDirectory, { recursive: true });
 
 for (const sheet of manifest.sheets) {
   const source = readPng(sheet.runtime);
-  for (const [groupName, frameIndexes] of Object.entries(sheet.groups)) {
+  const previewGroups = sheet.previewGroups ?? sheet.groups;
+  for (const [groupName, frameIndexes] of Object.entries(previewGroups)) {
     const frameWidth = sheet.frameWidth * scale;
     const frameHeight = sheet.frameHeight * scale;
     const preview = new PNG({

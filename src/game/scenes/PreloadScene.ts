@@ -43,12 +43,12 @@ export class PreloadScene extends Phaser.Scene {
       frameHeight: 128,
     });
     this.load.spritesheet('budget-barbarian', `${assetBase}characters/budget-barbarian/budget_barbarian_2_spritesheet_160_normalized.png`, {
-      frameWidth: 160,
-      frameHeight: 160,
+      frameWidth: 237,
+      frameHeight: 237,
     });
     this.load.spritesheet('mara-breach', `${assetBase}characters/mara/mara_breach_spritesheet_160_normalized.png`, {
-      frameWidth: 160,
-      frameHeight: 160,
+      frameWidth: 237,
+      frameHeight: 237,
     });
     this.load.spritesheet('buster-bulldog', `${assetBase}characters/buster-bulldog/buster_bulldog_spritesheet_128_normalized.png`, {
       frameWidth: 128,

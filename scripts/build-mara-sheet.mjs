@@ -3,13 +3,19 @@ import path from 'node:path';
 import { PNG } from 'pngjs';
 
 const projectRoot = process.cwd();
-const sourcePath = path.join(projectRoot, 'art-source', 'concepts', 'mara', 'mara_breach_animation_source_v1.png');
+// v2 is the original production source for the replacement animation sheet.
+// Keep this input unmodified; this builder owns cropping, alpha extraction and
+// shared-scale placement in the runtime atlas.
+const sourcePath = path.join(projectRoot, 'art-source', 'concepts', 'mara', 'mara_breach_animation_source_v2.png');
 const outputPath = path.join(projectRoot, 'public', 'assets', 'characters', 'mara', 'mara_breach_spritesheet_160.png');
 const columns = 4;
 const rows = 7;
-const frameSize = 160;
-const groundLine = 154;
-const rootX = 80;
+// The generated source is already a 4 × 7 grid of 237 px cells. Retaining
+// that native cell size avoids the soft resample that degraded the otherwise
+// crisp source art at 160 px.
+const frameSize = 237;
+const groundLine = 229;
+const rootX = 118;
 const source = PNG.sync.read(fs.readFileSync(sourcePath));
 const output = new PNG({ width: columns * frameSize, height: rows * frameSize });
 
@@ -35,7 +41,16 @@ function isGeneratedGridBackground(rgba) {
   // The image generator rendered its transparency preview as an opaque neutral
   // checkerboard. It is safely removable from the frame edges; warm skin and
   // yellow costume highlights retain chroma and are therefore preserved.
-  return alpha > 8 && brightest >= 232 && brightest - darkest <= 18;
+  // The generator exports a white display matte around some contours. Flood
+  // every neutral near-white exterior pixel, not merely pure white, so that
+  // it cannot survive as a bright halo after the character is composited in
+  // Phaser. Saturated costume and skin highlights remain foreground.
+  return alpha > 8 && brightest >= 165 && brightest - darkest <= 32;
+}
+
+function isOpaqueWhiteMatte(rgba) {
+  const [red, green, blue, alpha] = rgba;
+  return alpha > 8 && red >= 240 && green >= 240 && blue >= 240;
 }
 
 function extractCell(column, row) {
@@ -69,13 +84,17 @@ function extractCell(column, row) {
     enqueueBackground(x + 1, y);
     enqueueBackground(x, y - 1);
     enqueueBackground(x, y + 1);
+    enqueueBackground(x - 1, y - 1);
+    enqueueBackground(x + 1, y - 1);
+    enqueueBackground(x - 1, y + 1);
+    enqueueBackground(x + 1, y + 1);
   }
 
   const foreground = new Uint8Array(width * height);
   for (let y = 0; y < height; y += 1) {
     for (let x = 0; x < width; x += 1) {
       const rgba = getSourcePixel(left + x, top + y);
-      if (rgba[3] > 8 && !background[y * width + x]) {
+      if (rgba[3] > 8 && !background[y * width + x] && !isOpaqueWhiteMatte(rgba)) {
         foreground[y * width + x] = 1;
       }
     }
@@ -154,7 +173,7 @@ for (let row = 0; row < rows; row += 1) {
 // transitioning between idle, movement, kicks, hit reactions and landings.
 const maxWidth = Math.max(...cells.map((cell) => cell.maxX - cell.minX + 1));
 const maxHeight = Math.max(...cells.map((cell) => cell.maxY - cell.minY + 1));
-const scale = Math.min(148 / maxWidth, 146 / maxHeight);
+const scale = Math.min(1, 225 / maxWidth, 223 / maxHeight);
 const airborneFrameOffsets = new Map([
   [20, -28], // jump
   [21, -18], // fall

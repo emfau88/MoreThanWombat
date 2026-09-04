@@ -38,6 +38,18 @@ const PLAYER_OPTIONS: OptionCard[] = [
     subtitle: 'Cheap ranged magic',
     description: 'Ranged pressure with cheap fireballs and unstable miscasts.',
   },
+  {
+    id: 'budget_barbarian',
+    title: 'Budget Barbarian',
+    subtitle: 'Armored axe bruiser',
+    description: 'A resilient heavyweight with a crushing axe swing and rage-fuelled pressure.',
+  },
+  {
+    id: 'mara_breach',
+    title: 'Mara Breach',
+    subtitle: 'Mobile kick fighter',
+    description: 'Fast pressure fighter with sharp gate kicks and aggressive breach steps.',
+  },
 ];
 
 const DUEL_ENEMY_OPTIONS: OptionCard[] = [
