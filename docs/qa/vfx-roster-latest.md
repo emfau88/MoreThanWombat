@@ -1,6 +1,6 @@
 # VFX Style-Lock QA
 
-Generated: 2026-09-04T10:33:01.093Z
+Generated: 2026-09-05T15:39:26.787Z
 
 | Asset | Category | Source transparency | Runtime | Result |
 |---|---|---:|---:|---|

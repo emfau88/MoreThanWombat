@@ -1,0 +1,4 @@
+Exit code: 0
+
+> more-than-wombat@0.1.0 typecheck
+> tsc --noEmit

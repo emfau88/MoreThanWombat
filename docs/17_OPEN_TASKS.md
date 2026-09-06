@@ -1,6 +1,20 @@
 # 17 - Open Tasks
 
-This is the current practical task list based on the implemented build, not the original zero-state backlog.
+## Current queue — 2026-09-05
+
+The authoritative work queue is [plan 31](31_GAMEPLAY_AND_WAVE_COMPLETION_PLAN.md). **G0 complete; G1 implemented and technically verified, manual gameplay acceptance open.** See the [G1 report](qa/g1-runtime-2026-09-05/README.md) and [run measurement template](qa/gameplay-run-template.md).
+
+| Work | Current status / owner bulk |
+|---|---|
+| Encounter activation, pressure budgets, safe entry and phase-aware mana | G1 implemented; manual feel/readability acceptance open before G2 |
+| Four enemy roles and seven encounters | G2 / G3 |
+| Defensive controls, knockdown, dash and chains | G4 / G5 |
+| Interactions, pickup, midboss and boss | G6 / G7 |
+| Full-run resource tuning, HUD/camera/audio polish | G8 / G9 |
+| Browser runtime automation, lint and focused architecture hardening | G10 |
+| Device performance, current Pages build, complete roster runs and asset delivery | G11; open |
+
+Earlier task IDs below are retained for traceability, not as a competing execution order. StageVisualContract is already implemented; screenshot baselines and current visual verification remain open. Historical 23/31/33-test references are milestone evidence; G0 passes 55 tests.
 
 ## P0 - Current Arcade-Quality Work
 

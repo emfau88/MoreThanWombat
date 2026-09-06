@@ -1,0 +1,55 @@
+
+> more-than-wombat@0.1.0 assets:report
+> node scripts/report-runtime-assets.mjs
+
+# Runtime Asset Report
+
+- Public assets: 96 files, 68.31 MiB
+- Directly referenced by PreloadScene: 47 files, 20.17 MiB
+- Likely source-only by filename: 26 files, 30.30 MiB
+
+## Largest public assets
+
+| File | Size | Preload | Likely source |
+| --- | ---: | :---: | :---: |
+| arenas/junkyard-run/neon_dump.png | 2.40 MiB | yes | no |
+| arenas/junkyard-run/scrap_gate.png | 2.28 MiB | yes | no |
+| arenas/rooftop/rooftop_background.png | 2.18 MiB | yes | no |
+| 2.png | 2.14 MiB | yes | no |
+| 1.png | 2.14 MiB | no | no |
+| arenas/scrapyard/scrapyard_background.png | 2.10 MiB | yes | no |
+| arenas/park/duel_park_raw.png | 2.09 MiB | no | yes |
+| characters/buster-bulldog/buster_bulldog_spritesheet.png | 2.09 MiB | no | no |
+| characters/buster-bulldog/buster_bulldog_spritesheet_chroma.png | 2.09 MiB | no | yes |
+| characters/budget-barbarian/budget_barbarian_spritesheet.png | 1.98 MiB | no | no |
+| characters/budget-barbarian/budget_barbarian_spritesheet_chroma.png | 1.98 MiB | no | yes |
+| arenas/junkyard-run/furnace_yard.png | 1.97 MiB | yes | no |
+
+## Likely source-only candidates
+
+- arenas/park/duel_park_raw.png (2.09 MiB)
+- characters/buster-bulldog/buster_bulldog_spritesheet_chroma.png (2.09 MiB)
+- characters/budget-barbarian/budget_barbarian_spritesheet_chroma.png (1.98 MiB)
+- characters/wombat/wombat_spritesheet_chroma.png (1.78 MiB)
+- characters/discount-wizard/discount_wizard_spritesheet_chroma.png (1.77 MiB)
+- fx/discount-wizard/discount_wizard_ultimate_chroma.png (1.71 MiB)
+- characters/discount-wizard/source/discount_wizard_master_v2.png (1.70 MiB)
+- characters/buster-bulldog/buster_bulldog_air_bonk_chroma.png (1.59 MiB)
+- fx/budget-barbarian/budget_barbarian_ultimate_chroma.png (1.58 MiB)
+- characters/angry-pigeon/angry_pigeon_spritesheet_chroma.png (1.56 MiB)
+- characters/discount-wizard/source/discount_wizard_idle_v2_raw.png (1.32 MiB)
+- characters/discount-wizard/source/discount_wizard_miscast_v2_raw.png (1.31 MiB)
+- characters/discount-wizard/source/discount_wizard_walk_v2_raw.png (1.25 MiB)
+- characters/discount-wizard/source/discount_wizard_attack_v2_raw.png (1.17 MiB)
+- characters/discount-wizard/source/discount_wizard_damage_v2_raw.png (1.13 MiB)
+- original/205137.png (1.07 MiB)
+- original/205110.png (0.82 MiB)
+- original/205100.png (0.70 MiB)
+- original/205118.png (0.67 MiB)
+- original/205105.png (0.62 MiB)
+- original/205106.png (0.57 MiB)
+- original/205113.png (0.56 MiB)
+- original/205103.png (0.52 MiB)
+- characters/budget-barbarian/budget_barbarian_spritesheet_128_reserve_before_v2.png (0.37 MiB)
+- original/205138.png (0.29 MiB)
+- original/205102.png (0.09 MiB)

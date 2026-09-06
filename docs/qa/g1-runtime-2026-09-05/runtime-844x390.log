@@ -1,0 +1,238 @@
+PASS — 235 runtime checks
+Real assets loaded and Main Menu created
+wombat: restart begins at intro
+Phase spawning, section 1
+Entry has no enemy attacks
+Entry has no projectiles
+Spawn visible in actual camera
+Spawn separation
+Phase active, section 1
+No mana during intro/entry
+Mana regenerates during active combat
+Real projectile created for cleanup check
+Clear removes actual projectile objects
+Phase travel, section 1
+No mana during clear delay
+Five seconds travel waiting gives no mana
+Walking crosses arrival trigger
+Phase section_intro, section 2
+Transition preserves player position
+No transition mana
+Phase spawning, section 2
+Entry has no enemy attacks
+Entry has no projectiles
+Spawn visible in actual camera
+Spawn separation
+Spawn visible in actual camera
+Spawn separation
+Spawn separation
+Phase active, section 2
+No mana during intro/entry
+Mana regenerates during active combat
+Real projectile created for cleanup check
+Clear removes actual projectile objects
+Phase travel, section 2
+No mana during clear delay
+Five seconds travel waiting gives no mana
+Walking crosses arrival trigger
+Phase section_intro, section 3
+Transition preserves player position
+No transition mana
+Phase spawning, section 3
+Entry has no enemy attacks
+Entry has no projectiles
+Spawn visible in actual camera
+Spawn separation
+Spawn visible in actual camera
+Spawn separation
+Spawn separation
+Phase active, section 3
+No mana during intro/entry
+Mana regenerates during active combat
+Real projectile created for cleanup check
+Clear removes actual projectile objects
+Phase victory, section 3
+No mana during clear delay
+wombat: full three-section flow reaches victory
+Victory freezes mana and hazards
+discount_wizard: restart begins at intro
+Phase spawning, section 1
+Entry has no enemy attacks
+Entry has no projectiles
+Spawn visible in actual camera
+Spawn separation
+Phase active, section 1
+No mana during intro/entry
+Mana regenerates during active combat
+Real projectile created for cleanup check
+Clear removes actual projectile objects
+Phase travel, section 1
+No mana during clear delay
+Five seconds travel waiting gives no mana
+Walking crosses arrival trigger
+Phase section_intro, section 2
+Transition preserves player position
+No transition mana
+Phase spawning, section 2
+Entry has no enemy attacks
+Entry has no projectiles
+Spawn visible in actual camera
+Spawn separation
+Spawn visible in actual camera
+Spawn separation
+Spawn separation
+Phase active, section 2
+No mana during intro/entry
+Mana regenerates during active combat
+Real projectile created for cleanup check
+Clear removes actual projectile objects
+Phase travel, section 2
+No mana during clear delay
+Five seconds travel waiting gives no mana
+Walking crosses arrival trigger
+Phase section_intro, section 3
+Transition preserves player position
+No transition mana
+Phase spawning, section 3
+Entry has no enemy attacks
+Entry has no projectiles
+Spawn visible in actual camera
+Spawn separation
+Spawn visible in actual camera
+Spawn separation
+Spawn separation
+Phase active, section 3
+No mana during intro/entry
+Mana regenerates during active combat
+Real projectile created for cleanup check
+Clear removes actual projectile objects
+Phase victory, section 3
+No mana during clear delay
+discount_wizard: full three-section flow reaches victory
+Victory freezes mana and hazards
+budget_barbarian: restart begins at intro
+Phase spawning, section 1
+Entry has no enemy attacks
+Entry has no projectiles
+Spawn visible in actual camera
+Spawn separation
+Phase active, section 1
+No mana during intro/entry
+Mana regenerates during active combat
+Real projectile created for cleanup check
+Clear removes actual projectile objects
+Phase travel, section 1
+No mana during clear delay
+Five seconds travel waiting gives no mana
+Walking crosses arrival trigger
+Phase section_intro, section 2
+Transition preserves player position
+No transition mana
+Phase spawning, section 2
+Entry has no enemy attacks
+Entry has no projectiles
+Spawn visible in actual camera
+Spawn separation
+Spawn visible in actual camera
+Spawn separation
+Spawn separation
+Phase active, section 2
+No mana during intro/entry
+Mana regenerates during active combat
+Real projectile created for cleanup check
+Clear removes actual projectile objects
+Phase travel, section 2
+No mana during clear delay
+Five seconds travel waiting gives no mana
+Walking crosses arrival trigger
+Phase section_intro, section 3
+Transition preserves player position
+No transition mana
+Phase spawning, section 3
+Entry has no enemy attacks
+Entry has no projectiles
+Spawn visible in actual camera
+Spawn separation
+Spawn visible in actual camera
+Spawn separation
+Spawn separation
+Phase active, section 3
+No mana during intro/entry
+Mana regenerates during active combat
+Real projectile created for cleanup check
+Clear removes actual projectile objects
+Phase victory, section 3
+No mana during clear delay
+budget_barbarian: full three-section flow reaches victory
+Victory freezes mana and hazards
+mara_breach: restart begins at intro
+Phase spawning, section 1
+Entry has no enemy attacks
+Entry has no projectiles
+Spawn visible in actual camera
+Spawn separation
+Phase active, section 1
+No mana during intro/entry
+Mana regenerates during active combat
+Real projectile created for cleanup check
+Clear removes actual projectile objects
+Phase travel, section 1
+No mana during clear delay
+Five seconds travel waiting gives no mana
+Walking crosses arrival trigger
+Phase section_intro, section 2
+Transition preserves player position
+No transition mana
+Phase spawning, section 2
+Entry has no enemy attacks
+Entry has no projectiles
+Spawn visible in actual camera
+Spawn separation
+Spawn visible in actual camera
+Spawn separation
+Spawn separation
+Phase active, section 2
+No mana during intro/entry
+Mana regenerates during active combat
+Real projectile created for cleanup check
+Clear removes actual projectile objects
+Phase travel, section 2
+No mana during clear delay
+Five seconds travel waiting gives no mana
+Walking crosses arrival trigger
+Phase section_intro, section 3
+Transition preserves player position
+No transition mana
+Phase spawning, section 3
+Entry has no enemy attacks
+Entry has no projectiles
+Spawn visible in actual camera
+Spawn separation
+Spawn visible in actual camera
+Spawn separation
+Spawn separation
+Phase active, section 3
+No mana during intro/entry
+Mana regenerates during active combat
+Real projectile created for cleanup check
+Clear removes actual projectile objects
+Phase victory, section 3
+No mana during clear delay
+mara_breach: full three-section flow reaches victory
+Victory freezes mana and hazards
+Phase active, section 1
+Wave attack receives a token
+Actual Fighter hit interrupt releases token
+Defeat clears actual projectile and enemy objects
+Defeat disables mana
+Restart has fresh director and no tokens
+Phase active, section 1
+Simultaneous player/enemy death cannot start travel or victory
+Duel creates its ordinary enemy without Director
+Duel mana unchanged
+Duel victory unchanged
+Gym creates its existing diagnostic controls
+Paused Gym cannot regenerate mana
+Unpaused Gym regenerates as before
+Scripted diagnostics; not a balance or real-device playtest.
+[]

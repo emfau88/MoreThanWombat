@@ -3,7 +3,6 @@ import test from 'node:test';
 import {
   BASE_GAME_WIDTH,
   GAME_HEIGHT,
-  MAX_LANDSCAPE_GAME_WIDTH,
   getAdaptiveGameViewport,
   shouldResizeAdaptiveViewport,
 } from '../src/game/core/AdaptiveViewport.ts';
@@ -17,8 +16,9 @@ test('adaptive viewport adds horizontal play space for a wide landscape device',
   assert.deepEqual(getAdaptiveGameViewport(844, 390), { width: 1169, height: GAME_HEIGHT });
 });
 
-test('adaptive viewport has stable safe defaults and a practical width cap', () => {
-  assert.deepEqual(getAdaptiveGameViewport(1920, 540), { width: MAX_LANDSCAPE_GAME_WIDTH, height: GAME_HEIGHT });
+test('wide devices and collapsed browser chrome do not introduce side bars', () => {
+  assert.deepEqual(getAdaptiveGameViewport(1920, 540), { width: 1920, height: GAME_HEIGHT });
+  assert.deepEqual(getAdaptiveGameViewport(932, 360), { width: 1398, height: GAME_HEIGHT });
   assert.deepEqual(getAdaptiveGameViewport(0, 0), { width: BASE_GAME_WIDTH, height: GAME_HEIGHT });
 });
 

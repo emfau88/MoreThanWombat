@@ -3,6 +3,8 @@
 This document started as a future plan for LF2-inspired wave stages that scroll to the right.
 It is now partially implemented and should be read as both plan and status note.
 
+**Current update — 2026-09-05:** [Plan 31](31_GAMEPLAY_AND_WAVE_COMPLETION_PLAN.md) supersedes the expansion order and exclusions below. The current stage has three zones with distinct backgrounds, three static groups (1/2/2 enemies), a tested ground contract, explicit safe travel corridors and arrival-triggered transitions. The old single-background data example is historical; `src/game/data/stages.ts` is authoritative. G1 introduces the Director, G3 separates multiple encounters within each zone, and G6/G7 add interactions and bosses. [Verified baseline](qa/gameplay-baseline-2026-09-05/README.md).
+
 ## Current Status
 
 Implemented today:

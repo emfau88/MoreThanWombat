@@ -1,6 +1,5 @@
 export const BASE_GAME_WIDTH = 960;
 export const GAME_HEIGHT = 540;
-export const MAX_LANDSCAPE_GAME_WIDTH = 1280;
 
 export type GameViewport = {
   width: number;
@@ -19,7 +18,7 @@ export function getAdaptiveGameViewport(viewportWidth: number, viewportHeight: n
 
   const landscapeWidth = Math.round(GAME_HEIGHT * (viewportWidth / viewportHeight));
   return {
-    width: Math.max(BASE_GAME_WIDTH, Math.min(MAX_LANDSCAPE_GAME_WIDTH, landscapeWidth)),
+    width: Math.max(BASE_GAME_WIDTH, landscapeWidth),
     height: GAME_HEIGHT,
   };
 }

@@ -1,6 +1,8 @@
 # Mara und Budget Barbarian — Rework-Blocker
 
-**Stand:** 2026-09-04. Beide Figuren sind aus normalen Spielmodi und Waves entfernt. Sie bleiben ausschließlich im Combat Gym, damit ihre Moves und Boxen diagnostizierbar bleiben, ohne sie als Release-Content auszugeben.
+**Statusabgleich:** 2026-09-05. Dieses Dokument bewahrt den historischen Rework-Befund vom 2026-09-04. Mara und Budget Barbarian stehen inzwischen wieder im normalen Spieler-Roster; `src/game/data/roster.ts` führt keine Rework-Figuren mehr. Die normale Wave-Gegnerbesetzung besteht weiterhin aus Pigeon und Wizard. Die frühere Aussage, beide Figuren seien ausschließlich im Gym verfügbar, ist überholt.
+
+Die [G0-Baseline](gameplay-baseline-2026-09-05/README.md) bestätigt Codezustand und technische Asset-Gates. Sie stellt keine neue manuelle Art- oder Gerätefreigabe aus; vollständige aktuelle Run-/Touch-Abnahmen bleiben offen. Die folgenden Befunde und Gates gelten als Rework-Historie und Qualitätsreferenz, nicht als Auftrag für eine erneute Figurenproduktion während G0–G9.
 
 ## Sichtbarer Befund
 
@@ -19,6 +21,6 @@ Die frühere Character-Asset-QA hat nur technische Positionen, Randbeschnitt und
 4. **Bild-für-Bild-Abnahme:** Preview-Strip und 4-fps-GIF auf neutralem Hintergrund prüfen. Ein automatischer Root-/Fußdrift-Wert ergänzt diese Sichtprüfung, ersetzt sie aber nie.
 5. **Spiel-Abnahme:** je 60 Sekunden Duel, Combat Gym und Wave auf 16:9 und breitem Landscape; erst dann Rückkehr in Character Select und Wave-Daten.
 
-## Nächste Produktion
+## Historisch geplante Produktion
 
 Zuerst Mara als kleine, klar lesbare Comic-Silhouette mit sauberer Bodenkontaktfolge neu erstellen und freigeben. Erst danach denselben Prozess für den Barbarian anwenden. Moves, Hit-/Hurt-/Pushboxen und universelle VFX können bestehen bleiben, werden aber erst nach der neuen Sichtprüfung feinjustiert.

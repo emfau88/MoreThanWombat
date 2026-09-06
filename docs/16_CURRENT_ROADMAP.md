@@ -1,9 +1,16 @@
 # 16 - Current Roadmap
 
-This file reflects the actual project state after the initial sandbox, roster, menu, combat-feel, and first wave-stage work.
+## Current execution update — 2026-09-05
 
-The original roadmap in `05_ROADMAP.md` remains useful as the foundation plan.
-This document is the current execution roadmap based on what is already built.
+[Plan 31](31_GAMEPLAY_AND_WAVE_COMPLETION_PLAN.md) owns the gameplay execution order. G0 is complete; **G1 Encounter Director** is implemented and technically verified, with manual gameplay acceptance open before G2 roles and G3 seven encounters. [G1 evidence and open gates](qa/g1-runtime-2026-09-05/README.md) are the current status reference.
+
+- Normal players: Wombat, Discount Wizard, Budget Barbarian, Mara Breach. Buster Bulldog and Reference Fighter are Gym-only prototypes.
+- Typecheck, **66/66 tests** and build pass locally; G0 records six character-sheet hard gates and all three VFX-QA manifests passing.
+- Junkyard Run has three zones and three groups (1/2/2 enemies), now orchestrated by the Director with safe entry, pressure budgets and phase-aware mana. Seven encounters, new roles, defensive actions and bosses remain future work.
+- Scripted Phaser regression checks pass. Full-run gameplay acceptance, balance and two real-device classes remain open.
+- G0–G9 adds no player fighter or arena. Final art follows mechanical acceptance; broad architecture hardening remains G10.
+
+The sections below preserve earlier milestone history and design intent. Their older counts, roster entries and proposed order do not override this update or plan 31.
 
 ## 2026-09-02 Execution Update
 
@@ -24,9 +31,9 @@ This document is the current execution roadmap based on what is already built.
 - BULK 5.0 Stage Integrity has started: `Junkyard Run` now proportionally scales its taller Scrapyard source before tiling, so its painted floor aligns with combat positions. The structural StageVisualContract and screenshot baselines remain open; details and the complete post-BULK-4 order are in `29_PROFESSIONALIZATION_AUDIT_AND_PLAN.md`.
 - New roster, stage, and meta content remains frozen until the polished combat slice proves these layers.
 
-## Current State Summary
+## Historical State Summary — 2026-09-02
 
-Implemented and usable today:
+Implemented and usable at this snapshot:
 
 - Phaser + TypeScript + Vite project setup
 - Boot, preload, main menu, character select, battle scene
@@ -41,7 +48,7 @@ Implemented and usable today:
 - Angry Pigeon enemy
 - Discount Wizard playable character
 - Budget Barbarian playable character
-- Buster Bulldog playable character
+- Buster Bulldog then exposed as a playable character; current code keeps it Gym-only
 - Reference Fighter diagnostic character
 - Basic attacks
 - Specials
@@ -58,7 +65,7 @@ Implemented and usable today:
 - GitHub Pages deployment setup
 - Deterministic character-sheet normalization and hard asset QA
 - Deterministic VFX style-lock export and alpha/border QA
-- Typecheck plus 33 automated combat/input/debug/box-profile/impact/VFX tests
+- 33 automated combat/input/debug/box-profile/impact/VFX tests at this snapshot; G0 currently records 55/55
 - First staged Wave mode flow:
   - `junkyard_run`
   - 3 horizontal sections

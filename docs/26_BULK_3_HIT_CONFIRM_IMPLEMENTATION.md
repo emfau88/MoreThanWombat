@@ -2,6 +2,8 @@
 
 **Status:** abgeschlossen und visuell abgenommen am 2026-09-02
 
+**Aktueller Kontext — 2026-09-05:** Historische Implementierungsdokumentation. Die Testzahl und der „nächste Schritt“ weiter unten sind zeitgebunden; aktuelle Gameplay-Prioritäten stehen in `31_GAMEPLAY_AND_WAVE_COMPLETION_PLAN.md`, aktuelle technische Gates in `qa/gameplay-baseline-2026-09-05/README.md`.
+
 ## Ziel
 
 BULK 3 bündelt jeden bestätigten Kontakt in einem deterministischen Impact-Pfad. Schaden beziehungsweise Armor-Reaktion, Hitstop, kurzer Defender-Flash, Camera Shake, Kontakt-VFX, SFX, optionale Haptik und Combat-Gym-Telemetrie sollen vom selben aufgelösten Kontakt ausgehen.

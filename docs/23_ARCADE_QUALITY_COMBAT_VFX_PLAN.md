@@ -6,6 +6,8 @@
 **Scope dieses Dokuments:** Audit, Zielbild, Combat Feel, Hitboxen/Hurtboxen/Pushboxen, Charakter-Sheets, VFX, Audio, Mobile UX, Architektur, QA und Vertical Slice
 **Ursprünglicher Audit-Scope:** In der Bestandsaufnahme wurden noch keine Code- oder Assetänderungen vorgenommen. Der Umsetzungsstatus darunter hält die nachträgliche Realisierung der priorisierten Blöcke fest.
 
+**Aktueller Kontext — 2026-09-05:** Dieses Dokument bleibt der historische Combat-/VFX-Audit. Seine Testzahlen und „nächster Schritt“-Aussagen beschreiben den jeweiligen Auditzeitpunkt. Für aktuelle Gameplay-Prioritäten gilt `31_GAMEPLAY_AND_WAVE_COMPLETION_PLAN.md`; die geprüfte Ausgangsbasis und offene manuelle Gates stehen in `qa/gameplay-baseline-2026-09-05/README.md`.
+
 ---
 
 ## Umsetzungsstatus — 2026-09-02

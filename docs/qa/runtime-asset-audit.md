@@ -15,7 +15,13 @@ Der Report liest `PreloadScene.ts` und inventarisiert alle Dateien unter `public
 - Kandidaten mit `source`, `original`, `raw`, `chroma`, `reserve` oder `master` im Namen;
 - die zwölf größten Dateien als Priorisierung für eine spätere Bereinigung.
 
-## Ausgangsbefund
+## Aktueller Inventarabgleich — 2026-09-05
+
+`npm.cmd run assets:report` wurde in G0 erneut ausgeführt: **96 Dateien / 68,31 MiB** unter `public/assets`, davon **47 Dateien / 20,17 MiB** durch direkte Pfadtexte in `PreloadScene.ts` erkannt. **26 Dateien / 30,30 MiB** sind per Dateiname vermutete Source-Kandidaten. [Vollständiger Report](gameplay-baseline-2026-09-05/assets-report.log).
+
+Die Referenzsuche ist heuristisch und erfasst dynamische Manifestpfade nicht vollständig; die Gruppen können sich überschneiden. Das lokale Inventar enthält möglicherweise ignorierte Dateien, die im CI-Checkout fehlen. Es ist keine gemessene Netzwerk-Transfergröße und beweist nicht, dass nicht direkt referenzierte Dateien entfernt werden dürfen. Transfer/Startzeit und Source-/Runtime-Trennung bleiben offen. G0 verschiebt oder löscht keine Assets.
+
+## Historischer Ausgangsbefund — 2026-09-03
 
 | Kennzahl | Wert |
 | --- | ---: |

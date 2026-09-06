@@ -3,6 +3,8 @@
 **Stand:** 2026-09-03
 **Scope:** Audit, Plan und nachverfolgte Umsetzungsstände.
 
+**Einordnung 2026-09-05:** Historischer Audit mit damaligen Befunden. Für aktuelle Prioritäten gilt [Plan 31](31_GAMEPLAY_AND_WAVE_COMPLETION_PLAN.md), für den geprüften Codezustand die [G0-Baseline](qa/gameplay-baseline-2026-09-05/README.md). Bodenvertrag und drei eigene Zonenhintergründe existieren inzwischen; alte Rendererdefekte und Test-/Assetzahlen weiter unten beschreiben den Auditzeitpunkt. G0 ist abgeschlossen, G1 folgt. Frühere Geräte-/Pages-Nachweise sind keine aktuelle Release-Abnahme.
+
 **Implementierungsupdate 2026-09-03:** Der akute Wave-Rendererfehler ist behoben. `Junkyard Run` skaliert seine 1672×941-Scrapyard-Quelle nun proportional auf die 960×540-Kampfprojektion, bevor sie horizontal gekachelt wird. Ein gemeinsamer `StageVisualContract` definiert nun den fairen Flat-Arena-Korridor und validiert jede Junkyard-Section gegen ihre lokale Bodenfläche. Typecheck, 42 Tests, Production Build und eine Laufzeitprüfung sind grün. Screenshot-Baselines bleiben der nächste Teil von BULK 5.0.
 
 **Release-QA-Update 2026-09-03:** `docs/qa/vertical-slice-release-checklist.md` bündelt Local-, Pages- und Zielgeräte-Gates. Der Pages-Workflow des aktuellen Commits läuft; die vorherige Wave-Boden-Korrektur wurde bereits erfolgreich ausgeliefert. Die echte kleinste Zielgeräteklasse bleibt ein manueller Abschlusscheck.
@@ -280,7 +282,7 @@ Abnahme:
 
 **Befund 2026-09-04:** Die aktuelle Normalisierung verhindert technischen Fußlinien-Drift, aber der Walk bleibt mit 6,67 % Höhendifferenz sichtbar unruhig. Seine heutigen Posen liefern deshalb keine ausreichend hochwertige spielbare Figur.
 
-**Status 2026-09-04: Freigabe zurückgezogen.** Die sichtbare Prüfung hat weiße Matte-/Fragmentpixel, unvollständige Fußformen und keinen glaubwürdigen Walk offengelegt. Der bisherige Builder wiederholt darüber hinaus Quellframes für den Walk. Die reine Positions-QA war dafür unzureichend und wird nicht mehr als visuelle Freigabe interpretiert. Budget Barbarian ist bis zu einer echten Neuproduktion nur Combat-Gym-Rework-Prototyp, nicht Teil normaler Spielmodi oder Waves.
+**Historischer Status 2026-09-04: Freigabe zurückgezogen.** Die sichtbare Prüfung hatte weiße Matte-/Fragmentpixel, unvollständige Fußformen und keinen glaubwürdigen Walk offengelegt. Der bisherige Builder wiederholte darüber hinaus Quellframes für den Walk. Die reine Positions-QA war dafür unzureichend und wurde nicht mehr als visuelle Freigabe interpretiert. Budget Barbarian war bis zu einer Neuproduktion nur Combat-Gym-Rework-Prototyp. Dieser Status ist überholt: Im aktuellen Code gehört er zum normalen Spieler-Roster; aktuelle vollständige Run- und Realgeräteabnahmen bleiben dennoch offen.
 
 **Visuelle Abnahme 2026-09-04:** `docs/qa/budget-barbarian-2-walk.gif` zeigt den im Spiel registrierten Runtime-Walk. Der Loop ist stabil, sauber verankert und frei von Farbflackern. Er bleibt bewusst ein kuratierter Zwei-Schritt-Loop; ein späterer Charakter-Polish kann daraus einen handanimierten Vier- bis Sechs-Schritt-Walk mit stärkerem Gewichtstransfer machen, ohne wieder die heutigen Qualitätsgrenzen zu verletzen.
 
@@ -347,7 +349,7 @@ Diese Reihenfolge enthält ausschließlich Arbeit, die lokal, reproduzierbar und
 
 ### A3 — Roster-Bereinigung: Bulldog technisch ausliefern verhindern
 
-**Status 2026-09-03:** umgesetzt. Buster Bulldog und Reference Fighter bleiben ausschließlich Combat-Gym-Prototypen; normaler Select zeigt Wombat, Wizard und Barbarian. **Umfang:** klarer Produktbeschluss, keine Neugestaltung.
+**Historischer Status 2026-09-03:** umgesetzt. Buster Bulldog und Reference Fighter bleiben ausschließlich Combat-Gym-Prototypen; der damalige normale Select zeigte Wombat, Wizard und Barbarian. Im aktuellen Code ergänzt Mara Breach diesen Spieler-Roster. **Umfang:** klarer Produktbeschluss, keine Neugestaltung.
 
 - Buster Bulldog aus Character Select, zufälliger Gegnerwahl und Wave-Rotation entfernen.
 - Seine Definition, Moves und Assets als ungenutzten Prototyp erhalten, damit nichts destruktiv gelöscht wird und der spätere Ersatz unabhängig entstehen kann.

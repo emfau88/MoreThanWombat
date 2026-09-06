@@ -4,6 +4,8 @@
 
 **Stand:** 2026-09-02
 
+**Aktueller Kontext — 2026-09-05:** Dieser Style-Lock bleibt gültige VFX-Produktionsgrundlage; Testzahlen und Folge-Bulk-Aussagen weiter unten sind historische Meilensteinangaben. Die aktuelle Gameplay-Reihenfolge steht in `31_GAMEPLAY_AND_WAVE_COMPLETION_PLAN.md`.
+
 **Stilname:** **Punchy Comic Impact**
 
 ## Style Board

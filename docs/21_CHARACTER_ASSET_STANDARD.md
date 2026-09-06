@@ -143,31 +143,38 @@ Requirements:
 - floor contact easy to read
 - no noisy micro-detail in the playable area
 
-## Current Project Status
+## Current Asset-Pipeline Status
 
-As of 2026-09-02, the production Body sheets use the deterministic pipeline documented in `24_BULK_1_CHARACTER_ASSET_IMPLEMENTATION.md`.
+**Current-state note — 2026-09-05:** This section records asset-pipeline coverage, not the shippable gameplay roster. The current roster and acceptance status are authoritative in `31_GAMEPLAY_AND_WAVE_COMPLETION_PLAN.md` and `qa/gameplay-baseline-2026-09-05/README.md`: Wombat, Discount Wizard, Budget Barbarian, and Mara Breach are normal players; Buster Bulldog and Reference Fighter are Combat-Gym diagnostics; Angry Pigeon and Wizard are normal Duel enemies. Full current run and real-device acceptance remains open.
 
-- Wombat, Discount Wizard v2, Budget Barbarian, Buster Bulldog, and Angry Pigeon use generated normalized Runtime sheets.
-- All five pass hard Idle/Walk gates plus a whole-sheet gate for baseline, inferred root stability, empty cells, and frame-edge clipping.
+As of 2026-09-05, the six QA-covered Body sheets use the deterministic pipeline documented in `24_BULK_1_CHARACTER_ASSET_IMPLEMENTATION.md`.
+
+- Wombat, Discount Wizard v2, Budget Barbarian, Mara Breach, Buster Bulldog, and Angry Pigeon use normalized Runtime sheets.
+- All six pass hard Idle/Walk gates plus a whole-sheet gate for baseline, inferred root stability, empty cells, and frame-edge clipping.
 - Runtime offset patches for Wombat, Wizard, and Pigeon Idle have been removed.
 - Barbarian has dedicated jump/fall/landing/Air Bonk frames in its 160px main sheet; its old 1.7x frame-scale pop is removed.
 - Wizard still uses a fallback body animation for Air Bonk and needs a dedicated mini-sheet.
 - Discount Wizard v2 is derived from the retained master and five raw source rows under `public/assets/characters/discount-wizard/source/`; it must be rebuilt with `npm.cmd run assets:wizard`, never hand-edited in the composed or normalized sheet.
 - Palette and pose-height warnings remain visible in `docs/qa/character-assets-latest.md`; their current visual decisions are recorded in `24_BULK_1_CHARACTER_ASSET_IMPLEMENTATION.md`.
 
-Current roster:
+Current normal player roster:
 
 - `Wombat`
 - `Discount Wizard`
 - `Budget Barbarian`
+- `Mara Breach`
+
+Combat-Gym diagnostic:
+
 - `Buster Bulldog`
 
 Current character coverage status:
 
 - `Wombat`: strong reference fighter, has dedicated air attack coverage
-- `Buster Bulldog`: has dedicated air attack coverage
 - `Discount Wizard`: functional air attack via fallback, should receive dedicated air attack frames later
 - `Budget Barbarian`: dedicated jump, fall, landing, and air-attack coverage in the 160px main sheet
+- `Mara Breach`: dedicated jump, fall, landing, and air-kick coverage in the 160px main sheet
+- `Buster Bulldog`: diagnostic-only; has dedicated air attack coverage
 
 Enemy-only currently:
 

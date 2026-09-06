@@ -13,17 +13,22 @@ export function setupMobileViewport(game: Phaser.Game): void {
   button.hidden = !fullscreenSupported;
   document.body.appendChild(button);
 
+  let refreshPending = false;
   const refreshScale = (): void => {
+    if (refreshPending) return;
+    refreshPending = true;
     window.requestAnimationFrame(() => {
+      refreshPending = false;
       const nextViewport = getBrowserAdaptiveGameViewport();
       const currentViewport = {
         width: game.scale.gameSize.width,
         height: GAME_HEIGHT,
       };
       if (shouldResizeAdaptiveViewport(currentViewport, nextViewport)) {
-        game.scale.resize(nextViewport.width, nextViewport.height);
+        // FIT needs the display aspect ratio updated as well as the backing canvas.
+        game.scale.setGameSize(nextViewport.width, nextViewport.height);
       }
-      game.scale.refresh();
+      else game.scale.refresh();
     });
   };
 

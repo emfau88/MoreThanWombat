@@ -2,6 +2,8 @@
 
 **Status:** BULK 4.0 bis BULK 4.3 sind implementiert und geprüft. BULK 4.4 ist technisch umgesetzt; eine Messung auf dem schwächsten Zielgerät bleibt als reale Abnahme offen.
 
+**Aktueller Kontext — 2026-09-05:** Der verbleibende VFX-Gerätetest bleibt offen, ist aber nicht der nächste Gameplay-Implementierungsbulk. Für die aktuelle Reihenfolge gilt `31_GAMEPLAY_AND_WAVE_COMPLETION_PLAN.md`; die G0-Baseline hält technische und manuelle Gates getrennt.
+
 **Planungsstand:** 2026-09-03
 
 **Style-Lock-Ergebnis:** `28_BULK_4_0_VFX_STYLE_LOCK.md`; Comic B ist die Light-/Small-Produktionsbasis, Comic A die Medium-/Heavy-Formensprache.

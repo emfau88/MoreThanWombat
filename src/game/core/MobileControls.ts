@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import type { PlayerInputState } from './InputController';
 import { resolveMobileControlTarget } from './MobileControlHitTest';
-import { getMobileControlLayout } from './MobileControlLayout';
+import { ACTION_BUTTON_RADII, ACTION_BUTTON_SCALE, getMobileControlLayout } from './MobileControlLayout';
 
 type ControlElements = {
   baseShadow: Phaser.GameObjects.Arc;
@@ -108,37 +108,37 @@ export class MobileControls {
       .setDepth(1002);
     const knobHighlight = this.scene.add.circle(0, 0, JOYSTICK_KNOB_RADIUS * 0.48, 0xffffff, 0.22).setScrollFactor(0).setDepth(1003);
 
-    const attackShadow = this.scene.add.circle(0, 0, 46, 0x1d0803, 0.26).setScrollFactor(0).setDepth(996);
+    const attackShadow = this.scene.add.circle(0, 0, 46 * ACTION_BUTTON_SCALE, 0x1d0803, 0.26).setScrollFactor(0).setDepth(996);
     const attackButton = this.scene.add
-      .circle(0, 0, 42, 0xd4572f, 0.94)
+      .circle(0, 0, ACTION_BUTTON_RADII.attack, 0xd4572f, 0.94)
       .setStrokeStyle(3, 0xffe8c2, 0.4)
       .setScrollFactor(0)
       .setDepth(1000);
-    const attackRing = this.scene.add.circle(0, 0, 31, 0xff9f68, 0.18).setScrollFactor(0).setDepth(1001);
+    const attackRing = this.scene.add.circle(0, 0, 31 * ACTION_BUTTON_SCALE, 0xff9f68, 0.18).setScrollFactor(0).setDepth(1001);
 
-    const specialShadow = this.scene.add.circle(0, 0, 38, 0x061019, 0.26).setScrollFactor(0).setDepth(996);
+    const specialShadow = this.scene.add.circle(0, 0, 38 * ACTION_BUTTON_SCALE, 0x061019, 0.26).setScrollFactor(0).setDepth(996);
     const specialButton = this.scene.add
-      .circle(0, 0, 34, 0x3d6f96, 0.93)
+      .circle(0, 0, ACTION_BUTTON_RADII.special, 0x3d6f96, 0.93)
       .setStrokeStyle(3, 0xd6ecff, 0.34)
       .setScrollFactor(0)
       .setDepth(1000);
-    const specialRing = this.scene.add.circle(0, 0, 24, 0x78a8c8, 0.18).setScrollFactor(0).setDepth(1001);
+    const specialRing = this.scene.add.circle(0, 0, 24 * ACTION_BUTTON_SCALE, 0x78a8c8, 0.18).setScrollFactor(0).setDepth(1001);
 
-    const ultimateShadow = this.scene.add.circle(0, 0, 36, 0x1f0a19, 0.28).setScrollFactor(0).setDepth(996);
+    const ultimateShadow = this.scene.add.circle(0, 0, 36 * ACTION_BUTTON_SCALE, 0x1f0a19, 0.28).setScrollFactor(0).setDepth(996);
     const ultimateButton = this.scene.add
-      .circle(0, 0, 32, 0xa23bd6, 0.94)
+      .circle(0, 0, ACTION_BUTTON_RADII.ultimate, 0xa23bd6, 0.94)
       .setStrokeStyle(3, 0xf7dcff, 0.38)
       .setScrollFactor(0)
       .setDepth(1000);
-    const ultimateRing = this.scene.add.circle(0, 0, 23, 0xdf8cff, 0.2).setScrollFactor(0).setDepth(1001);
+    const ultimateRing = this.scene.add.circle(0, 0, 23 * ACTION_BUTTON_SCALE, 0xdf8cff, 0.2).setScrollFactor(0).setDepth(1001);
 
-    const jumpShadow = this.scene.add.circle(0, 0, 36, 0x081105, 0.26).setScrollFactor(0).setDepth(996);
+    const jumpShadow = this.scene.add.circle(0, 0, 36 * ACTION_BUTTON_SCALE, 0x081105, 0.26).setScrollFactor(0).setDepth(996);
     const jumpButton = this.scene.add
-      .circle(0, 0, 32, 0x698f36, 0.93)
+      .circle(0, 0, ACTION_BUTTON_RADII.jump, 0x698f36, 0.93)
       .setStrokeStyle(3, 0xe7ffd1, 0.34)
       .setScrollFactor(0)
       .setDepth(1000);
-    const jumpRing = this.scene.add.circle(0, 0, 23, 0xa8cf62, 0.18).setScrollFactor(0).setDepth(1001);
+    const jumpRing = this.scene.add.circle(0, 0, 23 * ACTION_BUTTON_SCALE, 0xa8cf62, 0.18).setScrollFactor(0).setDepth(1001);
     const menuShadow = this.scene.add.rectangle(0, 0, 74, 28, 0x02060b, 0.24).setScrollFactor(0).setDepth(996);
     const menuButton = this.scene.add
       .rectangle(0, 0, 70, 24, 0x172333, 0.78)
@@ -195,6 +195,10 @@ export class MobileControls {
       .setOrigin(0.5)
       .setDepth(1004)
       .setScrollFactor(0);
+
+    for (const label of [attackLabel, specialLabel, ultimateLabel, jumpLabel]) {
+      label.setScale(ACTION_BUTTON_SCALE);
+    }
 
     return {
       baseShadow,

@@ -1,0 +1,7 @@
+
+> more-than-wombat@0.1.0 vfx:qa
+> node scripts/vfx-style-lock-qa.mjs config/vfx-style-lock.json && node scripts/vfx-style-lock-qa.mjs config/vfx-library.json && node scripts/vfx-style-lock-qa.mjs config/vfx-roster.json
+
+VFX style-lock QA: 6/6 assets pass.
+VFX style-lock QA: 5/5 assets pass.
+VFX style-lock QA: 4/4 assets pass.

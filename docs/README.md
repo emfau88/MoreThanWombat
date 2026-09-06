@@ -6,29 +6,33 @@ This folder contains both the original foundation documents and the current proj
 
 The project has moved beyond the original combat sandbox MVP. Use the docs in this order for current work:
 
-1. `22_HANDOFF_FOR_NEW_CHAT.md`
-2. `23_ARCADE_QUALITY_COMBAT_VFX_PLAN.md`
-3. `24_BULK_1_CHARACTER_ASSET_IMPLEMENTATION.md`
-4. `25_BULK_2_BOX_PROFILE_IMPLEMENTATION.md`
-5. `26_BULK_3_HIT_CONFIRM_IMPLEMENTATION.md`
-6. `27_BULK_4_UNIFIED_VFX_PRODUCTION_PLAN.md`
-7. `28_BULK_4_0_VFX_STYLE_LOCK.md`
-8. `16_CURRENT_ROADMAP.md`
-9. `17_OPEN_TASKS.md`
-10. `21_CHARACTER_ASSET_STANDARD.md`
-11. Relevant implementation spec from `07` to `13` only when touching that system
+1. `31_GAMEPLAY_AND_WAVE_COMPLETION_PLAN.md`
+2. `22_HANDOFF_FOR_NEW_CHAT.md`
+3. `23_ARCADE_QUALITY_COMBAT_VFX_PLAN.md`
+4. `24_BULK_1_CHARACTER_ASSET_IMPLEMENTATION.md`
+5. `25_BULK_2_BOX_PROFILE_IMPLEMENTATION.md`
+6. `26_BULK_3_HIT_CONFIRM_IMPLEMENTATION.md`
+7. `27_BULK_4_UNIFIED_VFX_PRODUCTION_PLAN.md`
+8. `28_BULK_4_0_VFX_STYLE_LOCK.md`
+9. `16_CURRENT_ROADMAP.md`
+10. `17_OPEN_TASKS.md`
+11. `21_CHARACTER_ASSET_STANDARD.md`
+12. Relevant implementation spec from `07` to `13` only when touching that system
 
 ## Current Truth
 
 These files describe the current built prototype and near-term work:
 
+- `qa/gameplay-baseline-2026-09-05/README.md` - verified G0 snapshot: 55 tests, four normal player fighters, three current encounters, technical logs and explicitly open manual/release gates
+- `qa/gameplay-run-template.md` - copy for every measured run, including defeats; common definitions for timing, damage, pressure and HP/MP checkpoints
+- `31_GAMEPLAY_AND_WAVE_COMPLETION_PLAN.md` - current priority order from a stable combat prototype to a complete seven-encounter Wave run; use this as the gameplay execution plan when older roadmaps conflict
 - `16_CURRENT_ROADMAP.md` - actual execution roadmap based on what is already built
 - `17_OPEN_TASKS.md` - practical current task list
 - `18_NEXT_STEPS.md` - recommended short development block order
 - `19_WAVE_STAGE_SYSTEM_PLAN.md` - wave-stage plan plus implementation status notes
 - `20_MANA_ULTIMATE_IMPLEMENTATION_PLAN.md` - mana and ultimate rollout notes
 - `21_CHARACTER_ASSET_STANDARD.md` - character animation and asset quality rules
-- `22_HANDOFF_FOR_NEW_CHAT.md` - compact current handoff; read this first
+- `22_HANDOFF_FOR_NEW_CHAT.md` - compact handoff with a current G0 update; older milestone details are historical
 - `23_ARCADE_QUALITY_COMBAT_VFX_PLAN.md` - full prioritized audit and production plan for arcade quality, combat feel, hitboxes, character sheets, VFX, audio, mobile UX, and the vertical slice
 - `24_BULK_1_CHARACTER_ASSET_IMPLEMENTATION.md` - completed deterministic sheet pipeline, Discount Wizard v2 rebuild, whole-sheet QA, visual decisions, and the required asset workflow
 - `25_BULK_2_BOX_PROFILE_IMPLEMENTATION.md` - completed data-driven hitbox/hurtbox/pushbox profiles, faction rules, overlap contacts, authored Wombat reference moves, and Combat Gym QA
@@ -65,12 +69,15 @@ Do not use the old MVP documents as permission to remove existing systems such a
 
 ## Current Working Rule
 
+G0 is complete as a documentation and technical baseline. G1 is implemented and technically verified; its manual gameplay acceptance remains open before G2. Use the [G1 report](qa/g1-runtime-2026-09-05/README.md) for current tests and the dated G0 snapshot for the historical baseline. Scripted browser diagnostics do not replace balance or real-device acceptance. Older numeric test counts describe their original milestones.
+
 Before implementing:
 
-1. Check `22_HANDOFF_FOR_NEW_CHAT.md`.
-2. Check `16_CURRENT_ROADMAP.md` and `17_OPEN_TASKS.md`.
-3. Inspect the relevant code path.
-4. Make the smallest isolated change that advances the current roadmap.
-5. Run `npm.cmd run build` when code or assets change.
-6. Run `npm.cmd run assets:refresh` whenever a character Body sheet or its manifest changes.
-7. Run `npm.cmd run vfx:refresh` whenever a BULK 4 style-lock Source, Runtime target, or manifest entry changes.
+1. Check `31_GAMEPLAY_AND_WAVE_COMPLETION_PLAN.md` for priority and bulk scope.
+2. Check `22_HANDOFF_FOR_NEW_CHAT.md` for the compact project handoff.
+3. Check `16_CURRENT_ROADMAP.md` and `17_OPEN_TASKS.md` for older open work that still applies.
+4. Inspect the relevant code path.
+5. Make the smallest isolated change that advances the current gameplay bulk.
+6. Run `npm.cmd run build` when code or assets change.
+7. Run `npm.cmd run assets:refresh` whenever a character Body sheet or its manifest changes.
+8. Run `npm.cmd run vfx:refresh` whenever a BULK 4 style-lock Source, Runtime target, or manifest entry changes.

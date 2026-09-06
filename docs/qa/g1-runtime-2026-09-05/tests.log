@@ -1,0 +1,411 @@
+Exit code: 0
+
+> more-than-wombat@0.1.0 test
+> tsx --test tests/*.test.ts
+
+TAP version 13
+# Subtest: adaptive viewport preserves the base combat canvas at 16:9 and narrower
+ok 1 - adaptive viewport preserves the base combat canvas at 16:9 and narrower
+  ---
+  duration_ms: 3.0397
+  type: 'test'
+  ...
+# Subtest: adaptive viewport adds horizontal play space for a wide landscape device
+ok 2 - adaptive viewport adds horizontal play space for a wide landscape device
+  ---
+  duration_ms: 0.6848
+  type: 'test'
+  ...
+# Subtest: wide devices and collapsed browser chrome do not introduce side bars
+ok 3 - wide devices and collapsed browser chrome do not introduce side bars
+  ---
+  duration_ms: 0.5145
+  type: 'test'
+  ...
+# Subtest: adaptive viewport resize ignores duplicate browser events and reacts to an actual rotation width
+ok 4 - adaptive viewport resize ignores duplicate browser events and reacts to an actual rotation width
+  ---
+  duration_ms: 0.4778
+  type: 'test'
+  ...
+# Subtest: attack hitbox windows switch on exact half-open boundaries
+ok 5 - attack hitbox windows switch on exact half-open boundaries
+  ---
+  duration_ms: 2.1604
+  type: 'test'
+  ...
+# Subtest: authored hitbox profiles cover their complete active phase
+ok 6 - authored hitbox profiles cover their complete active phase
+  ---
+  duration_ms: 2.8036
+  type: 'test'
+  ...
+# Subtest: fighter states select explicit hurtbox and pushbox profiles
+ok 7 - fighter states select explicit hurtbox and pushbox profiles
+  ---
+  duration_ms: 0.7859
+  type: 'test'
+  ...
+# Subtest: combat factions reject friendly fire while allowing opposing teams
+ok 8 - combat factions reject friendly fire while allowing opposing teams
+  ---
+  duration_ms: 0.311
+  type: 'test'
+  ...
+# Subtest: all contact types can share the actual overlap center
+ok 9 - all contact types can share the actual overlap center
+  ---
+  duration_ms: 0.6097
+  type: 'test'
+  ...
+# Subtest: combat clock pauses, advances one fixed frame, and resumes
+ok 10 - combat clock pauses, advances one fixed frame, and resumes
+  ---
+  duration_ms: 18.6487
+  type: 'test'
+  ...
+# Subtest: combat clock cycles deterministic slow-motion scales
+ok 11 - combat clock cycles deterministic slow-motion scales
+  ---
+  duration_ms: 0.648
+  type: 'test'
+  ...
+# Subtest: combat gym exposes authored moves plus the universal air move
+ok 12 - combat gym exposes authored moves plus the universal air move
+  ---
+  duration_ms: 9.7872
+  type: 'test'
+  ...
+# Subtest: combat gym exposes the Wizard miscast for deterministic animation review
+ok 13 - combat gym exposes the Wizard miscast for deterministic animation review
+  ---
+  duration_ms: 0.6665
+  type: 'test'
+  ...
+# Subtest: combat gym setting cycles wrap and reset move choice for a new player
+ok 14 - combat gym setting cycles wrap and reset move choice for a new player
+  ---
+  duration_ms: 1.4861
+  type: 'test'
+  ...
+# Subtest: combat gym exposes armor as a deterministic contact response
+ok 15 - combat gym exposes armor as a deterministic contact response
+  ---
+  duration_ms: 0.8107
+  type: 'test'
+  ...
+# Subtest: combat gym defaults an older settings payload to the right-side dummy
+ok 16 - combat gym defaults an older settings payload to the right-side dummy
+  ---
+  duration_ms: 0.4671
+  type: 'test'
+  ...
+# Subtest: combat resolution returns the center of the actual overlap
+ok 17 - combat resolution returns the center of the actual overlap
+  ---
+  duration_ms: 4.0934
+  type: 'test'
+  ...
+# Subtest: combat resolution rejects non-overlap and duplicate targets
+ok 18 - combat resolution rejects non-overlap and duplicate targets
+  ---
+  duration_ms: 2.4923
+  type: 'test'
+  ...
+# Subtest: combat resolution enforces authored lane and height tolerances
+ok 19 - combat resolution enforces authored lane and height tolerances
+  ---
+  duration_ms: 1.1752
+  type: 'test'
+  ...
+# Subtest: guard and invulnerability connect without dealing damage
+ok 20 - guard and invulnerability connect without dealing damage
+  ---
+  duration_ms: 0.488
+  type: 'test'
+  ...
+# Subtest: armor takes damage without becoming a normal hit outcome
+ok 21 - armor takes damage without becoming a normal hit outcome
+  ---
+  duration_ms: 0.3767
+  type: 'test'
+  ...
+# Subtest: radial knockback derives facing and vertical direction from positions
+ok 22 - radial knockback derives facing and vertical direction from positions
+  ---
+  duration_ms: 0.5642
+  type: 'test'
+  ...
+# Subtest: invalid pressure profiles fail explicitly instead of disabling or bypassing pressure
+ok 23 - invalid pressure profiles fail explicitly instead of disabling or bypassing pressure
+  ---
+  duration_ms: 6.5193
+  type: 'test'
+  ...
+# Subtest: encounter director gates attacks and mana until a visible entry becomes active
+ok 24 - encounter director gates attacks and mana until a visible entry becomes active
+  ---
+  duration_ms: 1.8577
+  type: 'test'
+  ...
+# Subtest: encounter director enforces separate pressure budgets and releases interrupted tokens
+ok 25 - encounter director enforces separate pressure budgets and releases interrupted tokens
+  ---
+  duration_ms: 6.6713
+  type: 'test'
+  ...
+# Subtest: encounter director clears tokens before travel and enters the following section without a scene timer
+ok 26 - encounter director clears tokens before travel and enters the following section without a scene timer
+  ---
+  duration_ms: 1.8435
+  type: 'test'
+  ...
+# Subtest: final clear produces victory
+ok 27 - final clear produces victory
+  ---
+  duration_ms: 0.9071
+  type: 'test'
+  ...
+# Subtest: defeat is terminal and a new run cannot inherit attack allocations
+ok 28 - defeat is terminal and a new run cannot inherit attack allocations
+  ---
+  duration_ms: 2.1035
+  type: 'test'
+  ...
+# Subtest: long frames cannot skip the rendered entry phase
+ok 29 - long frames cannot skip the rendered entry phase
+  ---
+  duration_ms: 0.7145
+  type: 'test'
+  ...
+# Subtest: mixed attacks are staggered; burst profile limits additional commitments between windows
+ok 30 - mixed attacks are staggered; burst profile limits additional commitments between windows
+  ---
+  duration_ms: 0.5957
+  type: 'test'
+  ...
+# Subtest: feedback policy preserves an authored move override
+ok 31 - feedback policy preserves an authored move override
+  ---
+  duration_ms: 2.5361
+  type: 'test'
+  ...
+# Subtest: feedback classes are perceptually ordered without relying on damage numbers
+ok 32 - feedback classes are perceptually ordered without relying on damage numbers
+  ---
+  duration_ms: 1.4664
+  type: 'test'
+  ...
+# Subtest: feedback policy distinguishes block, armor, and invulnerability
+ok 33 - feedback policy distinguishes block, armor, and invulnerability
+  ---
+  duration_ms: 0.6496
+  type: 'test'
+  ...
+# Subtest: magic moves override spark and sound while retaining their strength class
+ok 34 - magic moves override spark and sound while retaining their strength class
+  ---
+  duration_ms: 0.3326
+  type: 'test'
+  ...
+# Subtest: whiffs never enter the presentation path
+ok 35 - whiffs never enter the presentation path
+  ---
+  duration_ms: 2.7754
+  type: 'test'
+  ...
+# Subtest: shake accessibility supports full, reduced, and disabled output
+ok 36 - shake accessibility supports full, reduced, and disabled output
+  ---
+  duration_ms: 2.7993
+  type: 'test'
+  ...
+# Subtest: input buffer retains a tap through a short freeze and consumes it once
+ok 37 - input buffer retains a tap through a short freeze and consumes it once
+  ---
+  duration_ms: 2.1023
+  type: 'test'
+  ...
+# Subtest: input buffer expires unconsumed actions
+ok 38 - input buffer expires unconsumed actions
+  ---
+  duration_ms: 0.7238
+  type: 'test'
+  ...
+# Subtest: production buffer remains alive across the longest default hitstop
+ok 39 - production buffer remains alive across the longest default hitstop
+  ---
+  duration_ms: 1.0248
+  type: 'test'
+  ...
+# Subtest: buffer lifetime does not age while combat is frozen
+ok 40 - buffer lifetime does not age while combat is frozen
+  ---
+  duration_ms: 1.6397
+  type: 'test'
+  ...
+# Subtest: menu wins over the broad left-half joystick capture
+ok 41 - menu wins over the broad left-half joystick capture
+  ---
+  duration_ms: 3.1164
+  type: 'test'
+  ...
+# Subtest: left-side playfield still captures the joystick
+ok 42 - left-side playfield still captures the joystick
+  ---
+  duration_ms: 0.6503
+  type: 'test'
+  ...
+# Subtest: larger action buttons keep separate matching touch circles across landscape widths
+ok 43 - larger action buttons keep separate matching touch circles across landscape widths
+  ---
+  duration_ms: 16.3939
+  type: 'test'
+  ...
+# Subtest: mobile controls stay inside the smallest supported landscape viewport
+ok 44 - mobile controls stay inside the smallest supported landscape viewport
+  ---
+  duration_ms: 17.5335
+  type: 'test'
+  ...
+# Subtest: menu control clears the player HUD label instead of covering it
+ok 45 - menu control clears the player HUD label instead of covering it
+  ---
+  duration_ms: 0.7061
+  type: 'test'
+  ...
+# Subtest: move timeline exposes exact startup, active, recovery, and end boundaries
+ok 46 - move timeline exposes exact startup, active, recovery, and end boundaries
+  ---
+  duration_ms: 1.9379
+  type: 'test'
+  ...
+# Subtest: timeline snapshot reports phase-local time and remaining time
+ok 47 - timeline snapshot reports phase-local time and remaining time
+  ---
+  duration_ms: 0.7592
+  type: 'test'
+  ...
+# Subtest: Wizard projectiles use transparent roster VFX, not legacy animation sheets
+ok 48 - Wizard projectiles use transparent roster VFX, not legacy animation sheets
+  ---
+  duration_ms: 6.191
+  type: 'test'
+  ...
+# Subtest: normal play exposes only the asset-approved roster and its approved Duel opponents
+ok 49 - normal play exposes only the asset-approved roster and its approved Duel opponents
+  ---
+  duration_ms: 4.792
+  type: 'test'
+  ...
+# Subtest: diagnostic prototypes remain available to the Combat Gym but never appear in Wave data
+ok 50 - diagnostic prototypes remain available to the Combat Gym but never appear in Wave data
+  ---
+  duration_ms: 1.4791
+  type: 'test'
+  ...
+# Subtest: every shippable player has an authored basic, special, and ultimate with a real mana gate
+ok 51 - every shippable player has an authored basic, special, and ultimate with a real mana gate
+  ---
+  duration_ms: 0.9485
+  type: 'test'
+  ...
+# Subtest: wave tile scale preserves the source projection while covering the combat viewport
+ok 52 - wave tile scale preserves the source projection while covering the combat viewport
+  ---
+  duration_ms: 2.2006
+  type: 'test'
+  ...
+# Subtest: stage tile scale rejects invalid raster dimensions
+ok 53 - stage tile scale rejects invalid raster dimensions
+  ---
+  duration_ms: 0.9263
+  type: 'test'
+  ...
+# Subtest: flat Duel/Test bounds stay inside the shared painted ground band
+ok 54 - flat Duel/Test bounds stay inside the shared painted ground band
+  ---
+  duration_ms: 2.114
+  type: 'test'
+  ...
+# Subtest: every Junkyard Run section stays inside its declared visual ground contract
+ok 55 - every Junkyard Run section stays inside its declared visual ground contract
+  ---
+  duration_ms: 9.3575
+  type: 'test'
+  ...
+# Subtest: VFX quality tiers define bounded concurrent layer budgets
+ok 56 - VFX quality tiers define bounded concurrent layer budgets
+  ---
+  duration_ms: 2.1912
+  type: 'test'
+  ...
+# Subtest: universal recipes choose a shared family from impact style and strength
+ok 57 - universal recipes choose a shared family from impact style and strength
+  ---
+  duration_ms: 2.6936
+  type: 'test'
+  ...
+# Subtest: outcome recipes stay distinct and whiff remains a motion-only recipe
+ok 58 - outcome recipes stay distinct and whiff remains a motion-only recipe
+  ---
+  duration_ms: 2.8239
+  type: 'test'
+  ...
+# Subtest: quality modes retain the core and drop optional residue deterministically
+ok 59 - quality modes retain the core and drop optional residue deterministically
+  ---
+  duration_ms: 0.3916
+  type: 'test'
+  ...
+# Subtest: roster signature recipes use shared transparent primitives instead of arena art
+ok 60 - roster signature recipes use shared transparent primitives instead of arena art
+  ---
+  duration_ms: 0.526
+  type: 'test'
+  ...
+# Subtest: Earthshaker keeps its contact core at every VFX quality level
+ok 61 - Earthshaker keeps its contact core at every VFX quality level
+  ---
+  duration_ms: 0.3009
+  type: 'test'
+  ...
+# Subtest: every current entry finds separated visible spawns across arrival lanes and camera positions
+ok 62 - every current entry finds separated visible spawns across arrival lanes and camera positions
+  ---
+  duration_ms: 22.7657
+  type: 'test'
+  ...
+# Subtest: unsafe geometry fails closed instead of falling back to an overlap
+ok 63 - unsafe geometry fails closed instead of falling back to an overlap
+  ---
+  duration_ms: 0.6382
+  type: 'test'
+  ...
+# Subtest: Junkyard Run has ordered, reachable sections and safe enemy spawns
+ok 64 - Junkyard Run has ordered, reachable sections and safe enemy spawns
+  ---
+  duration_ms: 6.1551
+  type: 'test'
+  ...
+# Subtest: wave traversal unlocks an explicit corridor and enters the next combat section without a teleport
+ok 65 - wave traversal unlocks an explicit corridor and enters the next combat section without a teleport
+  ---
+  duration_ms: 0.5342
+  type: 'test'
+  ...
+# Subtest: wave stage validation rejects overlapping sections, invalid spawns and unsafe starts
+ok 66 - wave stage validation rejects overlapping sections, invalid spawns and unsafe starts
+  ---
+  duration_ms: 1.5943
+  type: 'test'
+  ...
+1..66
+# tests 66
+# suites 0
+# pass 66
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5769.9562

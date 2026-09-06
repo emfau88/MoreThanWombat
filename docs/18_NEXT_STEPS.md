@@ -1,6 +1,8 @@
 # 18 - Next Steps
 
-This file captures the current recommended execution order for the next short development block.
+**Current order — 2026-09-05:** G0 is complete. G1 Encounter Director is implemented and technically verified. Complete its manual pressure/readability acceptance, then G2 enemy roles and G3 seven encounters under [plan 31](31_GAMEPLAY_AND_WAVE_COMPLETION_PLAN.md). Use the [G1 report](qa/g1-runtime-2026-09-05/README.md) for current state and open gates.
+
+The blocks below are historical recommendations. Camera, feel and device checks remain relevant, but their old order and content restrictions do not supersede the scoped G1–G11 work.
 
 ## Block 1 - Wave Mode Polish
 

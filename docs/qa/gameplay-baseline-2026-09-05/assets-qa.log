@@ -1,0 +1,6 @@
+
+> more-than-wombat@0.1.0 assets:qa
+> node scripts/character-asset-qa.mjs --strict
+
+Character asset QA: 6/6 sheets pass hard gates.
+Report: docs\qa\character-assets-latest.md

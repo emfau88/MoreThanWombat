@@ -1,7 +1,8 @@
 # 30 – Mara und jitterfreie Character-Produktion
 
-**Status:** M0–M3 implementiert und automatisiert abgenommen
-**Stand:** 2026-09-04  
+**Historischer Planstatus:** M0–M3 implementiert und automatisiert abgenommen am 2026-09-04
+
+**Aktueller Status — 2026-09-05:** Mara Breach ist im normalen Spieler-Roster registriert. Die sechs Sheet-Gates bestehen; ein aktueller vollständiger Run und die Abnahme auf zwei realen Geräteklassen bleiben offen. Für den aktuellen Projektstand gelten `31_GAMEPLAY_AND_WAVE_COMPLETION_PLAN.md` und `qa/gameplay-baseline-2026-09-05/README.md`.
 **Ziel:** Eine eigene, professionell lesbare weibliche Kämpferin produzieren, ohne die alten Probleme mit transparentem Leerraum, Root-Drift, Farbwechseln und scheinbar seitlichem Jitter zu wiederholen.
 
 ## Entscheidung und kreativer Rahmen
@@ -107,7 +108,7 @@ Darum gilt für die Produktionsversion:
 
 ### Bulk M3 – Integration, Balance und Mobile-Abnahme
 
-**Ergebnis:** Mara ist als vollwertige spielbare Figur registriert und auf Zielgeräten geprüft.
+**Implementierungsstand:** Mara ist als vollwertige spielbare Figur registriert. Eine belegte Zielgeräteabnahme liegt für diesen Stand nicht vor; vollständige Runs und zwei reale Geräteklassen bleiben offene Abnahmeziele.
 
 1. Fighter-Daten, Auswahlbildschirm, Animation Registry und Preload einbinden.
 2. Werte gegen die vorhandenen Archetypen kalibrieren: höhere Mobilität als Wizard/Barbarian, geringere Reichweite/HP als Bulldog, keine unfaire Dash-Dominanz.
@@ -144,9 +145,9 @@ Eine neue Figur gilt erst dann als hochwertig integriert, wenn:
 
 **M0 → M1 → M2 → M3.** Der entscheidende Schutz ist M1: Erst wenn der Lauf als kurze, echte Animation überzeugt, lohnt es sich, die restliche Figur zu produzieren. Das verhindert, dass ein hübsches Konzept erneut auf einem unruhigen Kern landet.
 
-## Umsetzungsprotokoll – Mara "Breach" Vale (2026-09-04)
+## Historisches Umsetzungsprotokoll – Mara "Breach" Vale (2026-09-04)
 
-Mara besitzt weiterhin Daten, Moves, Boxprofile und reine Runtime-VFX-Cues, ist jedoch **nicht freigegeben**: Die sichtbare Prüfung am 2026-09-04 hat weiße Matte-/Fragmentpixel, unscharfe Skalierung und keine glaubwürdige Fußarbeit im Walk gezeigt. Sie bleibt nur im Combat Gym als Rework-Prototyp und ist aus Character Select, Duel und Waves entfernt, bis sie vollständig neu produziert und visuell abgenommen wurde.
+Die sichtbare Prüfung am 2026-09-04 führte zeitweise zu einer Rücknahme: weiße Matte-/Fragmentpixel, unscharfe Skalierung und keine glaubwürdige Fußarbeit im Walk wurden als Blocker festgehalten; Mara blieb damals nur im Combat Gym und war aus Character Select, Duel und Waves entfernt. Dieser Zustand ist historisch. Im aktuellen Code ist Mara wieder ein normaler Spieler; die heutige technische Sheet-QA besteht, aber die aktuelle vollständige Run- und Realgeräteabnahme bleibt offen.
 
 ### Produktionsartefakte
 

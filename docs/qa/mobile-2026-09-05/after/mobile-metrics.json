@@ -1,0 +1,123 @@
+{
+  "snapshots": [
+    {
+      "label": "menu-landscape",
+      "viewport": [
+        844,
+        390
+      ],
+      "canvas": [
+        0,
+        0,
+        844,
+        389.859375
+      ],
+      "backing": [
+        1169,
+        540
+      ],
+      "logical": [
+        1169,
+        540
+      ],
+      "imageRendering": "pixelated"
+    },
+    {
+      "label": "wave-landscape",
+      "viewport": [
+        844,
+        390
+      ],
+      "canvas": [
+        0,
+        0,
+        844,
+        389.859375
+      ],
+      "backing": [
+        1169,
+        540
+      ],
+      "logical": [
+        1169,
+        540
+      ],
+      "phase": "active",
+      "playerId": 1,
+      "imageRendering": "pixelated"
+    },
+    {
+      "label": "portrait",
+      "viewport": [
+        390,
+        844
+      ],
+      "canvas": [
+        0,
+        312,
+        390,
+        219.375
+      ],
+      "backing": [
+        960,
+        540
+      ],
+      "logical": [
+        960,
+        540
+      ],
+      "phase": "active",
+      "playerId": 1,
+      "imageRendering": "pixelated"
+    },
+    {
+      "label": "landscape-after-rotation",
+      "viewport": [
+        844,
+        390
+      ],
+      "canvas": [
+        0,
+        0,
+        844,
+        389.859375
+      ],
+      "backing": [
+        1169,
+        540
+      ],
+      "logical": [
+        1169,
+        540
+      ],
+      "phase": "active",
+      "playerId": 1,
+      "imageRendering": "pixelated"
+    },
+    {
+      "label": "wide-landscape",
+      "viewport": [
+        932,
+        360
+      ],
+      "canvas": [
+        0,
+        0,
+        932,
+        360
+      ],
+      "backing": [
+        1398,
+        540
+      ],
+      "logical": [
+        1398,
+        540
+      ],
+      "phase": "active",
+      "playerId": 1,
+      "imageRendering": "pixelated"
+    }
+  ],
+  "errors": []
+}

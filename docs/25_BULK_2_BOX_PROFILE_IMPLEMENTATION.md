@@ -3,6 +3,8 @@
 **Status:** abgeschlossen am 2026-09-02
 **Ziel:** nachvollziehbare, datengetriebene Treffergeometrie für den polierten Combat-Vertical-Slice
 
+**Aktueller Kontext — 2026-09-05:** Historische Implementierungsdokumentation. Die Testzahl und der „nächste Block“ weiter unten sind zeitgebunden; aktuelle Gameplay-Prioritäten stehen in `31_GAMEPLAY_AND_WAVE_COMPLETION_PLAN.md`, aktuelle technische Gates in `qa/gameplay-baseline-2026-09-05/README.md`.
+
 ## Ergebnis
 
 BULK 2 ersetzt die bisherige Annahme „ein statisches Angriffsrechteck und eine unveränderte Körperbox“ durch eine gemeinsame Boxprofil-Schicht. Angriffe können jetzt mehrere aktive Zeitfenster und mehrere Boxen pro Fenster besitzen. Fighter wählen Hurtbox und Pushbox anhand ihres Zustands. Nahkampf, Projektile und Axe Rain verwenden denselben tatsächlichen Überlappungsmittelpunkt für den Kontakt.

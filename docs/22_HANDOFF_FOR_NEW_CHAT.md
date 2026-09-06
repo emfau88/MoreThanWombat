@@ -1,8 +1,22 @@
 # More Than Wombat - Handoff For New Chat
 
-Last updated: 2026-09-02
+Last updated: 2026-09-05
 
-## 2026-09-02 Priority Update
+## Current handoff — G1 implemented; manual acceptance before G2
+
+Read [plan 31](31_GAMEPLAY_AND_WAVE_COMPLETION_PLAN.md) first and the [G0 baseline with logs](qa/gameplay-baseline-2026-09-05/README.md) second. The current task is gameplay and Wave completion. The historical VFX-first recommendations and knockdown exclusion below do not override this plan.
+
+- Four normal players: Wombat, Discount Wizard, Budget Barbarian and Mara Breach. Normal Duel enemies: Pigeon and Wizard. Buster Bulldog and Reference Fighter are Gym-only prototypes, not normal Character Select options.
+- Local checks on codebase `d676906`: Typecheck, **55/55 tests**, production build, **6/6** character sheets and VFX QA **6/6 + 5/5 + 4/4** pass. Character QA includes a prototype and is not a roster count or visual acceptance.
+- Junkyard Run has three zones and three groups (five enemies total), now with a tested Director, lifecycle-safe pressure budgets, safe visible entry and phase-aware mana. No mana regeneration during safe travel, transition or results.
+- Current checks: 66/66 tests, Typecheck, build and 235 scripted Phaser assertions at each of three viewport sizes. See the [G1 report](qa/g1-runtime-2026-09-05/README.md); the 55-test line above is the historical G0 baseline.
+- Mobile follow-up: corrected FIT resizing, full landscape width, canvas sharpening and four action buttons enlarged by 10% with matching separate touch circles. Rotation and actual touch events pass browser emulation; [mobile evidence](qa/mobile-2026-09-05/README.md). Physical-device acceptance remains open.
+- Next: manual G1 pressure/readability acceptance, then G2 roles and G3 seven encounters; no new player fighter or arena during G0–G9.
+- Full interactive runs, balance, current Pages verification and two real-device classes remain open. Use the [run template](qa/gameplay-run-template.md); do not mark manual gates passed from unit tests.
+
+Everything below is retained as dated implementation history and system context. Older counts, roster descriptions and “next” lists are superseded by this update.
+
+## Historischer Handoff-Snapshot — 2026-09-02
 
 BULK 0 and the architecture safety pass BULK 0.5 from `23_ARCADE_QUALITY_COMBAT_VFX_PLAN.md` are complete.
 
@@ -10,7 +24,7 @@ BULK 0 and the architecture safety pass BULK 0.5 from `23_ARCADE_QUALITY_COMBAT_
 - Pause, frame step, slow motion, box overlays, telemetry, guard, armor, invulnerability, and attack-loop dummy modes exist.
 - Move timeline, input buffering, contact resolution, hit feedback, presentation FX, animation registration, and mobile hit testing were separated into focused modules.
 - Melee, projectile, and Axe Rain contacts share hit/blocked/armored/invulnerable outcomes.
-- `npm.cmd run typecheck`, `npm.cmd test`, and `npm.cmd run build` are required checks; 34 tests currently pass.
+- At the time of this 2026-09-02 snapshot, `npm.cmd run typecheck`, `npm.cmd test`, and `npm.cmd run build` were required checks and 34 tests passed. The current G0 count is 55/55.
 - The touch `MENU` control has priority over joystick capture and has been verified in a mobile landscape viewport.
 - BULK 1 is complete: deterministic normalization, loop previews, whole-sheet gates, and visual review pass for all five production Body sheets.
 - Discount Wizard v2 was rebuilt from a canonical master; all 20 cells pass, and Wand Smack plus Miscast were approved in the Combat Gym at 0.25×.
@@ -201,7 +215,7 @@ Implemented:
 
 - Uses selected coherent chunks from `public/assets/original/205103.png` converted into `public/assets/characters/reference-fighter/reference_fighter_selected_96.png`
 - Source chunks are row 1 frames 1-4 for idle, row 3 frames 1-3 for walk/run, row 2 frames 1-4 for basic attack, the 4th row from the bottom frames 3-5 for the superpunch-style special, and the previous jump-kick frames as a dedicated Air Bonk block
-- Available in Character Select for local animation/combat feel testing
+- Previously available in Character Select for local animation/combat feel testing; it is now a Combat-Gym-only diagnostic.
 
 Notes:
 
@@ -365,7 +379,7 @@ Check:
 
 ### Character Select
 
-The character select received a compact readability pass after adding the Reference Fighter:
+The character select received a compact readability pass during the historical Reference Fighter experiment:
 
 - wider player/opponent cards
 - larger touch arrow buttons
