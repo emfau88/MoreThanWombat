@@ -59,7 +59,7 @@ try {
   await send('Emulation.setTouchEmulationEnabled', { enabled: true, maxTouchPoints: 5 });
   await send('Page.navigate', { url });
   await mkdir(outputDir, { recursive: true });
-  if (!url.includes('/tests/browser/g1.html')) {
+  if (!url.includes('/tests/browser/')) {
     for (let attempt = 0; attempt < 240; attempt++) {
       if (await evaluate('window.__MORE_THAN_WOMBAT_GAME__?.scene.isActive("MainMenuScene")')) break;
       await sleep(250);

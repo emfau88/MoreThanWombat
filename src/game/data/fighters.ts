@@ -404,6 +404,44 @@ export const referenceFighterDefinition: FighterDefinition = {
   },
 };
 
+/** G2 behavior prototype. It deliberately reuses diagnostic art until the role passes mechanical review. */
+export const scrapFlankerDefinition: FighterDefinition = {
+  ...referenceFighterDefinition,
+  id: 'scrap_flanker',
+  label: 'Scrap Flanker [PROTO]',
+  maxHp: 58,
+  maxMana: 100,
+  manaRegenPerSecond: 8,
+  moveSpeed: 190,
+  attacks: { basic: 'buster_underbite_jab', special: 'scrap_flanker_charge' },
+  sprite: {
+    ...referenceFighterDefinition.sprite!,
+    attackAnimations: {
+      ...referenceFighterDefinition.sprite!.attackAnimations,
+      scrap_flanker_charge: 'reference-fighter-special',
+    },
+  },
+};
+
+/** G2 behavior prototype. It deliberately reuses Buster art until the armor contract passes review. */
+export const scrapHeavyDefinition: FighterDefinition = {
+  ...busterBulldogDefinition,
+  id: 'scrap_heavy',
+  label: 'Scrap Heavy [PROTO]',
+  maxHp: 118,
+  maxMana: 80,
+  manaRegenPerSecond: 4,
+  moveSpeed: 126,
+  attacks: { basic: 'buster_underbite_jab', special: 'scrap_heavy_bash' },
+  sprite: {
+    ...busterBulldogDefinition.sprite!,
+    attackAnimations: {
+      ...busterBulldogDefinition.sprite!.attackAnimations,
+      scrap_heavy_bash: 'buster-bulldog-bash',
+    },
+  },
+};
+
 export const fighterDefinitions: Record<FighterId, FighterDefinition> = {
   wombat: wombatDefinition,
   angry_pigeon: angryPigeonDefinition,
@@ -412,4 +450,6 @@ export const fighterDefinitions: Record<FighterId, FighterDefinition> = {
   mara_breach: maraBreachDefinition,
   buster_bulldog: busterBulldogDefinition,
   reference_fighter: referenceFighterDefinition,
+  scrap_flanker: scrapFlankerDefinition,
+  scrap_heavy: scrapHeavyDefinition,
 };

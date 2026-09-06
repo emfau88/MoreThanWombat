@@ -9,9 +9,9 @@
 
 ### Ausführungsstand 2026-09-05
 
-**G0 abgeschlossen; G1 implementiert und technisch geprüft, manuelle Spielgefühlabnahme offen.** [G1-Prüfbericht](qa/g1-runtime-2026-09-05/README.md) · [Historische G0-Baseline](qa/gameplay-baseline-2026-09-05/README.md) · [Einheitliche Run-Messvorlage](qa/gameplay-run-template.md).
+**G0 abgeschlossen; G1 und G2 implementiert und technisch geprüft, manuelle Spielgefühlabnahmen offen.** [G2-Prüfbericht](qa/g2-runtime-2026-09-06/README.md) · [G1-Prüfbericht](qa/g1-runtime-2026-09-05/README.md) · [Historische G0-Baseline](qa/gameplay-baseline-2026-09-05/README.md) · [Einheitliche Run-Messvorlage](qa/gameplay-run-template.md).
 
-Technisch geprüft: 66/66 Tests, Typecheck und Production Build. Der Browser-Harness prüft die echten Phaser-Objekte mit allen vier Figuren, drei Abschnitten, Defeat, Restart sowie Duel/Gym. Die G0-Asset-Gates bleiben dokumentiert. Der Run hat weiterhin drei komponierte Gruppen (1/2/2), jetzt mit Director, sicherer Entry-Phase und phasenabhängigem Mana. Manuelle Spielgefühl-, Balance- und Realgeräteabnahmen bleiben offen; G2 beginnt nach der G1-Spielgefühlabnahme.
+Technisch geprüft: 74/74 Tests, Typecheck und Production Build. Der G2-Browser-Harness prüft die vier Rollen und ihre mechanischen Signaturen in echten Phaser-Objekten; der G1-Regressionslauf prüft weiterhin alle vier Spielerfiguren, drei Abschnitte, Defeat, Restart sowie Duel/Gym. Der Run hat weiterhin drei komponierte Gruppen (1/2/2), jetzt mit Director, sicherer Entry-Phase, phasenabhängigem Mana und vier Rollenprototypen. Auf ausdrückliche Entscheidung wurde G2 vor der nachzuholenden G1-Spielgefühlabnahme technisch umgesetzt. G3 bleibt bis zur manuellen G1-/G2-Rollenabnahme gesperrt.
 
 Zusatzauftrag Mobile: Querformat-Skalierung und Rotation korrigiert, vier Aktionsbuttons um 10 % vergrößert und Touch-Zonen angepasst. [Messwerte und Eingabeprüfung](qa/mobile-2026-09-05/README.md); Abschluss der Dokumentation am 2026-09-06.
 
@@ -262,6 +262,8 @@ Startprofile:
 `Add deterministic encounter pressure director`
 
 ## 8. BULK G2 – Gegnerökologie als spielbare Prototypen
+
+**Status 2026-09-06:** Implementierung und technische Prüfungen geliefert. Manuelle Einzelrollen-, Paarungs-, Austausch- und VFX-Lesbarkeitsabnahme offen; Details im [G2-Prüfbericht](qa/g2-runtime-2026-09-06/README.md). Finale Flanker-/Heavy-Sprites bleiben bis zur mechanischen Freigabe zurückgestellt.
 
 **Priorität:** P0<br>
 **Risiko:** mittel bis hoch<br>

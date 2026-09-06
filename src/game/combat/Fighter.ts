@@ -105,6 +105,7 @@ export class Fighter {
   readonly body: Phaser.GameObjects.Rectangle;
   readonly sprite?: Phaser.GameObjects.Sprite;
   readonly shadow: Phaser.GameObjects.Ellipse;
+  readonly roleCueText: Phaser.GameObjects.Text;
   readonly debugLabel: Phaser.GameObjects.Text;
   readonly hurtboxDebug: Phaser.GameObjects.Rectangle;
   readonly pushboxDebug: Phaser.GameObjects.Rectangle;
@@ -132,6 +133,7 @@ export class Fighter {
   private statusNote = '';
   private flashRemainingMs = 0;
   private flashColor = 0xfff1bf;
+  private roleTint: number | null = null;
   private attackInstanceId = 0;
   private landingRemainingMs = 0;
   private hasUsedAirAttack = false;
@@ -183,6 +185,18 @@ export class Fighter {
         align: 'center',
       })
       .setOrigin(0.5);
+    this.roleCueText = scene.add
+      .text(0, -definition.height - 8, '', {
+        color: '#ffffff',
+        fontFamily: 'Verdana, Geneva, sans-serif',
+        fontSize: '14px',
+        fontStyle: 'bold',
+        align: 'center',
+        stroke: '#17151f',
+        strokeThickness: 4,
+      })
+      .setOrigin(0.5)
+      .setVisible(false);
     this.hurtboxDebug = scene.add.rectangle(0, 0, definition.hurtbox.width, definition.hurtbox.height).setOrigin(0, 0);
     this.hurtboxDebug.setStrokeStyle(2, 0x48bfe3).setFillStyle(0x48bfe3, 0.08);
     this.pushboxDebug = scene.add.rectangle(0, 0, definition.pushbox.width, definition.pushbox.height).setOrigin(0, 0);
@@ -199,6 +213,7 @@ export class Fighter {
       this.pushboxDebug,
       ...this.hitboxDebugRects,
       this.contactDebug,
+      this.roleCueText,
       this.debugLabel,
     ]);
 
@@ -409,6 +424,11 @@ export class Fighter {
 
   setCombatResponse(response: CombatResponse): void {
     this.combatResponse = response;
+  }
+
+  setRolePresentation(cue: string, tint?: number): void {
+    this.roleTint = tint ?? null;
+    this.roleCueText.setText(cue).setVisible(cue.length > 0 && this.state !== 'dead');
   }
 
   getHurtbox(): Rect | null {
@@ -713,6 +733,7 @@ export class Fighter {
     this.visualContainer.setPosition(0, -this.z);
     this.body.setScale(this.facing === 'left' ? -1 : 1, 1);
     this.body.setFillStyle(this.getBodyColor());
+    this.roleCueText.setVisible(this.roleCueText.text.length > 0 && this.state !== 'dead');
     this.syncSpriteAnimation();
     this.syncDebugBoxes();
     const suffix = this.statusNote ? `\n${this.statusNote}` : '';
@@ -798,6 +819,10 @@ export class Fighter {
       return 0x4b5563;
     }
 
+    if (this.roleTint !== null) {
+      return this.roleTint;
+    }
+
     if (this.state === 'special') {
       return 0x9d4edd;
     }
@@ -830,6 +855,8 @@ export class Fighter {
 
     if (this.flashRemainingMs > 0) {
       this.sprite.setTint(this.flashColor);
+    } else if (this.roleTint !== null) {
+      this.sprite.setTint(this.roleTint);
     } else {
       this.sprite.clearTint();
     }

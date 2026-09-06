@@ -1,4 +1,5 @@
 import type { StageDefinition } from '../data/stages';
+import { enemyRoleContracts, fighterEnemyRoles } from '../ai/EnemyRoles';
 import { getPressureBudgetViolations } from './EncounterDirector';
 
 export const MINIMUM_WAVE_SPAWN_DISTANCE = 96;
@@ -80,6 +81,11 @@ export function getWaveStageValidationViolations(stage: StageDefinition): string
     violations.push(...getPressureBudgetViolations(section.pressureBudget)
       .map((violation) => `${section.id}: ${violation}`));
     for (const spawn of section.enemies) {
+      if (!spawn.roleId || !(spawn.roleId in enemyRoleContracts)) {
+        violations.push(`${section.id}: enemy spawn must reference a known role`);
+      } else if (fighterEnemyRoles[spawn.fighterId] !== spawn.roleId) {
+        violations.push(`${section.id}: enemy fighter and role must match`);
+      }
       if (spawn.spawnX < bounds.minX || spawn.spawnX > bounds.maxX || spawn.spawnY < bounds.minY || spawn.spawnY > bounds.maxY) {
         violations.push(`${section.id}: enemy spawn must stay inside its section bounds`);
       }

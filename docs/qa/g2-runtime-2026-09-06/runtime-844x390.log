@@ -1,0 +1,41 @@
+PASS — 38 G2 runtime checks
+Real assets loaded and Main Menu created
+Phase spawning, section 1
+Role entry remains protected
+Phase active, section 1
+Section 1 spawns the Pursuer contract
+Pursuer commits its short melee attack
+Missed Pigeon attack enters mechanical overextension
+Pursuer whiff is visibly telegraphed
+Phase travel, section 1
+Travel enters next section
+Phase section_intro, section 2
+Phase spawning, section 2
+Phase active, section 2
+Section 2 proves Pursuer + Zoner pairing
+Zoner cast 1 starts on the real Fighter
+Zoner cast 2 starts on the real Fighter
+Zoner cast 3 starts on the real Fighter
+Every third Zoner cast is a deterministic harmless dud (discount_fireball_cast,discount_fireball_cast,discount_enemy_miscast)
+Wizard dud enters self-stagger
+Zoner miscast remains visually readable
+Phase travel, section 2
+Travel enters next section
+Phase section_intro, section 3
+Phase spawning, section 3
+Phase active, section 3
+Section 3 proves Flanker + Heavy pairing
+Heavy enters with two visible armor contacts
+First contact removes one armor plate
+Second contact visibly breaks armor and changes response
+Flanker aligns in another lane and commits its charge
+Missed Flanker charge enters the crash punish window
+Flanker crash is visibly telegraphed
+full VFX keeps role cue readable
+reduced VFX keeps role cue readable
+minimal VFX keeps role cue readable
+All three VFX quality levels exercised
+Disruption pressure remains inside the Director budget
+G2 proof remains in the live Battle scene
+Scripted diagnostics; manual feel acceptance remains separate.
+[]

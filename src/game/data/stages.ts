@@ -1,12 +1,14 @@
 import type { FighterBounds } from '../combat/Fighter';
 import type { FighterId } from '../core/BattleModes';
 import type { EncounterPressureBudget } from '../core/EncounterDirector';
+import type { EnemyRoleId } from '../ai/EnemyRoles';
 import { FLAT_ARENA_VISUAL_CONTRACT } from '../core/StageVisuals';
 
 export type WaveStageId = 'junkyard_run';
 
 export type StageEnemySpawnDefinition = {
   fighterId: FighterId;
+  roleId: EnemyRoleId;
   spawnX: number;
   spawnY: number;
   hpOverride?: number;
@@ -78,6 +80,7 @@ export const junkyardRunStage: StageDefinition = {
       enemies: [
         {
           fighterId: 'angry_pigeon',
+          roleId: 'pursuer',
           spawnX: 610,
           spawnY: 334,
           hpOverride: 56,
@@ -106,23 +109,25 @@ export const junkyardRunStage: StageDefinition = {
       enemies: [
         {
           fighterId: 'angry_pigeon',
+          roleId: 'pursuer',
           spawnX: 1340,
           spawnY: 308,
           hpOverride: 52,
           moveSpeedOverride: 122,
         },
         {
-          fighterId: 'angry_pigeon',
-          spawnX: 1478,
+          fighterId: 'discount_wizard',
+          roleId: 'zoner',
+          spawnX: 1510,
           spawnY: 350,
-          hpOverride: 70,
-          moveSpeedOverride: 110,
+          hpOverride: 72,
+          moveSpeedOverride: 144,
         },
       ],
     },
     {
-      id: 'wizard-pit',
-      title: 'Neon Dump',
+      id: 'collision-course',
+      title: 'Collision Course',
       zoneId: 'neon-dump',
       bounds: {
         minX: 1944,
@@ -130,21 +135,23 @@ export const junkyardRunStage: StageDefinition = {
         minY: 248,
         maxY: 474,
       },
-      pressureBudget: { meleeTokens: 1, rangedTokens: 1, disruptionBudget: 0, burst: { periodMs: 5000, durationMs: 1800 } },
+      pressureBudget: { meleeTokens: 1, rangedTokens: 0, disruptionBudget: 1, burst: { periodMs: 5000, durationMs: 1800 } },
       enemies: [
         {
-          fighterId: 'angry_pigeon',
+          fighterId: 'scrap_flanker',
+          roleId: 'flanker',
           spawnX: 2240,
           spawnY: 362,
-          hpOverride: 54,
-          moveSpeedOverride: 126,
+          hpOverride: 58,
+          moveSpeedOverride: 190,
         },
         {
-          fighterId: 'discount_wizard',
+          fighterId: 'scrap_heavy',
+          roleId: 'heavy',
           spawnX: 2430,
           spawnY: 314,
-          hpOverride: 86,
-          moveSpeedOverride: 144,
+          hpOverride: 118,
+          moveSpeedOverride: 126,
         },
       ],
     },

@@ -19,7 +19,7 @@ test('Junkyard Run has ordered, reachable sections and safe enemy spawns', () =>
     [
       { meleeTokens: 1, rangedTokens: 0, disruptionBudget: 0 },
       { meleeTokens: 1, rangedTokens: 1, disruptionBudget: 0 },
-      { meleeTokens: 1, rangedTokens: 1, disruptionBudget: 0, burst: { periodMs: 5000, durationMs: 1800 } },
+      { meleeTokens: 1, rangedTokens: 0, disruptionBudget: 1, burst: { periodMs: 5000, durationMs: 1800 } },
     ],
   );
 });
@@ -52,14 +52,14 @@ test('wave stage validation rejects overlapping sections, invalid spawns and uns
         bounds: { minX: 72, maxX: 500, minY: 248, maxY: 474 },
         travelBounds: { minX: 72, maxX: 500, minY: 248, maxY: 474 },
         arrivalTriggerX: 700,
-        enemies: [{ fighterId: 'angry_pigeon', spawnX: 212, spawnY: 340 }],
+        enemies: [{ fighterId: 'angry_pigeon', roleId: 'pursuer', spawnX: 212, spawnY: 340 }],
       },
       {
         ...junkyardRunStage.sections[1],
         id: junkyardRunStage.sections[0].id,
         bounds: { minX: 420, maxX: 900, minY: 474, maxY: 248 },
         pressureBudget: { meleeTokens: -1, rangedTokens: 0.5, disruptionBudget: 0 },
-        enemies: [{ fighterId: 'budget_barbarian', spawnX: 2000, spawnY: 200 }],
+        enemies: [{ fighterId: 'budget_barbarian', roleId: 'heavy', spawnX: 2000, spawnY: 200 }],
       },
     ],
   };
@@ -75,5 +75,6 @@ test('wave stage validation rejects overlapping sections, invalid spawns and uns
   assert.ok(violations.includes('yard-entry: enemy spawn must stay inside its section bounds'));
   assert.ok(violations.includes('yard-entry: enemy spawn is outside the initial camera-safe range'));
   assert.ok(violations.includes('yard-entry: pressure budgets must be non-negative integers'));
+  assert.ok(violations.includes('yard-entry: enemy fighter and role must match'));
   assert.ok(violations.includes('zones must cover the full world width'));
 });

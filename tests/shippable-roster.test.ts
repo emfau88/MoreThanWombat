@@ -7,6 +7,7 @@ import {
   REWORK_FIGHTERS,
   SHIPPABLE_DUEL_ENEMIES,
   SHIPPABLE_PLAYER_FIGHTERS,
+  WAVE_ROLE_PROTOTYPES,
 } from '../src/game/data/roster';
 import { junkyardRunStage } from '../src/game/data/stages';
 import { attacksById } from '../src/game/data/attacks';
@@ -21,8 +22,9 @@ test('normal play exposes only the asset-approved roster and its approved Duel o
   assert.equal(isShippableFighter('mara_breach'), true);
 });
 
-test('diagnostic prototypes remain available to the Combat Gym but never appear in Wave data', () => {
+test('diagnostic prototypes stay in the Gym while explicit role prototypes may appear in Waves', () => {
   assert.deepEqual(PROTOTYPE_FIGHTERS, ['buster_bulldog', 'reference_fighter']);
+  assert.deepEqual(WAVE_ROLE_PROTOTYPES, ['scrap_flanker', 'scrap_heavy']);
   assert.deepEqual(REWORK_FIGHTERS, []);
   assert.ok(COMBAT_GYM_FIGHTERS.includes('buster_bulldog'));
   assert.ok(COMBAT_GYM_FIGHTERS.includes('reference_fighter'));
@@ -30,6 +32,9 @@ test('diagnostic prototypes remain available to the Combat Gym but never appear 
   assert.ok(COMBAT_GYM_FIGHTERS.includes('mara_breach'));
   const unavailableWaveFighters = [...PROTOTYPE_FIGHTERS, ...REWORK_FIGHTERS];
   assert.ok(junkyardRunStage.sections.every((section) => section.enemies.every((spawn) => !unavailableWaveFighters.includes(spawn.fighterId as (typeof unavailableWaveFighters)[number]))));
+  const waveFighters = junkyardRunStage.sections.flatMap((section) => section.enemies.map((spawn) => spawn.fighterId));
+  assert.ok(WAVE_ROLE_PROTOTYPES.every((fighterId) => waveFighters.includes(fighterId)));
+  assert.ok(WAVE_ROLE_PROTOTYPES.every((fighterId) => !isShippableFighter(fighterId)));
 });
 
 test('every shippable player has an authored basic, special, and ultimate with a real mana gate', () => {

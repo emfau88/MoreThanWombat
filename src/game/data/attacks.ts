@@ -485,6 +485,64 @@ export const busterUnderbiteBulldozer: AttackDefinition = {
   timeline: { feedbackClass: 'ultimate', startCue: 'buster-bulldozer' },
 };
 
+export const scrapFlankerCharge: AttackDefinition = {
+  id: 'scrap_flanker_charge',
+  label: 'Scrapline Charge [PROTO]',
+  startupMs: 320,
+  activeMs: 180,
+  recoveryMs: 220,
+  damage: 11,
+  hitstunMs: 310,
+  knockbackX: 230,
+  knockbackY: 34,
+  hitbox: { offsetX: 18, offsetY: -55, width: 94, height: 42 },
+  hitboxProfile: {
+    laneTolerance: 30,
+    heightTolerance: 86,
+    windows: [{ id: 'charge', startMs: 0, endMs: 180,
+      boxes: [{ offsetX: 18, offsetY: -55, width: 94, height: 42 }] }],
+  },
+  canMoveDuringAttack: true,
+  canTurnDuringAttack: false,
+  timeline: { feedbackClass: 'medium' },
+};
+
+export const scrapHeavyBash: AttackDefinition = {
+  id: 'scrap_heavy_bash',
+  label: 'Armored Scrap Bash [PROTO]',
+  startupMs: 420,
+  activeMs: 150,
+  recoveryMs: 520,
+  damage: 16,
+  hitstunMs: 380,
+  knockbackX: 285,
+  knockbackY: 58,
+  hitbox: { offsetX: 18, offsetY: -58, width: 104, height: 48 },
+  hitboxProfile: {
+    laneTolerance: 38,
+    heightTolerance: 92,
+    windows: [{ id: 'main', startMs: 0, endMs: 150,
+      boxes: [{ offsetX: 18, offsetY: -58, width: 104, height: 48 }] }],
+  },
+  canTurnDuringAttack: false,
+  timeline: { feedbackClass: 'heavy' },
+};
+
+export const discountEnemyMiscast: AttackDefinition = {
+  id: 'discount_enemy_miscast',
+  label: 'Harmless Discount Dud',
+  startupMs: 180,
+  activeMs: 120,
+  recoveryMs: 120,
+  damage: 0,
+  hitstunMs: 0,
+  knockbackX: 0,
+  knockbackY: 0,
+  hitbox: { offsetX: 10000, offsetY: 10000, width: 1, height: 1 },
+  manaCost: 22,
+  timeline: { feedbackClass: 'light', startCue: 'discount-miscast', impactSparkStyle: 'magic' },
+};
+
 export const airBonk: AttackDefinition = {
   id: 'air_bonk',
   label: 'Air Bonk',
@@ -535,5 +593,8 @@ export const attacksById: Record<string, AttackDefinition> = {
   [busterUnderbiteJab.id]: busterUnderbiteJab,
   [busterBulldogBash.id]: busterBulldogBash,
   [busterUnderbiteBulldozer.id]: busterUnderbiteBulldozer,
+  [scrapFlankerCharge.id]: scrapFlankerCharge,
+  [scrapHeavyBash.id]: scrapHeavyBash,
+  [discountEnemyMiscast.id]: discountEnemyMiscast,
   [airBonk.id]: airBonk,
 };

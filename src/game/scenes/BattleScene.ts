@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { GAME_HEIGHT, GAME_WIDTH } from '../GameConfig';
 import { EnemyController, type EnemyIntent } from '../ai/EnemyController';
+import { getEnemyRoleContract } from '../ai/EnemyRoles';
 import { CombatFeedbackController, type CombatImpact } from '../combat/CombatFeedbackController';
 import { CombatImpactOrchestrator } from '../combat/CombatImpactOrchestrator';
 import { CombatPresentationController } from '../combat/CombatPresentationController';
@@ -14,7 +15,6 @@ import { BattleFlowController } from '../core/BattleFlowController';
 import {
   EncounterDirector,
   type EncounterDirectorEvent,
-  type EncounterPressureChannel,
 } from '../core/EncounterDirector';
 import { InputController } from '../core/InputController';
 import { MobileControls } from '../core/MobileControls';
@@ -395,23 +395,30 @@ export class BattleScene extends Phaser.Scene {
     this.reconcileWaveAttackTokens();
     const enemyIntents = new Map<number, EnemyIntent>();
     for (const enemy of this.getCurrentEnemies()) {
+      const controller = this.getControllerForEnemy(enemy);
       const enemyIntent = this.mode === 'test'
         ? this.getCombatGymDummyIntent(enemy, simulationDeltaMs)
-        : this.getControllerForEnemy(enemy).update(
+        : controller.update(
           enemy,
           this.player,
           deltaSeconds,
-          (attackKind) => this.requestEnemyAttack(enemy, attackKind),
+          (attackKind) => this.requestEnemyAttack(enemy, attackKind, controller),
         );
       enemyIntents.set(enemy.instanceId, enemyIntent);
       const dummyMode = this.combatGymSettings
         ? COMBAT_GYM_DUMMY_MODES[this.combatGymSettings.dummyModeIndex]
         : null;
       enemy.setStatusNote(dummyMode ? `GYM ${dummyMode}` : `AI ${enemyIntent.state}`);
+      if (this.mode === 'waves') {
+        enemy.setCombatResponse(controller.getCombatResponse(enemy));
+        this.applyEnemyRolePresentation(enemy, controller);
+      }
       enemy.faceTarget(this.player.x);
 
       if (enemyIntent.attackPressed) {
-        const didStart = this.tryStartAttackWithFx(enemy, enemyIntent.attackKind);
+        const didStart = enemyIntent.attackId
+          ? this.tryStartAttackByIdWithFx(enemy, enemyIntent.attackId, enemyIntent.attackKind)
+          : this.tryStartAttackWithFx(enemy, enemyIntent.attackKind);
         if (!didStart && this.mode === 'waves') {
           this.encounterDirector?.releaseAttack(enemy.instanceId);
         }
@@ -474,6 +481,7 @@ export class BattleScene extends Phaser.Scene {
     }
     impacts.push(...this.combatPresentation.update(simulationDeltaMs));
     this.updateTestDummyRegen(simulationDeltaMs);
+    this.handleEnemyRoleImpacts(impacts);
     this.combatImpact.apply(impacts);
     this.reconcileWaveAttackTokens();
     this.syncPrimaryEnemy();
@@ -792,7 +800,9 @@ export class BattleScene extends Phaser.Scene {
 
     if (event.type === 'active') {
       for (const enemy of this.waveEnemies) {
-        enemy.setCombatResponse('normal');
+        const controller = this.getControllerForEnemy(enemy);
+        enemy.setCombatResponse(controller.getCombatResponse(enemy));
+        this.applyEnemyRolePresentation(enemy, controller);
         enemy.setStatusNote('AI idle');
       }
       this.resultText.setVisible(false);
@@ -847,7 +857,11 @@ export class BattleScene extends Phaser.Scene {
     this.updateCombatHud();
   }
 
-  private requestEnemyAttack(enemy: Fighter, kind: 'basic' | 'special'): boolean {
+  private requestEnemyAttack(
+    enemy: Fighter,
+    kind: 'basic' | 'special',
+    controller = this.getControllerForEnemy(enemy),
+  ): boolean {
     if (this.mode !== 'waves') {
       return true;
     }
@@ -856,10 +870,34 @@ export class BattleScene extends Phaser.Scene {
       return false;
     }
 
-    const channel: EncounterPressureChannel = enemy.id === 'discount_wizard' && kind === 'special'
-      ? 'ranged'
-      : 'melee';
+    const channel = controller.getPressureChannel(kind, enemy);
     return this.encounterDirector.requestAttack(enemy.instanceId, channel);
+  }
+
+  private handleEnemyRoleImpacts(impacts: CombatImpact[]): void {
+    if (this.mode !== 'waves') return;
+
+    for (const impact of impacts) {
+      const attacker = impact.attacker;
+      if (attacker?.faction === 'enemy' && impact.outcome && impact.outcome !== 'miss') {
+        this.waveEnemyControllers.get(attacker.instanceId)?.notifyAttackConnected();
+      }
+
+      const defender = impact.defender;
+      if (defender?.faction !== 'enemy' || impact.outcome !== 'armored') continue;
+      const controller = this.waveEnemyControllers.get(defender.instanceId);
+      if (!controller?.notifyArmoredContact(defender)) continue;
+      defender.cancelAttack();
+      defender.setCombatResponse(controller.getCombatResponse(defender));
+      this.projectileSystem.removeByOwner(defender.instanceId);
+      this.encounterDirector?.releaseAttack(defender.instanceId);
+      this.applyEnemyRolePresentation(defender, controller);
+    }
+  }
+
+  private applyEnemyRolePresentation(enemy: Fighter, controller: EnemyController): void {
+    const presentation = controller.getPresentation(enemy);
+    enemy.setRolePresentation(presentation.cue, presentation.tint);
   }
 
   private isEnemyVisibleForAttack(enemy: Fighter): boolean {
@@ -1142,7 +1180,9 @@ export class BattleScene extends Phaser.Scene {
       occupiedPositions.push(runtimeSpawn);
       const waveDefinition = {
         ...fighterDefinitions[spawn.fighterId],
-        label: section.enemies.length > 1 ? `${section.title} ${index + 1}` : section.title,
+        label: section.enemies.length > 1
+          ? `${fighterDefinitions[spawn.fighterId].label} ${index + 1}`
+          : fighterDefinitions[spawn.fighterId].label,
         maxHp: spawn.hpOverride ?? fighterDefinitions[spawn.fighterId].maxHp,
         moveSpeed: spawn.moveSpeedOverride ?? fighterDefinitions[spawn.fighterId].moveSpeed,
       };
@@ -1150,7 +1190,10 @@ export class BattleScene extends Phaser.Scene {
       enemy.facing = 'left';
       enemy.setCombatResponse('invulnerable');
       enemy.setStatusNote('ENTRY');
-      this.waveEnemyControllers.set(enemy.instanceId, new EnemyController());
+      const controller = new EnemyController(spawn.roleId, enemy.instanceId);
+      this.waveEnemyControllers.set(enemy.instanceId, controller);
+      const role = getEnemyRoleContract(spawn.roleId);
+      enemy.setRolePresentation(role.label.toUpperCase());
       return enemy;
     });
   }
@@ -1267,7 +1310,7 @@ export class BattleScene extends Phaser.Scene {
       return controller;
     }
 
-    const createdController = new EnemyController();
+    const createdController = new EnemyController(undefined, enemy.instanceId);
     this.waveEnemyControllers.set(enemy.instanceId, createdController);
     return createdController;
   }
