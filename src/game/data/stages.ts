@@ -1,5 +1,6 @@
 import type { FighterBounds } from '../combat/Fighter';
 import type { FighterId } from '../core/BattleModes';
+import type { EncounterPressureBudget } from '../core/EncounterDirector';
 import { FLAT_ARENA_VISUAL_CONTRACT } from '../core/StageVisuals';
 
 export type WaveStageId = 'junkyard_run';
@@ -22,6 +23,8 @@ export type StageSectionDefinition = {
   travelBounds?: FighterBounds;
   /** X coordinate at which the following encounter becomes active. */
   arrivalTriggerX?: number;
+  /** Maximum simultaneous attack commitments the Encounter Director may grant. */
+  pressureBudget: EncounterPressureBudget;
   enemies: StageEnemySpawnDefinition[];
 };
 
@@ -71,6 +74,7 @@ export const junkyardRunStage: StageDefinition = {
         maxY: 474,
       },
       arrivalTriggerX: 1018,
+      pressureBudget: { meleeTokens: 1, rangedTokens: 0, disruptionBudget: 0 },
       enemies: [
         {
           fighterId: 'angry_pigeon',
@@ -98,6 +102,7 @@ export const junkyardRunStage: StageDefinition = {
         maxY: 474,
       },
       arrivalTriggerX: 1978,
+      pressureBudget: { meleeTokens: 1, rangedTokens: 1, disruptionBudget: 0 },
       enemies: [
         {
           fighterId: 'angry_pigeon',
@@ -125,6 +130,7 @@ export const junkyardRunStage: StageDefinition = {
         minY: 248,
         maxY: 474,
       },
+      pressureBudget: { meleeTokens: 1, rangedTokens: 1, disruptionBudget: 0, burst: { periodMs: 5000, durationMs: 1800 } },
       enemies: [
         {
           fighterId: 'angry_pigeon',

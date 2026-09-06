@@ -14,6 +14,14 @@ test('Junkyard Run has ordered, reachable sections and safe enemy spawns', () =>
   assert.equal(MAXIMUM_WAVE_SPAWN_DISTANCE, 480);
   assert.equal(MAXIMUM_WAVE_ENEMIES, 2);
   assert.deepEqual(getWaveStageValidationViolations(junkyardRunStage), []);
+  assert.deepEqual(
+    junkyardRunStage.sections.map((section) => section.pressureBudget),
+    [
+      { meleeTokens: 1, rangedTokens: 0, disruptionBudget: 0 },
+      { meleeTokens: 1, rangedTokens: 1, disruptionBudget: 0 },
+      { meleeTokens: 1, rangedTokens: 1, disruptionBudget: 0, burst: { periodMs: 5000, durationMs: 1800 } },
+    ],
+  );
 });
 
 test('wave traversal unlocks an explicit corridor and enters the next combat section without a teleport', () => {
@@ -50,6 +58,7 @@ test('wave stage validation rejects overlapping sections, invalid spawns and uns
         ...junkyardRunStage.sections[1],
         id: junkyardRunStage.sections[0].id,
         bounds: { minX: 420, maxX: 900, minY: 474, maxY: 248 },
+        pressureBudget: { meleeTokens: -1, rangedTokens: 0.5, disruptionBudget: 0 },
         enemies: [{ fighterId: 'budget_barbarian', spawnX: 2000, spawnY: 200 }],
       },
     ],
@@ -65,5 +74,6 @@ test('wave stage validation rejects overlapping sections, invalid spawns and uns
   assert.ok(violations.includes('yard-entry: section overlaps the previous section'));
   assert.ok(violations.includes('yard-entry: enemy spawn must stay inside its section bounds'));
   assert.ok(violations.includes('yard-entry: enemy spawn is outside the initial camera-safe range'));
+  assert.ok(violations.includes('yard-entry: pressure budgets must be non-negative integers'));
   assert.ok(violations.includes('zones must cover the full world width'));
 });

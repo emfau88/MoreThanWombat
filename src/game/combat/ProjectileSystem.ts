@@ -4,6 +4,7 @@ import type { ProjectileDefinition } from '../data/projectiles';
 import { getRectOverlapCenter, type Rect } from '../utils/Rect';
 import type { CombatOutcome } from './CombatResolver';
 import { canCombatFactionHit, type CombatFaction } from './CombatFaction';
+import type { WaveView } from '../core/WaveSafety';
 
 type ActiveProjectile = {
   owner: Fighter;
@@ -71,7 +72,7 @@ export class ProjectileSystem {
     });
   }
 
-  update(deltaSeconds: number, targets: Fighter[], bounds: FighterBounds): ProjectileHit[] {
+  update(deltaSeconds: number, targets: Fighter[], bounds: FighterBounds, visibleWaveArea?: WaveView): ProjectileHit[] {
     const hits: ProjectileHit[] = [];
 
     for (let index = this.projectiles.length - 1; index >= 0; index -= 1) {
@@ -80,6 +81,11 @@ export class ProjectileSystem {
       this.updateProjectileVelocity(projectile, targets, deltaSeconds);
       projectile.x += projectile.velocityX * deltaSeconds;
       projectile.y += projectile.velocityY * deltaSeconds;
+      if (visibleWaveArea && projectile.ownerFaction === 'enemy'
+        && (projectile.x < visibleWaveArea.x + 24 || projectile.x > visibleWaveArea.right - 24)) {
+        this.removeAt(index);
+        continue;
+      }
       projectile.sprite.setPosition(projectile.x, projectile.y + projectile.definition.spawnOffsetY);
       if (projectile.definition.spinRadiansPerSecond) {
         const direction = projectile.facing === 'right' ? 1 : -1;
@@ -168,6 +174,16 @@ export class ProjectileSystem {
     }
 
     this.projectiles.length = 0;
+  }
+
+  getActiveOwnerIds(): number[] {
+    return [...new Set(this.projectiles.map((projectile) => projectile.ownerInstanceId))];
+  }
+
+  removeByOwner(ownerInstanceId: number): void {
+    for (let index = this.projectiles.length - 1; index >= 0; index -= 1) {
+      if (this.projectiles[index].ownerInstanceId === ownerInstanceId) this.removeAt(index);
+    }
   }
 
   private getHitbox(projectile: ActiveProjectile): Rect {

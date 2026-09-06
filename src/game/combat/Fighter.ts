@@ -80,6 +80,10 @@ export type FighterBounds = {
   maxY: number;
 };
 
+export type FighterUpdateOptions = {
+  allowManaRegen?: boolean;
+};
+
 export class Fighter {
   private static readonly JUMP_VELOCITY_Z = 480;
   private static readonly GRAVITY_Z = 1180;
@@ -205,7 +209,13 @@ export class Fighter {
     this.updateVisuals();
   }
 
-  update(deltaSeconds: number, moveX: number, moveY: number, bounds: FighterBounds): void {
+  update(
+    deltaSeconds: number,
+    moveX: number,
+    moveY: number,
+    bounds: FighterBounds,
+    options: FighterUpdateOptions = {},
+  ): void {
     if (this.state === 'dead') {
       this.z = 0;
       this.velocityZ = 0;
@@ -214,7 +224,9 @@ export class Fighter {
       return;
     }
 
-    this.regenerateMana(deltaSeconds);
+    if (options.allowManaRegen ?? true) {
+      this.regenerateMana(deltaSeconds);
+    }
     this.updateVerticalMotion(deltaSeconds);
     this.applyKnockback(deltaSeconds, bounds);
 
@@ -345,6 +357,15 @@ export class Fighter {
 
   getCurrentAttack(): AttackDefinition | null {
     return this.currentAttack;
+  }
+
+  cancelAttack(): void {
+    if (!this.currentAttack) return;
+    this.currentAttack = null;
+    this.attackElapsedMs = 0;
+    this.attackPhase = 'none';
+    this.hitTargets.clear();
+    if (this.state !== 'dead' && this.state !== 'hitstun') this.state = this.isGrounded ? 'idle' : 'fall';
   }
 
   getAttackPhase(): AttackPhase {

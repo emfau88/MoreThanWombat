@@ -1,4 +1,5 @@
 import type { StageDefinition } from '../data/stages';
+import { getPressureBudgetViolations } from './EncounterDirector';
 
 export const MINIMUM_WAVE_SPAWN_DISTANCE = 96;
 export const MAXIMUM_WAVE_SPAWN_DISTANCE = 480;
@@ -70,9 +71,14 @@ export function getWaveStageValidationViolations(stage: StageDefinition): string
 
     const playerSpawnX = bounds.minX + 140;
     const playerSpawnY = Math.min(Math.max(340, bounds.minY + 48), bounds.maxY - 48);
+    if (section.enemies.length === 0) {
+      violations.push(`${section.id}: encounter must define at least one enemy spawn`);
+    }
     if (section.enemies.length > MAXIMUM_WAVE_ENEMIES) {
       violations.push(`${section.id}: encounter exceeds the simultaneous enemy budget`);
     }
+    violations.push(...getPressureBudgetViolations(section.pressureBudget)
+      .map((violation) => `${section.id}: ${violation}`));
     for (const spawn of section.enemies) {
       if (spawn.spawnX < bounds.minX || spawn.spawnX > bounds.maxX || spawn.spawnY < bounds.minY || spawn.spawnY > bounds.maxY) {
         violations.push(`${section.id}: enemy spawn must stay inside its section bounds`);

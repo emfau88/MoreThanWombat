@@ -11,6 +11,11 @@ import { ProjectileSystem } from '../combat/ProjectileSystem';
 import { PushboxSystem } from '../combat/PushboxSystem';
 import type { BattleMode, BattleSceneData, FighterId } from '../core/BattleModes';
 import { BattleFlowController } from '../core/BattleFlowController';
+import {
+  EncounterDirector,
+  type EncounterDirectorEvent,
+  type EncounterPressureChannel,
+} from '../core/EncounterDirector';
 import { InputController } from '../core/InputController';
 import { MobileControls } from '../core/MobileControls';
 import { registerCharacterAnimations } from '../core/CharacterAnimationRegistry';
@@ -21,6 +26,7 @@ import { fighterDefinitions } from '../data/fighters';
 import { projectilesById } from '../data/projectiles';
 import { defaultWaveStageId, waveStages, type StageDefinition, type StageSectionDefinition, type StageEnemySpawnDefinition, type WaveStageId } from '../data/stages';
 import { canEnterNextWaveSection, getWaveTraversalBounds, type WaveTraversalPhase } from '../core/WaveTraversal';
+import { findSafeWaveSpawn, isWaveActorVisible } from '../core/WaveSafety';
 import { Hud } from '../ui/Hud';
 import { CombatGymController } from '../debug/CombatGymController';
 import {
@@ -75,7 +81,7 @@ export class BattleScene extends Phaser.Scene {
   private waveStage!: StageDefinition;
   private waveIndex = 0;
   private waveTraversalPhase: WaveTraversalPhase = 'combat';
-  private waveTransitionRemainingMs = 0;
+  private encounterDirector: EncounterDirector | null = null;
   private testDummyRegenDelayMs = 0;
   private testDummyLastHp = 0;
   private readonly spawnedProjectileAttackInstances = new Set<string>();
@@ -112,7 +118,12 @@ export class BattleScene extends Phaser.Scene {
     this.gymDummyAttackCooldownMs = 0;
     this.waveIndex = 0;
     this.waveTraversalPhase = 'combat';
-    this.waveTransitionRemainingMs = 0;
+    this.encounterDirector = this.mode === 'waves'
+      ? new EncounterDirector({
+        sectionCount: this.waveStage.sections.length,
+        pressureProfiles: this.waveStage.sections.map((section) => section.pressureBudget),
+      })
+      : null;
     this.testDummyRegenDelayMs = 0;
     this.testDummyLastHp = 0;
     this.spawnedProjectileAttackInstances.clear();
@@ -186,7 +197,7 @@ export class BattleScene extends Phaser.Scene {
       .setVisible(false)
       .setInteractive({ useHandCursor: true })
       .on(Phaser.Input.Events.POINTER_DOWN, () => {
-        this.restartBattle();
+        if (this.battleFlow.getResult() !== 'running') this.restartBattle();
       });
     this.resultHintText = this.add
       .text(this.getViewportWidth() / 2, 170, '', {
@@ -201,7 +212,7 @@ export class BattleScene extends Phaser.Scene {
       .setVisible(false)
       .setInteractive({ useHandCursor: true })
       .on(Phaser.Input.Events.POINTER_DOWN, () => {
-        this.goToMenu();
+        if (this.battleFlow.getResult() !== 'running') this.goToMenu();
     });
     this.inputController = new InputController(this);
     this.mobileControls = new MobileControls(this);
@@ -217,7 +228,7 @@ export class BattleScene extends Phaser.Scene {
     this.player = new Fighter(this, fighterDefinitions[this.playerFighterId], this.getPlayerSpawnPoint(), 'player');
     this.enemy = null;
     if (this.mode === 'waves') {
-      this.waveEnemies = this.createWaveEnemiesForCurrentSection();
+      this.waveEnemies = [];
       this.syncPrimaryEnemy();
     } else {
       this.enemy = this.createEnemyForCurrentMode();
@@ -269,7 +280,7 @@ export class BattleScene extends Phaser.Scene {
       return;
     }
 
-    const simulationDeltaMs = clockStep.deltaMs;
+    const simulationDeltaMs = this.mode === 'waves' ? Math.min(50, clockStep.deltaMs) : clockStep.deltaMs;
     const deltaSeconds = simulationDeltaMs / 1000;
     const wasHitstopActive = this.combatFeedback.isHitstopActive();
     this.inputBuffer.advance(simulationDeltaMs, wasHitstopActive);
@@ -297,20 +308,38 @@ export class BattleScene extends Phaser.Scene {
       return;
     }
 
-    if (this.waveTransitionRemainingMs > 0) {
-      this.waveTransitionRemainingMs = Math.max(0, this.waveTransitionRemainingMs - simulationDeltaMs);
+    if (this.mode === 'waves') {
+      // Defeat wins even if the final enemy dies in the same simulation step.
+      if (this.player.state === 'dead') {
+        this.updateBattleResult();
+        return;
+      }
+      if (wasHitstopActive) {
+        this.renderFrozenFrame();
+        return;
+      }
+      const previousPhase = this.encounterDirector?.getPhase();
+      this.advanceWaveDirector(simulationDeltaMs);
 
-      if (this.waveTransitionRemainingMs === 0) {
-        this.advanceWave();
+      if (this.battleFlow.getResult() !== 'running') {
+        return;
       }
 
-      this.renderFrozenFrame();
-      return;
-    }
+      const wavePhase = this.encounterDirector?.getPhase();
+      if (previousPhase !== wavePhase) {
+        this.inputBuffer.clear();
+        this.renderFrozenFrame();
+        return;
+      }
+      if (wavePhase === 'travel') {
+        this.updateWaveTravel(deltaSeconds, inputState.moveX, inputState.moveY);
+        return;
+      }
 
-    if (this.mode === 'waves' && this.waveTraversalPhase === 'travel') {
-      this.updateWaveTravel(deltaSeconds, inputState.moveX, inputState.moveY);
-      return;
+      if (wavePhase && wavePhase !== 'active') {
+        this.updateWaveNonCombatPhase(deltaSeconds, inputState.moveX, inputState.moveY);
+        return;
+      }
     }
 
     if (wasHitstopActive) {
@@ -363,11 +392,17 @@ export class BattleScene extends Phaser.Scene {
       }
     }
 
+    this.reconcileWaveAttackTokens();
     const enemyIntents = new Map<number, EnemyIntent>();
     for (const enemy of this.getCurrentEnemies()) {
       const enemyIntent = this.mode === 'test'
         ? this.getCombatGymDummyIntent(enemy, simulationDeltaMs)
-        : this.getControllerForEnemy(enemy).update(enemy, this.player, deltaSeconds);
+        : this.getControllerForEnemy(enemy).update(
+          enemy,
+          this.player,
+          deltaSeconds,
+          (attackKind) => this.requestEnemyAttack(enemy, attackKind),
+        );
       enemyIntents.set(enemy.instanceId, enemyIntent);
       const dummyMode = this.combatGymSettings
         ? COMBAT_GYM_DUMMY_MODES[this.combatGymSettings.dummyModeIndex]
@@ -376,18 +411,22 @@ export class BattleScene extends Phaser.Scene {
       enemy.faceTarget(this.player.x);
 
       if (enemyIntent.attackPressed) {
-        this.tryStartAttackWithFx(enemy, enemyIntent.attackKind);
+        const didStart = this.tryStartAttackWithFx(enemy, enemyIntent.attackKind);
+        if (!didStart && this.mode === 'waves') {
+          this.encounterDirector?.releaseAttack(enemy.instanceId);
+        }
       }
     }
 
-    this.player.update(deltaSeconds, inputState.moveX, inputState.moveY, this.arenaBounds);
+    const allowManaRegen = this.shouldAllowManaRegen();
+    this.player.update(deltaSeconds, inputState.moveX, inputState.moveY, this.arenaBounds, { allowManaRegen });
 
     for (const enemy of this.getCurrentEnemies()) {
       const enemyIntent = enemyIntents.get(enemy.instanceId);
       if (enemyIntent) {
-        enemy.update(deltaSeconds, enemyIntent.moveX, enemyIntent.moveY, this.arenaBounds);
+        enemy.update(deltaSeconds, enemyIntent.moveX, enemyIntent.moveY, this.arenaBounds, { allowManaRegen });
       } else if (this.mode === 'test') {
-        enemy.update(deltaSeconds, 0, 0, this.arenaBounds);
+        enemy.update(deltaSeconds, 0, 0, this.arenaBounds, { allowManaRegen });
       }
     }
 
@@ -412,13 +451,15 @@ export class BattleScene extends Phaser.Scene {
         impacts.push(this.createCombatImpact(playerHitAttempt));
       }
 
+      if (this.mode === 'waves' && !this.isEnemyVisibleForAttack(enemy)) enemy.cancelAttack();
       const enemyHitAttempt = this.hitboxSystem.resolveHit(enemy, this.player);
       if (enemyHitAttempt.didConnect) {
         impacts.push(this.createCombatImpact(enemyHitAttempt));
       }
     }
 
-    const projectileHits = this.projectileSystem.update(deltaSeconds, [this.player, ...this.getCurrentEnemies()], this.arenaBounds);
+    const projectileHits = this.projectileSystem.update(deltaSeconds, [this.player, ...this.getCurrentEnemies()], this.arenaBounds,
+      this.mode === 'waves' ? this.cameras.main.worldView : undefined);
     for (const projectileHit of projectileHits) {
       impacts.push({
         damage: projectileHit.damage,
@@ -434,17 +475,18 @@ export class BattleScene extends Phaser.Scene {
     impacts.push(...this.combatPresentation.update(simulationDeltaMs));
     this.updateTestDummyRegen(simulationDeltaMs);
     this.combatImpact.apply(impacts);
+    this.reconcileWaveAttackTokens();
     this.syncPrimaryEnemy();
     this.updateCombatHud();
 
-    if (this.getCurrentEnemies().length > 0 && this.mode !== 'test') {
+    if ((this.mode === 'waves' || this.getCurrentEnemies().length > 0) && this.mode !== 'test') {
       this.updateBattleResult();
     }
   }
 
   private updateBattleResult(): void {
     const currentEnemies = this.getCurrentEnemies();
-    if (currentEnemies.length === 0) {
+    if (currentEnemies.length === 0 && this.player.state !== 'dead') {
       return;
     }
 
@@ -454,20 +496,22 @@ export class BattleScene extends Phaser.Scene {
 
     if (this.mode === 'duel') {
       battleWon = allEnemiesDefeated;
-    } else if (allEnemiesDefeated) {
-      const lastWaveReached = this.waveIndex >= this.waveStage.sections.length - 1;
-
-      if (lastWaveReached) {
-        battleWon = true;
-      } else if (this.waveTraversalPhase === 'combat') {
-        this.beginWaveTravel();
-      }
+    } else if (this.mode === 'waves') {
+      // The EncounterDirector owns Wave clear, travel, transition, and victory.
+      battleWon = false;
     }
 
     const result = this.battleFlow.update(playerDefeated, battleWon);
 
     if (result === 'running') {
       return;
+    }
+
+    if (this.mode === 'waves') {
+      this.encounterDirector?.finishDefeat();
+      this.clearWaveCombatArtifacts();
+      this.clearWaveEnemies();
+      this.syncPrimaryEnemy();
     }
 
     const message = result === 'victory' ? 'Victory' : 'Defeat';
@@ -699,31 +743,174 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private advanceWave(): void {
-    if (this.mode !== 'waves') {
+    if (this.mode !== 'waves' || !this.encounterDirector) {
       return;
     }
 
-    this.waveIndex += 1;
+    this.waveIndex = this.encounterDirector.getSectionIndex();
     this.waveTraversalPhase = 'combat';
     this.updateWaveArenaBoundsForCurrentSection();
-    this.projectileSystem.destroy();
-    this.spawnedProjectileAttackInstances.clear();
-    this.combatPresentation.clearTransientEffects();
-    this.clearWaveEnemies();
-    this.waveEnemies = this.createWaveEnemiesForCurrentSection();
+    this.clearWaveCombatArtifacts();
     this.player.nudge(0, 0, this.arenaBounds);
     this.syncPrimaryEnemy();
-    for (const enemy of this.waveEnemies) {
-      enemy.setDebugVisible(this.debugEnabled);
-      enemy.updateVisuals();
-      enemy.setStatusNote('AI idle');
-    }
     this.testDummyLastHp = this.enemy?.hp ?? 0;
     this.resultText.setVisible(false);
     this.resultHintText.setVisible(false);
     this.updateModeText();
     this.updateCombatHud();
-    this.showWaveSectionIntro();
+  }
+
+  private advanceWaveDirector(deltaMs: number): void {
+    const director = this.encounterDirector;
+    if (!director) {
+      return;
+    }
+
+    const allSpawnedEnemiesDefeated = this.waveEnemies.length > 0
+      && this.waveEnemies.every((enemy) => enemy.state === 'dead');
+    const events = director.advance(deltaMs, allSpawnedEnemiesDefeated);
+    for (const event of events) {
+      this.handleEncounterDirectorEvent(event);
+    }
+  }
+
+  private handleEncounterDirectorEvent(event: EncounterDirectorEvent): void {
+    if (event.type === 'spawning') {
+      this.clearWaveEnemies();
+      this.waveEnemies = this.createWaveEnemiesForCurrentSection();
+      this.syncPrimaryEnemy();
+      for (const enemy of this.waveEnemies) {
+        enemy.setDebugVisible(this.debugEnabled);
+        enemy.updateVisuals();
+      }
+      this.resultText.setText('Enemies entering').setVisible(true);
+      this.resultHintText.setText('Get ready').setVisible(true);
+      this.updateModeText();
+      this.updateCombatHud();
+      return;
+    }
+
+    if (event.type === 'active') {
+      for (const enemy of this.waveEnemies) {
+        enemy.setCombatResponse('normal');
+        enemy.setStatusNote('AI idle');
+      }
+      this.resultText.setVisible(false);
+      this.resultHintText.setVisible(false);
+      this.updateModeText();
+      this.updateCombatHud();
+      return;
+    }
+
+    if (event.type === 'clear_delay') {
+      this.clearWaveCombatArtifacts();
+      this.resultText.setText('Section Clear').setVisible(true);
+      this.resultHintText.setText('Path unlocks shortly').setVisible(true);
+      this.updateModeText();
+      return;
+    }
+
+    if (event.type === 'travel') {
+      this.beginWaveTravel();
+      return;
+    }
+
+    if (event.type === 'next_section') {
+      this.advanceWave();
+      return;
+    }
+
+    if (event.type === 'section_intro') {
+      this.showWaveSectionIntro();
+      this.updateModeText();
+      return;
+    }
+
+    if (event.type === 'victory') {
+      this.resolveWaveVictory();
+    }
+  }
+
+  private updateWaveNonCombatPhase(deltaSeconds: number, moveX: number, moveY: number): void {
+    const phase = this.encounterDirector?.getPhase();
+    this.inputBuffer.clear();
+
+    if (phase === 'transition' || phase === 'section_intro' || phase === 'spawning') {
+      this.renderFrozenFrame();
+      return;
+    }
+
+    this.player.update(deltaSeconds, moveX, moveY, this.arenaBounds, { allowManaRegen: false });
+    for (const enemy of this.waveEnemies) {
+      enemy.update(deltaSeconds, 0, 0, this.arenaBounds, { allowManaRegen: false });
+    }
+    this.updateCombatHud();
+  }
+
+  private requestEnemyAttack(enemy: Fighter, kind: 'basic' | 'special'): boolean {
+    if (this.mode !== 'waves') {
+      return true;
+    }
+
+    if (!this.encounterDirector || !enemy.canStartAttack(kind) || !this.isEnemyVisibleForAttack(enemy)) {
+      return false;
+    }
+
+    const channel: EncounterPressureChannel = enemy.id === 'discount_wizard' && kind === 'special'
+      ? 'ranged'
+      : 'melee';
+    return this.encounterDirector.requestAttack(enemy.instanceId, channel);
+  }
+
+  private isEnemyVisibleForAttack(enemy: Fighter): boolean {
+    return isWaveActorVisible(enemy, this.cameras.main.worldView);
+  }
+
+  private reconcileWaveAttackTokens(): void {
+    if (this.mode !== 'waves' || !this.encounterDirector) {
+      return;
+    }
+
+    for (const enemy of this.waveEnemies) {
+      if (enemy.state === 'dead' || enemy.state === 'hitstun') {
+        this.projectileSystem.removeByOwner(enemy.instanceId);
+      }
+      if (!this.isEnemyVisibleForAttack(enemy)) enemy.cancelAttack();
+    }
+    const activeEnemyInstanceIds = new Set([
+      ...this.projectileSystem.getActiveOwnerIds(),
+      ...this.waveEnemies
+        .filter((enemy) => enemy.state !== 'dead' && (enemy.getAttackPhase() === 'startup' || enemy.getAttackPhase() === 'active'))
+        .map((enemy) => enemy.instanceId),
+    ]);
+    this.encounterDirector.reconcileAttackTokens(activeEnemyInstanceIds);
+  }
+
+  private shouldAllowManaRegen(): boolean {
+    return this.mode !== 'waves' || this.encounterDirector?.canRegenerateMana() === true;
+  }
+
+  private clearWaveCombatArtifacts(): void {
+    this.player.cancelAttack();
+    this.encounterDirector?.releaseAllTokens();
+    this.projectileSystem.destroy();
+    this.spawnedProjectileAttackInstances.clear();
+    this.combatPresentation.clearTransientEffects();
+  }
+
+  private resolveWaveVictory(): void {
+    const result = this.battleFlow.update(false, true);
+    if (result === 'running') {
+      return;
+    }
+
+    this.encounterDirector?.releaseAllTokens();
+    this.clearWaveCombatArtifacts();
+    this.clearWaveEnemies();
+    this.syncPrimaryEnemy();
+    this.resultText.setText('Victory\nPress R to restart').setVisible(true);
+    this.resultHintText.setText('Press M for menu').setVisible(true);
+    this.updateCombatHud();
   }
 
   private updateModeText(): void {
@@ -742,7 +929,10 @@ export class BattleScene extends Phaser.Scene {
     const sectionTitle = this.waveTraversalPhase === 'travel'
       ? `Path to ${this.waveStage.sections[this.waveIndex + 1]?.title ?? 'exit'}`
       : this.waveStage.sections[this.waveIndex]?.title ?? `Wave ${this.waveIndex + 1}`;
-    this.modeText.setText(`${this.waveStage.title} ${this.waveIndex + 1}/${this.waveStage.sections.length} | ${sectionTitle}`);
+    const debugText = this.debugEnabled && this.encounterDirector
+      ? `\n${this.encounterDirector.getDebugLabel()}`
+      : '';
+    this.modeText.setText(`${this.waveStage.title} ${this.waveIndex + 1}/${this.waveStage.sections.length} | ${sectionTitle}${debugText}`);
   }
 
   private renderArena(): void {
@@ -832,11 +1022,15 @@ export class BattleScene extends Phaser.Scene {
     return 'Scrapyard';
   }
 
-  private getWaveRuntimeSpawn(_section: StageSectionDefinition, spawn: StageEnemySpawnDefinition): { x: number; y: number } {
-    return {
-      x: spawn.spawnX,
-      y: spawn.spawnY,
-    };
+  private getWaveRuntimeSpawn(
+    section: StageSectionDefinition,
+    spawn: StageEnemySpawnDefinition,
+    occupiedPositions: ReadonlyArray<{ x: number; y: number }>,
+  ): { x: number; y: number } {
+    const position = findSafeWaveSpawn({ x: spawn.spawnX, y: spawn.spawnY }, section.bounds,
+      this.cameras.main.worldView, occupiedPositions);
+    if (!position) throw new Error(`No safe visible spawn in ${section.id}`);
+    return position;
   }
 
   private resetArenaBounds(): void {
@@ -879,9 +1073,7 @@ export class BattleScene extends Phaser.Scene {
     }
 
     this.waveTraversalPhase = 'travel';
-    this.projectileSystem.destroy();
-    this.spawnedProjectileAttackInstances.clear();
-    this.combatPresentation.clearTransientEffects();
+    this.clearWaveCombatArtifacts();
     this.clearWaveEnemies();
     this.updateWaveArenaBoundsForCurrentSection();
     this.syncPrimaryEnemy();
@@ -892,7 +1084,7 @@ export class BattleScene extends Phaser.Scene {
 
   private updateWaveTravel(deltaSeconds: number, moveX: number, moveY: number): void {
     this.inputBuffer.clear();
-    this.player.update(deltaSeconds, moveX, moveY, this.arenaBounds);
+    this.player.update(deltaSeconds, moveX, moveY, this.arenaBounds, { allowManaRegen: false });
     this.updateCombatHud();
 
     if (!canEnterNextWaveSection(this.waveStage, this.waveIndex, this.player.x)) {
@@ -904,8 +1096,11 @@ export class BattleScene extends Phaser.Scene {
       return;
     }
 
+    if (!this.encounterDirector?.beginTransition()) {
+      return;
+    }
+
     this.waveTraversalPhase = 'transition';
-    this.waveTransitionRemainingMs = 500;
     this.resultText.setText(`Entering\n${nextSection.title}`).setVisible(true);
     this.resultHintText.setText(this.describeSectionEncounter(nextSection)).setVisible(true);
   }
@@ -921,13 +1116,7 @@ export class BattleScene extends Phaser.Scene {
     }
 
     this.resultText.setText(`${this.waveStage.title}\n${section.title}`).setVisible(true);
-    this.resultHintText.setText(this.describeSectionEncounter(section)).setVisible(true);
-    this.time.delayedCall(850, () => {
-      if (this.scene.isActive() && this.battleFlow.getResult() === 'running' && this.waveTransitionRemainingMs === 0) {
-        this.resultText.setVisible(false);
-        this.resultHintText.setVisible(false);
-      }
-    });
+    this.resultHintText.setText(`Brace — ${this.describeSectionEncounter(section)}`).setVisible(true);
   }
 
   private describeSectionEncounter(section: StageSectionDefinition): string {
@@ -946,8 +1135,11 @@ export class BattleScene extends Phaser.Scene {
       return [];
     }
 
+    const occupiedPositions: Array<{ x: number; y: number }> = [{ x: this.player.x, y: this.player.y }];
+
     return section.enemies.map((spawn, index) => {
-      const runtimeSpawn = this.getWaveRuntimeSpawn(section, spawn);
+      const runtimeSpawn = this.getWaveRuntimeSpawn(section, spawn, occupiedPositions);
+      occupiedPositions.push(runtimeSpawn);
       const waveDefinition = {
         ...fighterDefinitions[spawn.fighterId],
         label: section.enemies.length > 1 ? `${section.title} ${index + 1}` : section.title,
@@ -956,6 +1148,8 @@ export class BattleScene extends Phaser.Scene {
       };
       const enemy = new Fighter(this, waveDefinition, runtimeSpawn, 'enemy');
       enemy.facing = 'left';
+      enemy.setCombatResponse('invulnerable');
+      enemy.setStatusNote('ENTRY');
       this.waveEnemyControllers.set(enemy.instanceId, new EnemyController());
       return enemy;
     });
@@ -1054,6 +1248,7 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private updateCombatHud(): void {
+    if (this.mode === 'waves') this.updateModeText();
     this.hud.update(this.player, this.getHudEnemy());
     this.mobileControls.setUltimateAvailability(
       this.player.canStartAttack('ultimate'),
@@ -1140,6 +1335,11 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private spawnAttackProjectiles(fighter: Fighter): void {
+    if (this.mode === 'waves' && fighter !== this.player
+      && (this.encounterDirector?.getPhase() !== 'active' || !this.isEnemyVisibleForAttack(fighter))) {
+      fighter.cancelAttack();
+      return;
+    }
     const attack = fighter.getCurrentAttack();
 
     if (!attack?.projectileId || fighter.getAttackPhase() !== 'active') {
