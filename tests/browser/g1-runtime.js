@@ -40,33 +40,47 @@ try {
   check(game.scene.isActive('MainMenuScene'), 'Real assets loaded and Main Menu created');
   for (const fighter of ['wombat', 'discount_wizard', 'budget_barbarian', 'mara_breach']) {
     const battle = await start('waves', fighter);
+    battle.player.setCombatResponse('invulnerable');
     check(battle.encounterDirector.getPhase() === 'section_intro', `${fighter}: restart begins at intro`);
     battle.player.setManaForDebug(10);
-    for (let section = 0; section < 3; section++) {
+    for (let section = 0; section < battle.waveStage.sections.length; section++) {
+      const definition = battle.waveStage.sections[section];
       const mana = battle.player.mana;
       until(battle, 'spawning');
       check(battle.waveEnemies.every((enemy) => !enemy.getCurrentAttack()), 'Entry has no enemy attacks');
       check(owners(battle).length === 0, 'Entry has no projectiles');
-      const actors = [battle.player, ...battle.waveEnemies];
-      for (let i = 1; i < actors.length; i++) {
-        check(battle.isEnemyVisibleForAttack(actors[i]), 'Spawn visible in actual camera');
-        for (let j = 0; j < i; j++) check(Math.hypot(actors[i].x - actors[j].x, actors[i].y - actors[j].y) >= 112, 'Spawn separation');
-      }
+      check(battle.waveEnemies.every((enemy) => enemy.getCombatResponse() === 'invulnerable'), 'Entry fighters are protected');
       until(battle, 'active');
       check(battle.player.mana === mana, 'No mana during intro/entry');
       tick(battle);
       check(battle.player.mana > mana, 'Mana regenerates during active combat');
+      const delayed = battle.waveEnemies.filter((enemy) => !battle.isWaveEnemyCombatActive(enemy));
+      check(delayed.every((enemy) => !enemy.getCurrentAttack() && enemy.getCombatResponse() === 'invulnerable'), 'Delayed entrants cannot attack or take damage');
+      for (let i = 0; i < 50 && battle.waveEnemies.some((enemy) => !battle.isWaveEnemyCombatActive(enemy)); i++) tick(battle);
+      check(battle.waveEnemies.every((enemy) => battle.isWaveEnemyCombatActive(enemy) && enemy.container.visible), 'Every staged entrant becomes combat-active');
+      const actors = [battle.player, ...battle.waveEnemies];
+      for (let i = 1; i < actors.length; i++) {
+        check(battle.isEnemyVisibleForAttack(actors[i]), 'Active spawn visible in actual camera');
+        for (let j = 0; j < i; j++) check(Math.hypot(actors[i].x - actors[j].x, actors[i].y - actors[j].y) >= 80, 'Active fighters remain separated');
+      }
       const enemy = battle.waveEnemies[0];
       const projectile = Object.values(projectilesById)[0];
+      battle.projectileSystem.destroy();
       battle.projectileSystem.spawn(enemy, projectile);
-      check(owners(battle).length === 1, 'Real projectile created for cleanup check');
+      check(owners(battle).includes(enemy.instanceId), 'Real projectile created for cleanup check');
       battle.waveEnemies.forEach(kill);
       tick(battle);
       check(owners(battle).length === 0, 'Clear removes actual projectile objects');
       const clearMana = battle.player.mana;
-      until(battle, section === 2 ? 'victory' : 'travel');
+      const next = battle.waveStage.sections[section + 1];
+      until(battle, !next ? 'victory' : next.zoneId === definition.zoneId ? 'transition' : 'travel');
       check(battle.player.mana === clearMana, 'No mana during clear delay');
-      if (section < 2) {
+      if (next?.zoneId === definition.zoneId) {
+        const position = { x: battle.player.x, y: battle.player.y };
+        until(battle, 'section_intro');
+        check(battle.player.x === position.x && battle.player.y === position.y, 'Sub-wave transition preserves player position');
+        check(battle.player.mana === clearMana, 'No sub-wave transition mana');
+      } else if (next) {
         for (let i = 0; i < 100; i++) tick(battle);
         check(battle.player.mana === clearMana, 'Five seconds travel waiting gives no mana');
         input = { moveX: 1, moveY: 0 };
@@ -79,7 +93,7 @@ try {
         check(battle.player.mana === clearMana, 'No transition mana');
       }
     }
-    check(battle.battleFlow.getResult() === 'victory', `${fighter}: full three-section flow reaches victory`);
+    check(battle.battleFlow.getResult() === 'victory', `${fighter}: full seven-encounter flow reaches victory`);
     const mana = battle.player.mana;
     for (let i = 0; i < 20; i++) tick(battle);
     check(battle.player.mana === mana && owners(battle).length === 0, 'Victory freezes mana and hazards');

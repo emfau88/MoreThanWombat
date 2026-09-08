@@ -7,11 +7,11 @@
 
 > Bei Widersprüchen mit älteren Roadmaps gilt für Gameplay und Wave Completion dieses Dokument.
 
-### Ausführungsstand 2026-09-05
+### Ausführungsstand 2026-09-08
 
-**G0 abgeschlossen; G1 und G2 implementiert und technisch geprüft, manuelle Spielgefühlabnahmen offen.** [G2-Prüfbericht](qa/g2-runtime-2026-09-06/README.md) · [G1-Prüfbericht](qa/g1-runtime-2026-09-05/README.md) · [Historische G0-Baseline](qa/gameplay-baseline-2026-09-05/README.md) · [Einheitliche Run-Messvorlage](qa/gameplay-run-template.md).
+**G0 abgeschlossen; G1–G3 implementiert und technisch geprüft, gemeinsame manuelle Spielgefühlabnahme offen.** [G3-Prüfbericht](qa/g3-runtime-2026-09-08/README.md) · [G2-Prüfbericht](qa/g2-runtime-2026-09-06/README.md) · [G1-Prüfbericht](qa/g1-runtime-2026-09-05/README.md) · [Historische G0-Baseline](qa/gameplay-baseline-2026-09-05/README.md) · [Einheitliche Run-Messvorlage](qa/gameplay-run-template.md).
 
-Technisch geprüft: 74/74 Tests, Typecheck und Production Build. Der G2-Browser-Harness prüft die vier Rollen und ihre mechanischen Signaturen in echten Phaser-Objekten; der G1-Regressionslauf prüft weiterhin alle vier Spielerfiguren, drei Abschnitte, Defeat, Restart sowie Duel/Gym. Der Run hat weiterhin drei komponierte Gruppen (1/2/2), jetzt mit Director, sicherer Entry-Phase, phasenabhängigem Mana und vier Rollenprototypen. Auf ausdrückliche Entscheidung wurde G2 vor der nachzuholenden G1-Spielgefühlabnahme technisch umgesetzt. G3 bleibt bis zur manuellen G1-/G2-Rollenabnahme gesperrt.
+Technisch geprüft: 75/75 Tests, Typecheck und Production Build. Der G3-Browser-Harness durchläuft exakt sieben datengetriebene Encounter mit gestaffeltem Entry, vier Sub-Wave-Übergängen innerhalb einer Zone, zwei echten Zonentravels und Stage Victory. Der erweiterte Vollrun-Harness wiederholt dies mit allen vier Spielerfiguren und prüft weiterhin Defeat, Restart, Duel und Gym. Auf ausdrückliche Entscheidung wurden G2 und G3 vor der nachzuholenden manuellen G1-Abnahme technisch umgesetzt. Vor G4 werden G1–G3 gemeinsam auf Spielgefühl und Balance geprüft.
 
 Zusatzauftrag Mobile: Querformat-Skalierung und Rotation korrigiert, vier Aktionsbuttons um 10 % vergrößert und Touch-Zonen angepasst. [Messwerte und Eingabeprüfung](qa/mobile-2026-09-05/README.md); Abschluss der Dokumentation am 2026-09-06.
 
@@ -326,6 +326,8 @@ Jede Rolle definiert:
 3. `Add mechanical comedy signatures to enemy roles`
 
 ## 9. BULK G3 – Junkyard Run zu sieben Encounters ausbauen
+
+**Status 2026-09-08:** Implementierung und technische Prüfungen geliefert. Alle sieben Encounter, per Spawn konfigurierbare Entry-Richtung/-Verzögerung, `defeat_all`, vorbereitetes `defeat_priority`, Sub-Waves ohne Travel und Travel nur an Zonengrenzen sind umgesetzt. Manuelle Kurven-, Lesbarkeits- und Balanceabnahme offen; Details im [G3-Prüfbericht](qa/g3-runtime-2026-09-08/README.md).
 
 **Priorität:** P0<br>
 **Risiko:** mittel<br>

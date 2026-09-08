@@ -4,7 +4,7 @@ import { getPressureBudgetViolations } from './EncounterDirector';
 
 export const MINIMUM_WAVE_SPAWN_DISTANCE = 96;
 export const MAXIMUM_WAVE_SPAWN_DISTANCE = 480;
-export const MAXIMUM_WAVE_ENEMIES = 2;
+export const MAXIMUM_WAVE_ENEMIES = 3;
 
 /**
  * Validates static Wave data without needing a Phaser scene. These rules keep
@@ -15,6 +15,7 @@ export function getWaveStageValidationViolations(stage: StageDefinition): string
   const violations: string[] = [];
   const knownSectionIds = new Set<string>();
   let previousMaxX = -Infinity;
+  let previousZoneIndex = -1;
 
   if (!Number.isFinite(stage.worldWidth) || stage.worldWidth <= 0) {
     violations.push('world width must be a positive finite number');
@@ -51,8 +52,11 @@ export function getWaveStageValidationViolations(stage: StageDefinition): string
     knownSectionIds.add(section.id);
 
     const zone = stage.zones.find((candidate) => candidate.id === section.zoneId);
+    const zoneIndex = stage.zones.findIndex((candidate) => candidate.id === section.zoneId);
     if (!zone) {
       violations.push(`${section.id}: section must reference a known zone`);
+    } else if (zoneIndex < previousZoneIndex) {
+      violations.push(`${section.id}: sections must follow zone order`);
     }
 
     const { bounds } = section;
@@ -65,10 +69,11 @@ export function getWaveStageValidationViolations(stage: StageDefinition): string
     if (bounds.minY < 0 || bounds.minY >= bounds.maxY) {
       violations.push(`${section.id}: vertical bounds must be ordered and non-negative`);
     }
-    if (bounds.minX < previousMaxX) {
+    if (zoneIndex !== previousZoneIndex && bounds.minX < previousMaxX) {
       violations.push(`${section.id}: section overlaps the previous section`);
     }
-    previousMaxX = Math.max(previousMaxX, bounds.maxX);
+    if (zoneIndex !== previousZoneIndex) previousMaxX = Math.max(previousMaxX, bounds.maxX);
+    if (zoneIndex >= 0) previousZoneIndex = zoneIndex;
 
     const playerSpawnX = bounds.minX + 140;
     const playerSpawnY = Math.min(Math.max(340, bounds.minY + 48), bounds.maxY - 48);
@@ -80,11 +85,26 @@ export function getWaveStageValidationViolations(stage: StageDefinition): string
     }
     violations.push(...getPressureBudgetViolations(section.pressureBudget)
       .map((violation) => `${section.id}: ${violation}`));
+    if (section.completionRule.type === 'defeat_priority') {
+      const prioritySpawnId = section.completionRule.prioritySpawnId;
+      if (!section.enemies.some((spawn) => spawn.id === prioritySpawnId)) {
+        violations.push(`${section.id}: priority completion must reference an enemy spawn`);
+      }
+    }
+    const spawnIds = new Set<string>();
     for (const spawn of section.enemies) {
+      if (!spawn.id || spawnIds.has(spawn.id)) violations.push(`${section.id}: enemy spawn ids must be unique`);
+      spawnIds.add(spawn.id);
       if (!spawn.roleId || !(spawn.roleId in enemyRoleContracts)) {
         violations.push(`${section.id}: enemy spawn must reference a known role`);
       } else if (fighterEnemyRoles[spawn.fighterId] !== spawn.roleId) {
         violations.push(`${section.id}: enemy fighter and role must match`);
+      }
+      if (!Number.isFinite(spawn.entryDelayMs) || spawn.entryDelayMs < 0) {
+        violations.push(`${section.id}: enemy entry delay must be a non-negative finite number`);
+      }
+      if (!['left', 'right', 'upper_lane', 'lower_lane'].includes(spawn.entryDirection)) {
+        violations.push(`${section.id}: enemy entry direction must be known`);
       }
       if (spawn.spawnX < bounds.minX || spawn.spawnX > bounds.maxX || spawn.spawnY < bounds.minY || spawn.spawnY > bounds.maxY) {
         violations.push(`${section.id}: enemy spawn must stay inside its section bounds`);
@@ -111,11 +131,24 @@ export function getWaveStageValidationViolations(stage: StageDefinition): string
 
     const nextSection = stage.sections[sectionIndex + 1];
     if (!nextSection) {
+      if (section.travelBounds || section.arrivalTriggerX !== undefined) {
+        violations.push(`${section.id}: final encounter must not define travel`);
+      }
+      continue;
+    }
+
+    if (nextSection.zoneId === section.zoneId) {
+      if (section.travelBounds || section.arrivalTriggerX !== undefined) {
+        violations.push(`${section.id}: travel is only allowed between zones`);
+      }
+      if (JSON.stringify(section.bounds) !== JSON.stringify(nextSection.bounds)) {
+        violations.push(`${section.id}: sub-waves in one zone must share combat bounds`);
+      }
       continue;
     }
 
     if (!section.travelBounds || section.arrivalTriggerX === undefined) {
-      violations.push(`${section.id}: non-final section must define a travel corridor and arrival trigger`);
+      violations.push(`${section.id}: final zone encounter must define a travel corridor and arrival trigger`);
       continue;
     }
 

@@ -69,7 +69,7 @@ Do not use the old MVP documents as permission to remove existing systems such a
 
 ## Current Working Rule
 
-G0 is complete as a documentation and technical baseline. G1 and G2 are implemented and technically verified; their manual gameplay acceptance remains open before G3. Use the [G2 report](qa/g2-runtime-2026-09-06/README.md) and [G1 report](qa/g1-runtime-2026-09-05/README.md) for current evidence and the dated G0 snapshot for the historical baseline. Scripted browser diagnostics do not replace balance or real-device acceptance. Older numeric test counts describe their original milestones.
+G0 is complete as a documentation and technical baseline. G1 through G3 are implemented and technically verified; their combined manual gameplay acceptance remains open before G4. Use the [G3 report](qa/g3-runtime-2026-09-08/README.md), [G2 report](qa/g2-runtime-2026-09-06/README.md), and [G1 report](qa/g1-runtime-2026-09-05/README.md) for current evidence. Scripted browser diagnostics do not replace balance or real-device acceptance. Older numeric test counts describe their original milestones.
 
 Before implementing:
 

@@ -26,12 +26,19 @@ function roleOf(battle, fighter) {
   return battle.waveEnemyControllers.get(fighter.instanceId).getRoleId(fighter);
 }
 function advanceToNextSection(battle) {
+  const current = battle.waveStage.sections[battle.waveIndex];
+  const next = battle.waveStage.sections[battle.waveIndex + 1];
   tick(battle);
-  untilPhase(battle, 'travel');
-  input = { moveX: 1, moveY: 0 };
-  for (let i = 0; i < 220 && battle.encounterDirector.getPhase() === 'travel'; i++) tick(battle);
-  input = { moveX: 0, moveY: 0 };
-  check(battle.encounterDirector.getPhase() === 'transition', 'Travel enters next section');
+  if (current.zoneId === next.zoneId) {
+    untilPhase(battle, 'transition');
+    check(battle.waveTraversalPhase === 'transition', 'Sub-wave advances without travel');
+  } else {
+    untilPhase(battle, 'travel');
+    input = { moveX: 1, moveY: 0 };
+    for (let i = 0; i < 220 && battle.encounterDirector.getPhase() === 'travel'; i++) tick(battle);
+    input = { moveX: 0, moveY: 0 };
+    check(battle.encounterDirector.getPhase() === 'transition', 'Travel enters next zone');
+  }
   untilPhase(battle, 'section_intro');
   untilPhase(battle, 'spawning');
   untilPhase(battle, 'active');
@@ -65,8 +72,14 @@ try {
   kill(pigeon);
   advanceToNextSection(battle);
 
+  const delayedPairRoles = battle.waveEnemies.map((enemy) => roleOf(battle, enemy)).sort();
+  check(delayedPairRoles.join(',') === 'flanker,pursuer', 'Encounter 2 proves delayed Pursuer + Flanker pairing');
+  check(battle.waveEnemies.some((enemy) => !battle.isWaveEnemyCombatActive(enemy)), 'Flanker remains protected until its configured late entry');
+  battle.waveEnemies.forEach(kill);
+  advanceToNextSection(battle);
+
   const sectionTwoRoles = battle.waveEnemies.map((enemy) => roleOf(battle, enemy)).sort();
-  check(sectionTwoRoles.join(',') === 'pursuer,zoner', 'Section 2 proves Pursuer + Zoner pairing');
+  check(sectionTwoRoles.join(',') === 'pursuer,zoner', 'Encounter 3 proves Pursuer + Zoner pairing');
   const wizard = battle.waveEnemies.find((enemy) => roleOf(battle, enemy) === 'zoner');
   battle.waveEnemies.filter((enemy) => enemy !== wizard).forEach(kill);
   tick(battle);
@@ -95,8 +108,13 @@ try {
   kill(wizard);
   advanceToNextSection(battle);
 
+  check(battle.waveEnemies.map((enemy) => roleOf(battle, enemy)).sort().join(',') === 'heavy,pursuer', 'Encounter 4 proves Heavy + Pursuer pairing');
+  battle.waveEnemies.forEach(kill);
+  advanceToNextSection(battle);
+
   const sectionThreeRoles = battle.waveEnemies.map((enemy) => roleOf(battle, enemy)).sort();
-  check(sectionThreeRoles.join(',') === 'flanker,heavy', 'Section 3 proves Flanker + Heavy pairing');
+  check(sectionThreeRoles.join(',') === 'flanker,heavy', 'Encounter 5 proves Flanker + Heavy pairing');
+  for (let i = 0; i < 30 && battle.waveEnemies.some((enemy) => !battle.isWaveEnemyCombatActive(enemy)); i++) tick(battle);
   const heavy = battle.waveEnemies.find((enemy) => roleOf(battle, enemy) === 'heavy');
   const flanker = battle.waveEnemies.find((enemy) => roleOf(battle, enemy) === 'flanker');
   const heavyController = battle.waveEnemyControllers.get(heavy.instanceId);

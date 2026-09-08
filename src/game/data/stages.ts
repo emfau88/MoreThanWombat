@@ -1,32 +1,42 @@
+import type { EnemyRoleId } from '../ai/EnemyRoles';
 import type { FighterBounds } from '../combat/Fighter';
 import type { FighterId } from '../core/BattleModes';
 import type { EncounterPressureBudget } from '../core/EncounterDirector';
-import type { EnemyRoleId } from '../ai/EnemyRoles';
 import { FLAT_ARENA_VISUAL_CONTRACT } from '../core/StageVisuals';
 
 export type WaveStageId = 'junkyard_run';
+export type EnemyEntryDirection = 'left' | 'right' | 'upper_lane' | 'lower_lane';
 
 export type StageEnemySpawnDefinition = {
+  id: string;
   fighterId: FighterId;
   roleId: EnemyRoleId;
   spawnX: number;
   spawnY: number;
+  entryDirection: EnemyEntryDirection;
+  entryDelayMs: number;
   hpOverride?: number;
   moveSpeedOverride?: number;
 };
 
+export type EncounterCompletionRule =
+  | Readonly<{ type: 'defeat_all' }>
+  | Readonly<{ type: 'defeat_priority'; prioritySpawnId: string }>;
+
 export type StageSectionDefinition = {
   id: string;
   title: string;
+  objective: string;
   zoneId: string;
-  /** Bounds used while enemies are active. */
+  /** Bounds used while enemies are active. Sub-waves in one zone share them. */
   bounds: FighterBounds;
-  /** Safe forward corridor unlocked after this section is cleared. */
+  /** Safe forward corridor unlocked only after the final encounter of a zone. */
   travelBounds?: FighterBounds;
-  /** X coordinate at which the following encounter becomes active. */
+  /** X coordinate at which the following zone becomes active. */
   arrivalTriggerX?: number;
   /** Maximum simultaneous attack commitments the Encounter Director may grant. */
   pressureBudget: EncounterPressureBudget;
+  completionRule: EncounterCompletionRule;
   enemies: StageEnemySpawnDefinition[];
 };
 
@@ -48,6 +58,11 @@ export type StageDefinition = {
   sections: StageSectionDefinition[];
 };
 
+const DEFEAT_ALL = { type: 'defeat_all' } as const;
+const SCRAP_GATE_BOUNDS: FighterBounds = { minX: 72, maxX: 888, minY: 248, maxY: 474 };
+const FURNACE_YARD_BOUNDS: FighterBounds = { minX: 984, maxX: 1848, minY: 248, maxY: 474 };
+const NEON_DUMP_BOUNDS: FighterBounds = { minX: 1944, maxX: 2808, minY: 248, maxY: 474 };
+
 export const junkyardRunStage: StageDefinition = {
   id: 'junkyard_run',
   title: 'Junkyard Run',
@@ -60,99 +75,89 @@ export const junkyardRunStage: StageDefinition = {
   ],
   sections: [
     {
-      id: 'yard-entry',
-      title: 'Scrap Gate',
-      zoneId: 'scrap-gate',
-      bounds: {
-        minX: 72,
-        maxX: 720,
-        minY: 248,
-        maxY: 474,
-      },
-      travelBounds: {
-        minX: 72,
-        maxX: 1104,
-        minY: 248,
-        maxY: 474,
-      },
-      arrivalTriggerX: 1018,
-      pressureBudget: { meleeTokens: 1, rangedTokens: 0, disruptionBudget: 0 },
+      id: 'gate-crasher', title: 'Gate Crasher', objective: 'Read the Pursuer rhythm.', zoneId: 'scrap-gate',
+      bounds: SCRAP_GATE_BOUNDS,
+      pressureBudget: { meleeTokens: 1, rangedTokens: 0, disruptionBudget: 0 }, completionRule: DEFEAT_ALL,
       enemies: [
-        {
-          fighterId: 'angry_pigeon',
-          roleId: 'pursuer',
-          spawnX: 610,
-          spawnY: 334,
-          hpOverride: 56,
-          moveSpeedOverride: 120,
-        },
+        { id: 'pigeon-intro', fighterId: 'angry_pigeon', roleId: 'pursuer', spawnX: 610, spawnY: 334,
+          entryDirection: 'right', entryDelayMs: 0, hpOverride: 52, moveSpeedOverride: 120 },
       ],
     },
     {
-      id: 'crusher-lane',
-      title: 'Furnace Yard',
-      zoneId: 'furnace-yard',
-      bounds: {
-        minX: 984,
-        maxX: 1656,
-        minY: 248,
-        maxY: 474,
-      },
-      travelBounds: {
-        minX: 984,
-        maxX: 2064,
-        minY: 248,
-        maxY: 474,
-      },
-      arrivalTriggerX: 1978,
-      pressureBudget: { meleeTokens: 1, rangedTokens: 1, disruptionBudget: 0 },
+      id: 'side-door', title: 'Side Door', objective: 'Track the delayed lane change.', zoneId: 'scrap-gate',
+      bounds: SCRAP_GATE_BOUNDS,
+      travelBounds: { minX: 72, maxX: 1104, minY: 248, maxY: 474 }, arrivalTriggerX: 1018,
+      pressureBudget: { meleeTokens: 1, rangedTokens: 0, disruptionBudget: 1,
+        burst: { periodMs: 4200, durationMs: 1550 } }, completionRule: DEFEAT_ALL,
       enemies: [
-        {
-          fighterId: 'angry_pigeon',
-          roleId: 'pursuer',
-          spawnX: 1340,
-          spawnY: 308,
-          hpOverride: 52,
-          moveSpeedOverride: 122,
-        },
-        {
-          fighterId: 'discount_wizard',
-          roleId: 'zoner',
-          spawnX: 1510,
-          spawnY: 350,
-          hpOverride: 72,
-          moveSpeedOverride: 144,
-        },
+        { id: 'pigeon-door', fighterId: 'angry_pigeon', roleId: 'pursuer', spawnX: 590, spawnY: 304,
+          entryDirection: 'right', entryDelayMs: 0, hpOverride: 48, moveSpeedOverride: 122 },
+        { id: 'flanker-late', fighterId: 'scrap_flanker', roleId: 'flanker', spawnX: 680, spawnY: 398,
+          entryDirection: 'lower_lane', entryDelayMs: 900, hpOverride: 50, moveSpeedOverride: 190 },
       ],
     },
     {
-      id: 'collision-course',
-      title: 'Collision Course',
-      zoneId: 'neon-dump',
-      bounds: {
-        minX: 1944,
-        maxX: 2808,
-        minY: 248,
-        maxY: 474,
-      },
-      pressureBudget: { meleeTokens: 1, rangedTokens: 0, disruptionBudget: 1, burst: { periodMs: 5000, durationMs: 1800 } },
+      id: 'crossfire', title: 'Crossfire', objective: 'Alternate between melee and range.', zoneId: 'furnace-yard',
+      bounds: FURNACE_YARD_BOUNDS,
+      pressureBudget: { meleeTokens: 1, rangedTokens: 1, disruptionBudget: 0,
+        burst: { periodMs: 4400, durationMs: 1700 } }, completionRule: DEFEAT_ALL,
       enemies: [
-        {
-          fighterId: 'scrap_flanker',
-          roleId: 'flanker',
-          spawnX: 2240,
-          spawnY: 362,
-          hpOverride: 58,
-          moveSpeedOverride: 190,
-        },
-        {
-          fighterId: 'scrap_heavy',
-          roleId: 'heavy',
-          spawnX: 2430,
-          spawnY: 314,
-          hpOverride: 118,
-          moveSpeedOverride: 126,
-        },
+        { id: 'pigeon-crossfire', fighterId: 'angry_pigeon', roleId: 'pursuer', spawnX: 1320, spawnY: 300,
+          entryDirection: 'right', entryDelayMs: 0, hpOverride: 50, moveSpeedOverride: 124 },
+        { id: 'wizard-crossfire', fighterId: 'discount_wizard', roleId: 'zoner', spawnX: 1510, spawnY: 378,
+          entryDirection: 'upper_lane', entryDelayMs: 550, hpOverride: 62, moveSpeedOverride: 144 },
+      ],
+    },
+    {
+      id: 'armor-lesson', title: 'Armor Lesson', objective: 'Strip armor while managing pursuit.', zoneId: 'furnace-yard',
+      bounds: FURNACE_YARD_BOUNDS,
+      pressureBudget: { meleeTokens: 1, rangedTokens: 0, disruptionBudget: 0 }, completionRule: DEFEAT_ALL,
+      enemies: [
+        { id: 'heavy-lesson', fighterId: 'scrap_heavy', roleId: 'heavy', spawnX: 1370, spawnY: 370,
+          entryDirection: 'right', entryDelayMs: 0, hpOverride: 104, moveSpeedOverride: 126 },
+        { id: 'pigeon-lesson', fighterId: 'angry_pigeon', roleId: 'pursuer', spawnX: 1570, spawnY: 292,
+          entryDirection: 'lower_lane', entryDelayMs: 650, hpOverride: 46, moveSpeedOverride: 124 },
+      ],
+    },
+    {
+      id: 'foreman-audition', title: 'Foreman Audition', objective: 'Punish two long commitments.', zoneId: 'furnace-yard',
+      bounds: FURNACE_YARD_BOUNDS,
+      travelBounds: { minX: 984, maxX: 2064, minY: 248, maxY: 474 }, arrivalTriggerX: 1978,
+      pressureBudget: { meleeTokens: 1, rangedTokens: 0, disruptionBudget: 1,
+        burst: { periodMs: 4000, durationMs: 1900 } }, completionRule: DEFEAT_ALL,
+      enemies: [
+        { id: 'heavy-elite', fighterId: 'scrap_heavy', roleId: 'heavy', spawnX: 1350, spawnY: 296,
+          entryDirection: 'right', entryDelayMs: 0, hpOverride: 108, moveSpeedOverride: 128 },
+        { id: 'flanker-elite', fighterId: 'scrap_flanker', roleId: 'flanker', spawnX: 1550, spawnY: 402,
+          entryDirection: 'upper_lane', entryDelayMs: 800, hpOverride: 54, moveSpeedOverride: 194 },
+      ],
+    },
+    {
+      id: 'neon-ambush', title: 'Neon Ambush', objective: 'Survive three staggered roles.', zoneId: 'neon-dump',
+      bounds: NEON_DUMP_BOUNDS,
+      pressureBudget: { meleeTokens: 1, rangedTokens: 1, disruptionBudget: 1,
+        burst: { periodMs: 5000, durationMs: 2200 } }, completionRule: DEFEAT_ALL,
+      enemies: [
+        { id: 'pigeon-ambush', fighterId: 'angry_pigeon', roleId: 'pursuer', spawnX: 2220, spawnY: 296,
+          entryDirection: 'right', entryDelayMs: 0, hpOverride: 48, moveSpeedOverride: 126 },
+        { id: 'wizard-ambush', fighterId: 'discount_wizard', roleId: 'zoner', spawnX: 2380, spawnY: 404,
+          entryDirection: 'upper_lane', entryDelayMs: 650, hpOverride: 60, moveSpeedOverride: 146 },
+        { id: 'flanker-ambush', fighterId: 'scrap_flanker', roleId: 'flanker', spawnX: 2520, spawnY: 292,
+          entryDirection: 'lower_lane', entryDelayMs: 1300, hpOverride: 50, moveSpeedOverride: 194 },
+      ],
+    },
+    {
+      id: 'junkyard-overtime', title: 'Junkyard Overtime', objective: 'Break the armored finale under mixed pressure.', zoneId: 'neon-dump',
+      bounds: NEON_DUMP_BOUNDS,
+      pressureBudget: { meleeTokens: 1, rangedTokens: 1, disruptionBudget: 1,
+        burst: { periodMs: 4200, durationMs: 2400 } }, completionRule: DEFEAT_ALL,
+      enemies: [
+        { id: 'heavy-final', fighterId: 'scrap_heavy', roleId: 'heavy', spawnX: 2250, spawnY: 370,
+          entryDirection: 'right', entryDelayMs: 0, hpOverride: 112, moveSpeedOverride: 130 },
+        { id: 'wizard-final', fighterId: 'discount_wizard', roleId: 'zoner', spawnX: 2410, spawnY: 280,
+          entryDirection: 'upper_lane', entryDelayMs: 500, hpOverride: 64, moveSpeedOverride: 148 },
+        { id: 'flanker-final', fighterId: 'scrap_flanker', roleId: 'flanker', spawnX: 2520, spawnY: 404,
+          entryDirection: 'lower_lane', entryDelayMs: 1050, hpOverride: 54, moveSpeedOverride: 196 },
       ],
     },
   ],

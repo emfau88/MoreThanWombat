@@ -1,12 +1,12 @@
 # 16 - Current Roadmap
 
-## Current execution update — 2026-09-05
+## Current execution update — 2026-09-08
 
-[Plan 31](31_GAMEPLAY_AND_WAVE_COMPLETION_PLAN.md) owns the gameplay execution order. G0 is complete; **G1 Encounter Director** is implemented and technically verified, with manual gameplay acceptance open before G2 roles and G3 seven encounters. [G1 evidence and open gates](qa/g1-runtime-2026-09-05/README.md) are the current status reference.
+[Plan 31](31_GAMEPLAY_AND_WAVE_COMPLETION_PLAN.md) owns the gameplay execution order. G0 is complete; **G1–G3** are implemented and technically verified. Their combined manual gameplay acceptance remains open before G4. [G3 evidence and open gates](qa/g3-runtime-2026-09-08/README.md) are the current status reference.
 
 - Normal players: Wombat, Discount Wizard, Budget Barbarian, Mara Breach. Buster Bulldog and Reference Fighter are Gym-only prototypes.
-- Typecheck, **66/66 tests** and build pass locally; G0 records six character-sheet hard gates and all three VFX-QA manifests passing.
-- Junkyard Run has three zones and three groups (1/2/2 enemies), now orchestrated by the Director with safe entry, pressure budgets and phase-aware mana. Seven encounters, new roles, defensive actions and bosses remain future work.
+- Typecheck, **75/75 tests** and build pass locally; G0 records six character-sheet hard gates and all three VFX-QA manifests passing.
+- Junkyard Run has three zones and seven role-based encounters, now orchestrated by the Director with per-spawn entry direction/timing, same-zone sub-waves, safe zone travel, pressure budgets and phase-aware mana. Manual G1–G3 acceptance, defensive actions and bosses remain future work.
 - Scripted Phaser regression checks pass. Full-run gameplay acceptance, balance and two real-device classes remain open.
 - G0–G9 adds no player fighter or arena. Final art follows mechanical acceptance; broad architecture hardening remains G10.
 
