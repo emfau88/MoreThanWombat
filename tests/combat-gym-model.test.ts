@@ -51,6 +51,12 @@ test('combat gym exposes armor as a deterministic contact response', () => {
   assert.ok(COMBAT_GYM_DUMMY_MODES.includes('armor'));
 });
 
+test('combat gym exposes every G4 defense and knockdown phase', () => {
+  for (const mode of ['guard', 'evade', 'launched', 'knockdown', 'wake-up']) {
+    assert.ok(COMBAT_GYM_DUMMY_MODES.includes(mode as typeof COMBAT_GYM_DUMMY_MODES[number]));
+  }
+});
+
 test('combat gym defaults an older settings payload to the right-side dummy', () => {
   const oldSettings = { ...createDefaultCombatGymSettings('mara_breach', 'angry_pigeon') } as Record<string, unknown>;
   delete oldSettings.dummySideIndex;

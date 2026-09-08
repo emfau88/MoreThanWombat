@@ -19,7 +19,9 @@ Buttons:
 
 - Attack.
 - Special.
-- Optional dodge/jump later.
+- Jump.
+- Ultimate.
+- Defend: neutral Guard, with a strong direction Evade.
 
 ## Virtual Joystick
 
@@ -63,6 +65,7 @@ Required for development:
 WASD / Arrow keys: move
 J / Space: attack
 K / Shift: special
+F: defend; hold a direction for Evade
 F1 or H: toggle debug boxes
 ```
 
@@ -78,6 +81,9 @@ export type PlayerInputState = {
   moveY: number;
   attackPressed: boolean;
   specialPressed: boolean;
+  ultimatePressed: boolean;
+  jumpPressed: boolean;
+  defendPressed: boolean;
   debugTogglePressed: boolean;
 };
 ```

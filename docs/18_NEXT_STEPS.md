@@ -1,6 +1,6 @@
 # 18 - Next Steps
 
-**Current order — 2026-09-05:** G0 is complete. G1 Encounter Director is implemented and technically verified. Complete its manual pressure/readability acceptance, then G2 enemy roles and G3 seven encounters under [plan 31](31_GAMEPLAY_AND_WAVE_COMPLETION_PLAN.md). Use the [G1 report](qa/g1-runtime-2026-09-05/README.md) for current state and open gates.
+**Current order — 2026-09-08:** G0 is complete and G1–G4 are implemented and technically verified. Run the combined manual pressure, readability, defense, mobile and balance acceptance documented in the [G4 report](qa/g4-runtime-2026-09-08/README.md), then implement G5 Run/Dash, Dash Attack and Basic Chain under [plan 31](31_GAMEPLAY_AND_WAVE_COMPLETION_PLAN.md). G6–G11 remain in that plan order.
 
 The blocks below are historical recommendations. Camera, feel and device checks remain relevant, but their old order and content restrictions do not supersede the scoped G1–G11 work.
 

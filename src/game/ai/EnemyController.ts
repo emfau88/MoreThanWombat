@@ -74,6 +74,23 @@ export class EnemyController {
     if (this.trackedAttackId) this.trackedAttackConnected = true;
   }
 
+  notifyDefenseOutcome(outcome: 'blocked' | 'invulnerable'): void {
+    if (!this.trackedAttackId) return;
+    this.trackedAttackConnected = false;
+    if (outcome === 'blocked' || outcome === 'invulnerable') this.recoveryRemainingMs = 0;
+  }
+
+  notifyKnockdown(actor?: Pick<EnemyRoleActor, 'id'>): void {
+    this.clearInterruptedAttack();
+    this.roleState = null;
+    this.roleStateRemainingMs = 0;
+    this.recoveryRemainingMs = 0;
+    if (this.getRoleId(actor) === 'flanker') {
+      this.flankLaneSide = this.flankLaneSide === 1 ? -1 : 1;
+      this.flankHorizontalSide = this.flankHorizontalSide === 1 ? -1 : 1;
+    }
+  }
+
   /** Returns true exactly once when a heavy loses its armor. */
   notifyArmoredContact(actor?: Pick<EnemyRoleActor, 'id'>): boolean {
     if (this.getRoleId(actor) !== 'heavy' || this.heavyArmorBroken) return false;
@@ -121,7 +138,8 @@ export class EnemyController {
     this.observeAttackLifecycle(enemy);
 
     if (enemy.state === 'dead' || target.state === 'dead') return IDLE_INTENT;
-    if (enemy.state === 'hitstun') {
+    if (enemy.state === 'hitstun' || enemy.state === 'launched' || enemy.state === 'knockdown'
+      || enemy.state === 'grounded' || enemy.state === 'wake_up') {
       this.clearInterruptedAttack();
       return IDLE_INTENT;
     }

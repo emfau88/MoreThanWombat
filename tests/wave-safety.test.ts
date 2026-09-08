@@ -5,7 +5,7 @@ import { junkyardRunStage } from '../src/game/data/stages';
 
 test('every current entry finds separated visible spawns across arrival lanes and camera positions', () => {
   for (const [index, section] of junkyardRunStage.sections.entries()) {
-    for (const y of [248, 340, 474]) {
+    for (const y of [310, 389, 468]) {
       const previous = junkyardRunStage.sections[index - 1];
       const arrivalX = previous?.zoneId !== section.zoneId && previous?.arrivalTriggerX !== undefined
         ? previous.arrivalTriggerX

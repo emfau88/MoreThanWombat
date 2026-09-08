@@ -106,7 +106,7 @@ try {
       window.__QA_ACTIONS__ = [];
       controls.getState = () => {
         const state = getState();
-        for (const key of ['attackPressed','specialPressed','ultimatePressed','jumpPressed']) {
+        for (const key of ['attackPressed','specialPressed','ultimatePressed','jumpPressed','defendPressed']) {
           if (state[key]) window.__QA_ACTIONS__.push(key);
         }
         return state;
@@ -120,9 +120,10 @@ try {
       return { x: rect.x + (control.x + ${offsetX}) * rect.width / game.scale.width,
         y: rect.y + control.y * rect.height / game.scale.height, id: 1 };
     })()`);
-    for (const action of ['attack', 'special', 'ultimate', 'jump']) {
+    for (const action of ['attack', 'special', 'ultimate', 'jump', 'defend']) {
       const radius = await evaluate(`window.__MORE_THAN_WOMBAT_GAME__.scene.getScene('BattleScene').mobileControls.controls.${action}Button.radius`);
-      assert.ok(Math.abs(radius - (action === 'attack' ? 46.2 : action === 'special' ? 37.4 : 35.2)) < 0.001, `${action}: wrong rendered radius`);
+      assert.ok(Math.abs(radius - (action === 'attack' ? 46.2 : action === 'special' ? 37.4
+        : action === 'defend' ? 28 : 35.2)) < 0.001, `${action}: wrong rendered radius`);
       await evaluate('window.__QA_ACTIONS__ = []; void 0;');
       await send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [await controlPoint(`${action}Button`, radius * 0.97)] });
       await sleep(100);
@@ -142,7 +143,7 @@ try {
     await sleep(400);
     assert.ok(await evaluate('window.__MORE_THAN_WOMBAT_GAME__.scene.isActive("MainMenuScene")'), 'Menu touch misses after rotation');
     assert.equal(errors.length, 0, 'Uncaught browser errors');
-    const report = 'PASS — mobile layout, rotation, aspect ratio, preserved Wave state, four enlarged action edge touches, joystick press/release and menu touch';
+    const report = 'PASS — mobile layout, rotation, aspect ratio, preserved Wave state, five separate action edge touches, joystick press/release and menu touch';
     await writeFile(join(outputDir, 'checks.log'), `${report}\n${JSON.stringify(await send('Browser.getVersion'))}\n`);
     console.log(report);
   } else {

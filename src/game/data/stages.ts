@@ -37,6 +37,7 @@ export type StageSectionDefinition = {
   /** Maximum simultaneous attack commitments the Encounter Director may grant. */
   pressureBudget: EncounterPressureBudget;
   completionRule: EncounterCompletionRule;
+  clearReward?: Readonly<{ healthRatio: number; label: string }>;
   enemies: StageEnemySpawnDefinition[];
 };
 
@@ -59,9 +60,10 @@ export type StageDefinition = {
 };
 
 const DEFEAT_ALL = { type: 'defeat_all' } as const;
-const SCRAP_GATE_BOUNDS: FighterBounds = { minX: 72, maxX: 888, minY: 248, maxY: 474 };
-const FURNACE_YARD_BOUNDS: FighterBounds = { minX: 984, maxX: 1848, minY: 248, maxY: 474 };
-const NEON_DUMP_BOUNDS: FighterBounds = { minX: 1944, maxX: 2808, minY: 248, maxY: 474 };
+export const JUNKYARD_WALKABLE_BAND = Object.freeze({ minY: 310, maxY: 468 });
+const SCRAP_GATE_BOUNDS: FighterBounds = { minX: 72, maxX: 888, ...JUNKYARD_WALKABLE_BAND };
+const FURNACE_YARD_BOUNDS: FighterBounds = { minX: 984, maxX: 1848, ...JUNKYARD_WALKABLE_BAND };
+const NEON_DUMP_BOUNDS: FighterBounds = { minX: 1944, maxX: 2808, ...JUNKYARD_WALKABLE_BAND };
 
 export const junkyardRunStage: StageDefinition = {
   id: 'junkyard_run',
@@ -79,22 +81,25 @@ export const junkyardRunStage: StageDefinition = {
       bounds: SCRAP_GATE_BOUNDS,
       pressureBudget: { meleeTokens: 1, rangedTokens: 0, disruptionBudget: 0 }, completionRule: DEFEAT_ALL,
       enemies: [
-        { id: 'pigeon-intro', fighterId: 'angry_pigeon', roleId: 'pursuer', spawnX: 610, spawnY: 334,
-          entryDirection: 'right', entryDelayMs: 0, hpOverride: 52, moveSpeedOverride: 120 },
+        { id: 'pigeon-intro', fighterId: 'angry_pigeon', roleId: 'pursuer', spawnX: 610, spawnY: 356,
+          entryDirection: 'right', entryDelayMs: 0, hpOverride: 34, moveSpeedOverride: 112 },
       ],
     },
     {
       id: 'side-door', title: 'Side Door', objective: 'Track the delayed lane change.', zoneId: 'scrap-gate',
       bounds: SCRAP_GATE_BOUNDS,
-      travelBounds: { minX: 72, maxX: 1104, minY: 248, maxY: 474 }, arrivalTriggerX: 1018,
+      travelBounds: { minX: 72, maxX: 1104, ...JUNKYARD_WALKABLE_BAND }, arrivalTriggerX: 1018,
       pressureBudget: { meleeTokens: 1, rangedTokens: 0, disruptionBudget: 1,
         burst: { periodMs: 4200, durationMs: 1550 } }, completionRule: DEFEAT_ALL,
       enemies: [
-        { id: 'pigeon-door', fighterId: 'angry_pigeon', roleId: 'pursuer', spawnX: 590, spawnY: 304,
-          entryDirection: 'right', entryDelayMs: 0, hpOverride: 48, moveSpeedOverride: 122 },
-        { id: 'flanker-late', fighterId: 'scrap_flanker', roleId: 'flanker', spawnX: 680, spawnY: 398,
-          entryDirection: 'lower_lane', entryDelayMs: 900, hpOverride: 50, moveSpeedOverride: 190 },
+        { id: 'pigeon-door', fighterId: 'angry_pigeon', roleId: 'pursuer', spawnX: 560, spawnY: 340,
+          entryDirection: 'right', entryDelayMs: 0, hpOverride: 30, moveSpeedOverride: 112 },
+        { id: 'pigeon-door-late', fighterId: 'angry_pigeon', roleId: 'pursuer', spawnX: 660, spawnY: 430,
+          entryDirection: 'lower_lane', entryDelayMs: 450, hpOverride: 30, moveSpeedOverride: 114 },
+        { id: 'flanker-late', fighterId: 'scrap_flanker', roleId: 'flanker', spawnX: 680, spawnY: 332,
+          entryDirection: 'upper_lane', entryDelayMs: 1000, hpOverride: 42, moveSpeedOverride: 178 },
       ],
+      clearReward: { healthRatio: 0.25, label: 'Suspicious Scrap Snack' },
     },
     {
       id: 'crossfire', title: 'Crossfire', objective: 'Alternate between melee and range.', zoneId: 'furnace-yard',
@@ -102,10 +107,12 @@ export const junkyardRunStage: StageDefinition = {
       pressureBudget: { meleeTokens: 1, rangedTokens: 1, disruptionBudget: 0,
         burst: { periodMs: 4400, durationMs: 1700 } }, completionRule: DEFEAT_ALL,
       enemies: [
-        { id: 'pigeon-crossfire', fighterId: 'angry_pigeon', roleId: 'pursuer', spawnX: 1320, spawnY: 300,
-          entryDirection: 'right', entryDelayMs: 0, hpOverride: 50, moveSpeedOverride: 124 },
-        { id: 'wizard-crossfire', fighterId: 'discount_wizard', roleId: 'zoner', spawnX: 1510, spawnY: 378,
-          entryDirection: 'upper_lane', entryDelayMs: 550, hpOverride: 62, moveSpeedOverride: 144 },
+        { id: 'pigeon-crossfire', fighterId: 'angry_pigeon', roleId: 'pursuer', spawnX: 1280, spawnY: 342,
+          entryDirection: 'right', entryDelayMs: 0, hpOverride: 30, moveSpeedOverride: 114 },
+        { id: 'pigeon-crossfire-late', fighterId: 'angry_pigeon', roleId: 'pursuer', spawnX: 1430, spawnY: 430,
+          entryDirection: 'lower_lane', entryDelayMs: 500, hpOverride: 28, moveSpeedOverride: 112 },
+        { id: 'wizard-crossfire', fighterId: 'discount_wizard', roleId: 'zoner', spawnX: 1580, spawnY: 354,
+          entryDirection: 'upper_lane', entryDelayMs: 1000, hpOverride: 46, moveSpeedOverride: 136 },
       ],
     },
     {
@@ -113,24 +120,29 @@ export const junkyardRunStage: StageDefinition = {
       bounds: FURNACE_YARD_BOUNDS,
       pressureBudget: { meleeTokens: 1, rangedTokens: 0, disruptionBudget: 0 }, completionRule: DEFEAT_ALL,
       enemies: [
-        { id: 'heavy-lesson', fighterId: 'scrap_heavy', roleId: 'heavy', spawnX: 1370, spawnY: 370,
-          entryDirection: 'right', entryDelayMs: 0, hpOverride: 104, moveSpeedOverride: 126 },
-        { id: 'pigeon-lesson', fighterId: 'angry_pigeon', roleId: 'pursuer', spawnX: 1570, spawnY: 292,
-          entryDirection: 'lower_lane', entryDelayMs: 650, hpOverride: 46, moveSpeedOverride: 124 },
+        { id: 'heavy-lesson', fighterId: 'scrap_heavy', roleId: 'heavy', spawnX: 1320, spawnY: 380,
+          entryDirection: 'right', entryDelayMs: 0, hpOverride: 78, moveSpeedOverride: 116 },
+        { id: 'pigeon-lesson', fighterId: 'angry_pigeon', roleId: 'pursuer', spawnX: 1480, spawnY: 332,
+          entryDirection: 'upper_lane', entryDelayMs: 550, hpOverride: 28, moveSpeedOverride: 114 },
+        { id: 'pigeon-lesson-late', fighterId: 'angry_pigeon', roleId: 'pursuer', spawnX: 1595, spawnY: 430,
+          entryDirection: 'lower_lane', entryDelayMs: 1100, hpOverride: 28, moveSpeedOverride: 114 },
       ],
     },
     {
       id: 'foreman-audition', title: 'Foreman Audition', objective: 'Punish two long commitments.', zoneId: 'furnace-yard',
       bounds: FURNACE_YARD_BOUNDS,
-      travelBounds: { minX: 984, maxX: 2064, minY: 248, maxY: 474 }, arrivalTriggerX: 1978,
+      travelBounds: { minX: 984, maxX: 2064, ...JUNKYARD_WALKABLE_BAND }, arrivalTriggerX: 1978,
       pressureBudget: { meleeTokens: 1, rangedTokens: 0, disruptionBudget: 1,
         burst: { periodMs: 4000, durationMs: 1900 } }, completionRule: DEFEAT_ALL,
       enemies: [
-        { id: 'heavy-elite', fighterId: 'scrap_heavy', roleId: 'heavy', spawnX: 1350, spawnY: 296,
-          entryDirection: 'right', entryDelayMs: 0, hpOverride: 108, moveSpeedOverride: 128 },
-        { id: 'flanker-elite', fighterId: 'scrap_flanker', roleId: 'flanker', spawnX: 1550, spawnY: 402,
-          entryDirection: 'upper_lane', entryDelayMs: 800, hpOverride: 54, moveSpeedOverride: 194 },
+        { id: 'pigeon-foreman', fighterId: 'angry_pigeon', roleId: 'pursuer', spawnX: 1280, spawnY: 338,
+          entryDirection: 'right', entryDelayMs: 0, hpOverride: 30, moveSpeedOverride: 116 },
+        { id: 'flanker-elite', fighterId: 'scrap_flanker', roleId: 'flanker', spawnX: 1460, spawnY: 430,
+          entryDirection: 'lower_lane', entryDelayMs: 550, hpOverride: 44, moveSpeedOverride: 182 },
+        { id: 'heavy-elite', fighterId: 'scrap_heavy', roleId: 'heavy', spawnX: 1600, spawnY: 354,
+          entryDirection: 'upper_lane', entryDelayMs: 1250, hpOverride: 84, moveSpeedOverride: 118 },
       ],
+      clearReward: { healthRatio: 0.3, label: 'Questionable First-Aid Can' },
     },
     {
       id: 'neon-ambush', title: 'Neon Ambush', objective: 'Survive three staggered roles.', zoneId: 'neon-dump',
@@ -138,12 +150,14 @@ export const junkyardRunStage: StageDefinition = {
       pressureBudget: { meleeTokens: 1, rangedTokens: 1, disruptionBudget: 1,
         burst: { periodMs: 5000, durationMs: 2200 } }, completionRule: DEFEAT_ALL,
       enemies: [
-        { id: 'pigeon-ambush', fighterId: 'angry_pigeon', roleId: 'pursuer', spawnX: 2220, spawnY: 296,
-          entryDirection: 'right', entryDelayMs: 0, hpOverride: 48, moveSpeedOverride: 126 },
-        { id: 'wizard-ambush', fighterId: 'discount_wizard', roleId: 'zoner', spawnX: 2380, spawnY: 404,
-          entryDirection: 'upper_lane', entryDelayMs: 650, hpOverride: 60, moveSpeedOverride: 146 },
-        { id: 'flanker-ambush', fighterId: 'scrap_flanker', roleId: 'flanker', spawnX: 2520, spawnY: 292,
-          entryDirection: 'lower_lane', entryDelayMs: 1300, hpOverride: 50, moveSpeedOverride: 194 },
+        { id: 'pigeon-ambush', fighterId: 'angry_pigeon', roleId: 'pursuer', spawnX: 2200, spawnY: 338,
+          entryDirection: 'right', entryDelayMs: 0, hpOverride: 28, moveSpeedOverride: 116 },
+        { id: 'pigeon-ambush-late', fighterId: 'angry_pigeon', roleId: 'pursuer', spawnX: 2300, spawnY: 430,
+          entryDirection: 'lower_lane', entryDelayMs: 450, hpOverride: 28, moveSpeedOverride: 116 },
+        { id: 'wizard-ambush', fighterId: 'discount_wizard', roleId: 'zoner', spawnX: 2440, spawnY: 350,
+          entryDirection: 'upper_lane', entryDelayMs: 1000, hpOverride: 44, moveSpeedOverride: 138 },
+        { id: 'flanker-ambush', fighterId: 'scrap_flanker', roleId: 'flanker', spawnX: 2550, spawnY: 424,
+          entryDirection: 'lower_lane', entryDelayMs: 1550, hpOverride: 40, moveSpeedOverride: 184 },
       ],
     },
     {
@@ -152,12 +166,14 @@ export const junkyardRunStage: StageDefinition = {
       pressureBudget: { meleeTokens: 1, rangedTokens: 1, disruptionBudget: 1,
         burst: { periodMs: 4200, durationMs: 2400 } }, completionRule: DEFEAT_ALL,
       enemies: [
-        { id: 'heavy-final', fighterId: 'scrap_heavy', roleId: 'heavy', spawnX: 2250, spawnY: 370,
-          entryDirection: 'right', entryDelayMs: 0, hpOverride: 112, moveSpeedOverride: 130 },
-        { id: 'wizard-final', fighterId: 'discount_wizard', roleId: 'zoner', spawnX: 2410, spawnY: 280,
-          entryDirection: 'upper_lane', entryDelayMs: 500, hpOverride: 64, moveSpeedOverride: 148 },
-        { id: 'flanker-final', fighterId: 'scrap_flanker', roleId: 'flanker', spawnX: 2520, spawnY: 404,
-          entryDirection: 'lower_lane', entryDelayMs: 1050, hpOverride: 54, moveSpeedOverride: 196 },
+        { id: 'pigeon-final', fighterId: 'angry_pigeon', roleId: 'pursuer', spawnX: 2200, spawnY: 338,
+          entryDirection: 'right', entryDelayMs: 0, hpOverride: 30, moveSpeedOverride: 118 },
+        { id: 'pigeon-final-late', fighterId: 'angry_pigeon', roleId: 'pursuer', spawnX: 2280, spawnY: 430,
+          entryDirection: 'lower_lane', entryDelayMs: 450, hpOverride: 30, moveSpeedOverride: 118 },
+        { id: 'heavy-final', fighterId: 'scrap_heavy', roleId: 'heavy', spawnX: 2440, spawnY: 354,
+          entryDirection: 'upper_lane', entryDelayMs: 1050, hpOverride: 90, moveSpeedOverride: 120 },
+        { id: 'wizard-final', fighterId: 'discount_wizard', roleId: 'zoner', spawnX: 2550, spawnY: 424,
+          entryDirection: 'lower_lane', entryDelayMs: 1650, hpOverride: 48, moveSpeedOverride: 140 },
       ],
     },
   ],

@@ -13,7 +13,7 @@ function circleFitsViewport(circle: { x: number; y: number; radius: number }, wi
 test('mobile controls stay inside the smallest supported landscape viewport', () => {
   const layout = getMobileControlLayout(568, 320);
 
-  for (const control of [layout.joystick, layout.attack, layout.special, layout.ultimate, layout.jump]) {
+  for (const control of [layout.joystick, layout.attack, layout.special, layout.ultimate, layout.jump, layout.defend]) {
     assert.equal(circleFitsViewport(control, 568, 320), true);
   }
   assert.ok(layout.menu.x - layout.menu.width / 2 >= 0);

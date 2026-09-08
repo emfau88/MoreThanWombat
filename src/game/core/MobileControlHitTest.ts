@@ -1,7 +1,7 @@
 export type ScreenPoint = { x: number; y: number };
 export type CircleTarget = { x: number; y: number; radius: number };
 export type RectTarget = { x: number; y: number; width: number; height: number };
-export type MobileControlTarget = 'menu' | 'attack' | 'special' | 'ultimate' | 'jump' | 'joystick' | 'none';
+export type MobileControlTarget = 'menu' | 'attack' | 'special' | 'ultimate' | 'jump' | 'defend' | 'joystick' | 'none';
 
 export type MobileControlGeometry = {
   screenWidth: number;
@@ -10,6 +10,7 @@ export type MobileControlGeometry = {
   special: CircleTarget;
   ultimate: CircleTarget;
   jump: CircleTarget;
+  defend: CircleTarget;
   joystickAvailable: boolean;
 };
 
@@ -43,6 +44,9 @@ export function resolveMobileControlTarget(point: ScreenPoint, geometry: MobileC
   }
   if (containsCircle(point, geometry.jump)) {
     return 'jump';
+  }
+  if (containsCircle(point, geometry.defend)) {
+    return 'defend';
   }
   if (point.x <= geometry.screenWidth * 0.5 && geometry.joystickAvailable) {
     return 'joystick';

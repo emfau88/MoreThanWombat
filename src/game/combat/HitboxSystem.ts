@@ -72,14 +72,16 @@ export class HitboxSystem {
       return { didHit: false, didConnect: false, damage: 0 };
     }
 
-    if (resolution.outcome === 'hit' && attack) {
+    if ((resolution.outcome === 'hit' || resolution.outcome === 'guard_broken') && attack) {
+      const guardBroken = resolution.outcome === 'guard_broken';
       defender.receiveHit({
         damage: resolution.damage,
-        hitstunMs: attack.hitstunMs,
-        knockbackX: attack.knockbackX,
-        knockbackY: attack.knockbackY * resolution.verticalKnockbackDirection,
+        hitstunMs: guardBroken ? Math.max(220, attack.hitstunMs * 0.65) : attack.hitstunMs,
+        knockbackX: guardBroken ? attack.knockbackX * 0.5 : attack.knockbackX,
+        knockbackY: (guardBroken ? attack.knockbackY * 0.5 : attack.knockbackY) * resolution.verticalKnockbackDirection,
         sourceFacing: resolution.sourceFacing,
-        launchVelocityZ: resolution.launchVelocityZ,
+        launchVelocityZ: guardBroken ? undefined : resolution.launchVelocityZ,
+        hitReaction: guardBroken ? 'hitstun' : attack.hitReaction,
       });
     } else if (resolution.outcome === 'armored') {
       defender.receiveArmoredHit(resolution.damage);
@@ -88,7 +90,7 @@ export class HitboxSystem {
     attacker.registerHit(defenderHitTargetId);
     attacker.showDebugContact(resolution.contactX, resolution.contactY);
     return {
-      didHit: resolution.outcome === 'hit' || resolution.outcome === 'armored',
+      didHit: resolution.outcome === 'hit' || resolution.outcome === 'guard_broken' || resolution.outcome === 'armored',
       didConnect: true,
       damage: resolution.damage,
       attackId: resolution.attackId,

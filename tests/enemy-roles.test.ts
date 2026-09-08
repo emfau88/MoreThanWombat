@@ -149,6 +149,29 @@ test('Flanker commits down one lane and crashes after a missed charge', () => {
   assert.equal(controller.getPresentation(flanker).cue, 'CRASH!');
 });
 
+test('G4 defense outcomes preserve role punish windows and knockdown reactions', () => {
+  const target = actor('wombat', 90, 0, 0);
+  const pigeon = actor('angry_pigeon', 1, 60, 0);
+  const pursuer = new EnemyController('pursuer');
+  pigeon.attack = { id: 'pigeon_peck' };
+  pigeon.phase = 'active';
+  pursuer.update(pigeon, target, 1 / 60);
+  pigeon.attack = null;
+  pigeon.phase = 'none';
+  assert.equal(pursuer.update(pigeon, target, 1 / 60).state, 'comic_whiff', 'a block or evade leaves the peck unconnected');
+
+  const flanker = actor('scrap_flanker', 2, 150, 74);
+  const flankController = new EnemyController('flanker', 1);
+  flankController.notifyKnockdown(flanker);
+  assert.equal(flankController.update(flanker, target, 1 / 60).moveY, -1, 'knockdown resets the chosen flank lane');
+
+  for (const state of ['launched', 'knockdown', 'grounded', 'wake_up'] as const) {
+    pigeon.state = state;
+    const intent = new EnemyController('pursuer').update(pigeon, target, 1 / 60, () => true);
+    assert.equal(intent.attackPressed, false, `${state} cannot attack`);
+  }
+});
+
 test('Heavy breaks armor on the second contact and permanently changes response and pace', () => {
   const target = actor('wombat', 90, 0, 0);
   const heavy = actor('scrap_heavy', 3, 220, 0);

@@ -73,13 +73,13 @@ try {
   advanceToNextSection(battle);
 
   const delayedPairRoles = battle.waveEnemies.map((enemy) => roleOf(battle, enemy)).sort();
-  check(delayedPairRoles.join(',') === 'flanker,pursuer', 'Encounter 2 proves delayed Pursuer + Flanker pairing');
+  check(delayedPairRoles.join(',') === 'flanker,pursuer,pursuer', 'Encounter 2 proves Pursuer crowd + delayed Flanker pairing');
   check(battle.waveEnemies.some((enemy) => !battle.isWaveEnemyCombatActive(enemy)), 'Flanker remains protected until its configured late entry');
   battle.waveEnemies.forEach(kill);
   advanceToNextSection(battle);
 
   const sectionTwoRoles = battle.waveEnemies.map((enemy) => roleOf(battle, enemy)).sort();
-  check(sectionTwoRoles.join(',') === 'pursuer,zoner', 'Encounter 3 proves Pursuer + Zoner pairing');
+  check(sectionTwoRoles.join(',') === 'pursuer,pursuer,zoner', 'Encounter 3 proves Pursuer crowd + Zoner pairing');
   const wizard = battle.waveEnemies.find((enemy) => roleOf(battle, enemy) === 'zoner');
   battle.waveEnemies.filter((enemy) => enemy !== wizard).forEach(kill);
   tick(battle);
@@ -108,12 +108,12 @@ try {
   kill(wizard);
   advanceToNextSection(battle);
 
-  check(battle.waveEnemies.map((enemy) => roleOf(battle, enemy)).sort().join(',') === 'heavy,pursuer', 'Encounter 4 proves Heavy + Pursuer pairing');
+  check(battle.waveEnemies.map((enemy) => roleOf(battle, enemy)).sort().join(',') === 'heavy,pursuer,pursuer', 'Encounter 4 proves Heavy + Pursuer crowd pairing');
   battle.waveEnemies.forEach(kill);
   advanceToNextSection(battle);
 
   const sectionThreeRoles = battle.waveEnemies.map((enemy) => roleOf(battle, enemy)).sort();
-  check(sectionThreeRoles.join(',') === 'flanker,heavy', 'Encounter 5 proves Flanker + Heavy pairing');
+  check(sectionThreeRoles.join(',') === 'flanker,heavy,pursuer', 'Encounter 5 proves Pursuer + Flanker + Heavy pairing');
   for (let i = 0; i < 30 && battle.waveEnemies.some((enemy) => !battle.isWaveEnemyCombatActive(enemy)); i++) tick(battle);
   const heavy = battle.waveEnemies.find((enemy) => roleOf(battle, enemy) === 'heavy');
   const flanker = battle.waveEnemies.find((enemy) => roleOf(battle, enemy) === 'flanker');

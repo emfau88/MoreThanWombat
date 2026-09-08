@@ -1,13 +1,14 @@
-export type BufferedCombatAction = 'attack' | 'special' | 'ultimate' | 'jump';
+export type BufferedCombatAction = 'attack' | 'special' | 'ultimate' | 'jump' | 'defend';
 
 export type BufferableInput = {
   attackPressed: boolean;
   specialPressed: boolean;
   ultimatePressed: boolean;
   jumpPressed: boolean;
+  defendPressed: boolean;
 };
 
-const ACTIONS: BufferedCombatAction[] = ['attack', 'special', 'ultimate', 'jump'];
+const ACTIONS: BufferedCombatAction[] = ['attack', 'special', 'ultimate', 'jump', 'defend'];
 
 export class InputBuffer {
   private readonly remainingMs = new Map<BufferedCombatAction, number>();
@@ -47,6 +48,9 @@ export class InputBuffer {
     }
     if (input.jumpPressed) {
       this.remainingMs.set('jump', this.windowMs);
+    }
+    if (input.defendPressed) {
+      this.remainingMs.set('defend', this.windowMs);
     }
   }
 

@@ -64,6 +64,11 @@ const OUTCOME_PROFILES: Partial<Record<CombatOutcome, HitFeedbackProfile>> = {
     defenderFlashMs: 36, defenderFlashColor: 0x8be9fd, sparkStyle: 'block', sparkScale: 0.82,
     sound: 'block', soundVolume: 0.4, hapticMs: 6,
   },
+  guard_broken: {
+    feedbackClass: 'heavy', hitstopMs: 72, shakeDurationMs: 66, shakeIntensity: 0.0042,
+    defenderFlashMs: 52, defenderFlashColor: 0xffd166, sparkStyle: 'block', sparkScale: 1.18,
+    sound: 'heavy', soundVolume: 0.52, hapticMs: 14,
+  },
   armored: {
     feedbackClass: 'medium', hitstopMs: 40, shakeDurationMs: 42, shakeIntensity: 0.0025,
     defenderFlashMs: 40, defenderFlashColor: 0xffb65c, sparkStyle: 'armor', sparkScale: 0.9,
@@ -108,6 +113,7 @@ export function shouldPresentCombatImpact(impact: CombatImpact): boolean {
   return outcome !== 'miss' && (
     impact.damage > 0
     || outcome === 'blocked'
+    || outcome === 'guard_broken'
     || outcome === 'armored'
     || outcome === 'invulnerable'
   );

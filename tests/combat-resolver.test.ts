@@ -77,6 +77,12 @@ test('guard and invulnerability connect without dealing damage', () => {
   assert.equal(invulnerable.damage, 0);
 });
 
+test('authored guard breaks deal reduced damage and remain distinct from a normal hit', () => {
+  const result = resolve({ attack: { ...baseAttack, guardBreak: true }, defenderResponse: 'guard' });
+  assert.equal(result.outcome, 'guard_broken');
+  assert.equal(result.damage, 5);
+});
+
 test('armor takes damage without becoming a normal hit outcome', () => {
   const armored = resolve({ defenderResponse: 'armor' });
   assert.equal(armored.outcome, 'armored');

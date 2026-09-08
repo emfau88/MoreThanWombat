@@ -3,7 +3,7 @@
 This document started as a future plan for LF2-inspired wave stages that scroll to the right.
 It is now partially implemented and should be read as both plan and status note.
 
-**Current update — 2026-09-08:** [Plan 31](31_GAMEPLAY_AND_WAVE_COMPLETION_PLAN.md) supersedes the expansion order and exclusions below. The current stage has three zones with distinct backgrounds and seven role-based encounters (2/3/2), a tested ground contract, four same-zone sub-wave transitions and two explicit safe travel corridors with arrival triggers. The old single-background data example is historical; `src/game/data/stages.ts` is authoritative. G1–G3 are technically implemented, while G6/G7 add interactions and bosses after the intervening combat work. [Current G3 evidence](qa/g3-runtime-2026-09-08/README.md).
+**Current update — 2026-09-08:** [Plan 31](31_GAMEPLAY_AND_WAVE_COMPLETION_PLAN.md) supersedes the expansion order and exclusions below. The current stage has three zones with distinct backgrounds and seven role-based encounters (2/3/2), a tested visible-floor band, four same-zone sub-wave transitions and two explicit safe travel corridors with arrival triggers. Encounter groups now favor several weak Pigeons with selected Flanker, Zoner and Heavy peaks; zone-end rewards restore health. Authored transition cards preview each section, while active combat camera framing follows the player/enemy group. The old single-background data example is historical; `src/game/data/stages.ts` is authoritative. G1–G4 are technically implemented, while G6/G7 add interactions and bosses after G5. [Current G4 evidence](qa/g4-runtime-2026-09-08/README.md).
 
 ## Current Status
 
@@ -11,16 +11,17 @@ Implemented today:
 
 - Stage definition file exists at `src/game/data/stages.ts`
 - First stage `junkyard_run` exists
-- 3 horizontal sections exist
+- 3 visual zones with 7 encounters exist
 - Wave mode now uses staged sections instead of only fixed-arena respawns
 - Multi-enemy section support exists
 - Section-specific combat bounds exist
-- Camera follow exists in Wave mode only
+- Wave camera previews incoming encounters, frames active fighter groups and follows the player during travel
+- Zone-end health rewards and zone-colored transition cards exist
 - HUD and overlays remain screen-space
 
 Not done yet:
 
-- Proper wave polish/balancing pass
+- Manual four-character wave balance acceptance
 - More than one real stage
 - Obstacles, hazards, gates, bosses, or branching
 - Broader content variety inside the staged wave structure

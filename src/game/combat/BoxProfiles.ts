@@ -34,7 +34,13 @@ export type BoxProfileState =
   | 'attack'
   | 'special'
   | 'ultimate'
+  | 'guard'
+  | 'evade'
   | 'hitstun'
+  | 'launched'
+  | 'knockdown'
+  | 'grounded'
+  | 'wake_up'
   | 'jump'
   | 'fall'
   | 'airAttack'
@@ -42,15 +48,15 @@ export type BoxProfileState =
   | 'dead';
 
 export function getFighterBoxProfileId(state: BoxProfileState, isGrounded: boolean): FighterBoxProfileId {
-  if (state === 'dead') {
+  if (state === 'dead' || state === 'knockdown' || state === 'grounded') {
     return 'knockdown';
   }
 
-  if (!isGrounded || state === 'jump' || state === 'fall' || state === 'airAttack') {
+  if (!isGrounded || state === 'jump' || state === 'fall' || state === 'airAttack' || state === 'launched') {
     return 'airborne';
   }
 
-  if (state === 'hitstun') {
+  if (state === 'hitstun' || state === 'wake_up') {
     return 'hit';
   }
 
@@ -58,7 +64,7 @@ export function getFighterBoxProfileId(state: BoxProfileState, isGrounded: boole
     return 'attacking';
   }
 
-  if (state === 'walk' || state === 'landing') {
+  if (state === 'walk' || state === 'landing' || state === 'evade') {
     return 'moving';
   }
 

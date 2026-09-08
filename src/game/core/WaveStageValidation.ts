@@ -4,7 +4,7 @@ import { getPressureBudgetViolations } from './EncounterDirector';
 
 export const MINIMUM_WAVE_SPAWN_DISTANCE = 96;
 export const MAXIMUM_WAVE_SPAWN_DISTANCE = 480;
-export const MAXIMUM_WAVE_ENEMIES = 3;
+export const MAXIMUM_WAVE_ENEMIES = 4;
 
 /**
  * Validates static Wave data without needing a Phaser scene. These rules keep
@@ -89,6 +89,16 @@ export function getWaveStageValidationViolations(stage: StageDefinition): string
       const prioritySpawnId = section.completionRule.prioritySpawnId;
       if (!section.enemies.some((spawn) => spawn.id === prioritySpawnId)) {
         violations.push(`${section.id}: priority completion must reference an enemy spawn`);
+      }
+    }
+    if (section.clearReward) {
+      if (!Number.isFinite(section.clearReward.healthRatio)
+        || section.clearReward.healthRatio <= 0
+        || section.clearReward.healthRatio > 1) {
+        violations.push(`${section.id}: clear reward health ratio must be greater than zero and at most one`);
+      }
+      if (!section.clearReward.label.trim()) {
+        violations.push(`${section.id}: clear reward label must not be empty`);
       }
     }
     const spawnIds = new Set<string>();

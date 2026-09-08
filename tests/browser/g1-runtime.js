@@ -61,7 +61,14 @@ try {
       const actors = [battle.player, ...battle.waveEnemies];
       for (let i = 1; i < actors.length; i++) {
         check(battle.isEnemyVisibleForAttack(actors[i]), 'Active spawn visible in actual camera');
-        for (let j = 0; j < i; j++) check(Math.hypot(actors[i].x - actors[j].x, actors[i].y - actors[j].y) >= 80, 'Active fighters remain separated');
+        for (let j = 0; j < i; j++) {
+          const a = actors[i].getPushbox();
+          const b = actors[j].getPushbox();
+          const overlaps = a && b
+            && a.x < b.x + b.width && a.x + a.width > b.x
+            && a.y < b.y + b.height && a.y + a.height > b.y;
+          check(!overlaps, 'Active fighter pushboxes remain separated');
+        }
       }
       const enemy = battle.waveEnemies[0];
       const projectile = Object.values(projectilesById)[0];

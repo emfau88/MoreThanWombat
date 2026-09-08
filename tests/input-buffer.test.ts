@@ -7,6 +7,7 @@ const emptyInput = {
   specialPressed: false,
   ultimatePressed: false,
   jumpPressed: false,
+  defendPressed: false,
 };
 
 test('input buffer retains a tap through a short freeze and consumes it once', () => {
@@ -41,4 +42,11 @@ test('buffer lifetime does not age while combat is frozen', () => {
   assert.equal(buffer.has('attack'), true);
   buffer.advance(120);
   assert.equal(buffer.has('attack'), false);
+});
+
+test('one defend tap buffers and consumes exactly one defensive action', () => {
+  const buffer = new InputBuffer(150);
+  buffer.capture({ ...emptyInput, defendPressed: true });
+  assert.equal(buffer.consume('defend'), true);
+  assert.equal(buffer.consume('defend'), false);
 });

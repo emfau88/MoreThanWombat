@@ -37,12 +37,18 @@ try {
   check(battle.waveStage.sections.length === 7, 'Stage owns exactly seven data-driven encounters');
   check(new Set(battle.waveStage.sections.map((section) => section.objective)).size === 7, 'Every encounter has a distinct player objective');
   check(battle.waveStage.sections.every((section) => section.completionRule.type === 'defeat_all'), 'All shipped G3 encounters use defeat_all');
+  check(battle.waveStage.sections.every((section) => section.bounds.minY === 310 && section.bounds.maxY === 468),
+    'Every Wave encounter is confined to the painted ground band');
+  check(battle.waveStage.sections.map((section) => section.enemies.length).join(',') === '1,3,3,3,3,4,4',
+    'Encounter curve mixes crowds of weak enemies with selected stronger roles');
 
   let zoneTravelCount = 0;
   let subWaveCount = 0;
   for (let encounter = 0; encounter < 7; encounter++) {
     const section = battle.waveStage.sections[encounter];
     untilPhase(battle, 'spawning');
+    check(battle.resultCard.visible && battle.resultKickerText.visible, `${section.title}: authored transition card is visible`);
+    check(!battle.cameras.main._follow, `${section.title}: intro camera previews the new encounter`);
     check(battle.waveEnemies.length === section.enemies.length, `${section.title}: complete roster created`);
     check(battle.waveEnemies.every((enemy) => enemy.getCombatResponse() === 'invulnerable' && !enemy.getCurrentAttack()), `${section.title}: entry is protected and inert`);
     for (let i = 0; i < battle.waveEnemies.length; i++) {
@@ -57,6 +63,13 @@ try {
       check(enemy.container.visible === (spawn.entryDelayMs === 0), `${section.title}: ${spawn.id} obeys its entry delay`);
     }
     untilPhase(battle, 'active');
+    const activeActors = [battle.player, ...battle.waveEnemies];
+    const rawActiveCenter = (Math.min(...activeActors.map((fighter) => fighter.x))
+      + Math.max(...activeActors.map((fighter) => fighter.x))) / 2;
+    const halfViewport = battle.scale.width / 2;
+    const activeCenter = Math.max(halfViewport, Math.min(rawActiveCenter, battle.waveStage.worldWidth - halfViewport));
+    check(Math.abs(battle.cameras.main.worldView.centerX - activeCenter) < 2,
+      `${section.title}: active camera frames player and enemy group`);
     const activated = new Set(battle.waveEnemies.filter((enemy) => battle.isWaveEnemyCombatActive(enemy)).map((enemy) => enemy.instanceId));
     for (let i = 0; i < 50 && activated.size < battle.waveEnemies.length; i++) {
       tick(battle);
@@ -67,11 +80,23 @@ try {
     }
     check(activated.size === battle.waveEnemies.length, `${section.title}: every staged enemy activates`);
     check(battle.waveEnemies.every((enemy) => enemy.container.visible && battle.isEnemyVisibleForAttack(enemy)), `${section.title}: active enemies are visible and eligible`);
+    check([battle.player, ...battle.waveEnemies].every((fighter) => fighter.y >= section.bounds.minY && fighter.y <= section.bounds.maxY),
+      `${section.title}: fighters remain on the intended ground`);
+    if (section.clearReward) {
+      battle.player.hp = Math.max(1, Math.floor(battle.player.maxHp * 0.4));
+      battle.player.updateVisuals();
+    }
+    const hpBeforeClear = battle.player.hp;
     const projectile = Object.values(projectilesById)[0];
     battle.projectileSystem.spawn(battle.waveEnemies[0], projectile);
     battle.waveEnemies.forEach(kill);
     tick(battle);
     check(battle.projectileSystem.getActiveOwnerIds().length === 0, `${section.title}: clear removes projectiles`);
+    if (section.clearReward) {
+      const expected = Math.min(battle.player.maxHp,
+        hpBeforeClear + Math.ceil(battle.player.maxHp * section.clearReward.healthRatio));
+      check(battle.player.hp === expected, `${section.title}: zone reward restores its authored health amount`);
+    }
 
     const next = battle.waveStage.sections[encounter + 1];
     if (!next) {

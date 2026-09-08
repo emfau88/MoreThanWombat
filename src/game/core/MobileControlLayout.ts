@@ -6,6 +6,7 @@ export const ACTION_BUTTON_RADII = {
   special: 34 * ACTION_BUTTON_SCALE,
   ultimate: 32 * ACTION_BUTTON_SCALE,
   jump: 32 * ACTION_BUTTON_SCALE,
+  defend: 28,
 } as const;
 
 export type MobileControlLayout = {
@@ -14,6 +15,7 @@ export type MobileControlLayout = {
   special: CircleTarget;
   ultimate: CircleTarget;
   jump: CircleTarget;
+  defend: CircleTarget;
   menu: RectTarget;
 };
 
@@ -31,6 +33,7 @@ export function getMobileControlLayout(width: number, height: number): MobileCon
     special: action(170, 146, ACTION_BUTTON_RADII.special),
     ultimate: action(98, 178, ACTION_BUTTON_RADII.ultimate),
     jump: action(176, 68, ACTION_BUTTON_RADII.jump),
+    defend: { x: 192, y: height - 72, radius: ACTION_BUTTON_RADII.defend },
     menu: { x: 52, y: 30, width: 70, height: 24 },
   };
 }

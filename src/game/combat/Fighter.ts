@@ -18,6 +18,15 @@ import {
   getMoveTimelineSnapshot,
   type AttackPhase as TimelineAttackPhase,
 } from './MoveTimeline';
+import {
+  PLAYER_DEFENSE_CONTRACT,
+  choosePlayerDefense,
+  getDefenseDurationMs,
+  getDefenseResponse,
+  getWakeUpResponse,
+  isIncapacitatedPhase,
+  type PlayerDefenseAction,
+} from './DefenseContract';
 
 export type FighterFacing = 'left' | 'right';
 export type FighterState =
@@ -26,7 +35,13 @@ export type FighterState =
   | 'attack'
   | 'special'
   | 'ultimate'
+  | 'guard'
+  | 'evade'
   | 'hitstun'
+  | 'launched'
+  | 'knockdown'
+  | 'grounded'
+  | 'wake_up'
   | 'jump'
   | 'fall'
   | 'airAttack'
@@ -106,6 +121,7 @@ export class Fighter {
   readonly sprite?: Phaser.GameObjects.Sprite;
   readonly shadow: Phaser.GameObjects.Ellipse;
   readonly roleCueText: Phaser.GameObjects.Text;
+  readonly stateCueText: Phaser.GameObjects.Text;
   readonly debugLabel: Phaser.GameObjects.Text;
   readonly hurtboxDebug: Phaser.GameObjects.Rectangle;
   readonly pushboxDebug: Phaser.GameObjects.Rectangle;
@@ -140,6 +156,14 @@ export class Fighter {
   private combatResponse: CombatResponse = 'normal';
   private readonly hitboxDebugRects: Phaser.GameObjects.Rectangle[];
   private contactDebugRemainingMs = 0;
+  private defenseAction: PlayerDefenseAction | null = null;
+  private defenseElapsedMs = 0;
+  private defenseRemainingMs = 0;
+  private defenseCooldownMs = 0;
+  private defenseDirectionX = 0;
+  private defenseDirectionY = 0;
+  private knockdownPhaseRemainingMs = 0;
+  private wakeUpElapsedMs = 0;
 
   constructor(
     scene: Phaser.Scene,
@@ -197,6 +221,18 @@ export class Fighter {
       })
       .setOrigin(0.5)
       .setVisible(false);
+    this.stateCueText = scene.add
+      .text(0, -definition.height - 25, '', {
+        color: '#d9f8ff',
+        fontFamily: 'Verdana, Geneva, sans-serif',
+        fontSize: '13px',
+        fontStyle: 'bold',
+        align: 'center',
+        stroke: '#10212b',
+        strokeThickness: 4,
+      })
+      .setOrigin(0.5)
+      .setVisible(false);
     this.hurtboxDebug = scene.add.rectangle(0, 0, definition.hurtbox.width, definition.hurtbox.height).setOrigin(0, 0);
     this.hurtboxDebug.setStrokeStyle(2, 0x48bfe3).setFillStyle(0x48bfe3, 0.08);
     this.pushboxDebug = scene.add.rectangle(0, 0, definition.pushbox.width, definition.pushbox.height).setOrigin(0, 0);
@@ -214,6 +250,7 @@ export class Fighter {
       ...this.hitboxDebugRects,
       this.contactDebug,
       this.roleCueText,
+      this.stateCueText,
       this.debugLabel,
     ]);
 
@@ -242,8 +279,17 @@ export class Fighter {
     if (options.allowManaRegen ?? true) {
       this.regenerateMana(deltaSeconds);
     }
+    this.defenseCooldownMs = Math.max(0, this.defenseCooldownMs - deltaSeconds * 1000);
     this.updateVerticalMotion(deltaSeconds);
     this.applyKnockback(deltaSeconds, bounds);
+
+    if (this.updateDefense(deltaSeconds, bounds)) {
+      return;
+    }
+
+    if (this.updateKnockdownLifecycle(deltaSeconds)) {
+      return;
+    }
 
     if (this.hitstunRemainingMs > 0) {
       this.hitstunRemainingMs = Math.max(0, this.hitstunRemainingMs - deltaSeconds * 1000);
@@ -301,7 +347,7 @@ export class Fighter {
   }
 
   canStartAttack(kind: 'basic' | 'special' | 'ultimate'): boolean {
-    if (this.state === 'hitstun' || this.state === 'dead' || this.currentAttack || !this.isGrounded || this.landingRemainingMs > 0) {
+    if (!this.canStartGroundAction()) {
       return false;
     }
     const manaCost = this.getAttackManaCost(kind);
@@ -309,7 +355,7 @@ export class Fighter {
   }
 
   tryStartAttackById(attackId: string, kind: 'basic' | 'special' | 'ultimate'): boolean {
-    if (this.state === 'hitstun' || this.state === 'dead' || this.currentAttack || !this.isGrounded || this.landingRemainingMs > 0) {
+    if (!this.canStartGroundAction()) {
       return false;
     }
 
@@ -335,7 +381,7 @@ export class Fighter {
   }
 
   tryStartJump(): boolean {
-    if (!this.isGrounded || this.currentAttack || this.state === 'hitstun' || this.state === 'dead' || this.landingRemainingMs > 0) {
+    if (!this.canStartGroundAction()) {
       return false;
     }
 
@@ -346,6 +392,20 @@ export class Fighter {
     this.state = 'jump';
     this.updateVisuals();
     return true;
+  }
+
+  tryStartDefense(moveX: number, moveY: number): PlayerDefenseAction | null {
+    if (!this.canStartGroundAction() || this.defenseCooldownMs > 0) return null;
+    const choice = choosePlayerDefense(moveX, moveY);
+    this.defenseAction = choice.action;
+    this.defenseElapsedMs = 0;
+    this.defenseRemainingMs = getDefenseDurationMs(choice.action);
+    this.defenseCooldownMs = PLAYER_DEFENSE_CONTRACT.reuseCooldownMs;
+    this.defenseDirectionX = choice.directionX;
+    this.defenseDirectionY = choice.directionY;
+    this.state = choice.action;
+    this.updateVisuals();
+    return choice.action;
   }
 
   tryStartAirAttack(): boolean {
@@ -380,7 +440,9 @@ export class Fighter {
     this.attackElapsedMs = 0;
     this.attackPhase = 'none';
     this.hitTargets.clear();
-    if (this.state !== 'dead' && this.state !== 'hitstun') this.state = this.isGrounded ? 'idle' : 'fall';
+    if (this.state !== 'dead' && this.state !== 'hitstun' && !isIncapacitatedPhase(this.state)) {
+      this.state = this.isGrounded ? 'idle' : 'fall';
+    }
   }
 
   getAttackPhase(): AttackPhase {
@@ -419,6 +481,12 @@ export class Fighter {
   }
 
   getCombatResponse(): CombatResponse {
+    if (this.defenseAction && (this.state === 'guard' || this.state === 'evade')) {
+      return getDefenseResponse(this.defenseAction, this.defenseElapsedMs);
+    }
+    if (this.state === 'wake_up') return getWakeUpResponse(this.wakeUpElapsedMs);
+    if (this.state === 'hitstun' || this.state === 'launched' || this.state === 'knockdown'
+      || this.state === 'grounded') return 'invulnerable';
     return this.combatResponse;
   }
 
@@ -518,6 +586,7 @@ export class Fighter {
     knockbackY: number;
     sourceFacing: FighterFacing;
     launchVelocityZ?: number;
+    hitReaction?: 'hitstun' | 'knockdown' | 'launch';
   }): void {
     if (this.state === 'dead') {
       return;
@@ -529,6 +598,9 @@ export class Fighter {
     this.attackPhase = 'none';
     this.hitTargets.clear();
     this.landingRemainingMs = 0;
+    this.defenseAction = null;
+    this.defenseElapsedMs = 0;
+    this.defenseRemainingMs = 0;
     this.velocityX = hit.sourceFacing === 'right' ? hit.knockbackX : -hit.knockbackX;
     this.velocityY = hit.knockbackY;
     if (hit.launchVelocityZ && hit.launchVelocityZ > 0) {
@@ -543,8 +615,16 @@ export class Fighter {
       this.state = 'dead';
       this.hitstunRemainingMs = 0;
     } else {
-      this.state = 'hitstun';
-      this.hitstunRemainingMs = hit.hitstunMs;
+      const reaction = hit.hitReaction ?? (hit.launchVelocityZ && hit.launchVelocityZ > 0 ? 'launch' : 'hitstun');
+      if (reaction === 'launch') {
+        this.state = 'launched';
+        this.hitstunRemainingMs = 0;
+      } else if (reaction === 'knockdown') {
+        this.enterKnockdown();
+      } else {
+        this.state = 'hitstun';
+        this.hitstunRemainingMs = hit.hitstunMs;
+      }
     }
 
     this.updateVisuals();
@@ -598,8 +678,43 @@ export class Fighter {
     this.updateVisuals();
   }
 
+  restoreHealth(amount: number): number {
+    if (this.state === 'dead' || !Number.isFinite(amount) || amount <= 0) {
+      return 0;
+    }
+
+    const previousHp = this.hp;
+    this.hp = Phaser.Math.Clamp(this.hp + amount, 0, this.maxHp);
+    this.updateVisuals();
+    return this.hp - previousHp;
+  }
+
   setManaForDebug(mana: number): void {
     this.mana = Phaser.Math.Clamp(mana, 0, this.maxMana);
+    this.updateVisuals();
+  }
+
+  setDefensePhaseForDebug(phase: 'guard' | 'evade' | 'launched' | 'knockdown' | 'wake_up'): void {
+    this.state = 'idle';
+    this.currentAttack = null;
+    this.hitstunRemainingMs = 0;
+    this.defenseCooldownMs = 0;
+    if (phase === 'guard') {
+      this.tryStartDefense(0, 0);
+    } else if (phase === 'evade') {
+      this.tryStartDefense(this.facing === 'right' ? 1 : -1, 0);
+    } else if (phase === 'launched') {
+      this.receiveHit({ damage: 0, hitstunMs: 0, knockbackX: 0, knockbackY: 0,
+        sourceFacing: this.facing, launchVelocityZ: 360, hitReaction: 'launch' });
+    } else if (phase === 'knockdown') {
+      this.enterKnockdown();
+    } else {
+      this.defenseAction = null;
+      this.state = 'wake_up';
+      this.wakeUpElapsedMs = 0;
+      this.knockdownPhaseRemainingMs = PLAYER_DEFENSE_CONTRACT.wakeUpInvulnerableMs
+        + PLAYER_DEFENSE_CONTRACT.wakeUpRecoveryMs;
+    }
     this.updateVisuals();
   }
 
@@ -670,10 +785,74 @@ export class Fighter {
     this.isGrounded = true;
     this.hasUsedAirAttack = false;
 
-    if (this.state !== 'hitstun' && this.state !== 'dead') {
+    if (this.state === 'launched') {
+      this.enterKnockdown();
+    } else if (this.state !== 'hitstun' && this.state !== 'dead') {
       this.state = 'landing';
       this.landingRemainingMs = Fighter.LANDING_RECOVERY_MS;
     }
+  }
+
+  private updateDefense(deltaSeconds: number, bounds: FighterBounds): boolean {
+    if (!this.defenseAction || (this.state !== 'guard' && this.state !== 'evade')) return false;
+    const deltaMs = Math.max(0, deltaSeconds * 1000);
+    this.defenseElapsedMs += deltaMs;
+    this.defenseRemainingMs = Math.max(0, this.defenseRemainingMs - deltaMs);
+    const evadeMotionEndMs = PLAYER_DEFENSE_CONTRACT.evadeStartupMs + PLAYER_DEFENSE_CONTRACT.evadeInvulnerableMs;
+    if (this.defenseAction === 'evade' && this.defenseElapsedMs <= evadeMotionEndMs) {
+      const speed = PLAYER_DEFENSE_CONTRACT.evadeDistance / (getDefenseDurationMs('evade') / 1000);
+      this.x = Phaser.Math.Clamp(this.x + this.defenseDirectionX * speed * deltaSeconds, bounds.minX, bounds.maxX);
+      this.y = Phaser.Math.Clamp(this.y + this.defenseDirectionY * speed * deltaSeconds, bounds.minY, bounds.maxY);
+      if (this.defenseDirectionX !== 0) this.facing = this.defenseDirectionX < 0 ? 'left' : 'right';
+    }
+    if (this.defenseRemainingMs === 0) {
+      this.defenseAction = null;
+      this.state = 'idle';
+    }
+    this.updateVisuals();
+    return true;
+  }
+
+  private updateKnockdownLifecycle(deltaSeconds: number): boolean {
+    if (!isIncapacitatedPhase(this.state)) return false;
+    if (this.state === 'launched') {
+      this.updateVisuals();
+      return true;
+    }
+    const deltaMs = Math.max(0, deltaSeconds * 1000);
+    this.knockdownPhaseRemainingMs = Math.max(0, this.knockdownPhaseRemainingMs - deltaMs);
+    if (this.state === 'wake_up') this.wakeUpElapsedMs += deltaMs;
+    if (this.knockdownPhaseRemainingMs === 0) {
+      if (this.state === 'knockdown') {
+        this.state = 'grounded';
+        this.knockdownPhaseRemainingMs = PLAYER_DEFENSE_CONTRACT.groundedMs;
+      } else if (this.state === 'grounded') {
+        this.state = 'wake_up';
+        this.wakeUpElapsedMs = 0;
+        this.knockdownPhaseRemainingMs = PLAYER_DEFENSE_CONTRACT.wakeUpInvulnerableMs
+          + PLAYER_DEFENSE_CONTRACT.wakeUpRecoveryMs;
+      } else {
+        this.state = 'idle';
+        this.wakeUpElapsedMs = 0;
+      }
+    }
+    this.updateVisuals();
+    return true;
+  }
+
+  private enterKnockdown(): void {
+    this.z = 0;
+    this.velocityZ = 0;
+    this.isGrounded = true;
+    this.state = 'knockdown';
+    this.hitstunRemainingMs = 0;
+    this.knockdownPhaseRemainingMs = PLAYER_DEFENSE_CONTRACT.knockdownImpactMs;
+    this.wakeUpElapsedMs = 0;
+  }
+
+  private canStartGroundAction(): boolean {
+    return this.isGrounded && !this.currentAttack && this.landingRemainingMs <= 0
+      && (this.state === 'idle' || this.state === 'walk');
   }
 
   private updateAttack(deltaSeconds: number, bounds: FighterBounds): void {
@@ -733,7 +912,16 @@ export class Fighter {
     this.visualContainer.setPosition(0, -this.z);
     this.body.setScale(this.facing === 'left' ? -1 : 1, 1);
     this.body.setFillStyle(this.getBodyColor());
+    const protectedState = this.getCombatResponse() === 'invulnerable'
+      && (this.state === 'evade' || this.state === 'wake_up');
+    this.visualContainer.setAlpha(protectedState ? 0.68 : 1);
     this.roleCueText.setVisible(this.roleCueText.text.length > 0 && this.state !== 'dead');
+    const stateCue = this.state === 'guard' ? 'GUARD'
+      : this.state === 'evade' ? 'EVADE'
+        : this.state === 'wake_up' && this.getCombatResponse() === 'invulnerable' ? 'WAKE SAFE'
+          : this.state === 'launched' ? 'LAUNCHED'
+            : this.state === 'grounded' ? 'DOWN' : '';
+    this.stateCueText.setText(stateCue).setVisible(stateCue.length > 0 && this.state !== 'dead');
     this.syncSpriteAnimation();
     this.syncDebugBoxes();
     const suffix = this.statusNote ? `\n${this.statusNote}` : '';
@@ -819,6 +1007,10 @@ export class Fighter {
       return 0x4b5563;
     }
 
+    if (this.state === 'guard') return 0x4aa8c8;
+    if (this.state === 'evade' || this.state === 'wake_up') return 0x83d8ed;
+    if (this.state === 'launched' || this.state === 'knockdown' || this.state === 'grounded') return 0x7d8791;
+
     if (this.roleTint !== null) {
       return this.roleTint;
     }
@@ -865,8 +1057,13 @@ export class Fighter {
       ? this.definition.sprite.attackAnimations?.[this.currentAttack.id]
       : undefined;
     const airAttackFallbackKey = this.currentAttack?.id === 'air_bonk' ? this.definition.sprite.animations.attack : undefined;
-    const animationKey =
-      attackAnimationKey ?? airAttackFallbackKey ?? this.definition.sprite.animations[this.state] ?? this.definition.sprite.animations.idle;
+    const defensiveFallback = this.state === 'guard' ? this.definition.sprite.animations.idle
+      : this.state === 'evade' ? this.definition.sprite.animations.walk
+        : this.state === 'launched' ? this.definition.sprite.animations.hitstun
+          : this.state === 'knockdown' || this.state === 'grounded' ? this.definition.sprite.animations.dead
+            : this.state === 'wake_up' ? this.definition.sprite.animations.hitstun : undefined;
+    const animationKey = attackAnimationKey ?? airAttackFallbackKey
+      ?? this.definition.sprite.animations[this.state] ?? defensiveFallback ?? this.definition.sprite.animations.idle;
 
     if (!animationKey || this.sprite.anims.currentAnim?.key === animationKey) {
       this.applySpriteFrameOffset();

@@ -2,11 +2,12 @@
 
 ## Current execution update — 2026-09-08
 
-[Plan 31](31_GAMEPLAY_AND_WAVE_COMPLETION_PLAN.md) owns the gameplay execution order. G0 is complete; **G1–G3** are implemented and technically verified. Their combined manual gameplay acceptance remains open before G4. [G3 evidence and open gates](qa/g3-runtime-2026-09-08/README.md) are the current status reference.
+[Plan 31](31_GAMEPLAY_AND_WAVE_COMPLETION_PLAN.md) owns the gameplay execution order. G0 is complete; **G1–G4** are implemented and technically verified. Their combined manual gameplay acceptance remains open before G5. [G4 evidence and open gates](qa/g4-runtime-2026-09-08/README.md) are the current status reference.
 
 - Normal players: Wombat, Discount Wizard, Budget Barbarian, Mara Breach. Buster Bulldog and Reference Fighter are Gym-only prototypes.
-- Typecheck, **75/75 tests** and build pass locally; G0 records six character-sheet hard gates and all three VFX-QA manifests passing.
-- Junkyard Run has three zones and seven role-based encounters, now orchestrated by the Director with per-spawn entry direction/timing, same-zone sub-waves, safe zone travel, pressure budgets and phase-aware mana. Manual G1–G3 acceptance, defensive actions and bosses remain future work.
+- Typecheck, **84/84 tests** and build pass locally; G0 records six character-sheet hard gates and all three VFX-QA manifests passing.
+- Junkyard Run has three zones and seven role-based encounters, now orchestrated by the Director with per-spawn entry direction/timing, same-zone sub-waves, safe zone travel, pressure budgets and phase-aware mana. Fighters stay on the painted floor; deterministic zone rewards heal the player; transition cards and group framing improve area changes.
+- Guard, directional Evade, Guard Break, Launch, Knockdown, Grounded, protected Wake-up and Anti-Stunlock are integrated across combat, G2 roles, Gym, keyboard and mobile input. Manual G1–G4 acceptance and bosses remain future work.
 - Scripted Phaser regression checks pass. Full-run gameplay acceptance, balance and two real-device classes remain open.
 - G0–G9 adds no player fighter or arena. Final art follows mechanical acceptance; broad architecture hardening remains G10.
 

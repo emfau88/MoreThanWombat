@@ -469,6 +469,7 @@ export class CombatPresentationController {
           knockbackX: areaHit.knockbackX,
           knockbackY: areaHit.knockbackY,
           sourceFacing: strike.owner.facing,
+          hitReaction: areaHit.hitReaction,
         });
       } else if (outcome === 'armored') {
         target.receiveArmoredHit(areaHit.damage);

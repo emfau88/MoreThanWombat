@@ -1,6 +1,8 @@
 import type { MoveTimelineDefinition } from '../combat/MoveTimeline';
 import type { AttackHitboxProfile, LocalBox } from '../combat/BoxProfiles';
 
+export type HitReaction = 'hitstun' | 'knockdown' | 'launch';
+
 export type AttackDefinition = {
   id: string;
   label: string;
@@ -11,6 +13,8 @@ export type AttackDefinition = {
   hitstunMs: number;
   knockbackX: number;
   knockbackY: number;
+  hitReaction?: HitReaction;
+  guardBreak?: boolean;
   hitbox: LocalBox;
   hitboxProfile?: AttackHitboxProfile;
   areaHit?: {
@@ -21,6 +25,7 @@ export type AttackDefinition = {
     hitstunMs: number;
     knockbackX: number;
     knockbackY: number;
+    hitReaction?: HitReaction;
   };
   canMoveDuringAttack?: boolean;
   canTurnDuringAttack?: boolean;
@@ -115,6 +120,8 @@ export const wombatBellySlam: AttackDefinition = {
     ],
   },
   manaCost: 25,
+  hitReaction: 'knockdown',
+  guardBreak: true,
   timeline: { feedbackClass: 'heavy' },
 };
 
@@ -137,6 +144,8 @@ export const wombatEarthshaker: AttackDefinition = {
   manaCost: 100,
   knockbackMode: 'radial',
   launchVelocityZ: 500,
+  hitReaction: 'launch',
+  guardBreak: true,
   timeline: {
     feedbackClass: 'ultimate',
     startCue: 'wombat-earthshaker',
@@ -299,6 +308,8 @@ export const budgetTinyRage: AttackDefinition = {
     height: 42,
   },
   manaCost: 30,
+  hitReaction: 'knockdown',
+  guardBreak: true,
   timeline: { feedbackClass: 'heavy' },
 };
 
@@ -326,6 +337,7 @@ export const budgetAxeRain: AttackDefinition = {
     hitstunMs: 300,
     knockbackX: 135,
     knockbackY: 58,
+    hitReaction: 'knockdown',
   },
   manaCost: 100,
   timeline: { feedbackClass: 'ultimate', startCue: 'budget-axe-rain' },
@@ -415,6 +427,8 @@ export const maraRedLineBarrage: AttackDefinition = {
   },
   manaCost: 100,
   launchVelocityZ: 330,
+  hitReaction: 'launch',
+  guardBreak: true,
   timeline: {
     feedbackClass: 'ultimate',
     startCue: 'mara-red-line-barrage',
@@ -482,6 +496,8 @@ export const busterUnderbiteBulldozer: AttackDefinition = {
     height: 48,
   },
   manaCost: 100,
+  hitReaction: 'knockdown',
+  guardBreak: true,
   timeline: { feedbackClass: 'ultimate', startCue: 'buster-bulldozer' },
 };
 
@@ -504,6 +520,7 @@ export const scrapFlankerCharge: AttackDefinition = {
   },
   canMoveDuringAttack: true,
   canTurnDuringAttack: false,
+  hitReaction: 'knockdown',
   timeline: { feedbackClass: 'medium' },
 };
 
@@ -525,6 +542,7 @@ export const scrapHeavyBash: AttackDefinition = {
       boxes: [{ offsetX: 18, offsetY: -58, width: 104, height: 48 }] }],
   },
   canTurnDuringAttack: false,
+  hitReaction: 'knockdown',
   timeline: { feedbackClass: 'heavy' },
 };
 

@@ -21,12 +21,16 @@ type ControlElements = {
   jumpShadow: Phaser.GameObjects.Arc;
   jumpButton: Phaser.GameObjects.Arc;
   jumpRing: Phaser.GameObjects.Arc;
+  defendShadow: Phaser.GameObjects.Arc;
+  defendButton: Phaser.GameObjects.Arc;
+  defendRing: Phaser.GameObjects.Arc;
   menuShadow: Phaser.GameObjects.Rectangle;
   menuButton: Phaser.GameObjects.Rectangle;
   attackLabel: Phaser.GameObjects.Text;
   specialLabel: Phaser.GameObjects.Text;
   ultimateLabel: Phaser.GameObjects.Text;
   jumpLabel: Phaser.GameObjects.Text;
+  defendLabel: Phaser.GameObjects.Text;
   menuLabel: Phaser.GameObjects.Text;
 };
 
@@ -47,6 +51,7 @@ export class MobileControls {
     specialPressed: false,
     ultimatePressed: false,
     jumpPressed: false,
+    defendPressed: false,
     menuPressed: false,
   };
   private joystickPointerId: number | null = null;
@@ -77,6 +82,7 @@ export class MobileControls {
     this.touchState.specialPressed = false;
     this.touchState.ultimatePressed = false;
     this.touchState.jumpPressed = false;
+    this.touchState.defendPressed = false;
     this.touchState.menuPressed = false;
     return currentState;
   }
@@ -139,6 +145,13 @@ export class MobileControls {
       .setScrollFactor(0)
       .setDepth(1000);
     const jumpRing = this.scene.add.circle(0, 0, 23 * ACTION_BUTTON_SCALE, 0xa8cf62, 0.18).setScrollFactor(0).setDepth(1001);
+    const defendShadow = this.scene.add.circle(0, 0, ACTION_BUTTON_RADII.defend + 4, 0x041116, 0.26).setScrollFactor(0).setDepth(996);
+    const defendButton = this.scene.add
+      .circle(0, 0, ACTION_BUTTON_RADII.defend, 0x287b8e, 0.9)
+      .setStrokeStyle(3, 0xd9f8ff, 0.38)
+      .setScrollFactor(0)
+      .setDepth(1000);
+    const defendRing = this.scene.add.circle(0, 0, 18, 0x78d7e8, 0.18).setScrollFactor(0).setDepth(1001);
     const menuShadow = this.scene.add.rectangle(0, 0, 74, 28, 0x02060b, 0.24).setScrollFactor(0).setDepth(996);
     const menuButton = this.scene.add
       .rectangle(0, 0, 70, 24, 0x172333, 0.78)
@@ -185,6 +198,16 @@ export class MobileControls {
       .setOrigin(0.5)
       .setDepth(1004)
       .setScrollFactor(0);
+    const defendLabel = this.scene.add
+      .text(0, 0, 'DEF', {
+        color: '#e8fbff',
+        fontFamily: 'Verdana, Geneva, sans-serif',
+        fontSize: '11px',
+        fontStyle: 'bold',
+      })
+      .setOrigin(0.5)
+      .setDepth(1004)
+      .setScrollFactor(0);
     const menuLabel = this.scene.add
       .text(0, 0, 'MENU', {
         color: '#f5f0d8',
@@ -218,12 +241,16 @@ export class MobileControls {
       jumpShadow,
       jumpButton,
       jumpRing,
+      defendShadow,
+      defendButton,
+      defendRing,
       menuShadow,
       menuButton,
       attackLabel,
       specialLabel,
       ultimateLabel,
       jumpLabel,
+      defendLabel,
       menuLabel,
     };
   }
@@ -237,6 +264,7 @@ export class MobileControls {
       special: this.controls.specialButton,
       ultimate: this.controls.ultimateButton,
       jump: this.controls.jumpButton,
+      defend: this.controls.defendButton,
       joystickAvailable: this.joystickPointerId === null,
     });
 
@@ -273,6 +301,12 @@ export class MobileControls {
     if (target === 'jump') {
       this.touchState.jumpPressed = true;
       this.setButtonScale('jump', 0.92);
+      return;
+    }
+
+    if (target === 'defend') {
+      this.touchState.defendPressed = true;
+      this.setButtonScale('defend', 0.92);
     }
   }
 
@@ -297,6 +331,8 @@ export class MobileControls {
     this.controls.ultimateRing.setScale(1);
     this.controls.jumpButton.setScale(1);
     this.controls.jumpRing.setScale(1);
+    this.controls.defendButton.setScale(1);
+    this.controls.defendRing.setScale(1);
     this.controls.menuButton.setScale(1);
   }
 
@@ -340,7 +376,7 @@ export class MobileControls {
     this.controls.knob.setPosition(this.joystickCenter.x, this.joystickCenter.y);
     this.controls.knobHighlight.setPosition(this.joystickCenter.x - 6, this.joystickCenter.y - 8);
 
-    const { attack, special, ultimate, jump, menu } = layout;
+    const { attack, special, ultimate, jump, defend, menu } = layout;
     const attackX = attack.x;
     const attackY = attack.y;
     const specialX = special.x;
@@ -349,6 +385,8 @@ export class MobileControls {
     const ultimateY = ultimate.y;
     const jumpX = jump.x;
     const jumpY = jump.y;
+    const defendX = defend.x;
+    const defendY = defend.y;
     const menuX = menu.x;
     const menuY = menu.y;
 
@@ -364,16 +402,20 @@ export class MobileControls {
     this.controls.jumpShadow.setPosition(jumpX + 2, jumpY + 4);
     this.controls.jumpButton.setPosition(jumpX, jumpY);
     this.controls.jumpRing.setPosition(jumpX, jumpY);
+    this.controls.defendShadow.setPosition(defendX + 2, defendY + 4);
+    this.controls.defendButton.setPosition(defendX, defendY);
+    this.controls.defendRing.setPosition(defendX, defendY);
     this.controls.menuShadow.setPosition(menuX + 2, menuY + 3);
     this.controls.menuButton.setPosition(menuX, menuY);
     this.controls.attackLabel.setPosition(attackX, attackY);
     this.controls.specialLabel.setPosition(specialX, specialY);
     this.controls.ultimateLabel.setPosition(ultimateX, ultimateY);
     this.controls.jumpLabel.setPosition(jumpX, jumpY);
+    this.controls.defendLabel.setPosition(defendX, defendY);
     this.controls.menuLabel.setPosition(menuX, menuY);
   }
 
-  private setButtonScale(button: 'attack' | 'special' | 'ultimate' | 'jump', scale: number): void {
+  private setButtonScale(button: 'attack' | 'special' | 'ultimate' | 'jump' | 'defend', scale: number): void {
     if (button === 'attack') {
       this.controls.attackButton.setScale(scale);
       this.controls.attackRing.setScale(scale);
@@ -389,6 +431,12 @@ export class MobileControls {
     if (button === 'ultimate') {
       this.controls.ultimateButton.setScale(scale);
       this.controls.ultimateRing.setScale(scale);
+      return;
+    }
+
+    if (button === 'defend') {
+      this.controls.defendButton.setScale(scale);
+      this.controls.defendRing.setScale(scale);
       return;
     }
 

@@ -9,11 +9,11 @@
 
 ### Ausführungsstand 2026-09-08
 
-**G0 abgeschlossen; G1–G3 implementiert und technisch geprüft, gemeinsame manuelle Spielgefühlabnahme offen.** [G3-Prüfbericht](qa/g3-runtime-2026-09-08/README.md) · [G2-Prüfbericht](qa/g2-runtime-2026-09-06/README.md) · [G1-Prüfbericht](qa/g1-runtime-2026-09-05/README.md) · [Historische G0-Baseline](qa/gameplay-baseline-2026-09-05/README.md) · [Einheitliche Run-Messvorlage](qa/gameplay-run-template.md).
+**G0 abgeschlossen; G1–G4 implementiert und technisch geprüft, gemeinsame manuelle Spielgefühlabnahme offen.** [G4-Prüfbericht](qa/g4-runtime-2026-09-08/README.md) · [G3-Prüfbericht](qa/g3-runtime-2026-09-08/README.md) · [G2-Prüfbericht](qa/g2-runtime-2026-09-06/README.md) · [G1-Prüfbericht](qa/g1-runtime-2026-09-05/README.md) · [Historische G0-Baseline](qa/gameplay-baseline-2026-09-05/README.md) · [Einheitliche Run-Messvorlage](qa/gameplay-run-template.md).
 
-Technisch geprüft: 75/75 Tests, Typecheck und Production Build. Der G3-Browser-Harness durchläuft exakt sieben datengetriebene Encounter mit gestaffeltem Entry, vier Sub-Wave-Übergängen innerhalb einer Zone, zwei echten Zonentravels und Stage Victory. Der erweiterte Vollrun-Harness wiederholt dies mit allen vier Spielerfiguren und prüft weiterhin Defeat, Restart, Duel und Gym. Auf ausdrückliche Entscheidung wurden G2 und G3 vor der nachzuholenden manuellen G1-Abnahme technisch umgesetzt. Vor G4 werden G1–G3 gemeinsam auf Spielgefühl und Balance geprüft.
+Technisch geprüft: 84/84 Tests, Typecheck und Production Build. G4 liefert Guard, gerichtete Evade, Guard Break, Launch, Knockdown, Grounded, geschütztes Wake-up und Anti-Stunlock sowie passende Gym-Presets. Der mobile Prototyp behält einen getrennten Defend-Button auch auf der kleinsten Landscape-Größe. Nach dem Spieltest-Befund wurde der Junkyard Run zusätzlich auf das gemalte Bodenband begrenzt, auf mehr schwache Gegner mit einzelnen stärkeren Rollen umgestellt, an Zonengrenzen mit Heilbelohnungen versehen und mit Übergangskarten sowie Gruppen-Kameraführung überarbeitet. Browserprüfungen decken G4 mit 29 Checks in Desktop und Mobile Landscape, den vollständigen Wave-Ablauf mit 335 Checks sowie G2/G1-Regressionen mit 51/743 Checks ab.
 
-Zusatzauftrag Mobile: Querformat-Skalierung und Rotation korrigiert, vier Aktionsbuttons um 10 % vergrößert und Touch-Zonen angepasst. [Messwerte und Eingabeprüfung](qa/mobile-2026-09-05/README.md); Abschluss der Dokumentation am 2026-09-06.
+Zusatzauftrag Mobile: Querformat-Skalierung und Rotation korrigiert, vier vorhandene Aktionsbuttons um 10 % vergrößert, Touch-Zonen angepasst und für G4 ein separater Defend-Button ergänzt. [Aktuelle G4-Messwerte](qa/g4-runtime-2026-09-08/README.md) · [ursprüngliche Mobile-Prüfung](qa/mobile-2026-09-05/README.md).
 
 **Präzisierte Abhängigkeiten aus dem Codeabgleich:**
 
@@ -378,6 +378,8 @@ Aus den drei statischen Gruppen sieben kurze Encounter machen, die Gegnerrollen 
 `Compose seven role-based Junkyard encounters`
 
 ## 10. BULK G4 – Crowd-Sicherheit: Guard/Evade, Knockdown und Wake-up
+
+**Status 2026-09-08:** Implementiert und technisch geprüft. Guard/Evade, Guard Break, Anti-Stunlock, vollständiger Knockdown-/Wake-up-Lifecycle, Gym-Presets, G2-Rollenreaktionen und der getrennte mobile Defend-Button sind integriert. Die gemeinsame manuelle Spielgefühl- und Balanceabnahme für G1–G4 bleibt offen; Details im [G4-Prüfbericht](qa/g4-runtime-2026-09-08/README.md).
 
 **Priorität:** P1<br>
 **Risiko:** hoch, da Kerngefühl<br>

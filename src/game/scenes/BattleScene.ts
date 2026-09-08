@@ -24,7 +24,7 @@ import type { ArenaId } from '../data/arenas';
 import { attacksById } from '../data/attacks';
 import { fighterDefinitions } from '../data/fighters';
 import { projectilesById } from '../data/projectiles';
-import { defaultWaveStageId, waveStages, type StageDefinition, type StageSectionDefinition, type StageEnemySpawnDefinition, type WaveStageId } from '../data/stages';
+import { JUNKYARD_WALKABLE_BAND, defaultWaveStageId, waveStages, type StageDefinition, type StageSectionDefinition, type StageEnemySpawnDefinition, type WaveStageId } from '../data/stages';
 import { canEnterNextWaveSection, getWaveTraversalBounds, type WaveTraversalPhase } from '../core/WaveTraversal';
 import { findSafeWaveSpawn, isWaveActorVisible } from '../core/WaveSafety';
 import { Hud } from '../ui/Hud';
@@ -67,6 +67,8 @@ export class BattleScene extends Phaser.Scene {
   private debugToggleButton!: Phaser.GameObjects.Rectangle;
   private debugToggleLabel!: Phaser.GameObjects.Text;
   private hud!: Hud;
+  private resultCard!: Phaser.GameObjects.Rectangle;
+  private resultKickerText!: Phaser.GameObjects.Text;
   private resultText!: Phaser.GameObjects.Text;
   private resultHintText!: Phaser.GameObjects.Text;
   private readonly arenaVisuals: Phaser.GameObjects.GameObject[] = [];
@@ -160,7 +162,7 @@ export class BattleScene extends Phaser.Scene {
     this.combatImpact = new CombatImpactOrchestrator(this, this.combatFeedback, this.combatPresentation);
     registerCharacterAnimations(this);
     this.renderArena();
-    this.instructionText = this.add.text(32, 28, 'WASD/Arrows move, J/Space jab, K/Shift special, U ultimate slot, L jump, H debug, R restart', {
+    this.instructionText = this.add.text(32, 28, 'WASD/Arrows move, F defend, J/Space jab, K/Shift special, U ultimate, L jump, H debug, R restart', {
       color: '#c9d6df',
       fontFamily: 'Verdana, Geneva, sans-serif',
       fontSize: '14px',
@@ -198,11 +200,31 @@ export class BattleScene extends Phaser.Scene {
       .setDepth(2101)
       .setScrollFactor(0)
       .setVisible(false);
+    this.resultCard = this.add
+      .rectangle(this.getViewportWidth() / 2, 120, Math.min(660, this.getViewportWidth() - 56), 150, 0x07111c, 0.94)
+      .setStrokeStyle(3, 0xffb259, 0.9)
+      .setDepth(2199)
+      .setScrollFactor(0)
+      .setVisible(false);
+    this.resultKickerText = this.add
+      .text(this.getViewportWidth() / 2, 66, '', {
+        color: '#ffca7a',
+        fontFamily: 'Verdana, Geneva, sans-serif',
+        fontSize: '12px',
+        fontStyle: 'bold',
+        letterSpacing: 2,
+        align: 'center',
+      })
+      .setOrigin(0.5)
+      .setDepth(2200)
+      .setScrollFactor(0)
+      .setVisible(false);
     this.resultText = this.add
       .text(this.getViewportWidth() / 2, 112, '', {
         color: '#fff7e6',
         fontFamily: 'Verdana, Geneva, sans-serif',
-        fontSize: '30px',
+        fontSize: '28px',
+        fontStyle: 'bold',
         align: 'center',
       })
       .setOrigin(0.5)
@@ -214,7 +236,7 @@ export class BattleScene extends Phaser.Scene {
         if (this.battleFlow.getResult() !== 'running') this.restartBattle();
       });
     this.resultHintText = this.add
-      .text(this.getViewportWidth() / 2, 170, '', {
+      .text(this.getViewportWidth() / 2, 164, '', {
         color: '#c9d6df',
         fontFamily: 'Verdana, Geneva, sans-serif',
         fontSize: '15px',
@@ -361,7 +383,10 @@ export class BattleScene extends Phaser.Scene {
       return;
     }
 
-    if (this.mode === 'waves') this.updateWaveEnemyEntries(simulationDeltaMs);
+    if (this.mode === 'waves') {
+      this.updateWaveEnemyEntries(simulationDeltaMs);
+      this.updateWaveCombatCamera(simulationDeltaMs);
+    }
 
     const targetEnemy = this.getPreferredEnemyTarget();
 
@@ -372,6 +397,11 @@ export class BattleScene extends Phaser.Scene {
 
     if (this.gymAirAttackPending && !this.player.isGrounded) {
       this.gymAirAttackPending = !this.player.tryStartAirAttack();
+    }
+
+    if (this.inputBuffer.has('defend')) {
+      const defense = this.player.tryStartDefense(inputState.moveX, inputState.moveY);
+      if (defense) this.inputBuffer.consume('defend');
     }
 
     if (this.inputBuffer.has('jump') && this.player.tryStartJump()) {
@@ -543,8 +573,7 @@ export class BattleScene extends Phaser.Scene {
     }
 
     const message = result === 'victory' ? 'Victory' : 'Defeat';
-    this.resultText.setText(`${message}\nPress R to restart`).setVisible(true);
-    this.resultHintText.setText('Press M for menu').setVisible(true);
+    this.showResultCard('RUN COMPLETE', `${message}\nPress R to restart`, 'Press M for menu');
   }
 
   private updateTestDummyRegen(deltaMs: number): void {
@@ -608,8 +637,7 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private restartBattle(): void {
-    this.resultText.setVisible(false);
-    this.resultHintText.setVisible(false);
+    this.hideResultCard();
     this.scene.restart({
       mode: this.mode,
       playerFighterId: this.playerFighterId,
@@ -714,14 +742,16 @@ export class BattleScene extends Phaser.Scene {
     this.player.setManaForDebug(this.player.maxMana * manaRatio);
     this.player.setCombatResponse('normal');
     this.enemy?.setCombatResponse(
-      dummyMode === 'guard'
-        ? 'guard'
-        : dummyMode === 'armor'
+      dummyMode === 'armor'
           ? 'armor'
           : dummyMode === 'invulnerable'
             ? 'invulnerable'
             : 'normal',
     );
+    if (dummyMode === 'guard' || dummyMode === 'evade' || dummyMode === 'launched'
+      || dummyMode === 'knockdown' || dummyMode === 'wake-up') {
+      this.enemy?.setDefensePhaseForDebug(dummyMode === 'wake-up' ? 'wake_up' : dummyMode);
+    }
   }
 
   private createCombatGymIfNeeded(): void {
@@ -782,8 +812,7 @@ export class BattleScene extends Phaser.Scene {
     this.player.nudge(0, 0, this.arenaBounds);
     this.syncPrimaryEnemy();
     this.testDummyLastHp = this.enemy?.hp ?? 0;
-    this.resultText.setVisible(false);
-    this.resultHintText.setVisible(false);
+    this.hideResultCard();
     this.updateModeText();
     this.updateCombatHud();
   }
@@ -817,6 +846,8 @@ export class BattleScene extends Phaser.Scene {
 
   private handleEncounterDirectorEvent(event: EncounterDirectorEvent): void {
     if (event.type === 'spawning') {
+      const section = this.waveStage.sections[this.waveIndex];
+      if (section) this.focusWaveCamera(section, 0);
       this.clearWaveEnemies();
       this.waveEnemies = this.createWaveEnemiesForCurrentSection();
       this.syncPrimaryEnemy();
@@ -824,8 +855,12 @@ export class BattleScene extends Phaser.Scene {
         enemy.setDebugVisible(this.debugEnabled);
         enemy.updateVisuals();
       }
-      this.resultText.setText('Enemies entering').setVisible(true);
-      this.resultHintText.setText('Get ready').setVisible(true);
+      this.showResultCard(
+        `ENCOUNTER ${this.waveIndex + 1} / ${this.waveStage.sections.length}`,
+        'Trouble Incoming',
+        section ? this.describeSectionEncounter(section) : 'Get ready',
+        section?.zoneId,
+      );
       this.updateModeText();
       this.updateCombatHud();
       return;
@@ -833,8 +868,8 @@ export class BattleScene extends Phaser.Scene {
 
     if (event.type === 'active') {
       this.updateWaveEnemyEntries(0);
-      this.resultText.setVisible(false);
-      this.resultHintText.setVisible(false);
+      this.hideResultCard();
+      this.updateWaveCombatCamera(0);
       this.updateModeText();
       this.updateCombatHud();
       return;
@@ -845,8 +880,20 @@ export class BattleScene extends Phaser.Scene {
       const currentSection = this.waveStage.sections[this.waveIndex];
       const nextSection = this.waveStage.sections[this.waveIndex + 1];
       const staysInZone = currentSection && nextSection && currentSection.zoneId === nextSection.zoneId;
-      this.resultText.setText(staysInZone ? 'Encounter Clear' : 'Zone Clear').setVisible(true);
-      this.resultHintText.setText(staysInZone ? 'More trouble incoming' : 'Path unlocks shortly').setVisible(true);
+      const reward = currentSection?.clearReward;
+      const restoredHealth = reward
+        ? this.player.restoreHealth(Math.ceil(this.player.maxHp * reward.healthRatio))
+        : 0;
+      const rewardLine = reward
+        ? `${reward.label} · ${restoredHealth > 0 ? `+${restoredHealth} HP` : 'HP already full'}`
+        : null;
+      const zoneTitle = this.waveStage.zones.find((zone) => zone.id === currentSection?.zoneId)?.title ?? 'Junkyard';
+      this.showResultCard(
+        staysInZone ? `ENCOUNTER ${this.waveIndex + 1} CLEARED` : `${zoneTitle.toUpperCase()} SECURED`,
+        staysInZone ? 'Scrap Settled' : 'Zone Clear',
+        rewardLine ?? (staysInZone ? 'More trouble incoming' : 'Path unlocks shortly'),
+        currentSection?.zoneId,
+      );
       this.updateModeText();
       return;
     }
@@ -912,11 +959,21 @@ export class BattleScene extends Phaser.Scene {
 
     for (const impact of impacts) {
       const attacker = impact.attacker;
-      if (attacker?.faction === 'enemy' && impact.outcome && impact.outcome !== 'miss') {
+      if (attacker?.faction === 'enemy' && (impact.outcome === 'hit' || impact.outcome === 'armored'
+        || impact.outcome === 'guard_broken')) {
         this.waveEnemyControllers.get(attacker.instanceId)?.notifyAttackConnected();
+      } else if (attacker?.faction === 'enemy'
+        && (impact.outcome === 'blocked' || impact.outcome === 'invulnerable')) {
+        this.waveEnemyControllers.get(attacker.instanceId)?.notifyDefenseOutcome(impact.outcome);
       }
 
       const defender = impact.defender;
+      if (defender?.faction === 'enemy' && (defender.state === 'launched' || defender.state === 'knockdown')) {
+        const controller = this.waveEnemyControllers.get(defender.instanceId);
+        controller?.notifyKnockdown(defender);
+        this.projectileSystem.removeByOwner(defender.instanceId);
+        this.encounterDirector?.releaseAttack(defender.instanceId);
+      }
       if (defender?.faction !== 'enemy' || impact.outcome !== 'armored') continue;
       const controller = this.waveEnemyControllers.get(defender.instanceId);
       if (!controller?.notifyArmoredContact(defender)) continue;
@@ -980,8 +1037,7 @@ export class BattleScene extends Phaser.Scene {
     this.clearWaveCombatArtifacts();
     this.clearWaveEnemies();
     this.syncPrimaryEnemy();
-    this.resultText.setText('Victory\nPress R to restart').setVisible(true);
-    this.resultHintText.setText('Press M for menu').setVisible(true);
+    this.showResultCard('JUNKYARD RUN COMPLETE', 'Victory\nPress R to restart', 'Press M for menu');
     this.updateCombatHud();
   }
 
@@ -1024,11 +1080,13 @@ export class BattleScene extends Phaser.Scene {
         this.trackArenaVisual(this.add.rectangle(boundary, GAME_HEIGHT / 2, 92, GAME_HEIGHT, 0x07101b, 0.3).setDepth(-96));
         this.trackArenaVisual(this.add.rectangle(boundary - 38, GAME_HEIGHT / 2, 5, GAME_HEIGHT, currentZone.transitionColor, 0.42).setDepth(-95));
         this.trackArenaVisual(this.add.rectangle(boundary + 38, GAME_HEIGHT / 2, 5, GAME_HEIGHT, nextZone.transitionColor, 0.42).setDepth(-95));
-        this.trackArenaVisual(this.add.rectangle(boundary, 230, 72, 10, 0xf5f0d8, 0.12).setDepth(-94));
-        this.trackArenaVisual(this.add.rectangle(boundary, 468, 72, 10, 0x10151e, 0.3).setDepth(-94));
+        this.trackArenaVisual(this.add.rectangle(boundary, JUNKYARD_WALKABLE_BAND.minY, 72, 10, 0xf5f0d8, 0.15).setDepth(-94));
+        this.trackArenaVisual(this.add.rectangle(boundary, JUNKYARD_WALKABLE_BAND.maxY, 72, 10, 0x10151e, 0.3).setDepth(-94));
       }
-      this.trackArenaVisual(this.add.rectangle(this.waveStage.worldWidth / 2, 230, this.waveStage.worldWidth - 120, 10, 0xffd08a, 0.12).setDepth(-90));
-      this.trackArenaVisual(this.add.rectangle(this.waveStage.worldWidth / 2, 468, this.waveStage.worldWidth - 120, 10, 0x0a0b0f, 0.22).setDepth(-90));
+      this.trackArenaVisual(this.add.rectangle(this.waveStage.worldWidth / 2, JUNKYARD_WALKABLE_BAND.minY,
+        this.waveStage.worldWidth - 120, 6, 0xffd08a, 0.16).setDepth(-90));
+      this.trackArenaVisual(this.add.rectangle(this.waveStage.worldWidth / 2, JUNKYARD_WALKABLE_BAND.maxY,
+        this.waveStage.worldWidth - 120, 8, 0x0a0b0f, 0.24).setDepth(-90));
       return;
     }
 
@@ -1074,8 +1132,10 @@ export class BattleScene extends Phaser.Scene {
     this.modeText.setPosition(viewportWidth - 28, 28);
     this.debugToggleButton.setPosition(viewportWidth / 2, 84);
     this.debugToggleLabel.setPosition(viewportWidth / 2, 84);
+    this.resultCard.setPosition(viewportWidth / 2, 120).setSize(Math.min(660, viewportWidth - 56), 150);
+    this.resultKickerText.setPosition(viewportWidth / 2, 66);
     this.resultText.setPosition(viewportWidth / 2, 112);
-    this.resultHintText.setPosition(viewportWidth / 2, 170);
+    this.resultHintText.setPosition(viewportWidth / 2, 164);
     this.hud.layout(viewportWidth);
     this.combatGym?.layout(viewportWidth);
     this.configureCameraForCurrentMode();
@@ -1198,8 +1258,13 @@ export class BattleScene extends Phaser.Scene {
     if (currentSection.zoneId === nextSection.zoneId) {
       if (!this.encounterDirector?.beginTransition()) return;
       this.waveTraversalPhase = 'transition';
-      this.resultText.setText(`Incoming\n${nextSection.title}`).setVisible(true);
-      this.resultHintText.setText(nextSection.objective).setVisible(true);
+      this.showResultCard(
+        `ENCOUNTER ${this.waveIndex + 2} / ${this.waveStage.sections.length}`,
+        nextSection.title,
+        nextSection.objective,
+        nextSection.zoneId,
+      );
+      this.focusWaveCamera(nextSection);
       this.updateModeText();
       return;
     }
@@ -1207,8 +1272,13 @@ export class BattleScene extends Phaser.Scene {
     if (!currentSection.travelBounds || currentSection.arrivalTriggerX === undefined) return;
     this.waveTraversalPhase = 'travel';
     this.updateWaveArenaBoundsForCurrentSection();
-    this.resultText.setText(`Zone Clear\nWalk to ${nextSection.title}`).setVisible(true);
-    this.resultHintText.setText('Path clear — move right').setVisible(true);
+    this.showResultCard(
+      'ROUTE OPEN',
+      `Move to ${nextSection.title}`,
+      'Follow the lit path →',
+      nextSection.zoneId,
+    );
+    this.resumeWaveCameraFollow();
     this.updateModeText();
   }
 
@@ -1231,8 +1301,13 @@ export class BattleScene extends Phaser.Scene {
     }
 
     this.waveTraversalPhase = 'transition';
-    this.resultText.setText(`Entering\n${nextSection.title}`).setVisible(true);
-    this.resultHintText.setText(this.describeSectionEncounter(nextSection)).setVisible(true);
+    this.showResultCard(
+      'NEW AREA',
+      nextSection.title,
+      this.describeSectionEncounter(nextSection),
+      nextSection.zoneId,
+    );
+    this.focusWaveCamera(nextSection);
   }
 
   private showWaveSectionIntro(): void {
@@ -1245,8 +1320,34 @@ export class BattleScene extends Phaser.Scene {
       return;
     }
 
-    this.resultText.setText(`${this.waveStage.title}\n${section.title}`).setVisible(true);
-    this.resultHintText.setText(section.objective).setVisible(true);
+    const zoneTitle = this.waveStage.zones.find((zone) => zone.id === section.zoneId)?.title ?? this.waveStage.title;
+    this.showResultCard(
+      `${zoneTitle.toUpperCase()} · ${this.waveIndex + 1} / ${this.waveStage.sections.length}`,
+      section.title,
+      section.objective,
+      section.zoneId,
+    );
+    this.focusWaveCamera(section);
+  }
+
+  private showResultCard(
+    kicker: string,
+    title: string,
+    hint: string,
+    zoneId?: string,
+  ): void {
+    const zone = this.waveStage?.zones?.find((candidate) => candidate.id === zoneId);
+    this.resultCard.setStrokeStyle(3, zone?.transitionColor ?? 0xffb259, 0.9).setVisible(true);
+    this.resultKickerText.setText(kicker).setVisible(true);
+    this.resultText.setText(title).setVisible(true);
+    this.resultHintText.setText(hint).setVisible(true);
+  }
+
+  private hideResultCard(): void {
+    this.resultCard.setVisible(false);
+    this.resultKickerText.setVisible(false);
+    this.resultText.setVisible(false);
+    this.resultHintText.setVisible(false);
   }
 
   private describeSectionEncounter(section: StageSectionDefinition): string {
@@ -1335,9 +1436,56 @@ export class BattleScene extends Phaser.Scene {
     }
 
     camera.setBounds(0, 0, this.waveStage.worldWidth, GAME_HEIGHT);
-    camera.setDeadzone(this.getViewportWidth() * 0.28, GAME_HEIGHT * 0.42);
-    camera.startFollow(this.player.container, true, 0.12, 0.1);
-    camera.centerOn(this.player.x, GAME_HEIGHT / 2);
+    const phase = this.encounterDirector?.getPhase();
+    if (phase === 'active') {
+      this.updateWaveCombatCamera(0);
+    } else if (phase === 'travel') {
+      this.resumeWaveCameraFollow();
+    } else {
+      const section = this.waveStage.sections[this.waveIndex];
+      if (section) this.focusWaveCamera(section, 0);
+    }
+  }
+
+  private focusWaveCamera(section: StageSectionDefinition, durationMs = 520): void {
+    if (this.mode !== 'waves') return;
+    const camera = this.cameras.main;
+    const enemyCenterX = section.enemies.reduce((sum, spawn) => sum + spawn.spawnX, 0)
+      / Math.max(1, section.enemies.length);
+    const desiredX = this.player.x * 0.38 + enemyCenterX * 0.62;
+    const halfViewport = this.getViewportWidth() / 2;
+    const focusX = Phaser.Math.Clamp(desiredX, halfViewport, this.waveStage.worldWidth - halfViewport);
+    camera.stopFollow();
+    camera.setDeadzone(this.getViewportWidth() * 0.16, GAME_HEIGHT * 0.24);
+    if (durationMs <= 0) {
+      camera.centerOn(focusX, GAME_HEIGHT / 2);
+      camera.preRender();
+      return;
+    }
+    camera.pan(focusX, GAME_HEIGHT / 2, durationMs, 'Sine.easeInOut', true);
+  }
+
+  private resumeWaveCameraFollow(): void {
+    if (this.mode !== 'waves') return;
+    const camera = this.cameras.main;
+    camera.setDeadzone(this.getViewportWidth() * 0.16, GAME_HEIGHT * 0.24);
+    camera.startFollow(this.player.container, true, 0.2, 0.16);
+  }
+
+  private updateWaveCombatCamera(deltaMs: number): void {
+    if (this.mode !== 'waves' || this.encounterDirector?.getPhase() !== 'active') return;
+    const camera = this.cameras.main;
+    const actors = [this.player, ...this.waveEnemies.filter((enemy) => enemy.state !== 'dead')];
+    const minX = Math.min(...actors.map((fighter) => fighter.x));
+    const maxX = Math.max(...actors.map((fighter) => fighter.x));
+    const halfViewport = this.getViewportWidth() / 2;
+    const targetX = Phaser.Math.Clamp((minX + maxX) / 2, halfViewport,
+      this.waveStage.worldWidth - halfViewport);
+    const currentX = camera.worldView.centerX;
+    const blend = deltaMs <= 0 ? 1 : 1 - Math.exp(-deltaMs / 180);
+    camera.stopFollow();
+    camera.centerOn(Phaser.Math.Linear(currentX, targetX, blend), GAME_HEIGHT / 2);
+    camera.preRender();
   }
 
   private clearWaveEnemies(): void {

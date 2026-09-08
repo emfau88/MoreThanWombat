@@ -55,6 +55,10 @@ test('fighter states select explicit hurtbox and pushbox profiles', () => {
   assert.equal(getFighterBoxProfileId('hitstun', true), 'hit');
   assert.equal(getFighterBoxProfileId('jump', false), 'airborne');
   assert.equal(getFighterBoxProfileId('dead', true), 'knockdown');
+  assert.equal(getFighterBoxProfileId('knockdown', true), 'knockdown');
+  assert.equal(getFighterBoxProfileId('grounded', true), 'knockdown');
+  assert.equal(getFighterBoxProfileId('launched', false), 'airborne');
+  assert.equal(getFighterBoxProfileId('wake_up', true), 'hit');
 
   const fallback = { offsetX: -10, offsetY: -20, width: 20, height: 20 };
   assert.equal(resolveFighterBox(fallback, { airborne: null }, 'airborne'), null);

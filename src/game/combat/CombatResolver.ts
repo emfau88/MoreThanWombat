@@ -3,7 +3,7 @@ import { getRectOverlapCenter, type Rect } from '../utils/Rect';
 import type { FighterFacing } from './Fighter';
 
 export type CombatResponse = 'normal' | 'guard' | 'armor' | 'invulnerable';
-export type CombatOutcome = 'miss' | 'hit' | 'blocked' | 'armored' | 'invulnerable';
+export type CombatOutcome = 'miss' | 'hit' | 'blocked' | 'guard_broken' | 'armored' | 'invulnerable';
 export type CombatMissReason =
   | 'no-hitbox'
   | 'dead'
@@ -38,7 +38,7 @@ export type CombatResolution =
       reason: CombatMissReason;
     }
   | {
-      outcome: 'hit' | 'blocked' | 'armored' | 'invulnerable';
+      outcome: 'hit' | 'blocked' | 'guard_broken' | 'armored' | 'invulnerable';
       damage: number;
       attackId: string;
       contactX: number;
@@ -88,7 +88,7 @@ export function resolveCombatContact(input: CombatResolutionInput): CombatResolu
   const verticalKnockbackDirection =
     isRadialKnockback && input.defenderY !== input.attackerY ? Math.sign(input.defenderY - input.attackerY) : 1;
   const outcome = input.defenderResponse === 'guard'
-    ? 'blocked'
+    ? attack.guardBreak ? 'guard_broken' : 'blocked'
     : input.defenderResponse === 'armor'
       ? 'armored'
     : input.defenderResponse === 'invulnerable'
@@ -97,7 +97,8 @@ export function resolveCombatContact(input: CombatResolutionInput): CombatResolu
 
   return {
     outcome,
-    damage: outcome === 'hit' || outcome === 'armored' ? attack.damage : 0,
+    damage: outcome === 'guard_broken' ? Math.max(1, Math.ceil(attack.damage * 0.35))
+      : outcome === 'hit' || outcome === 'armored' ? attack.damage : 0,
     attackId: attack.id,
     contactX: contact.x,
     contactY: contact.y,

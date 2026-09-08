@@ -10,6 +10,7 @@ const geometry = {
   special: { x: 790, y: 394, radius: 34 },
   ultimate: { x: 862, y: 362, radius: 32 },
   jump: { x: 784, y: 472, radius: 32 },
+  defend: { x: 192, y: 468, radius: 28 },
   joystickAvailable: true,
 };
 
@@ -42,6 +43,20 @@ test('larger action buttons keep separate matching touch circles across landscap
         const target = layout[other];
         assert.ok(Math.hypot(target.x - button.x, target.y - button.y) - target.radius - button.radius > 8);
       }
+    }
+  }
+});
+
+test('defend touch target stays separate from joystick and action cluster', () => {
+  for (const [width, height] of [[568, 320], [844, 390], [960, 540]]) {
+    const layout = getMobileControlLayout(width, height);
+    const geometry = { ...layout, screenWidth: width, joystickAvailable: true };
+    assert.equal(resolveMobileControlTarget({ x: layout.defend.x, y: layout.defend.y }, geometry), 'defend');
+    assert.ok(Math.hypot(layout.defend.x - layout.joystick.x, layout.defend.y - layout.joystick.y)
+      > layout.defend.radius + layout.joystick.radius + 8);
+    for (const action of [layout.attack, layout.special, layout.ultimate, layout.jump]) {
+      assert.ok(Math.hypot(layout.defend.x - action.x, layout.defend.y - action.y)
+        > layout.defend.radius + action.radius + 8);
     }
   }
 });
