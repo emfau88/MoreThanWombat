@@ -41,6 +41,13 @@ inner knob radius: 24-32 px
 deadzone: 0.15
 ```
 
+G5 movement contract:
+
+- A direction at 82% or more for 220 ms starts Run; no extra touch button or double-tap is required.
+- Run continues while the stick remains outside the 28% release threshold and supports direction changes.
+- Attack during Run starts the current fighter's committed Dash Attack.
+- Jump and Air Bonk retain 82% air steering, including repeated horizontal and lane corrections during one jump.
+
 ## Attack Buttons
 
 Requirements:
@@ -68,6 +75,8 @@ K / Shift: special
 F: defend; hold a direction for Evade
 F1 or H: toggle debug boxes
 ```
+
+Holding a full movement direction for 220 ms starts Run on keyboard as well. Repeated `J`/`Space` taps use the same three-step Basic-Chain and one-input queue as the mobile Attack button.
 
 ## Input Abstraction
 
@@ -115,5 +124,7 @@ Do not constantly auto-turn during walking unless explicitly designed.
 - Move in all directions.
 - Release joystick and verify player stops.
 - Tap attack repeatedly and verify recovery still matters.
+- Hold the joystick fully for Run, add a second ATK touch and verify Dash Attack starts without losing the movement touch.
+- During Air Bonk, steer left/right and between lanes more than once; the jump arc must continue.
 - Tap special and verify it does not break state machine.
 - Rotate device if supported and verify layout does not collapse.

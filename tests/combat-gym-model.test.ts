@@ -14,6 +14,9 @@ test('combat gym exposes authored moves plus the universal air move', () => {
   const moves = getCombatGymMoves('wombat');
   assert.deepEqual(moves.map((move) => move.attack.id), [
     'wombat_jab',
+    'wombat_paw_backhand',
+    'wombat_headbutt_finisher',
+    'wombat_rushing_bonk',
     'wombat_belly_slam',
     'wombat_earthshaker',
     'air_bonk',
@@ -25,6 +28,9 @@ test('combat gym exposes the Wizard miscast for deterministic animation review',
 
   assert.deepEqual(moveIds, [
     'discount_wand_smack',
+    'discount_wand_rebound',
+    'discount_receipt_stamp',
+    'discount_broom_bump',
     'discount_fireball_cast',
     'discount_miscast',
     'discount_clearance_orb',

@@ -31,7 +31,9 @@ export type AttackHitboxProfile = {
 export type BoxProfileState =
   | 'idle'
   | 'walk'
+  | 'run'
   | 'attack'
+  | 'dashAttack'
   | 'special'
   | 'ultimate'
   | 'guard'
@@ -60,11 +62,11 @@ export function getFighterBoxProfileId(state: BoxProfileState, isGrounded: boole
     return 'hit';
   }
 
-  if (state === 'attack' || state === 'special' || state === 'ultimate') {
+  if (state === 'attack' || state === 'dashAttack' || state === 'special' || state === 'ultimate') {
     return 'attacking';
   }
 
-  if (state === 'walk' || state === 'landing' || state === 'evade') {
+  if (state === 'walk' || state === 'run' || state === 'landing' || state === 'evade') {
     return 'moving';
   }
 

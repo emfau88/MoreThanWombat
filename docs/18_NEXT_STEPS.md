@@ -1,6 +1,6 @@
 # 18 - Next Steps
 
-**Current order — 2026-09-08:** G0 is complete and G1–G4 are implemented and technically verified. Run the combined manual pressure, readability, defense, mobile and balance acceptance documented in the [G4 report](qa/g4-runtime-2026-09-08/README.md), then implement G5 Run/Dash, Dash Attack and Basic Chain under [plan 31](31_GAMEPLAY_AND_WAVE_COMPLETION_PLAN.md). G6–G11 remain in that plan order.
+**Current order — 2026-09-09:** G0 is complete and G1–G5 are implemented and technically verified. Next implement G6: one or two small Stage interactions, one deterministic HP/MP pickup or reward moment, a short mechanical comedy beat and a real Midboss pattern in Encounter 5. Then continue with G7–G11 in [plan 31](31_GAMEPLAY_AND_WAVE_COMPLETION_PLAN.md). Use the [G5 report](qa/g5-runtime-2026-09-09/README.md) for the still-open combined rhythm, pressure, balance and real-device acceptance.
 
 The blocks below are historical recommendations. Camera, feel and device checks remain relevant, but their old order and content restrictions do not supersede the scoped G1–G11 work.
 

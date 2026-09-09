@@ -51,3 +51,19 @@ test('every shippable player has an authored basic, special, and ultimate with a
     assert.ok((ultimate?.manaCost ?? 0) >= 100, `${fighter.label} ultimate needs a full-mana gate`);
   }
 });
+
+test('every shippable player owns exactly three authored basics and one dash attack', () => {
+  for (const fighterId of SHIPPABLE_PLAYER_FIGHTERS) {
+    const fighter = fighterDefinitions[fighterId];
+    const chain = fighter.attacks.basicChain;
+    assert.equal(chain?.length, 3, `${fighter.label} needs a three-step basic chain`);
+    assert.equal(chain?.[0], fighter.attacks.basic, `${fighter.label} chain must begin with its normal basic`);
+    assert.ok(chain?.every((attackId) => attacksById[attackId]), `${fighter.label} chain attacks must resolve`);
+    assert.ok(chain?.slice(0, 2).every((attackId) => attacksById[attackId].basicChainWindow),
+      `${fighter.label} first two steps need chain windows`);
+    assert.equal(attacksById[chain?.[2] ?? '']?.hitReaction, 'knockdown',
+      `${fighter.label} finisher must knock down`);
+    assert.ok(attacksById[fighter.attacks.dashAttack ?? '']?.forwardTravelSpeed,
+      `${fighter.label} needs a traveling dash attack`);
+  }
+});

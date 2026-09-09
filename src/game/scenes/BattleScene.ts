@@ -162,7 +162,7 @@ export class BattleScene extends Phaser.Scene {
     this.combatImpact = new CombatImpactOrchestrator(this, this.combatFeedback, this.combatPresentation);
     registerCharacterAnimations(this);
     this.renderArena();
-    this.instructionText = this.add.text(32, 28, 'WASD/Arrows move, F defend, J/Space jab, K/Shift special, U ultimate, L jump, H debug, R restart', {
+    this.instructionText = this.add.text(32, 28, 'Hold direction to run; repeat J/Space for 3-hit chain; Run + ATK dash; L jump; F defend', {
       color: '#c9d6df',
       fontFamily: 'Verdana, Geneva, sans-serif',
       fontSize: '14px',
@@ -409,14 +409,18 @@ export class BattleScene extends Phaser.Scene {
     }
 
     if (this.inputBuffer.has('attack')) {
-      if (targetEnemy) {
-        this.player.faceTarget(targetEnemy.x);
-      }
-      const didStart = !this.player.isGrounded
-        ? this.player.tryStartAirAttack()
-        : this.tryStartAttackWithFx(this.player, 'basic');
-      if (didStart) {
+      if (this.player.tryBufferBasicChain()) {
         this.inputBuffer.consume('attack');
+      } else {
+        if (targetEnemy && this.player.state !== 'run') {
+          this.player.faceTarget(targetEnemy.x);
+        }
+        const didStart = !this.player.isGrounded
+          ? this.player.tryStartAirAttack()
+          : this.tryStartAttackWithFx(this.player, 'basic');
+        if (didStart) {
+          this.inputBuffer.consume('attack');
+        }
       }
     }
 
@@ -485,6 +489,11 @@ export class BattleScene extends Phaser.Scene {
       } else if (this.mode === 'test') {
         enemy.update(deltaSeconds, 0, 0, this.arenaBounds, { allowManaRegen });
       }
+    }
+
+    this.presentPendingAttackStart(this.player);
+    for (const enemy of this.getCurrentEnemies()) {
+      this.presentPendingAttackStart(enemy);
     }
 
     this.spawnAttackProjectiles(this.player);
@@ -1585,7 +1594,7 @@ export class BattleScene extends Phaser.Scene {
       return false;
     }
 
-    const attack = fighter.getCurrentAttack();
+    const attack = fighter.consumePendingAttackStart() ?? fighter.getCurrentAttack();
 
     if (!attack) {
       return false;
@@ -1604,13 +1613,18 @@ export class BattleScene extends Phaser.Scene {
       return false;
     }
 
-    const attack = fighter.getCurrentAttack();
+    const attack = fighter.consumePendingAttackStart() ?? fighter.getCurrentAttack();
     if (!attack) {
       return false;
     }
 
     this.combatPresentation.handleAttackStarted(fighter, attack);
     return true;
+  }
+
+  private presentPendingAttackStart(fighter: Fighter): void {
+    const attack = fighter.consumePendingAttackStart();
+    if (attack) this.combatPresentation.handleAttackStarted(fighter, attack);
   }
 
   private tryStartSelectedCombatGymMove(): void {

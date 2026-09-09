@@ -1,16 +1,17 @@
 # 17 - Open Tasks
 
-## Current queue — 2026-09-08
+## Current queue — 2026-09-09
 
-The authoritative work queue is [plan 31](31_GAMEPLAY_AND_WAVE_COMPLETION_PLAN.md). **G0 complete; G1–G4 implemented and technically verified, combined manual gameplay acceptance open before G5.** See the [G4 report](qa/g4-runtime-2026-09-08/README.md) and [run measurement template](qa/gameplay-run-template.md).
+The authoritative work queue is [plan 31](31_GAMEPLAY_AND_WAVE_COMPLETION_PLAN.md). **G0 complete; G1–G5 implemented and technically verified, combined manual gameplay, balance and real-device acceptance open. G6 is next.** See the [G5 report](qa/g5-runtime-2026-09-09/README.md) and [run measurement template](qa/gameplay-run-template.md).
 
 | Work | Current status / owner bulk |
 |---|---|
-| Encounter activation, pressure budgets, safe entry and phase-aware mana | G1 implemented; combined manual feel/readability acceptance open before G5 |
+| Encounter activation, pressure budgets, safe entry and phase-aware mana | G1 implemented; combined manual feel/readability acceptance remains open |
 | Four enemy roles and seven encounters | G2 / G3 implemented; balance retuned after playtest feedback |
 | Defensive controls and knockdown | G4 implemented; manual pressure escape acceptance open |
-| Run/dash, dash attack and basic chains | G5; next implementation bulk after manual acceptance |
-| Interactions, pickup, midboss and boss | G6 / G7 |
+| Run/dash, dash attack, basic chains and steerable Air Bonk | G5 implemented; manual rhythm and real-device acceptance open |
+| Interactions, pickup and midboss | G6; next implementation bulk |
+| Two-phase boss | G7 |
 | Full-run resource tuning, HUD/camera/audio polish | G8 / G9 |
 | Browser runtime automation, lint and focused architecture hardening | G10 |
 | Device performance, current Pages build, complete roster runs and asset delivery | G11; open |

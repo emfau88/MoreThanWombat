@@ -1,0 +1,338 @@
+PASS — 335 G3 runtime checks
+Real assets loaded and Main Menu created
+Stage owns exactly seven data-driven encounters
+Every encounter has a distinct player objective
+All shipped G3 encounters use defeat_all
+Every Wave encounter is confined to the painted ground band
+Encounter curve mixes crowds of weak enemies with selected stronger roles
+Phase spawning at encounter 1
+Gate Crasher: authored transition card is visible
+Gate Crasher: intro camera previews the new encounter
+Gate Crasher: complete roster created
+Gate Crasher: entry is protected and inert
+Gate Crasher: pigeon-intro uses its authored entry direction
+Gate Crasher: pigeon-intro obeys its entry delay
+Phase active at encounter 1
+Gate Crasher: active camera frames player and enemy group
+Gate Crasher: every staged enemy activates
+Gate Crasher: active enemies are visible and eligible
+Gate Crasher: fighters remain on the intended ground
+Gate Crasher: clear removes projectiles
+Phase transition at encounter 1
+Gate Crasher: sub-wave skips travel
+Phase section_intro at encounter 2
+Gate Crasher: sub-wave keeps player position
+Phase spawning at encounter 2
+Side Door: authored transition card is visible
+Side Door: intro camera previews the new encounter
+Side Door: complete roster created
+Side Door: entry is protected and inert
+Side Door: pigeon-door uses its authored entry direction
+Side Door: pigeon-door obeys its entry delay
+Side Door: pigeon-door-late uses its authored entry direction
+Side Door: pigeon-door-late obeys its entry delay
+Side Door: flanker-late uses its authored entry direction
+Side Door: flanker-late obeys its entry delay
+Phase active at encounter 2
+Side Door: active camera frames player and enemy group
+Side Door: delayed enemy stays harmless
+Side Door: delayed enemy stays harmless
+Side Door: delayed enemy stays harmless
+Side Door: delayed enemy stays harmless
+Side Door: delayed enemy stays harmless
+Side Door: delayed enemy stays harmless
+Side Door: delayed enemy stays harmless
+Side Door: delayed enemy stays harmless
+Side Door: delayed enemy stays harmless
+Side Door: delayed enemy stays harmless
+Side Door: delayed enemy stays harmless
+Side Door: delayed enemy stays harmless
+Side Door: delayed enemy stays harmless
+Side Door: delayed enemy stays harmless
+Side Door: delayed enemy stays harmless
+Side Door: delayed enemy stays harmless
+Side Door: delayed enemy stays harmless
+Side Door: delayed enemy stays harmless
+Side Door: delayed enemy stays harmless
+Side Door: every staged enemy activates
+Side Door: active enemies are visible and eligible
+Side Door: fighters remain on the intended ground
+Side Door: clear removes projectiles
+Side Door: zone reward restores its authored health amount
+Phase travel at encounter 2
+Side Door: player crosses the zone arrival trigger
+Phase section_intro at encounter 3
+Phase spawning at encounter 3
+Crossfire: authored transition card is visible
+Crossfire: intro camera previews the new encounter
+Crossfire: complete roster created
+Crossfire: entry is protected and inert
+Crossfire: pigeon-crossfire uses its authored entry direction
+Crossfire: pigeon-crossfire obeys its entry delay
+Crossfire: pigeon-crossfire-late uses its authored entry direction
+Crossfire: pigeon-crossfire-late obeys its entry delay
+Crossfire: wizard-crossfire uses its authored entry direction
+Crossfire: wizard-crossfire obeys its entry delay
+Phase active at encounter 3
+Crossfire: active camera frames player and enemy group
+Crossfire: delayed enemy stays harmless
+Crossfire: delayed enemy stays harmless
+Crossfire: delayed enemy stays harmless
+Crossfire: delayed enemy stays harmless
+Crossfire: delayed enemy stays harmless
+Crossfire: delayed enemy stays harmless
+Crossfire: delayed enemy stays harmless
+Crossfire: delayed enemy stays harmless
+Crossfire: delayed enemy stays harmless
+Crossfire: delayed enemy stays harmless
+Crossfire: delayed enemy stays harmless
+Crossfire: delayed enemy stays harmless
+Crossfire: delayed enemy stays harmless
+Crossfire: delayed enemy stays harmless
+Crossfire: delayed enemy stays harmless
+Crossfire: delayed enemy stays harmless
+Crossfire: delayed enemy stays harmless
+Crossfire: delayed enemy stays harmless
+Crossfire: delayed enemy stays harmless
+Crossfire: delayed enemy stays harmless
+Crossfire: every staged enemy activates
+Crossfire: active enemies are visible and eligible
+Crossfire: fighters remain on the intended ground
+Crossfire: clear removes projectiles
+Phase transition at encounter 3
+Crossfire: sub-wave skips travel
+Phase section_intro at encounter 4
+Crossfire: sub-wave keeps player position
+Phase spawning at encounter 4
+Armor Lesson: authored transition card is visible
+Armor Lesson: intro camera previews the new encounter
+Armor Lesson: complete roster created
+Armor Lesson: entry is protected and inert
+Armor Lesson: heavy-lesson uses its authored entry direction
+Armor Lesson: heavy-lesson obeys its entry delay
+Armor Lesson: pigeon-lesson uses its authored entry direction
+Armor Lesson: pigeon-lesson obeys its entry delay
+Armor Lesson: pigeon-lesson-late uses its authored entry direction
+Armor Lesson: pigeon-lesson-late obeys its entry delay
+Phase active at encounter 4
+Armor Lesson: active camera frames player and enemy group
+Armor Lesson: delayed enemy stays harmless
+Armor Lesson: delayed enemy stays harmless
+Armor Lesson: delayed enemy stays harmless
+Armor Lesson: delayed enemy stays harmless
+Armor Lesson: delayed enemy stays harmless
+Armor Lesson: delayed enemy stays harmless
+Armor Lesson: delayed enemy stays harmless
+Armor Lesson: delayed enemy stays harmless
+Armor Lesson: delayed enemy stays harmless
+Armor Lesson: delayed enemy stays harmless
+Armor Lesson: delayed enemy stays harmless
+Armor Lesson: delayed enemy stays harmless
+Armor Lesson: delayed enemy stays harmless
+Armor Lesson: delayed enemy stays harmless
+Armor Lesson: delayed enemy stays harmless
+Armor Lesson: delayed enemy stays harmless
+Armor Lesson: delayed enemy stays harmless
+Armor Lesson: delayed enemy stays harmless
+Armor Lesson: delayed enemy stays harmless
+Armor Lesson: delayed enemy stays harmless
+Armor Lesson: delayed enemy stays harmless
+Armor Lesson: delayed enemy stays harmless
+Armor Lesson: delayed enemy stays harmless
+Armor Lesson: every staged enemy activates
+Armor Lesson: active enemies are visible and eligible
+Armor Lesson: fighters remain on the intended ground
+Armor Lesson: clear removes projectiles
+Phase transition at encounter 4
+Armor Lesson: sub-wave skips travel
+Phase section_intro at encounter 5
+Armor Lesson: sub-wave keeps player position
+Phase spawning at encounter 5
+Foreman Audition: authored transition card is visible
+Foreman Audition: intro camera previews the new encounter
+Foreman Audition: complete roster created
+Foreman Audition: entry is protected and inert
+Foreman Audition: pigeon-foreman uses its authored entry direction
+Foreman Audition: pigeon-foreman obeys its entry delay
+Foreman Audition: flanker-elite uses its authored entry direction
+Foreman Audition: flanker-elite obeys its entry delay
+Foreman Audition: heavy-elite uses its authored entry direction
+Foreman Audition: heavy-elite obeys its entry delay
+Phase active at encounter 5
+Foreman Audition: active camera frames player and enemy group
+Foreman Audition: delayed enemy stays harmless
+Foreman Audition: delayed enemy stays harmless
+Foreman Audition: delayed enemy stays harmless
+Foreman Audition: delayed enemy stays harmless
+Foreman Audition: delayed enemy stays harmless
+Foreman Audition: delayed enemy stays harmless
+Foreman Audition: delayed enemy stays harmless
+Foreman Audition: delayed enemy stays harmless
+Foreman Audition: delayed enemy stays harmless
+Foreman Audition: delayed enemy stays harmless
+Foreman Audition: delayed enemy stays harmless
+Foreman Audition: delayed enemy stays harmless
+Foreman Audition: delayed enemy stays harmless
+Foreman Audition: delayed enemy stays harmless
+Foreman Audition: delayed enemy stays harmless
+Foreman Audition: delayed enemy stays harmless
+Foreman Audition: delayed enemy stays harmless
+Foreman Audition: delayed enemy stays harmless
+Foreman Audition: delayed enemy stays harmless
+Foreman Audition: delayed enemy stays harmless
+Foreman Audition: delayed enemy stays harmless
+Foreman Audition: delayed enemy stays harmless
+Foreman Audition: delayed enemy stays harmless
+Foreman Audition: delayed enemy stays harmless
+Foreman Audition: delayed enemy stays harmless
+Foreman Audition: delayed enemy stays harmless
+Foreman Audition: every staged enemy activates
+Foreman Audition: active enemies are visible and eligible
+Foreman Audition: fighters remain on the intended ground
+Foreman Audition: clear removes projectiles
+Foreman Audition: zone reward restores its authored health amount
+Phase travel at encounter 5
+Foreman Audition: player crosses the zone arrival trigger
+Phase section_intro at encounter 6
+Phase spawning at encounter 6
+Neon Ambush: authored transition card is visible
+Neon Ambush: intro camera previews the new encounter
+Neon Ambush: complete roster created
+Neon Ambush: entry is protected and inert
+Neon Ambush: pigeon-ambush uses its authored entry direction
+Neon Ambush: pigeon-ambush obeys its entry delay
+Neon Ambush: pigeon-ambush-late uses its authored entry direction
+Neon Ambush: pigeon-ambush-late obeys its entry delay
+Neon Ambush: wizard-ambush uses its authored entry direction
+Neon Ambush: wizard-ambush obeys its entry delay
+Neon Ambush: flanker-ambush uses its authored entry direction
+Neon Ambush: flanker-ambush obeys its entry delay
+Phase active at encounter 6
+Neon Ambush: active camera frames player and enemy group
+Neon Ambush: delayed enemy stays harmless
+Neon Ambush: delayed enemy stays harmless
+Neon Ambush: delayed enemy stays harmless
+Neon Ambush: delayed enemy stays harmless
+Neon Ambush: delayed enemy stays harmless
+Neon Ambush: delayed enemy stays harmless
+Neon Ambush: delayed enemy stays harmless
+Neon Ambush: delayed enemy stays harmless
+Neon Ambush: delayed enemy stays harmless
+Neon Ambush: delayed enemy stays harmless
+Neon Ambush: delayed enemy stays harmless
+Neon Ambush: delayed enemy stays harmless
+Neon Ambush: delayed enemy stays harmless
+Neon Ambush: delayed enemy stays harmless
+Neon Ambush: delayed enemy stays harmless
+Neon Ambush: delayed enemy stays harmless
+Neon Ambush: delayed enemy stays harmless
+Neon Ambush: delayed enemy stays harmless
+Neon Ambush: delayed enemy stays harmless
+Neon Ambush: delayed enemy stays harmless
+Neon Ambush: delayed enemy stays harmless
+Neon Ambush: delayed enemy stays harmless
+Neon Ambush: delayed enemy stays harmless
+Neon Ambush: delayed enemy stays harmless
+Neon Ambush: delayed enemy stays harmless
+Neon Ambush: delayed enemy stays harmless
+Neon Ambush: delayed enemy stays harmless
+Neon Ambush: delayed enemy stays harmless
+Neon Ambush: delayed enemy stays harmless
+Neon Ambush: delayed enemy stays harmless
+Neon Ambush: delayed enemy stays harmless
+Neon Ambush: delayed enemy stays harmless
+Neon Ambush: delayed enemy stays harmless
+Neon Ambush: delayed enemy stays harmless
+Neon Ambush: delayed enemy stays harmless
+Neon Ambush: delayed enemy stays harmless
+Neon Ambush: delayed enemy stays harmless
+Neon Ambush: delayed enemy stays harmless
+Neon Ambush: delayed enemy stays harmless
+Neon Ambush: delayed enemy stays harmless
+Neon Ambush: delayed enemy stays harmless
+Neon Ambush: delayed enemy stays harmless
+Neon Ambush: delayed enemy stays harmless
+Neon Ambush: delayed enemy stays harmless
+Neon Ambush: delayed enemy stays harmless
+Neon Ambush: every staged enemy activates
+Neon Ambush: active enemies are visible and eligible
+Neon Ambush: fighters remain on the intended ground
+Neon Ambush: clear removes projectiles
+Phase transition at encounter 6
+Neon Ambush: sub-wave skips travel
+Phase section_intro at encounter 7
+Neon Ambush: sub-wave keeps player position
+Phase spawning at encounter 7
+Junkyard Overtime: authored transition card is visible
+Junkyard Overtime: intro camera previews the new encounter
+Junkyard Overtime: complete roster created
+Junkyard Overtime: entry is protected and inert
+Junkyard Overtime: pigeon-final uses its authored entry direction
+Junkyard Overtime: pigeon-final obeys its entry delay
+Junkyard Overtime: pigeon-final-late uses its authored entry direction
+Junkyard Overtime: pigeon-final-late obeys its entry delay
+Junkyard Overtime: heavy-final uses its authored entry direction
+Junkyard Overtime: heavy-final obeys its entry delay
+Junkyard Overtime: wizard-final uses its authored entry direction
+Junkyard Overtime: wizard-final obeys its entry delay
+Phase active at encounter 7
+Junkyard Overtime: active camera frames player and enemy group
+Junkyard Overtime: delayed enemy stays harmless
+Junkyard Overtime: delayed enemy stays harmless
+Junkyard Overtime: delayed enemy stays harmless
+Junkyard Overtime: delayed enemy stays harmless
+Junkyard Overtime: delayed enemy stays harmless
+Junkyard Overtime: delayed enemy stays harmless
+Junkyard Overtime: delayed enemy stays harmless
+Junkyard Overtime: delayed enemy stays harmless
+Junkyard Overtime: delayed enemy stays harmless
+Junkyard Overtime: delayed enemy stays harmless
+Junkyard Overtime: delayed enemy stays harmless
+Junkyard Overtime: delayed enemy stays harmless
+Junkyard Overtime: delayed enemy stays harmless
+Junkyard Overtime: delayed enemy stays harmless
+Junkyard Overtime: delayed enemy stays harmless
+Junkyard Overtime: delayed enemy stays harmless
+Junkyard Overtime: delayed enemy stays harmless
+Junkyard Overtime: delayed enemy stays harmless
+Junkyard Overtime: delayed enemy stays harmless
+Junkyard Overtime: delayed enemy stays harmless
+Junkyard Overtime: delayed enemy stays harmless
+Junkyard Overtime: delayed enemy stays harmless
+Junkyard Overtime: delayed enemy stays harmless
+Junkyard Overtime: delayed enemy stays harmless
+Junkyard Overtime: delayed enemy stays harmless
+Junkyard Overtime: delayed enemy stays harmless
+Junkyard Overtime: delayed enemy stays harmless
+Junkyard Overtime: delayed enemy stays harmless
+Junkyard Overtime: delayed enemy stays harmless
+Junkyard Overtime: delayed enemy stays harmless
+Junkyard Overtime: delayed enemy stays harmless
+Junkyard Overtime: delayed enemy stays harmless
+Junkyard Overtime: delayed enemy stays harmless
+Junkyard Overtime: delayed enemy stays harmless
+Junkyard Overtime: delayed enemy stays harmless
+Junkyard Overtime: delayed enemy stays harmless
+Junkyard Overtime: delayed enemy stays harmless
+Junkyard Overtime: delayed enemy stays harmless
+Junkyard Overtime: delayed enemy stays harmless
+Junkyard Overtime: delayed enemy stays harmless
+Junkyard Overtime: delayed enemy stays harmless
+Junkyard Overtime: delayed enemy stays harmless
+Junkyard Overtime: delayed enemy stays harmless
+Junkyard Overtime: delayed enemy stays harmless
+Junkyard Overtime: delayed enemy stays harmless
+Junkyard Overtime: delayed enemy stays harmless
+Junkyard Overtime: delayed enemy stays harmless
+Junkyard Overtime: delayed enemy stays harmless
+Junkyard Overtime: every staged enemy activates
+Junkyard Overtime: active enemies are visible and eligible
+Junkyard Overtime: fighters remain on the intended ground
+Junkyard Overtime: clear removes projectiles
+Phase victory at encounter 7
+Four same-zone transitions run without travel
+Travel occurs exactly twice between three zones
+Seventh encounter produces Stage victory
+Victory leaves no enemy or projectile softlock
+Scripted diagnostics; manual balance acceptance remains separate.
+[]

@@ -1,17 +1,17 @@
 # 31 – Gameplay- und Wave-Completion-Plan
 
-**Stand:** 2026-09-05<br>
+**Stand:** 2026-09-09<br>
 **Status:** Verbindliche, nach Gameplay-Risiko neu sortierte Ausführungsreihenfolge<br>
 **Adressat:** Coding Agent<br>
 **Ziel:** Aus dem technisch stabilen Vertical Slice einen kurzen, eigenständig tragfähigen Arcade-Brawler-Run machen, bevor weitere Figuren, Arenen oder aufwendige VFX produziert werden.
 
 > Bei Widersprüchen mit älteren Roadmaps gilt für Gameplay und Wave Completion dieses Dokument.
 
-### Ausführungsstand 2026-09-08
+### Ausführungsstand 2026-09-09
 
-**G0 abgeschlossen; G1–G4 implementiert und technisch geprüft, gemeinsame manuelle Spielgefühlabnahme offen.** [G4-Prüfbericht](qa/g4-runtime-2026-09-08/README.md) · [G3-Prüfbericht](qa/g3-runtime-2026-09-08/README.md) · [G2-Prüfbericht](qa/g2-runtime-2026-09-06/README.md) · [G1-Prüfbericht](qa/g1-runtime-2026-09-05/README.md) · [Historische G0-Baseline](qa/gameplay-baseline-2026-09-05/README.md) · [Einheitliche Run-Messvorlage](qa/gameplay-run-template.md).
+**G0 abgeschlossen; G1–G5 implementiert und technisch geprüft, gemeinsame manuelle Spielgefühlabnahme offen.** [G5-Prüfbericht](qa/g5-runtime-2026-09-09/README.md) · [G4-Prüfbericht](qa/g4-runtime-2026-09-08/README.md) · [G3-Prüfbericht](qa/g3-runtime-2026-09-08/README.md) · [G2-Prüfbericht](qa/g2-runtime-2026-09-06/README.md) · [G1-Prüfbericht](qa/g1-runtime-2026-09-05/README.md) · [Historische G0-Baseline](qa/gameplay-baseline-2026-09-05/README.md) · [Einheitliche Run-Messvorlage](qa/gameplay-run-template.md).
 
-Technisch geprüft: 84/84 Tests, Typecheck und Production Build. G4 liefert Guard, gerichtete Evade, Guard Break, Launch, Knockdown, Grounded, geschütztes Wake-up und Anti-Stunlock sowie passende Gym-Presets. Der mobile Prototyp behält einen getrennten Defend-Button auch auf der kleinsten Landscape-Größe. Nach dem Spieltest-Befund wurde der Junkyard Run zusätzlich auf das gemalte Bodenband begrenzt, auf mehr schwache Gegner mit einzelnen stärkeren Rollen umgestellt, an Zonengrenzen mit Heilbelohnungen versehen und mit Übergangskarten sowie Gruppen-Kameraführung überarbeitet. Browserprüfungen decken G4 mit 29 Checks in Desktop und Mobile Landscape, den vollständigen Wave-Ablauf mit 335 Checks sowie G2/G1-Regressionen mit 51/743 Checks ab.
+Technisch geprüft: 89/89 Tests, Typecheck und Production Build. G5 liefert einen nach 220 ms voller Richtung aktivierten Run, vier eigene Dash Attacks sowie pro normaler Spielerfigur eine dreistufige, datengetriebene Basic-Chain. Ein Treffer darf früher fortsetzen als ein Whiff, pro Schritt wird höchstens ein Folgeangriff gepuffert und der Finisher verursacht Knockdown. Special und Ultimate brechen die aktive Chain nicht frei ab. Air Bonk erhält die Sprungphysik, akzeptiert weiter Lane- und Horizontalbewegung und erlaubt mehrere Richtungswechsel in derselben Luftphase. Die G5-Browserprüfung umfasst 80 echte Phaser-Checks in Desktop- und Mobile-Auflösung; der zusätzliche Touch-Smoke löst Run und Dash Attack über Joystick plus ATK aus. G1–G4 bestehen unverändert mit 743/51/335/29 Checks.
 
 Zusatzauftrag Mobile: Querformat-Skalierung und Rotation korrigiert, vier vorhandene Aktionsbuttons um 10 % vergrößert, Touch-Zonen angepasst und für G4 ein separater Defend-Button ergänzt. [Aktuelle G4-Messwerte](qa/g4-runtime-2026-09-08/README.md) · [ursprüngliche Mobile-Prüfung](qa/mobile-2026-09-05/README.md).
 
@@ -429,6 +429,8 @@ Die endgültige Bedienung wird erst nach einem Prototyp festgelegt. Ein zusätzl
 2. `Add knockdown and protected wake-up states`
 
 ## 11. BULK G5 – Combat-Breite: Run/Dash, Dash Attack und Basic-Chain
+
+**Status 2026-09-09:** Implementiert und technisch geprüft. Vier Figuren besitzen je eine dreistufige Chain und einen eigenen Dash Attack. Run verwendet auf Keyboard und Touch denselben Richtungs-Haltevertrag. Air Bonk führt die Sprungbewegung fort und erlaubt wiederholte Luftkorrekturen. Die manuelle Rhythmus-, Balance- und Realgeräteabnahme bleibt offen; Details im [G5-Prüfbericht](qa/g5-runtime-2026-09-09/README.md).
 
 **Priorität:** P1<br>
 **Risiko:** hoch, da Bewegungsgefühl<br>

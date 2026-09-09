@@ -51,7 +51,9 @@ test('authored hitbox profiles cover their complete active phase', () => {
 test('fighter states select explicit hurtbox and pushbox profiles', () => {
   assert.equal(getFighterBoxProfileId('idle', true), 'standing');
   assert.equal(getFighterBoxProfileId('walk', true), 'moving');
+  assert.equal(getFighterBoxProfileId('run', true), 'moving');
   assert.equal(getFighterBoxProfileId('attack', true), 'attacking');
+  assert.equal(getFighterBoxProfileId('dashAttack', true), 'attacking');
   assert.equal(getFighterBoxProfileId('hitstun', true), 'hit');
   assert.equal(getFighterBoxProfileId('jump', false), 'airborne');
   assert.equal(getFighterBoxProfileId('dead', true), 'knockdown');

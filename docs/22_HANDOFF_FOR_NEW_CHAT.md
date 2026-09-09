@@ -1,17 +1,17 @@
 # More Than Wombat - Handoff For New Chat
 
-Last updated: 2026-09-05
+Last updated: 2026-09-09
 
-## Current handoff — G1 implemented; manual acceptance before G2
+## Current handoff — G1–G5 implemented; G6 next
 
 Read [plan 31](31_GAMEPLAY_AND_WAVE_COMPLETION_PLAN.md) first and the [G0 baseline with logs](qa/gameplay-baseline-2026-09-05/README.md) second. The current task is gameplay and Wave completion. The historical VFX-first recommendations and knockdown exclusion below do not override this plan.
 
 - Four normal players: Wombat, Discount Wizard, Budget Barbarian and Mara Breach. Normal Duel enemies: Pigeon and Wizard. Buster Bulldog and Reference Fighter are Gym-only prototypes, not normal Character Select options.
-- Local checks on codebase `d676906`: Typecheck, **55/55 tests**, production build, **6/6** character sheets and VFX QA **6/6 + 5/5 + 4/4** pass. Character QA includes a prototype and is not a roster count or visual acceptance.
-- Junkyard Run has three zones and three groups (five enemies total), now with a tested Director, lifecycle-safe pressure budgets, safe visible entry and phase-aware mana. No mana regeneration during safe travel, transition or results.
-- Current checks: 66/66 tests, Typecheck, build and 235 scripted Phaser assertions at each of three viewport sizes. See the [G1 report](qa/g1-runtime-2026-09-05/README.md); the 55-test line above is the historical G0 baseline.
+- The current code passes Typecheck, **89/89 tests**, production build, the current G1–G5 browser suites, **6/6** character-sheet gates and VFX QA **6/6 + 5/5 + 4/4**. Character QA includes a prototype and is not a roster count or visual acceptance.
+- Junkyard Run has three zones and seven role-based encounters with a tested Director, safe visible entry, floor bounds, group camera framing, health rewards and phase-aware mana. No mana regeneration during safe travel, transition or results.
+- G4 supplies Guard/Evade, anti-stunlock and the complete Knockdown/Wake-up lifecycle. G5 supplies Run, four Dash Attacks, four three-step Basic-Chains and steerable Air Bonk. See the [G5 report](qa/g5-runtime-2026-09-09/README.md).
 - Mobile follow-up: corrected FIT resizing, full landscape width, canvas sharpening and four action buttons enlarged by 10% with matching separate touch circles. Rotation and actual touch events pass browser emulation; [mobile evidence](qa/mobile-2026-09-05/README.md). Physical-device acceptance remains open.
-- Next: manual G1 pressure/readability acceptance, then G2 roles and G3 seven encounters; no new player fighter or arena during G0–G9.
+- Next: G6 adds at most two small Stage interactions, one deterministic pickup/reward moment, a mechanical comedy beat and the Encounter-5 Midboss. No new player fighter or arena during G0–G9.
 - Full interactive runs, balance, current Pages verification and two real-device classes remain open. Use the [run template](qa/gameplay-run-template.md); do not mark manual gates passed from unit tests.
 
 Everything below is retained as dated implementation history and system context. Older counts, roster descriptions and “next” lists are superseded by this update.

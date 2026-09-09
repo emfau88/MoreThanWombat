@@ -82,7 +82,10 @@ export function getCombatGymMoves(fighterId: FighterId): CombatGymMove[] {
     }
   };
 
-  addMove(definition.attacks.basic, 'basic');
+  for (const attackId of definition.attacks.basicChain ?? [definition.attacks.basic]) {
+    addMove(attackId, 'basic');
+  }
+  addMove(definition.attacks.dashAttack, 'basic');
   addMove(definition.attacks.special, 'special');
   if (fighterId === 'discount_wizard') {
     addMove('discount_miscast', 'special');

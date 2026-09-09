@@ -27,12 +27,16 @@ import {
   isIncapacitatedPhase,
   type PlayerDefenseAction,
 } from './DefenseContract';
+import { canBufferBasicChain, canCancelIntoBasicChain } from './BasicChainContract';
+import { PLAYER_MOVEMENT_CONTRACT, advanceRunCharge, shouldKeepRunning } from './MovementContract';
 
 export type FighterFacing = 'left' | 'right';
 export type FighterState =
   | 'idle'
   | 'walk'
+  | 'run'
   | 'attack'
+  | 'dashAttack'
   | 'special'
   | 'ultimate'
   | 'guard'
@@ -74,6 +78,8 @@ export type FighterDefinition = {
   pushboxProfiles?: FighterBoxProfiles;
   attacks: {
     basic: string;
+    basicChain?: readonly [string, string, string];
+    dashAttack?: string;
     special?: string;
     ultimate?: string;
   };
@@ -139,6 +145,10 @@ export class Fighter {
   private readonly baseFillColor: number;
   private readonly definition: FighterDefinition;
   private currentAttack: AttackDefinition | null = null;
+  private currentAttackKind: 'basic' | 'special' | 'ultimate' | 'air' | null = null;
+  private basicChainIndex = -1;
+  private queuedBasicChain = false;
+  private pendingAttackStart: AttackDefinition | null = null;
   private attackElapsedMs = 0;
   private attackPhase: AttackPhase = 'none';
   private hitstunRemainingMs = 0;
@@ -164,6 +174,7 @@ export class Fighter {
   private defenseDirectionY = 0;
   private knockdownPhaseRemainingMs = 0;
   private wakeUpElapsedMs = 0;
+  private runChargeMs = 0;
 
   constructor(
     scene: Phaser.Scene,
@@ -315,20 +326,23 @@ export class Fighter {
 
     if (this.currentAttack) {
       if (this.currentAttack.canMoveDuringAttack) {
-        this.applyMovementInput(moveX, moveY, deltaSeconds, bounds, false);
+        const movementScale = this.state === 'airAttack' ? PLAYER_MOVEMENT_CONTRACT.airControlMultiplier : 1;
+        this.applyMovementInput(moveX, moveY, deltaSeconds, bounds, false, movementScale);
       }
 
       this.updateAttack(deltaSeconds, bounds);
       return;
     }
 
-    this.applyMovementInput(moveX, moveY, deltaSeconds, bounds, true);
+    this.applyLocomotionInput(moveX, moveY, deltaSeconds, bounds);
   }
 
   tryStartAttack(kind: 'basic' | 'special' | 'ultimate'): boolean {
     const attackId =
       kind === 'basic'
-        ? this.definition.attacks.basic
+        ? this.state === 'run' && this.definition.attacks.dashAttack
+          ? this.definition.attacks.dashAttack
+          : this.definition.attacks.basic
         : kind === 'special'
           ? this.definition.attacks.special
           : this.definition.attacks.ultimate;
@@ -371,11 +385,19 @@ export class Fighter {
 
     this.payAttackCost(attack);
     this.currentAttack = attack;
+    this.currentAttackKind = kind;
     this.attackElapsedMs = 0;
     this.attackPhase = 'startup';
     this.attackInstanceId += 1;
     this.hitTargets.clear();
-    this.state = kind === 'basic' ? 'attack' : kind === 'special' ? 'special' : 'ultimate';
+    this.queuedBasicChain = false;
+    const chain = this.definition.attacks.basicChain;
+    this.basicChainIndex = kind === 'basic' && chain ? chain.indexOf(attackId) : -1;
+    this.pendingAttackStart = attack;
+    this.runChargeMs = 0;
+    this.state = attackId === this.definition.attacks.dashAttack
+      ? 'dashAttack'
+      : kind === 'basic' ? 'attack' : kind === 'special' ? 'special' : 'ultimate';
     this.updateVisuals();
     return true;
   }
@@ -389,6 +411,7 @@ export class Fighter {
     this.velocityZ = Fighter.JUMP_VELOCITY_Z;
     this.isGrounded = false;
     this.hasUsedAirAttack = false;
+    this.runChargeMs = 0;
     this.state = 'jump';
     this.updateVisuals();
     return true;
@@ -420,10 +443,14 @@ export class Fighter {
     }
 
     this.currentAttack = attack;
+    this.currentAttackKind = 'air';
     this.attackElapsedMs = 0;
     this.attackPhase = 'startup';
     this.attackInstanceId += 1;
     this.hitTargets.clear();
+    this.queuedBasicChain = false;
+    this.basicChainIndex = -1;
+    this.pendingAttackStart = attack;
     this.hasUsedAirAttack = true;
     this.state = 'airAttack';
     this.updateVisuals();
@@ -434,12 +461,37 @@ export class Fighter {
     return this.currentAttack;
   }
 
+  tryBufferBasicChain(): boolean {
+    const chain = this.definition.attacks.basicChain;
+    if (!chain || this.currentAttackKind !== 'basic' || !this.currentAttack || this.queuedBasicChain
+      || this.basicChainIndex < 0 || this.basicChainIndex >= chain.length - 1
+      || !canBufferBasicChain(this.currentAttack, this.attackElapsedMs)) {
+      return false;
+    }
+    this.queuedBasicChain = true;
+    return true;
+  }
+
+  consumePendingAttackStart(): AttackDefinition | null {
+    const attack = this.pendingAttackStart;
+    this.pendingAttackStart = null;
+    return attack;
+  }
+
+  getBasicChainStep(): number {
+    return this.basicChainIndex >= 0 ? this.basicChainIndex + 1 : 0;
+  }
+
   cancelAttack(): void {
     if (!this.currentAttack) return;
     this.currentAttack = null;
+    this.currentAttackKind = null;
     this.attackElapsedMs = 0;
     this.attackPhase = 'none';
     this.hitTargets.clear();
+    this.queuedBasicChain = false;
+    this.basicChainIndex = -1;
+    this.pendingAttackStart = null;
     if (this.state !== 'dead' && this.state !== 'hitstun' && !isIncapacitatedPhase(this.state)) {
       this.state = this.isGrounded ? 'idle' : 'fall';
     }
@@ -594,9 +646,14 @@ export class Fighter {
 
     this.hp = Math.max(0, this.hp - hit.damage);
     this.currentAttack = null;
+    this.currentAttackKind = null;
     this.attackElapsedMs = 0;
     this.attackPhase = 'none';
     this.hitTargets.clear();
+    this.queuedBasicChain = false;
+    this.basicChainIndex = -1;
+    this.pendingAttackStart = null;
+    this.runChargeMs = 0;
     this.landingRemainingMs = 0;
     this.defenseAction = null;
     this.defenseElapsedMs = 0;
@@ -638,9 +695,13 @@ export class Fighter {
     this.hp = Math.max(0, this.hp - damage);
     if (this.hp <= 0) {
       this.currentAttack = null;
+      this.currentAttackKind = null;
       this.attackElapsedMs = 0;
       this.attackPhase = 'none';
       this.hitTargets.clear();
+      this.queuedBasicChain = false;
+      this.basicChainIndex = -1;
+      this.pendingAttackStart = null;
       this.z = 0;
       this.velocityZ = 0;
       this.isGrounded = true;
@@ -697,6 +758,10 @@ export class Fighter {
   setDefensePhaseForDebug(phase: 'guard' | 'evade' | 'launched' | 'knockdown' | 'wake_up'): void {
     this.state = 'idle';
     this.currentAttack = null;
+    this.currentAttackKind = null;
+    this.queuedBasicChain = false;
+    this.basicChainIndex = -1;
+    this.pendingAttackStart = null;
     this.hitstunRemainingMs = 0;
     this.defenseCooldownMs = 0;
     if (phase === 'guard') {
@@ -741,6 +806,7 @@ export class Fighter {
     deltaSeconds: number,
     bounds: FighterBounds,
     updateGroundState: boolean,
+    speedMultiplier = 1,
   ): void {
     const inputVector = new Phaser.Math.Vector2(moveX, moveY);
 
@@ -752,8 +818,8 @@ export class Fighter {
       this.facing = inputVector.x < 0 ? 'left' : 'right';
     }
 
-    this.x = Phaser.Math.Clamp(this.x + inputVector.x * this.moveSpeed * deltaSeconds, bounds.minX, bounds.maxX);
-    this.y = Phaser.Math.Clamp(this.y + inputVector.y * this.moveSpeed * deltaSeconds, bounds.minY, bounds.maxY);
+    this.x = Phaser.Math.Clamp(this.x + inputVector.x * this.moveSpeed * speedMultiplier * deltaSeconds, bounds.minX, bounds.maxX);
+    this.y = Phaser.Math.Clamp(this.y + inputVector.y * this.moveSpeed * speedMultiplier * deltaSeconds, bounds.minY, bounds.maxY);
 
     if (updateGroundState && this.isGrounded) {
       this.state = inputVector.lengthSq() > 0 ? 'walk' : 'idle';
@@ -762,6 +828,33 @@ export class Fighter {
     if (updateGroundState) {
       this.updateVisuals();
     }
+  }
+
+  private applyLocomotionInput(moveX: number, moveY: number, deltaSeconds: number, bounds: FighterBounds): void {
+    if (!this.isGrounded) {
+      this.runChargeMs = 0;
+      this.applyMovementInput(moveX, moveY, deltaSeconds, bounds, false,
+        PLAYER_MOVEMENT_CONTRACT.airControlMultiplier);
+      this.updateVisuals();
+      return;
+    }
+
+    if (this.faction !== 'player') {
+      this.runChargeMs = 0;
+      this.applyMovementInput(moveX, moveY, deltaSeconds, bounds, true);
+      return;
+    }
+
+    const wasRunning = this.state === 'run';
+    this.runChargeMs = advanceRunCharge(this.runChargeMs, moveX, moveY, deltaSeconds * 1000);
+    const isRunning = (wasRunning && shouldKeepRunning(moveX, moveY))
+      || this.runChargeMs >= PLAYER_MOVEMENT_CONTRACT.runActivationMs;
+    this.applyMovementInput(moveX, moveY, deltaSeconds, bounds, false,
+      isRunning ? PLAYER_MOVEMENT_CONTRACT.runSpeedMultiplier : 1);
+    const hasInput = Math.hypot(moveX, moveY) > 0;
+    this.state = isRunning && hasInput ? 'run' : hasInput ? 'walk' : 'idle';
+    if (!hasInput) this.runChargeMs = 0;
+    this.updateVisuals();
   }
 
   private updateVerticalMotion(deltaSeconds: number): void {
@@ -852,7 +945,7 @@ export class Fighter {
 
   private canStartGroundAction(): boolean {
     return this.isGrounded && !this.currentAttack && this.landingRemainingMs <= 0
-      && (this.state === 'idle' || this.state === 'walk');
+       && (this.state === 'idle' || this.state === 'walk' || this.state === 'run');
   }
 
   private updateAttack(deltaSeconds: number, bounds: FighterBounds): void {
@@ -863,18 +956,52 @@ export class Fighter {
     }
 
     this.applyKnockback(deltaSeconds, bounds);
+    if (attack.forwardTravelSpeed && this.attackElapsedMs < attack.startupMs + attack.activeMs) {
+      const direction = this.facing === 'right' ? 1 : -1;
+      this.x = Phaser.Math.Clamp(this.x + direction * attack.forwardTravelSpeed * deltaSeconds,
+        bounds.minX, bounds.maxX);
+    }
     this.attackElapsedMs += deltaSeconds * 1000;
 
     this.attackPhase = getAttackPhaseAtElapsed(attack, this.attackElapsedMs);
 
+    if (this.queuedBasicChain
+      && canCancelIntoBasicChain(attack, this.attackElapsedMs, this.hitTargets.size > 0)
+      && this.startNextBasicChainStep()) {
+      this.updateVisuals();
+      return;
+    }
+
     if (this.attackPhase === 'none') {
       this.currentAttack = null;
+      this.currentAttackKind = null;
       this.attackElapsedMs = 0;
       this.hitTargets.clear();
+      this.queuedBasicChain = false;
+      this.basicChainIndex = -1;
       this.state = this.isGrounded ? 'idle' : 'fall';
     }
 
     this.updateVisuals();
+  }
+
+  private startNextBasicChainStep(): boolean {
+    const chain = this.definition.attacks.basicChain;
+    const nextIndex = this.basicChainIndex + 1;
+    const nextAttack = chain && nextIndex >= 1 ? attacksById[chain[nextIndex]] : undefined;
+    if (!nextAttack || !this.canPayAttackCost(nextAttack)) return false;
+    this.payAttackCost(nextAttack);
+    this.currentAttack = nextAttack;
+    this.currentAttackKind = 'basic';
+    this.attackElapsedMs = 0;
+    this.attackPhase = 'startup';
+    this.attackInstanceId += 1;
+    this.hitTargets.clear();
+    this.queuedBasicChain = false;
+    this.basicChainIndex = nextIndex;
+    this.pendingAttackStart = nextAttack;
+    this.state = 'attack';
+    return true;
   }
 
   private applyKnockback(deltaSeconds: number, bounds: FighterBounds): void {
@@ -918,15 +1045,19 @@ export class Fighter {
     this.roleCueText.setVisible(this.roleCueText.text.length > 0 && this.state !== 'dead');
     const stateCue = this.state === 'guard' ? 'GUARD'
       : this.state === 'evade' ? 'EVADE'
+      : this.state === 'run' ? 'RUN'
+      : this.state === 'dashAttack' ? 'DASH HIT'
+      : this.state === 'attack' && this.basicChainIndex > 0 ? `CHAIN ${this.basicChainIndex + 1}`
         : this.state === 'wake_up' && this.getCombatResponse() === 'invulnerable' ? 'WAKE SAFE'
-          : this.state === 'launched' ? 'LAUNCHED'
-            : this.state === 'grounded' ? 'DOWN' : '';
+        : this.state === 'launched' ? 'LAUNCHED'
+        : this.state === 'grounded' ? 'DOWN' : '';
     this.stateCueText.setText(stateCue).setVisible(stateCue.length > 0 && this.state !== 'dead');
     this.syncSpriteAnimation();
     this.syncDebugBoxes();
     const suffix = this.statusNote ? `\n${this.statusNote}` : '';
     const profileLine = `hurt ${this.getHurtboxProfileId()} | hit ${this.getActiveHitboxProfileId()}`;
-    this.debugLabel.setText(`${this.label}\n${this.state} ${this.attackPhase}\n${profileLine}\nHP ${this.hp} MP ${Math.floor(this.mana)}${suffix}`);
+    const chainLine = this.basicChainIndex >= 0 ? ` | chain ${this.basicChainIndex + 1}${this.queuedBasicChain ? ' queued' : ''}` : '';
+    this.debugLabel.setText(`${this.label}\n${this.state} ${this.attackPhase}${chainLine}\n${profileLine}\nHP ${this.hp} MP ${Math.floor(this.mana)}${suffix}`);
     applyDepthSort(this.container, this.y);
   }
 
@@ -1009,6 +1140,7 @@ export class Fighter {
 
     if (this.state === 'guard') return 0x4aa8c8;
     if (this.state === 'evade' || this.state === 'wake_up') return 0x83d8ed;
+    if (this.state === 'run' || this.state === 'dashAttack') return 0xe7a84d;
     if (this.state === 'launched' || this.state === 'knockdown' || this.state === 'grounded') return 0x7d8791;
 
     if (this.roleTint !== null) {
@@ -1040,6 +1172,7 @@ export class Fighter {
     }
 
     this.sprite.setFlipX(this.facing === 'left');
+    this.sprite.anims.timeScale = this.state === 'run' ? 1.35 : 1;
     const attackScale = this.currentAttack ? this.definition.sprite.attackScaleOverrides?.[this.currentAttack.id] ?? 1 : 1;
     const frameScale = this.getCurrentSpriteFrameScale();
     const spriteScale = this.definition.sprite.scale * attackScale * frameScale * (this.state === 'airAttack' ? 1.06 : 1);
@@ -1059,6 +1192,8 @@ export class Fighter {
     const airAttackFallbackKey = this.currentAttack?.id === 'air_bonk' ? this.definition.sprite.animations.attack : undefined;
     const defensiveFallback = this.state === 'guard' ? this.definition.sprite.animations.idle
       : this.state === 'evade' ? this.definition.sprite.animations.walk
+        : this.state === 'run' ? this.definition.sprite.animations.walk
+          : this.state === 'dashAttack' ? this.definition.sprite.animations.attack
         : this.state === 'launched' ? this.definition.sprite.animations.hitstun
           : this.state === 'knockdown' || this.state === 'grounded' ? this.definition.sprite.animations.dead
             : this.state === 'wake_up' ? this.definition.sprite.animations.hitstun : undefined;

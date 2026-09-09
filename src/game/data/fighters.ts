@@ -75,6 +75,8 @@ export const wombatDefinition: FighterDefinition = {
   ),
   attacks: {
     basic: 'wombat_jab',
+    basicChain: ['wombat_jab', 'wombat_paw_backhand', 'wombat_headbutt_finisher'],
+    dashAttack: 'wombat_rushing_bonk',
     special: 'wombat_belly_slam',
     ultimate: 'wombat_earthshaker',
   },
@@ -91,6 +93,9 @@ export const wombatDefinition: FighterDefinition = {
     },
     attackAnimations: {
       air_bonk: 'wombat-air-bonk',
+      wombat_paw_backhand: 'wombat-jab',
+      wombat_headbutt_finisher: 'wombat-belly-slam',
+      wombat_rushing_bonk: 'wombat-belly-slam',
       wombat_earthshaker: 'wombat-belly-slam',
     },
   },
@@ -169,6 +174,8 @@ export const discountWizardDefinition: FighterDefinition = {
   ),
   attacks: {
     basic: 'discount_wand_smack',
+    basicChain: ['discount_wand_smack', 'discount_wand_rebound', 'discount_receipt_stamp'],
+    dashAttack: 'discount_broom_bump',
     special: 'discount_fireball_cast',
     ultimate: 'discount_clearance_orb',
   },
@@ -185,6 +192,9 @@ export const discountWizardDefinition: FighterDefinition = {
     },
     attackAnimations: {
       discount_wand_smack: 'discount-wizard-fireball',
+      discount_wand_rebound: 'discount-wizard-miscast',
+      discount_receipt_stamp: 'discount-wizard-fireball',
+      discount_broom_bump: 'discount-wizard-miscast',
       discount_fireball_cast: 'discount-wizard-fireball',
       discount_miscast: 'discount-wizard-miscast',
       discount_clearance_orb: 'discount-wizard-fireball',
@@ -221,6 +231,8 @@ export const budgetBarbarianDefinition: FighterDefinition = {
   ),
   attacks: {
     basic: 'budget_cracked_axe_swing',
+    basicChain: ['budget_cracked_axe_swing', 'budget_axe_backstroke', 'budget_handle_drop'],
+    dashAttack: 'budget_shoulder_charge',
     special: 'budget_tiny_rage',
     ultimate: 'budget_axe_rain',
   },
@@ -240,6 +252,9 @@ export const budgetBarbarianDefinition: FighterDefinition = {
     },
     attackAnimations: {
       air_bonk: 'budget-barbarian-air-bonk',
+      budget_axe_backstroke: 'budget-barbarian-axe-swing',
+      budget_handle_drop: 'budget-barbarian-tiny-rage',
+      budget_shoulder_charge: 'budget-barbarian-tiny-rage',
       budget_axe_rain: 'budget-barbarian-tiny-rage',
     },
   },
@@ -274,6 +289,8 @@ export const maraBreachDefinition: FighterDefinition = {
   ),
   attacks: {
     basic: 'mara_gate_kick',
+    basicChain: ['mara_gate_kick', 'mara_elbow_check', 'mara_boot_out'],
+    dashAttack: 'mara_gate_crasher',
     special: 'mara_breach_step',
     ultimate: 'mara_red_line_barrage',
   },
@@ -293,6 +310,9 @@ export const maraBreachDefinition: FighterDefinition = {
     },
     attackAnimations: {
       air_bonk: 'mara-breach-air-kick',
+      mara_elbow_check: 'mara-breach-gate-kick',
+      mara_boot_out: 'mara-breach-step',
+      mara_gate_crasher: 'mara-breach-step',
       mara_red_line_barrage: 'mara-breach-red-line-barrage',
     },
   },

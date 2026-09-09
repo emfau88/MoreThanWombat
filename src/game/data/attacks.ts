@@ -3,6 +3,13 @@ import type { AttackHitboxProfile, LocalBox } from '../combat/BoxProfiles';
 
 export type HitReaction = 'hitstun' | 'knockdown' | 'launch';
 
+export type BasicChainWindow = Readonly<{
+  inputOpenMs: number;
+  inputCloseMs: number;
+  hitCancelMs: number;
+  whiffCancelMs: number;
+}>;
+
 export type AttackDefinition = {
   id: string;
   label: string;
@@ -29,6 +36,8 @@ export type AttackDefinition = {
   };
   canMoveDuringAttack?: boolean;
   canTurnDuringAttack?: boolean;
+  forwardTravelSpeed?: number;
+  basicChainWindow?: BasicChainWindow;
   manaCost?: number;
   projectileId?: string;
   knockbackMode?: 'facing' | 'radial';
@@ -77,6 +86,7 @@ export const wombatJab: AttackDefinition = {
     ],
   },
   timeline: { feedbackClass: 'light' },
+  basicChainWindow: { inputOpenMs: 125, inputCloseMs: 300, hitCancelMs: 215, whiffCancelMs: 290 },
 };
 
 export const wombatBellySlam: AttackDefinition = {
@@ -193,6 +203,7 @@ export const discountWandSmack: AttackDefinition = {
     height: 28,
   },
   timeline: { feedbackClass: 'light', impactSparkStyle: 'magic', impactSound: 'magic' },
+  basicChainWindow: { inputOpenMs: 130, inputCloseMs: 325, hitCancelMs: 225, whiffCancelMs: 315 },
 };
 
 export const discountFireballCast: AttackDefinition = {
@@ -289,6 +300,7 @@ export const budgetCrackedAxeSwing: AttackDefinition = {
     height: 32,
   },
   timeline: { feedbackClass: 'medium' },
+  basicChainWindow: { inputOpenMs: 180, inputCloseMs: 455, hitCancelMs: 315, whiffCancelMs: 445 },
 };
 
 export const budgetTinyRage: AttackDefinition = {
@@ -369,6 +381,7 @@ export const maraGateKick: AttackDefinition = {
     ],
   },
   timeline: { feedbackClass: 'light' },
+  basicChainWindow: { inputOpenMs: 125, inputCloseMs: 325, hitCancelMs: 220, whiffCancelMs: 315 },
 };
 
 export const maraBreachStep: AttackDefinition = {
@@ -438,6 +451,122 @@ export const maraRedLineBarrage: AttackDefinition = {
     defenderFlashMs: 62,
     hapticMs: 22,
   },
+};
+
+export const wombatPawBackhand: AttackDefinition = {
+  id: 'wombat_paw_backhand', label: 'Paw Backhand',
+  startupMs: 105, activeMs: 85, recoveryMs: 185,
+  damage: 9, hitstunMs: 205, knockbackX: 145, knockbackY: -18,
+  hitbox: { offsetX: 22, offsetY: -58, width: 58, height: 30 },
+  forwardTravelSpeed: 54,
+  basicChainWindow: { inputOpenMs: 145, inputCloseMs: 335, hitCancelMs: 235, whiffCancelMs: 325 },
+  timeline: { feedbackClass: 'light' },
+};
+
+export const wombatHeadbuttFinisher: AttackDefinition = {
+  id: 'wombat_headbutt_finisher', label: 'Warranty Headbutt',
+  startupMs: 145, activeMs: 105, recoveryMs: 320,
+  damage: 14, hitstunMs: 330, knockbackX: 255, knockbackY: 42,
+  hitReaction: 'knockdown',
+  hitbox: { offsetX: 24, offsetY: -62, width: 70, height: 40 },
+  forwardTravelSpeed: 78,
+  timeline: { feedbackClass: 'medium' },
+};
+
+export const wombatRushingBonk: AttackDefinition = {
+  id: 'wombat_rushing_bonk', label: 'Commuter Bonk',
+  startupMs: 115, activeMs: 120, recoveryMs: 300,
+  damage: 12, hitstunMs: 260, knockbackX: 225, knockbackY: 30,
+  hitbox: { offsetX: 26, offsetY: -62, width: 76, height: 42 },
+  forwardTravelSpeed: 315, canTurnDuringAttack: false,
+  timeline: { feedbackClass: 'medium' },
+};
+
+export const discountWandRebound: AttackDefinition = {
+  id: 'discount_wand_rebound', label: 'Wand Rebound',
+  startupMs: 105, activeMs: 80, recoveryMs: 190,
+  damage: 7, hitstunMs: 165, knockbackX: 115, knockbackY: -15,
+  hitbox: { offsetX: 20, offsetY: -64, width: 56, height: 34 },
+  forwardTravelSpeed: 42,
+  basicChainWindow: { inputOpenMs: 140, inputCloseMs: 335, hitCancelMs: 225, whiffCancelMs: 325 },
+  timeline: { feedbackClass: 'light', impactSparkStyle: 'magic', impactSound: 'magic' },
+};
+
+export const discountReceiptStamp: AttackDefinition = {
+  id: 'discount_receipt_stamp', label: 'Receipt Stamp',
+  startupMs: 145, activeMs: 100, recoveryMs: 330,
+  damage: 11, hitstunMs: 285, knockbackX: 225, knockbackY: 36,
+  hitReaction: 'knockdown',
+  hitbox: { offsetX: 20, offsetY: -60, width: 74, height: 42 },
+  forwardTravelSpeed: 60,
+  timeline: { feedbackClass: 'medium', impactSparkStyle: 'magic', impactSound: 'magic' },
+};
+
+export const discountBroomBump: AttackDefinition = {
+  id: 'discount_broom_bump', label: 'Clearance Broom Bump',
+  startupMs: 125, activeMs: 110, recoveryMs: 315,
+  damage: 10, hitstunMs: 245, knockbackX: 205, knockbackY: 26,
+  hitbox: { offsetX: 24, offsetY: -62, width: 80, height: 40 },
+  forwardTravelSpeed: 330, canTurnDuringAttack: false,
+  timeline: { feedbackClass: 'medium', impactSparkStyle: 'magic', impactSound: 'magic' },
+};
+
+export const budgetAxeBackstroke: AttackDefinition = {
+  id: 'budget_axe_backstroke', label: 'Axe Backstroke',
+  startupMs: 165, activeMs: 110, recoveryMs: 260,
+  damage: 13, hitstunMs: 240, knockbackX: 170, knockbackY: -20,
+  hitbox: { offsetX: 16, offsetY: -68, width: 82, height: 42 },
+  forwardTravelSpeed: 38,
+  basicChainWindow: { inputOpenMs: 210, inputCloseMs: 485, hitCancelMs: 330, whiffCancelMs: 475 },
+  timeline: { feedbackClass: 'medium' },
+};
+
+export const budgetHandleDrop: AttackDefinition = {
+  id: 'budget_handle_drop', label: 'Handle With Care',
+  startupMs: 205, activeMs: 125, recoveryMs: 390,
+  damage: 18, hitstunMs: 385, knockbackX: 290, knockbackY: 54,
+  hitReaction: 'knockdown',
+  hitbox: { offsetX: 18, offsetY: -72, width: 92, height: 50 },
+  forwardTravelSpeed: 52,
+  timeline: { feedbackClass: 'heavy' },
+};
+
+export const budgetShoulderCharge: AttackDefinition = {
+  id: 'budget_shoulder_charge', label: 'Budget Shoulder Delivery',
+  startupMs: 150, activeMs: 130, recoveryMs: 370,
+  damage: 15, hitstunMs: 315, knockbackX: 275, knockbackY: 42,
+  hitbox: { offsetX: 22, offsetY: -66, width: 92, height: 46 },
+  forwardTravelSpeed: 295, canTurnDuringAttack: false,
+  timeline: { feedbackClass: 'heavy' },
+};
+
+export const maraElbowCheck: AttackDefinition = {
+  id: 'mara_elbow_check', label: 'Elbow Check',
+  startupMs: 90, activeMs: 75, recoveryMs: 175,
+  damage: 9, hitstunMs: 205, knockbackX: 150, knockbackY: -16,
+  hitbox: { offsetX: 20, offsetY: -62, width: 62, height: 32 },
+  forwardTravelSpeed: 82,
+  basicChainWindow: { inputOpenMs: 115, inputCloseMs: 300, hitCancelMs: 205, whiffCancelMs: 290 },
+  timeline: { feedbackClass: 'light' },
+};
+
+export const maraBootOut: AttackDefinition = {
+  id: 'mara_boot_out', label: 'Emergency Exit Boot',
+  startupMs: 125, activeMs: 95, recoveryMs: 285,
+  damage: 14, hitstunMs: 325, knockbackX: 270, knockbackY: 44,
+  hitReaction: 'knockdown',
+  hitbox: { offsetX: 26, offsetY: -64, width: 88, height: 38 },
+  forwardTravelSpeed: 108,
+  timeline: { feedbackClass: 'medium' },
+};
+
+export const maraGateCrasher: AttackDefinition = {
+  id: 'mara_gate_crasher', label: 'Express Gate Crasher',
+  startupMs: 90, activeMs: 120, recoveryMs: 275,
+  damage: 12, hitstunMs: 275, knockbackX: 245, knockbackY: 34,
+  hitbox: { offsetX: 24, offsetY: -64, width: 96, height: 40 },
+  forwardTravelSpeed: 380, canTurnDuringAttack: false,
+  timeline: { feedbackClass: 'medium' },
 };
 
 export const busterUnderbiteJab: AttackDefinition = {
@@ -589,7 +718,8 @@ export const airBonk: AttackDefinition = {
       },
     ],
   },
-  canTurnDuringAttack: false,
+  canMoveDuringAttack: true,
+  canTurnDuringAttack: true,
   timeline: { feedbackClass: 'light' },
 };
 
@@ -608,6 +738,18 @@ export const attacksById: Record<string, AttackDefinition> = {
   [maraGateKick.id]: maraGateKick,
   [maraBreachStep.id]: maraBreachStep,
   [maraRedLineBarrage.id]: maraRedLineBarrage,
+  [wombatPawBackhand.id]: wombatPawBackhand,
+  [wombatHeadbuttFinisher.id]: wombatHeadbuttFinisher,
+  [wombatRushingBonk.id]: wombatRushingBonk,
+  [discountWandRebound.id]: discountWandRebound,
+  [discountReceiptStamp.id]: discountReceiptStamp,
+  [discountBroomBump.id]: discountBroomBump,
+  [budgetAxeBackstroke.id]: budgetAxeBackstroke,
+  [budgetHandleDrop.id]: budgetHandleDrop,
+  [budgetShoulderCharge.id]: budgetShoulderCharge,
+  [maraElbowCheck.id]: maraElbowCheck,
+  [maraBootOut.id]: maraBootOut,
+  [maraGateCrasher.id]: maraGateCrasher,
   [busterUnderbiteJab.id]: busterUnderbiteJab,
   [busterBulldogBash.id]: busterBulldogBash,
   [busterUnderbiteBulldozer.id]: busterUnderbiteBulldozer,

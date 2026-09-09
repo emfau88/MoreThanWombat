@@ -1,13 +1,14 @@
 # 16 - Current Roadmap
 
-## Current execution update — 2026-09-08
+## Current execution update — 2026-09-09
 
-[Plan 31](31_GAMEPLAY_AND_WAVE_COMPLETION_PLAN.md) owns the gameplay execution order. G0 is complete; **G1–G4** are implemented and technically verified. Their combined manual gameplay acceptance remains open before G5. [G4 evidence and open gates](qa/g4-runtime-2026-09-08/README.md) are the current status reference.
+[Plan 31](31_GAMEPLAY_AND_WAVE_COMPLETION_PLAN.md) owns the gameplay execution order. G0 is complete; **G1–G5** are implemented and technically verified. Their combined manual gameplay, balance and real-device acceptance remains open. G6 is the next implementation bulk. [G5 evidence and open gates](qa/g5-runtime-2026-09-09/README.md) are the current status reference.
 
 - Normal players: Wombat, Discount Wizard, Budget Barbarian, Mara Breach. Buster Bulldog and Reference Fighter are Gym-only prototypes.
-- Typecheck, **84/84 tests** and build pass locally; G0 records six character-sheet hard gates and all three VFX-QA manifests passing.
+- Typecheck, **89/89 tests** and build pass locally; G0 records six character-sheet hard gates and all three VFX-QA manifests passing.
 - Junkyard Run has three zones and seven role-based encounters, now orchestrated by the Director with per-spawn entry direction/timing, same-zone sub-waves, safe zone travel, pressure budgets and phase-aware mana. Fighters stay on the painted floor; deterministic zone rewards heal the player; transition cards and group framing improve area changes.
-- Guard, directional Evade, Guard Break, Launch, Knockdown, Grounded, protected Wake-up and Anti-Stunlock are integrated across combat, G2 roles, Gym, keyboard and mobile input. Manual G1–G4 acceptance and bosses remain future work.
+- Guard, directional Evade, Guard Break, Launch, Knockdown, Grounded, protected Wake-up and Anti-Stunlock are integrated across combat, G2 roles, Gym, keyboard and mobile input. Combined manual G1–G5 acceptance and bosses remain future work.
+- Run activates from one sustained full direction on keyboard or touch. Every shippable fighter has one committed Dash Attack and a three-step Basic Chain with one queued follow-up, earlier hit continuation, later whiff continuation and a knockdown finisher. Air Bonk keeps its jump arc and repeated mid-air steering.
 - Scripted Phaser regression checks pass. Full-run gameplay acceptance, balance and two real-device classes remain open.
 - G0–G9 adds no player fighter or arena. Final art follows mechanical acceptance; broad architecture hardening remains G10.
 

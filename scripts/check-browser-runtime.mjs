@@ -131,10 +131,31 @@ try {
       await sleep(100);
       assert.deepEqual(await evaluate('window.__QA_ACTIONS__'), [`${action}Pressed`], `${action}: edge touch should trigger exactly one matching action`);
     }
-    await send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [await controlPoint('base')] });
-    await send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [await controlPoint('base', 45)] });
-    await sleep(150);
+    await evaluate(`(() => {
+      const battle = window.__MORE_THAN_WOMBAT_GAME__.scene.getScene('BattleScene');
+      const player = battle.player;
+      player.cancelAttack();
+      player.z = 0;
+      player.velocityZ = 0;
+      player.isGrounded = true;
+      player.state = 'idle';
+      for (const enemy of battle.waveEnemies) {
+        enemy.faction = 'player';
+      }
+    })()`);
+    const joystickStart = await controlPoint('base');
+    const joystickRight = await controlPoint('base', 45);
+    await send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [joystickStart] });
+    await send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [joystickRight] });
+    await sleep(300);
     assert.ok(await evaluate('window.__MORE_THAN_WOMBAT_GAME__.scene.getScene("BattleScene").mobileControls.touchState.moveX > 0'), 'Rotated joystick misses touch');
+    assert.equal(await evaluate('window.__MORE_THAN_WOMBAT_GAME__.scene.getScene("BattleScene").player.state'), 'run',
+      'Sustained full joystick input should start Run');
+    const attackTouch = { ...(await controlPoint('attackButton')), id: 2 };
+    await send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [joystickRight, attackTouch] });
+    await sleep(80);
+    assert.equal(await evaluate('window.__MORE_THAN_WOMBAT_GAME__.scene.getScene("BattleScene").player.state'), 'dashAttack',
+      'ATK while holding the joystick should start Dash Attack');
     await send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
     await sleep(100);
     assert.equal(await evaluate('window.__MORE_THAN_WOMBAT_GAME__.scene.getScene("BattleScene").mobileControls.touchState.moveX'), 0, 'Joystick sticks after release');
@@ -143,7 +164,7 @@ try {
     await sleep(400);
     assert.ok(await evaluate('window.__MORE_THAN_WOMBAT_GAME__.scene.isActive("MainMenuScene")'), 'Menu touch misses after rotation');
     assert.equal(errors.length, 0, 'Uncaught browser errors');
-    const report = 'PASS — mobile layout, rotation, aspect ratio, preserved Wave state, five separate action edge touches, joystick press/release and menu touch';
+    const report = 'PASS — mobile layout, rotation, aspect ratio, preserved Wave state, five separate action edge touches, joystick Run, touch Dash Attack, release and menu touch';
     await writeFile(join(outputDir, 'checks.log'), `${report}\n${JSON.stringify(await send('Browser.getVersion'))}\n`);
     console.log(report);
   } else {
