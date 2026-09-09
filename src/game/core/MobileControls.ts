@@ -1,45 +1,37 @@
 import Phaser from 'phaser';
 import type { PlayerInputState } from './InputController';
 import { resolveMobileControlTarget } from './MobileControlHitTest';
-import { ACTION_BUTTON_RADII, ACTION_BUTTON_SCALE, getMobileControlLayout } from './MobileControlLayout';
+import { ACTION_BUTTON_RADII, getMobileControlLayout } from './MobileControlLayout';
+
+type ActionButtonName = 'attack' | 'special' | 'ultimate' | 'jump' | 'defend';
 
 type ControlElements = {
-  baseShadow: Phaser.GameObjects.Arc;
   base: Phaser.GameObjects.Arc;
-  baseRing: Phaser.GameObjects.Arc;
-  knob: Phaser.GameObjects.Arc;
-  knobHighlight: Phaser.GameObjects.Arc;
-  attackShadow: Phaser.GameObjects.Arc;
+  baseArt: Phaser.GameObjects.Image;
+  knobArt: Phaser.GameObjects.Image;
   attackButton: Phaser.GameObjects.Arc;
-  attackRing: Phaser.GameObjects.Arc;
-  specialShadow: Phaser.GameObjects.Arc;
+  attackArt: Phaser.GameObjects.Image;
   specialButton: Phaser.GameObjects.Arc;
-  specialRing: Phaser.GameObjects.Arc;
-  ultimateShadow: Phaser.GameObjects.Arc;
+  specialArt: Phaser.GameObjects.Image;
   ultimateButton: Phaser.GameObjects.Arc;
-  ultimateRing: Phaser.GameObjects.Arc;
-  jumpShadow: Phaser.GameObjects.Arc;
-  jumpButton: Phaser.GameObjects.Arc;
-  jumpRing: Phaser.GameObjects.Arc;
-  defendShadow: Phaser.GameObjects.Arc;
-  defendButton: Phaser.GameObjects.Arc;
-  defendRing: Phaser.GameObjects.Arc;
-  menuShadow: Phaser.GameObjects.Rectangle;
-  menuButton: Phaser.GameObjects.Rectangle;
-  attackLabel: Phaser.GameObjects.Text;
-  specialLabel: Phaser.GameObjects.Text;
+  ultimateArt: Phaser.GameObjects.Image;
   ultimateLabel: Phaser.GameObjects.Text;
-  jumpLabel: Phaser.GameObjects.Text;
-  defendLabel: Phaser.GameObjects.Text;
+  ultimateCost: Phaser.GameObjects.Text;
+  jumpButton: Phaser.GameObjects.Arc;
+  jumpArt: Phaser.GameObjects.Image;
+  defendButton: Phaser.GameObjects.Arc;
+  defendArt: Phaser.GameObjects.Image;
+  menuButton: Phaser.GameObjects.Rectangle;
+  menuArt: Phaser.GameObjects.Image;
   menuLabel: Phaser.GameObjects.Text;
 };
 
 type TouchState = Omit<PlayerInputState, 'debugTogglePressed' | 'restartPressed'>;
 
 const JOYSTICK_RADIUS = 58;
-const JOYSTICK_KNOB_RADIUS = 28;
 const JOYSTICK_DEADZONE = 0.15;
 const JOYSTICK_CAPTURE_RADIUS = 180;
+const ART_OVERSCAN = 10;
 
 export class MobileControls {
   private readonly scene: Phaser.Scene;
@@ -88,177 +80,84 @@ export class MobileControls {
   }
 
   setUltimateAvailability(available: boolean, manaCost: number | null): void {
-    const label = manaCost === null ? 'ULT\n—' : `ULT\n${manaCost}`;
-    this.controls.ultimateLabel.setText(label);
-    this.controls.ultimateLabel.setFontSize(manaCost === null ? '12px' : '10px');
-    this.controls.ultimateButton.setFillStyle(available ? 0xa23bd6 : 0x3b3147, available ? 0.94 : 0.66);
-    this.controls.ultimateRing.setAlpha(available ? 1 : 0.36);
+    this.controls.ultimateCost.setText(manaCost === null ? '—' : `${manaCost}`);
+    this.controls.ultimateArt.setAlpha(available ? 0.96 : 0.48);
+    this.controls.ultimateCost.setAlpha(available ? 1 : 0.58);
   }
 
   private createControls(): ControlElements {
-    const baseShadow = this.scene.add.circle(0, 0, JOYSTICK_RADIUS + 6, 0x02060b, 0.28).setScrollFactor(0).setDepth(996);
-    const base = this.scene.add
-      .circle(0, 0, JOYSTICK_RADIUS, 0x10202d, 0.58)
-      .setStrokeStyle(3, 0x89c2d9, 0.28)
-      .setScrollFactor(0)
-      .setDepth(1000);
-    const baseRing = this.scene.add
-      .circle(0, 0, JOYSTICK_RADIUS - 13, 0x193445, 0.22)
-      .setStrokeStyle(2, 0xd8f3dc, 0.14)
-      .setScrollFactor(0)
-      .setDepth(1001);
-    const knob = this.scene.add
-      .circle(0, 0, JOYSTICK_KNOB_RADIUS, 0xf1faee, 0.95)
-      .setStrokeStyle(3, 0x89c2d9, 0.35)
-      .setScrollFactor(0)
-      .setDepth(1002);
-    const knobHighlight = this.scene.add.circle(0, 0, JOYSTICK_KNOB_RADIUS * 0.48, 0xffffff, 0.22).setScrollFactor(0).setDepth(1003);
+    const hitCircle = (radius: number) => this.scene.add.circle(0, 0, radius, 0xffffff, 0.001)
+      .setScrollFactor(0).setDepth(995);
+    const art = (texture: string) => this.scene.add.image(0, 0, texture).setScrollFactor(0).setDepth(1000);
 
-    const attackShadow = this.scene.add.circle(0, 0, 46 * ACTION_BUTTON_SCALE, 0x1d0803, 0.26).setScrollFactor(0).setDepth(996);
-    const attackButton = this.scene.add
-      .circle(0, 0, ACTION_BUTTON_RADII.attack, 0xd4572f, 0.94)
-      .setStrokeStyle(3, 0xffe8c2, 0.4)
-      .setScrollFactor(0)
-      .setDepth(1000);
-    const attackRing = this.scene.add.circle(0, 0, 31 * ACTION_BUTTON_SCALE, 0xff9f68, 0.18).setScrollFactor(0).setDepth(1001);
-
-    const specialShadow = this.scene.add.circle(0, 0, 38 * ACTION_BUTTON_SCALE, 0x061019, 0.26).setScrollFactor(0).setDepth(996);
-    const specialButton = this.scene.add
-      .circle(0, 0, ACTION_BUTTON_RADII.special, 0x3d6f96, 0.93)
-      .setStrokeStyle(3, 0xd6ecff, 0.34)
-      .setScrollFactor(0)
-      .setDepth(1000);
-    const specialRing = this.scene.add.circle(0, 0, 24 * ACTION_BUTTON_SCALE, 0x78a8c8, 0.18).setScrollFactor(0).setDepth(1001);
-
-    const ultimateShadow = this.scene.add.circle(0, 0, 36 * ACTION_BUTTON_SCALE, 0x1f0a19, 0.28).setScrollFactor(0).setDepth(996);
-    const ultimateButton = this.scene.add
-      .circle(0, 0, ACTION_BUTTON_RADII.ultimate, 0xa23bd6, 0.94)
-      .setStrokeStyle(3, 0xf7dcff, 0.38)
-      .setScrollFactor(0)
-      .setDepth(1000);
-    const ultimateRing = this.scene.add.circle(0, 0, 23 * ACTION_BUTTON_SCALE, 0xdf8cff, 0.2).setScrollFactor(0).setDepth(1001);
-
-    const jumpShadow = this.scene.add.circle(0, 0, 36 * ACTION_BUTTON_SCALE, 0x081105, 0.26).setScrollFactor(0).setDepth(996);
-    const jumpButton = this.scene.add
-      .circle(0, 0, ACTION_BUTTON_RADII.jump, 0x698f36, 0.93)
-      .setStrokeStyle(3, 0xe7ffd1, 0.34)
-      .setScrollFactor(0)
-      .setDepth(1000);
-    const jumpRing = this.scene.add.circle(0, 0, 23 * ACTION_BUTTON_SCALE, 0xa8cf62, 0.18).setScrollFactor(0).setDepth(1001);
-    const defendShadow = this.scene.add.circle(0, 0, ACTION_BUTTON_RADII.defend + 4, 0x041116, 0.26).setScrollFactor(0).setDepth(996);
-    const defendButton = this.scene.add
-      .circle(0, 0, ACTION_BUTTON_RADII.defend, 0x287b8e, 0.9)
-      .setStrokeStyle(3, 0xd9f8ff, 0.38)
-      .setScrollFactor(0)
-      .setDepth(1000);
-    const defendRing = this.scene.add.circle(0, 0, 18, 0x78d7e8, 0.18).setScrollFactor(0).setDepth(1001);
-    const menuShadow = this.scene.add.rectangle(0, 0, 74, 28, 0x02060b, 0.24).setScrollFactor(0).setDepth(996);
-    const menuButton = this.scene.add
-      .rectangle(0, 0, 70, 24, 0x172333, 0.78)
-      .setStrokeStyle(2, 0xf5f0d8, 0.34)
-      .setScrollFactor(0)
-      .setDepth(1000);
-    const attackLabel = this.scene.add
-      .text(0, 0, 'ATK', {
-        color: '#fff7e6',
-        fontFamily: 'Verdana, Geneva, sans-serif',
-        fontSize: '16px',
-        fontStyle: 'bold',
-      })
-      .setOrigin(0.5)
-      .setDepth(1004)
-      .setScrollFactor(0);
-    const specialLabel = this.scene.add
-      .text(0, 0, 'SP', {
-        color: '#f3f7fb',
-        fontFamily: 'Verdana, Geneva, sans-serif',
-        fontSize: '14px',
-        fontStyle: 'bold',
-      })
-      .setOrigin(0.5)
-      .setDepth(1004)
-      .setScrollFactor(0);
-    const ultimateLabel = this.scene.add
-      .text(0, 0, 'ULT', {
-        color: '#fff2ff',
-        fontFamily: 'Verdana, Geneva, sans-serif',
-        fontSize: '12px',
-        fontStyle: 'bold',
-      })
-      .setOrigin(0.5)
-      .setDepth(1004)
-      .setScrollFactor(0);
-    const jumpLabel = this.scene.add
-      .text(0, 0, 'JMP', {
-        color: '#f3f7fb',
-        fontFamily: 'Verdana, Geneva, sans-serif',
-        fontSize: '12px',
-        fontStyle: 'bold',
-      })
-      .setOrigin(0.5)
-      .setDepth(1004)
-      .setScrollFactor(0);
-    const defendLabel = this.scene.add
-      .text(0, 0, 'DEF', {
-        color: '#e8fbff',
-        fontFamily: 'Verdana, Geneva, sans-serif',
-        fontSize: '11px',
-        fontStyle: 'bold',
-      })
-      .setOrigin(0.5)
-      .setDepth(1004)
-      .setScrollFactor(0);
-    const menuLabel = this.scene.add
-      .text(0, 0, 'MENU', {
-        color: '#f5f0d8',
-        fontFamily: 'Verdana, Geneva, sans-serif',
-        fontSize: '11px',
-        fontStyle: 'bold',
-      })
-      .setOrigin(0.5)
-      .setDepth(1004)
-      .setScrollFactor(0);
-
-    for (const label of [attackLabel, specialLabel, ultimateLabel, jumpLabel]) {
-      label.setScale(ACTION_BUTTON_SCALE);
-    }
+    const base = hitCircle(JOYSTICK_RADIUS);
+    const baseArt = art('ui-joystick-base').setAlpha(0.82);
+    const knobArt = art('ui-joystick-knob').setDepth(1002).setAlpha(0.96);
+    const attackButton = hitCircle(ACTION_BUTTON_RADII.attack);
+    const attackArt = art('ui-button-attack');
+    const specialButton = hitCircle(ACTION_BUTTON_RADII.special);
+    const specialArt = art('ui-button-special');
+    const ultimateButton = hitCircle(ACTION_BUTTON_RADII.ultimate);
+    const ultimateArt = art('ui-button-ultimate');
+    const jumpButton = hitCircle(ACTION_BUTTON_RADII.jump);
+    const jumpArt = art('ui-button-jump');
+    const defendButton = hitCircle(ACTION_BUTTON_RADII.defend);
+    const defendArt = art('ui-button-defend');
+    const menuButton = this.scene.add.rectangle(0, 0, 70, 24, 0xffffff, 0.001)
+      .setScrollFactor(0).setDepth(995);
+    const menuArt = art('ui-button-compact').setDisplaySize(82, 34).setAlpha(0.94);
+    const ultimateCost = this.scene.add.text(0, 0, '—', {
+      color: '#fff7ff',
+      fontFamily: 'Verdana, Geneva, sans-serif',
+      fontSize: '9px',
+      fontStyle: 'bold',
+      stroke: '#34114a',
+      strokeThickness: 3,
+    }).setOrigin(0.5).setDepth(1004).setScrollFactor(0);
+    const ultimateLabel = this.scene.add.text(0, 0, 'ULT', {
+      color: '#fff7ff',
+      fontFamily: 'Verdana, Geneva, sans-serif',
+      fontSize: '8px',
+      fontStyle: 'bold',
+      letterSpacing: 1,
+      stroke: '#34114a',
+      strokeThickness: 3,
+    }).setOrigin(0.5).setDepth(1004).setScrollFactor(0);
+    const menuLabel = this.scene.add.text(0, 0, 'MENU', {
+      color: '#f7fbff',
+      fontFamily: 'Verdana, Geneva, sans-serif',
+      fontSize: '10px',
+      fontStyle: 'bold',
+      letterSpacing: 1,
+      stroke: '#07131d',
+      strokeThickness: 3,
+    }).setOrigin(0.5).setDepth(1004).setScrollFactor(0);
 
     return {
-      baseShadow,
       base,
-      baseRing,
-      knob,
-      knobHighlight,
-      attackShadow,
+      baseArt,
+      knobArt,
       attackButton,
-      attackRing,
-      specialShadow,
+      attackArt,
       specialButton,
-      specialRing,
-      ultimateShadow,
+      specialArt,
       ultimateButton,
-      ultimateRing,
-      jumpShadow,
-      jumpButton,
-      jumpRing,
-      defendShadow,
-      defendButton,
-      defendRing,
-      menuShadow,
-      menuButton,
-      attackLabel,
-      specialLabel,
+      ultimateArt,
       ultimateLabel,
-      jumpLabel,
-      defendLabel,
+      ultimateCost,
+      jumpButton,
+      jumpArt,
+      defendButton,
+      defendArt,
+      menuButton,
+      menuArt,
       menuLabel,
     };
   }
 
   private handlePointerDown(pointer: Phaser.Input.Pointer): void {
-    const width = this.scene.scale.width;
     const target = resolveMobileControlTarget(pointer, {
-      screenWidth: width,
+      screenWidth: this.scene.scale.width,
       menu: this.controls.menuButton,
       attack: this.controls.attackButton,
       special: this.controls.specialButton,
@@ -270,97 +169,53 @@ export class MobileControls {
 
     if (target === 'menu') {
       this.touchState.menuPressed = true;
-      this.controls.menuButton.setScale(0.96);
+      this.setMenuPressed(true);
       return;
     }
-
     if (target === 'joystick') {
       this.joystickPointerId = pointer.id;
       this.updateJoystick(pointer);
       return;
     }
+    if (target === 'none') return;
 
-    if (target === 'attack') {
-      this.touchState.attackPressed = true;
-      this.setButtonScale('attack', 0.92);
-      return;
-    }
-
-    if (target === 'special') {
-      this.touchState.specialPressed = true;
-      this.setButtonScale('special', 0.92);
-      return;
-    }
-
-    if (target === 'ultimate') {
-      this.touchState.ultimatePressed = true;
-      this.setButtonScale('ultimate', 0.92);
-      return;
-    }
-
-    if (target === 'jump') {
-      this.touchState.jumpPressed = true;
-      this.setButtonScale('jump', 0.92);
-      return;
-    }
-
-    if (target === 'defend') {
-      this.touchState.defendPressed = true;
-      this.setButtonScale('defend', 0.92);
-    }
+    this.touchState[`${target}Pressed`] = true;
+    this.setButtonPressed(target, true);
   }
 
   private handlePointerMove(pointer: Phaser.Input.Pointer): void {
-    if (pointer.id !== this.joystickPointerId) {
-      return;
-    }
-
-    this.updateJoystick(pointer);
+    if (pointer.id === this.joystickPointerId) this.updateJoystick(pointer);
   }
 
   private handlePointerUp(pointer: Phaser.Input.Pointer): void {
-    if (pointer.id === this.joystickPointerId) {
-      this.resetJoystick();
+    if (pointer.id === this.joystickPointerId) this.resetJoystick();
+    for (const button of ['attack', 'special', 'ultimate', 'jump', 'defend'] as const) {
+      this.setButtonPressed(button, false);
     }
-
-    this.controls.attackButton.setScale(1);
-    this.controls.attackRing.setScale(1);
-    this.controls.specialButton.setScale(1);
-    this.controls.specialRing.setScale(1);
-    this.controls.ultimateButton.setScale(1);
-    this.controls.ultimateRing.setScale(1);
-    this.controls.jumpButton.setScale(1);
-    this.controls.jumpRing.setScale(1);
-    this.controls.defendButton.setScale(1);
-    this.controls.defendRing.setScale(1);
-    this.controls.menuButton.setScale(1);
+    this.setMenuPressed(false);
   }
 
   private updateJoystick(pointer: Phaser.Input.Pointer): void {
     const delta = new Phaser.Math.Vector2(pointer.x - this.joystickCenter.x, pointer.y - this.joystickCenter.y);
-    const clampedVisual = delta.clone().limit(JOYSTICK_RADIUS);
-    const clampedInput = delta.clone().limit(JOYSTICK_CAPTURE_RADIUS);
-    const normalized = clampedInput.clone().scale(1 / JOYSTICK_CAPTURE_RADIUS);
+    const clampedVisual = delta.clone().limit(JOYSTICK_RADIUS * 0.62);
+    const normalized = delta.clone().limit(JOYSTICK_CAPTURE_RADIUS).scale(1 / JOYSTICK_CAPTURE_RADIUS);
 
     if (normalized.length() < JOYSTICK_DEADZONE) {
       this.touchState.moveX = 0;
       this.touchState.moveY = 0;
     } else {
-      const strongInput = normalized.clone().normalize();
+      const strongInput = normalized.normalize();
       this.touchState.moveX = Phaser.Math.Clamp(strongInput.x, -1, 1);
       this.touchState.moveY = Phaser.Math.Clamp(strongInput.y, -1, 1);
     }
-
-    this.controls.knob.setPosition(this.joystickCenter.x + clampedVisual.x, this.joystickCenter.y + clampedVisual.y);
-    this.controls.knobHighlight.setPosition(this.joystickCenter.x + clampedVisual.x - 6, this.joystickCenter.y + clampedVisual.y - 8);
+    this.controls.knobArt.setPosition(this.joystickCenter.x + clampedVisual.x, this.joystickCenter.y + clampedVisual.y);
   }
 
   private resetJoystick(): void {
     this.joystickPointerId = null;
     this.touchState.moveX = 0;
     this.touchState.moveY = 0;
-    this.controls.knob.setPosition(this.joystickCenter.x, this.joystickCenter.y);
-    this.controls.knobHighlight.setPosition(this.joystickCenter.x - 6, this.joystickCenter.y - 8);
+    this.controls.knobArt.setPosition(this.joystickCenter.x, this.joystickCenter.y);
   }
 
   private handleResize(gameSize: Phaser.Structs.Size): void {
@@ -370,78 +225,37 @@ export class MobileControls {
   private updateLayout(width: number, height: number): void {
     const layout = getMobileControlLayout(width, height);
     this.joystickCenter.set(layout.joystick.x, layout.joystick.y);
-    this.controls.baseShadow.setPosition(this.joystickCenter.x + 2, this.joystickCenter.y + 4);
-    this.controls.base.setPosition(this.joystickCenter.x, this.joystickCenter.y);
-    this.controls.baseRing.setPosition(this.joystickCenter.x, this.joystickCenter.y);
-    this.controls.knob.setPosition(this.joystickCenter.x, this.joystickCenter.y);
-    this.controls.knobHighlight.setPosition(this.joystickCenter.x - 6, this.joystickCenter.y - 8);
+    this.controls.base.setPosition(layout.joystick.x, layout.joystick.y);
+    this.controls.baseArt.setPosition(layout.joystick.x, layout.joystick.y).setDisplaySize(132, 132);
+    this.controls.knobArt.setPosition(layout.joystick.x, layout.joystick.y).setDisplaySize(57, 57);
 
-    const { attack, special, ultimate, jump, defend, menu } = layout;
-    const attackX = attack.x;
-    const attackY = attack.y;
-    const specialX = special.x;
-    const specialY = special.y;
-    const ultimateX = ultimate.x;
-    const ultimateY = ultimate.y;
-    const jumpX = jump.x;
-    const jumpY = jump.y;
-    const defendX = defend.x;
-    const defendY = defend.y;
-    const menuX = menu.x;
-    const menuY = menu.y;
-
-    this.controls.attackShadow.setPosition(attackX + 2, attackY + 4);
-    this.controls.attackButton.setPosition(attackX, attackY);
-    this.controls.attackRing.setPosition(attackX, attackY);
-    this.controls.specialShadow.setPosition(specialX + 2, specialY + 4);
-    this.controls.specialButton.setPosition(specialX, specialY);
-    this.controls.specialRing.setPosition(specialX, specialY);
-    this.controls.ultimateShadow.setPosition(ultimateX + 2, ultimateY + 4);
-    this.controls.ultimateButton.setPosition(ultimateX, ultimateY);
-    this.controls.ultimateRing.setPosition(ultimateX, ultimateY);
-    this.controls.jumpShadow.setPosition(jumpX + 2, jumpY + 4);
-    this.controls.jumpButton.setPosition(jumpX, jumpY);
-    this.controls.jumpRing.setPosition(jumpX, jumpY);
-    this.controls.defendShadow.setPosition(defendX + 2, defendY + 4);
-    this.controls.defendButton.setPosition(defendX, defendY);
-    this.controls.defendRing.setPosition(defendX, defendY);
-    this.controls.menuShadow.setPosition(menuX + 2, menuY + 3);
-    this.controls.menuButton.setPosition(menuX, menuY);
-    this.controls.attackLabel.setPosition(attackX, attackY);
-    this.controls.specialLabel.setPosition(specialX, specialY);
-    this.controls.ultimateLabel.setPosition(ultimateX, ultimateY);
-    this.controls.jumpLabel.setPosition(jumpX, jumpY);
-    this.controls.defendLabel.setPosition(defendX, defendY);
-    this.controls.menuLabel.setPosition(menuX, menuY);
+    for (const button of ['attack', 'special', 'ultimate', 'jump', 'defend'] as const) {
+      const target = layout[button];
+      this.controls[`${button}Button`].setPosition(target.x, target.y);
+      this.controls[`${button}Art`].setPosition(target.x, target.y);
+      this.setButtonPressed(button, false);
+    }
+    this.controls.ultimateCost.setPosition(layout.ultimate.x, layout.ultimate.y + 16);
+    this.controls.ultimateLabel.setPosition(layout.ultimate.x, layout.ultimate.y - 16);
+    this.controls.menuButton.setPosition(layout.menu.x, layout.menu.y);
+    this.controls.menuArt.setPosition(layout.menu.x, layout.menu.y);
+    this.controls.menuLabel.setPosition(layout.menu.x, layout.menu.y);
   }
 
-  private setButtonScale(button: 'attack' | 'special' | 'ultimate' | 'jump' | 'defend', scale: number): void {
-    if (button === 'attack') {
-      this.controls.attackButton.setScale(scale);
-      this.controls.attackRing.setScale(scale);
-      return;
-    }
-
-    if (button === 'special') {
-      this.controls.specialButton.setScale(scale);
-      this.controls.specialRing.setScale(scale);
-      return;
-    }
-
+  private setButtonPressed(button: ActionButtonName, pressed: boolean): void {
+    const diameter = ACTION_BUTTON_RADII[button] * 2 + ART_OVERSCAN;
+    const size = diameter * (pressed ? 0.91 : 1);
+    const visual = this.controls[`${button}Art`];
+    visual.setDisplaySize(size, size);
+    if (button !== 'ultimate' || visual.alpha >= 0.7) visual.setAlpha(pressed ? 0.84 : 0.96);
     if (button === 'ultimate') {
-      this.controls.ultimateButton.setScale(scale);
-      this.controls.ultimateRing.setScale(scale);
-      return;
+      this.controls.ultimateLabel.setScale(pressed ? 0.91 : 1);
+      this.controls.ultimateCost.setScale(pressed ? 0.91 : 1);
     }
-
-    if (button === 'defend') {
-      this.controls.defendButton.setScale(scale);
-      this.controls.defendRing.setScale(scale);
-      return;
-    }
-
-    this.controls.jumpButton.setScale(scale);
-    this.controls.jumpRing.setScale(scale);
   }
 
+  private setMenuPressed(pressed: boolean): void {
+    this.controls.menuArt.setDisplaySize(pressed ? 76 : 82, pressed ? 31 : 34);
+    this.controls.menuLabel.setScale(pressed ? 0.94 : 1);
+  }
 }

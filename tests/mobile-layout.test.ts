@@ -20,10 +20,9 @@ test('mobile controls stay inside the smallest supported landscape viewport', ()
   assert.ok(layout.menu.y - layout.menu.height / 2 >= 0);
 });
 
-test('menu control clears the player HUD label instead of covering it', () => {
+test('menu control clears the player HUD frame instead of covering it', () => {
   const layout = getMobileControlLayout(568, 320);
-  const menuBottom = layout.menu.y + layout.menu.height / 2;
-  const playerLabelTop = HUD_LAYOUT.player.y + HUD_LAYOUT.labelOffsetY;
+  const menuRight = layout.menu.x + layout.menu.width / 2;
 
-  assert.ok(playerLabelTop > menuBottom);
+  assert.ok(HUD_LAYOUT.player.x > menuRight);
 });

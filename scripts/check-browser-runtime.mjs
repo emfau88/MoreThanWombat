@@ -122,8 +122,9 @@ try {
     })()`);
     for (const action of ['attack', 'special', 'ultimate', 'jump', 'defend']) {
       const radius = await evaluate(`window.__MORE_THAN_WOMBAT_GAME__.scene.getScene('BattleScene').mobileControls.controls.${action}Button.radius`);
-      assert.ok(Math.abs(radius - (action === 'attack' ? 46.2 : action === 'special' ? 37.4
-        : action === 'defend' ? 28 : 35.2)) < 0.001, `${action}: wrong rendered radius`);
+      assert.ok(Math.abs(radius - (action === 'attack' ? 46 : action === 'jump' ? 40
+        : action === 'special' ? 36 : action === 'defend' ? 34 : 31)) < 0.001,
+      `${action}: wrong rendered radius`);
       await evaluate('window.__QA_ACTIONS__ = []; void 0;');
       await send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [await controlPoint(`${action}Button`, radius * 0.97)] });
       await sleep(100);

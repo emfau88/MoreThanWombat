@@ -1,12 +1,11 @@
 import type { CircleTarget, RectTarget } from './MobileControlHitTest';
 
-export const ACTION_BUTTON_SCALE = 1.1;
 export const ACTION_BUTTON_RADII = {
-  attack: 42 * ACTION_BUTTON_SCALE,
-  special: 34 * ACTION_BUTTON_SCALE,
-  ultimate: 32 * ACTION_BUTTON_SCALE,
-  jump: 32 * ACTION_BUTTON_SCALE,
-  defend: 28,
+  attack: 46,
+  jump: 40,
+  special: 36,
+  defend: 34,
+  ultimate: 31,
 } as const;
 
 export type MobileControlLayout = {
@@ -20,20 +19,21 @@ export type MobileControlLayout = {
 };
 
 export function getMobileControlLayout(width: number, height: number): MobileControlLayout {
-  // Grow the cluster around its bottom/right margins, including the spaces
-  // between buttons, so the larger circles never crowd each other.
+  // Right-thumb fan: the primary and mobility actions sit on the lower arc,
+  // guard remains reachable while the left thumb steers, and the rare ultimate
+  // stays deliberately furthest from the resting thumb.
   const action = (right: number, bottom: number, radius: number): CircleTarget => ({
-    x: width - 54 - (right - 54) * ACTION_BUTTON_SCALE,
-    y: height - 36 - (bottom - 36) * ACTION_BUTTON_SCALE,
+    x: width - right,
+    y: height - bottom,
     radius,
   });
   return {
     joystick: { x: 92, y: height - 92, radius: 58 },
-    attack: action(96, 86, ACTION_BUTTON_RADII.attack),
-    special: action(170, 146, ACTION_BUTTON_RADII.special),
-    ultimate: action(98, 178, ACTION_BUTTON_RADII.ultimate),
-    jump: action(176, 68, ACTION_BUTTON_RADII.jump),
-    defend: { x: 192, y: height - 72, radius: ACTION_BUTTON_RADII.defend },
+    attack: action(83, 76, ACTION_BUTTON_RADII.attack),
+    jump: action(185, 68, ACTION_BUTTON_RADII.jump),
+    special: action(185, 158, ACTION_BUTTON_RADII.special),
+    defend: action(101, 171, ACTION_BUTTON_RADII.defend),
+    ultimate: action(178, 234, ACTION_BUTTON_RADII.ultimate),
     menu: { x: 52, y: 30, width: 70, height: 24 },
   };
 }

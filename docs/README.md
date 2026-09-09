@@ -28,6 +28,7 @@ These files describe the current built prototype and near-term work:
 - `qa/g4-runtime-2026-09-08/README.md` - current technical evidence for defense, knockdown/wake-up, mobile input, Wave ground bounds, healing, transitions, camera and the open manual acceptance gate
 - `qa/g6-runtime-2026-09-09/README.md` - current technical evidence for Stage interactions, deterministic HP/MP pickup, the Acting Foreman midboss and full interaction cleanup
 - `qa/g7-runtime-2026-09-09/README.md` - current technical evidence for the two-phase Overtime Supervisor, lane lockdown, Boss HUD, Director-budgeted add and priority cleanup
+- `qa/ui-controls-2026-09-09/README.md` - generated production touch-control and HUD asset manifest, layout rationale, mobile input checks and visual evidence
 - `31_GAMEPLAY_AND_WAVE_COMPLETION_PLAN.md` - current priority order from a stable combat prototype to a complete seven-encounter Wave run; use this as the gameplay execution plan when older roadmaps conflict
 - `16_CURRENT_ROADMAP.md` - actual execution roadmap based on what is already built
 - `17_OPEN_TASKS.md` - practical current task list

@@ -30,6 +30,16 @@ export class PreloadScene extends Phaser.Scene {
     this.load.image('cs-arrow-arena-left', `${assetBase}ui/character-select/arrow_arena_left.png`);
     this.load.image('cs-arrow-arena-right', `${assetBase}ui/character-select/arrow_arena_right.png`);
     this.load.image('cs-selection-glow', `${assetBase}ui/character-select/selection_glow.png`);
+    this.load.image('ui-button-attack', `${assetBase}ui/battle/attack_button.png`);
+    this.load.image('ui-button-jump', `${assetBase}ui/battle/jump_button.png`);
+    this.load.image('ui-button-special', `${assetBase}ui/battle/special_button.png`);
+    this.load.image('ui-button-defend', `${assetBase}ui/battle/defend_button.png`);
+    this.load.image('ui-button-ultimate', `${assetBase}ui/battle/ultimate_button.png`);
+    this.load.image('ui-joystick-base', `${assetBase}ui/battle/joystick_base.png`);
+    this.load.image('ui-joystick-knob', `${assetBase}ui/battle/joystick_knob.png`);
+    this.load.image('ui-player-hud-frame', `${assetBase}ui/battle/player_hud_frame.png`);
+    this.load.image('ui-boss-hud-frame', `${assetBase}ui/battle/boss_hud_frame.png`);
+    this.load.image('ui-button-compact', `${assetBase}ui/battle/compact_button.png`);
     this.load.spritesheet('wombat', `${assetBase}characters/wombat/wombat_spritesheet_128_normalized.png`, {
       frameWidth: 128,
       frameHeight: 128,

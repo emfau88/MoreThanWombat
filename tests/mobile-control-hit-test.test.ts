@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { resolveMobileControlTarget } from '../src/game/core/MobileControlHitTest';
-import { getMobileControlLayout } from '../src/game/core/MobileControlLayout';
+import { ACTION_BUTTON_RADII, getMobileControlLayout } from '../src/game/core/MobileControlLayout';
 
 const geometry = {
   screenWidth: 960,
@@ -22,15 +22,14 @@ test('left-side playfield still captures the joystick', () => {
   assert.equal(resolveMobileControlTarget({ x: 180, y: 400 }, geometry), 'joystick');
 });
 
-test('larger action buttons keep separate matching touch circles across landscape widths', () => {
-  const actions = ['attack', 'special', 'ultimate', 'jump'] as const;
+test('professional action fan keeps separate matching touch circles across landscape widths', () => {
+  const actions = ['attack', 'jump', 'special', 'defend', 'ultimate'] as const;
   for (const width of [960, 1169, 1398]) {
     const layout = getMobileControlLayout(width, 540);
     const geometry = { ...layout, screenWidth: width, joystickAvailable: true };
     for (const action of actions) {
       const button = layout[action];
-      const originalRadius = action === 'attack' ? 42 : action === 'special' ? 34 : 32;
-      assert.equal(button.radius, originalRadius * 1.1);
+      assert.equal(button.radius, ACTION_BUTTON_RADII[action]);
       assert.ok(button.x + button.radius < width && button.y + button.radius < 540);
       for (let sample = 0; sample < 8; sample++) {
         const angle = sample * Math.PI / 4;
@@ -47,16 +46,12 @@ test('larger action buttons keep separate matching touch circles across landscap
   }
 });
 
-test('defend touch target stays separate from joystick and action cluster', () => {
+test('right-side action fan stays separate from the left joystick', () => {
   for (const [width, height] of [[568, 320], [844, 390], [960, 540]]) {
     const layout = getMobileControlLayout(width, height);
     const geometry = { ...layout, screenWidth: width, joystickAvailable: true };
     assert.equal(resolveMobileControlTarget({ x: layout.defend.x, y: layout.defend.y }, geometry), 'defend');
     assert.ok(Math.hypot(layout.defend.x - layout.joystick.x, layout.defend.y - layout.joystick.y)
       > layout.defend.radius + layout.joystick.radius + 8);
-    for (const action of [layout.attack, layout.special, layout.ultimate, layout.jump]) {
-      assert.ok(Math.hypot(layout.defend.x - action.x, layout.defend.y - action.y)
-        > layout.defend.radius + action.radius + 8);
-    }
   }
 });

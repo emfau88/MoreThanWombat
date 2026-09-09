@@ -1,0 +1,83 @@
+PASS — 80 G5 runtime checks
+Real assets loaded and Main Menu created
+Wombat: three-step chain is data-driven
+Wombat: Run does not trigger before its hold threshold
+Wombat: full direction hold starts Run
+Wombat: Run has meaningful extra speed
+Wombat: ATK during Run starts an attack
+Wombat: Run ATK selects its authored Dash Attack
+Wombat: Dash Attack commits forward despite reverse input
+Wombat: grounded ATK starts chain step 1
+Wombat: one ATK buffers chain step 2
+Wombat: the same step cannot queue twice
+Wombat: confirmed hit cancels into step 2
+Wombat: step 2 emits one presentation start
+Wombat: one ATK buffers chain finisher
+Wombat: step 3 is the authored finisher
+Wombat: finisher knocks down
+Wombat: chain cannot loop past step 3
+Wombat: Special cannot cancel the active basic chain
+Discount Wizard: three-step chain is data-driven
+Discount Wizard: Run does not trigger before its hold threshold
+Discount Wizard: full direction hold starts Run
+Discount Wizard: Run has meaningful extra speed
+Discount Wizard: ATK during Run starts an attack
+Discount Wizard: Run ATK selects its authored Dash Attack
+Discount Wizard: Dash Attack commits forward despite reverse input
+Discount Wizard: grounded ATK starts chain step 1
+Discount Wizard: one ATK buffers chain step 2
+Discount Wizard: the same step cannot queue twice
+Discount Wizard: confirmed hit cancels into step 2
+Discount Wizard: step 2 emits one presentation start
+Discount Wizard: one ATK buffers chain finisher
+Discount Wizard: step 3 is the authored finisher
+Discount Wizard: finisher knocks down
+Discount Wizard: chain cannot loop past step 3
+Discount Wizard: Special cannot cancel the active basic chain
+Budget Barbarian: three-step chain is data-driven
+Budget Barbarian: Run does not trigger before its hold threshold
+Budget Barbarian: full direction hold starts Run
+Budget Barbarian: Run has meaningful extra speed
+Budget Barbarian: ATK during Run starts an attack
+Budget Barbarian: Run ATK selects its authored Dash Attack
+Budget Barbarian: Dash Attack commits forward despite reverse input
+Budget Barbarian: grounded ATK starts chain step 1
+Budget Barbarian: one ATK buffers chain step 2
+Budget Barbarian: the same step cannot queue twice
+Budget Barbarian: confirmed hit cancels into step 2
+Budget Barbarian: step 2 emits one presentation start
+Budget Barbarian: one ATK buffers chain finisher
+Budget Barbarian: step 3 is the authored finisher
+Budget Barbarian: finisher knocks down
+Budget Barbarian: chain cannot loop past step 3
+Budget Barbarian: Special cannot cancel the active basic chain
+Mara Breach: three-step chain is data-driven
+Mara Breach: Run does not trigger before its hold threshold
+Mara Breach: full direction hold starts Run
+Mara Breach: Run has meaningful extra speed
+Mara Breach: ATK during Run starts an attack
+Mara Breach: Run ATK selects its authored Dash Attack
+Mara Breach: Dash Attack commits forward despite reverse input
+Mara Breach: grounded ATK starts chain step 1
+Mara Breach: one ATK buffers chain step 2
+Mara Breach: the same step cannot queue twice
+Mara Breach: confirmed hit cancels into step 2
+Mara Breach: step 2 emits one presentation start
+Mara Breach: one ATK buffers chain finisher
+Mara Breach: step 3 is the authored finisher
+Mara Breach: finisher knocks down
+Mara Breach: chain cannot loop past step 3
+Mara Breach: Special cannot cancel the active basic chain
+Whiff timing starts from a fresh basic
+Whiff continuation accepts one rhythmic buffered ATK
+Whiff cannot use the early hit-confirm cancel
+Whiff continues only at its later punishable cancel
+Jump starts for Air Bonk control proof
+Jump accepts horizontal and lane movement
+ATK in the air starts Air Bonk
+Air Bonk accepts a first direction correction
+Air Bonk preserves jump arc and gravity
+Air Bonk accepts repeated mid-air direction correction
+Air Bonk explicitly authors movement and facing control
+Scripted diagnostics; manual rhythm and device acceptance remain separate.
+[]

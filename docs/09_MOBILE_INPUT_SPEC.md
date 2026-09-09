@@ -61,8 +61,18 @@ Recommended:
 
 ```txt
 Attack button: largest, closest to thumb rest
-Special button: slightly above or left of attack button
+Jump button: second-largest, directly left of attack for a fast mobility response
+Special button: above jump
+Defend button: above attack, inside the right-thumb fan so movement can remain held
+Ultimate button: smallest and furthest from thumb rest to prevent accidental activation
 ```
+
+The current production layout uses icon-first illustrated raster controls with stable
+code-owned circular hit targets. Text is limited to the dynamic Ultimate cost and
+system controls. Attack remains largest because it is the highest-frequency action
+and also drives the basic chain and Run + Attack; Jump is the second-largest because
+it is the primary movement and escape response. Defend must not occupy the joystick
+hand.
 
 ## Desktop Debug Controls
 

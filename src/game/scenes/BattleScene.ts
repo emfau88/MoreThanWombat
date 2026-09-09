@@ -170,12 +170,15 @@ export class BattleScene extends Phaser.Scene {
       fontFamily: 'Verdana, Geneva, sans-serif',
       fontSize: '14px',
     });
-    this.modeText = this.add.text(this.getViewportWidth() - 28, 28, '', {
+    this.modeText = this.add.text(this.getViewportWidth() / 2, 108, '', {
       color: '#f5f0d8',
       fontFamily: 'Verdana, Geneva, sans-serif',
-      fontSize: '16px',
-      align: 'right',
-    }).setOrigin(1, 0.5);
+      fontSize: '14px',
+      fontStyle: 'bold',
+      align: 'center',
+      stroke: '#071019',
+      strokeThickness: 4,
+    }).setOrigin(0.5);
     this.debugToggleButton = this.add
       .rectangle(this.getViewportWidth() / 2, 84, 124, 30, 0x223042, 0.94)
       .setStrokeStyle(2, 0xe9c46a, 0.86)
@@ -1200,7 +1203,7 @@ export class BattleScene extends Phaser.Scene {
     }
 
     const viewportWidth = this.getViewportWidth();
-    this.modeText.setPosition(viewportWidth - 28, 28);
+    this.modeText.setPosition(viewportWidth / 2, 108);
     this.debugToggleButton.setPosition(viewportWidth / 2, 84);
     this.debugToggleLabel.setPosition(viewportWidth / 2, 84);
     this.resultCard.setPosition(viewportWidth / 2, 120).setSize(Math.min(660, viewportWidth - 56), 150);

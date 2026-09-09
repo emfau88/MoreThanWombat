@@ -13,7 +13,7 @@
 
 Technisch geprüft: 96/96 Tests, Typecheck und Production Build. G7 ersetzt Encounter 7 durch den zweiphasigen Overtime Supervisor mit Timecard Swipe, phasenabhängigem Lane Lockdown, Shift Change, eigenem Boss-HUD und einem über den Director begrenzten Add. Die G7-Browserprüfung umfasst 63 echte Phaser-Checks in Desktop- und Mobile-Auflösung. G1–G6 bestehen in der aktuellen Regression mit 679/57/280/29/80/51 Checks.
 
-Zusatzauftrag Mobile: Querformat-Skalierung und Rotation korrigiert, vier vorhandene Aktionsbuttons um 10 % vergrößert, Touch-Zonen angepasst und für G4 ein separater Defend-Button ergänzt. [Aktuelle G4-Messwerte](qa/g4-runtime-2026-09-08/README.md) · [ursprüngliche Mobile-Prüfung](qa/mobile-2026-09-05/README.md).
+Zusatzauftrag Mobile/UI: Querformat-Skalierung und Rotation korrigiert. Der UI-Zwischenschritt vom 09.09. ersetzt Joystick und fünf Aktionsbuttons durch optimierte, textfreie Produktionsassets, ordnet alle Aktionen als ergonomischen rechten Daumenfächer an und zieht die hochwertigen Player-/Enemy-/Boss-HUD-Rahmen aus G9 vor. Touch-Zonen bleiben code-owned, getrennt und getestet. [UI-Prüfung](qa/ui-controls-2026-09-09/README.md) · [ursprüngliche Mobile-Prüfung](qa/mobile-2026-09-05/README.md).
 
 **Präzisierte Abhängigkeiten aus dem Codeabgleich:**
 
@@ -602,6 +602,8 @@ Erst am nun vollständigen Run Attrition, HP, MP, Schaden, Encounter-Dauer und D
 **Priorität:** P1<br>
 **Risiko:** niedrig bis mittel<br>
 **Abhängigkeit:** G3, G7 und G8
+
+**Teilstatus 2026-09-09:** Visuelle Player-/Enemy-/Boss-Rahmen und das mobile Control-Artset wurden als freigegebener UI-Zwischenschritt vorgezogen. Restgegner/Fortschritt, Offscreen-Indikatoren, GO-/Pfadimpuls, Kameraabstimmung und Wave-Audio bleiben in G9 offen. Details im [UI-Prüfbericht](qa/ui-controls-2026-09-09/README.md).
 
 ### Ziel
 

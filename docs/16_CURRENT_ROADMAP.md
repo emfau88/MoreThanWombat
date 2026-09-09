@@ -11,6 +11,7 @@
 - Run activates from one sustained full direction on keyboard or touch. Every shippable fighter has one committed Dash Attack and a three-step Basic Chain with one queued follow-up, earlier hit continuation, later whiff continuation and a knockdown finisher. Air Bonk keeps its jump arc and repeated mid-air steering.
 - G6 adds a periodic Furnace vent, a deterministic one-use HP/MP lunchbox and the standalone Acting Foreman in Encounter 5. The Foreman uses a three-action pattern and can be knocked down by his own commanded vent.
 - G7 replaces Encounter 7 with the two-phase Overtime Supervisor. The boss changes pattern order and lane-denial geometry at half health, shares pressure budgets with one delayed add and owns controlled priority cleanup.
+- A pre-G8 UI polish step replaces the temporary vector touch circles with an ImageGen-authored industrial control set, moves Defend into the right-thumb fan, keeps Attack largest and promotes Jump to second-largest. Player, enemy and Boss HUD frames are also pulled forward from G9; the remaining G9 threat, camera and audio work stays open. See the [UI report](qa/ui-controls-2026-09-09/README.md).
 - Scripted Phaser regression checks pass. Full-run gameplay acceptance, balance and two real-device classes remain open.
 - G0–G9 adds no player fighter or arena. Final art follows mechanical acceptance; broad architecture hardening remains G10.
 
