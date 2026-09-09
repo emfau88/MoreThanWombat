@@ -3,6 +3,7 @@ import test from 'node:test';
 import { canEnterNextWaveSection, getWaveTraversalBounds } from '../src/game/core/WaveTraversal';
 import {
   getWaveStageValidationViolations,
+  MAXIMUM_STAGE_INTERACTIONS,
   MAXIMUM_WAVE_ENEMIES,
   MAXIMUM_WAVE_SPAWN_DISTANCE,
   MINIMUM_WAVE_SPAWN_DISTANCE,
@@ -13,13 +14,17 @@ test('Junkyard Run composes exactly seven valid encounters across three zones', 
   assert.equal(MINIMUM_WAVE_SPAWN_DISTANCE, 96);
   assert.equal(MAXIMUM_WAVE_SPAWN_DISTANCE, 480);
   assert.equal(MAXIMUM_WAVE_ENEMIES, 4);
+  assert.equal(MAXIMUM_STAGE_INTERACTIONS, 2);
   assert.deepEqual(getWaveStageValidationViolations(junkyardRunStage), []);
   assert.equal(junkyardRunStage.sections.length, 7);
   assert.deepEqual(junkyardRunStage.zones.map((zone) =>
     junkyardRunStage.sections.filter((section) => section.zoneId === zone.id).length), [2, 3, 2]);
   assert.ok(junkyardRunStage.sections.every((section) => section.objective.length > 0));
-  assert.ok(junkyardRunStage.sections.every((section) => section.completionRule.type === 'defeat_all'));
-  assert.deepEqual(junkyardRunStage.sections.map((section) => section.enemies.length), [1, 3, 3, 3, 3, 4, 4]);
+  assert.deepEqual(junkyardRunStage.sections.map((section) => section.completionRule.type),
+    ['defeat_all', 'defeat_all', 'defeat_all', 'defeat_all', 'defeat_priority', 'defeat_all', 'defeat_all']);
+  assert.deepEqual(junkyardRunStage.sections.map((section) => section.enemies.length), [1, 3, 3, 3, 1, 4, 4]);
+  assert.deepEqual(junkyardRunStage.sections.flatMap((section) => section.interactions ?? []).map((item) => item.type),
+    ['steam_vent', 'resource_pickup', 'steam_vent']);
   assert.ok(junkyardRunStage.sections.every((section) =>
     section.bounds.minY === JUNKYARD_WALKABLE_BAND.minY
       && section.bounds.maxY === JUNKYARD_WALKABLE_BAND.maxY));
@@ -37,12 +42,12 @@ test('encounters escalate through role composition, timing and pressure channels
     ['pursuer', 'pursuer', 'flanker'],
     ['pursuer', 'pursuer', 'zoner'],
     ['heavy', 'pursuer', 'pursuer'],
-    ['pursuer', 'flanker', 'heavy'],
+    ['heavy'],
     ['pursuer', 'pursuer', 'zoner', 'flanker'],
     ['pursuer', 'pursuer', 'heavy', 'zoner'],
   ]);
   assert.deepEqual(junkyardRunStage.sections.map((section) => section.enemies.map((spawn) => spawn.entryDelayMs)), [
-    [0], [0, 450, 1000], [0, 500, 1000], [0, 550, 1100], [0, 550, 1250],
+    [0], [0, 450, 1000], [0, 500, 1000], [0, 550, 1100], [0],
     [0, 450, 1000, 1550], [0, 450, 1050, 1650],
   ]);
   assert.deepEqual(junkyardRunStage.sections.map((section) => section.pressureBudget), [
@@ -50,7 +55,7 @@ test('encounters escalate through role composition, timing and pressure channels
     { meleeTokens: 1, rangedTokens: 0, disruptionBudget: 1, burst: { periodMs: 4200, durationMs: 1550 } },
     { meleeTokens: 1, rangedTokens: 1, disruptionBudget: 0, burst: { periodMs: 4400, durationMs: 1700 } },
     { meleeTokens: 1, rangedTokens: 0, disruptionBudget: 0 },
-    { meleeTokens: 1, rangedTokens: 0, disruptionBudget: 1, burst: { periodMs: 4000, durationMs: 1900 } },
+    { meleeTokens: 1, rangedTokens: 0, disruptionBudget: 1 },
     { meleeTokens: 1, rangedTokens: 1, disruptionBudget: 1, burst: { periodMs: 5000, durationMs: 2200 } },
     { meleeTokens: 1, rangedTokens: 1, disruptionBudget: 1, burst: { periodMs: 4200, durationMs: 2400 } },
   ]);

@@ -9,9 +9,9 @@
 
 ### Ausführungsstand 2026-09-09
 
-**G0 abgeschlossen; G1–G5 implementiert und technisch geprüft, gemeinsame manuelle Spielgefühlabnahme offen.** [G5-Prüfbericht](qa/g5-runtime-2026-09-09/README.md) · [G4-Prüfbericht](qa/g4-runtime-2026-09-08/README.md) · [G3-Prüfbericht](qa/g3-runtime-2026-09-08/README.md) · [G2-Prüfbericht](qa/g2-runtime-2026-09-06/README.md) · [G1-Prüfbericht](qa/g1-runtime-2026-09-05/README.md) · [Historische G0-Baseline](qa/gameplay-baseline-2026-09-05/README.md) · [Einheitliche Run-Messvorlage](qa/gameplay-run-template.md).
+**G0 abgeschlossen; G1–G6 implementiert und technisch geprüft, gemeinsame manuelle Spielgefühlabnahme offen. G7 ist der nächste Implementierungs-Bulk.** [G6-Prüfbericht](qa/g6-runtime-2026-09-09/README.md) · [G5-Prüfbericht](qa/g5-runtime-2026-09-09/README.md) · [G4-Prüfbericht](qa/g4-runtime-2026-09-08/README.md) · [G3-Prüfbericht](qa/g3-runtime-2026-09-08/README.md) · [G2-Prüfbericht](qa/g2-runtime-2026-09-06/README.md) · [G1-Prüfbericht](qa/g1-runtime-2026-09-05/README.md) · [Historische G0-Baseline](qa/gameplay-baseline-2026-09-05/README.md) · [Einheitliche Run-Messvorlage](qa/gameplay-run-template.md).
 
-Technisch geprüft: 89/89 Tests, Typecheck und Production Build. G5 liefert einen nach 220 ms voller Richtung aktivierten Run, vier eigene Dash Attacks sowie pro normaler Spielerfigur eine dreistufige, datengetriebene Basic-Chain. Ein Treffer darf früher fortsetzen als ein Whiff, pro Schritt wird höchstens ein Folgeangriff gepuffert und der Finisher verursacht Knockdown. Special und Ultimate brechen die aktive Chain nicht frei ab. Air Bonk erhält die Sprungphysik, akzeptiert weiter Lane- und Horizontalbewegung und erlaubt mehrere Richtungswechsel in derselben Luftphase. Die G5-Browserprüfung umfasst 80 echte Phaser-Checks in Desktop- und Mobile-Auflösung; der zusätzliche Touch-Smoke löst Run und Dash Attack über Joystick plus ATK aus. G1–G4 bestehen unverändert mit 743/51/335/29 Checks.
+Technisch geprüft: 94/94 Tests, Typecheck und Production Build. G6 ergänzt genau zwei Interaktionstypen: ein telegraphiertes Dampfventil und eine deterministische HP-/MP-Lunchbox. Encounter 5 ist der eigenständige Acting Foreman mit Clipboard Check, Forklift Charge und Steam Drill; sein eigenes Ventil erzeugt einen Knockdown- und Comedy-Punish. Die G6-Browserprüfung umfasst 51 echte Phaser-Checks in Desktop- und Mobile-Auflösung. G1–G5 bestehen in der aktuellen Regression mit 715/57/305/29/80 Checks.
 
 Zusatzauftrag Mobile: Querformat-Skalierung und Rotation korrigiert, vier vorhandene Aktionsbuttons um 10 % vergrößert, Touch-Zonen angepasst und für G4 ein separater Defend-Button ergänzt. [Aktuelle G4-Messwerte](qa/g4-runtime-2026-09-08/README.md) · [ursprüngliche Mobile-Prüfung](qa/mobile-2026-09-05/README.md).
 
@@ -472,6 +472,8 @@ Mehr Entscheidungen zwischen Annäherung, Positionswechsel und Treffer schaffen,
 2. `Add data-driven basic attack chains`
 
 ## 12. BULK G6 – Stage-Rhythmus: Interaktionen, Pickup, Comedy und Midboss
+
+**Status 2026-09-09:** Implementiert und technisch geprüft. Periodisches und kommandiertes Dampfventil, deterministische HP-/MP-Lunchbox und der eigenständige Acting-Foreman-Midboss sind integriert. Cleanup bei Clear, Restart, Defeat und Victory ist automatisiert belegt. Die gemeinsame manuelle Spielgefühl-, Balance- und Realgeräte-Abnahme für G1–G6 bleibt offen; Details im [G6-Prüfbericht](qa/g6-runtime-2026-09-09/README.md).
 
 **Priorität:** P1<br>
 **Risiko:** mittel<br>

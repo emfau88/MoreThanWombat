@@ -113,10 +113,10 @@ try {
   advanceToNextSection(battle);
 
   const sectionThreeRoles = battle.waveEnemies.map((enemy) => roleOf(battle, enemy)).sort();
-  check(sectionThreeRoles.join(',') === 'flanker,heavy,pursuer', 'Encounter 5 proves Pursuer + Flanker + Heavy pairing');
+  check(sectionThreeRoles.join(',') === 'heavy' && battle.waveEnemies[0].label === 'Acting Foreman',
+    'Encounter 5 preserves the Heavy contract in the standalone G6 midboss');
   for (let i = 0; i < 30 && battle.waveEnemies.some((enemy) => !battle.isWaveEnemyCombatActive(enemy)); i++) tick(battle);
   const heavy = battle.waveEnemies.find((enemy) => roleOf(battle, enemy) === 'heavy');
-  const flanker = battle.waveEnemies.find((enemy) => roleOf(battle, enemy) === 'flanker');
   const heavyController = battle.waveEnemyControllers.get(heavy.instanceId);
   check(heavy.getCombatResponse() === 'armor' && heavy.roleCueText.text === 'ARMOR ◆◆', 'Heavy enters with two visible armor contacts');
   const armorImpact = { damage: 1, attackId: 'wombat_jab', outcome: 'armored', attacker: battle.player, defender: heavy };
@@ -125,18 +125,27 @@ try {
   battle.handleEnemyRoleImpacts([armorImpact]);
   check(heavy.getCombatResponse() === 'normal' && heavy.roleCueText.text === 'ARMOR BREAK!', 'Second contact visibly breaks armor and changes response');
   kill(heavy);
-  tick(battle);
+  advanceToNextSection(battle);
 
+  check(battle.waveEnemies.map((enemy) => roleOf(battle, enemy)).sort().join(',') === 'flanker,pursuer,pursuer,zoner',
+    'Encounter 6 retains the mixed role-pair proof');
+  for (let i = 0; i < 40 && battle.waveEnemies.some((enemy) => !battle.isWaveEnemyCombatActive(enemy)); i++) tick(battle);
+  const flanker = battle.waveEnemies.find((enemy) => roleOf(battle, enemy) === 'flanker');
   const flankerController = battle.waveEnemyControllers.get(flanker.instanceId);
   const laneSide = flankerController.flankLaneSide;
   flanker.cancelAttack();
   flanker.x = battle.player.x + 150;
   flanker.y = battle.player.y + 74 * laneSide;
-  tick(battle);
-  check(flanker.getCurrentAttack()?.id === 'scrap_flanker_charge', 'Flanker aligns in another lane and commits its charge');
+  const flankIntent = flankerController.update(flanker, battle.player, 0.05, () => true);
+  check(flankIntent.attackId === 'scrap_flanker_charge'
+    && battle.tryStartAttackByIdWithFx(flanker, flankIntent.attackId, flankIntent.attackKind),
+  'Flanker aligns in another lane and commits its charge');
+  flankerController.update(flanker, battle.player, 0.05, () => true);
+  flanker.cancelAttack();
   battle.player.y = laneSide > 0 ? battle.arenaBounds.minY : battle.arenaBounds.maxY;
-  for (let i = 0; i < 40 && flankerController.getDebugSnapshot(flanker).state !== 'comic_crash'; i++) tick(battle);
+  flankerController.update(flanker, battle.player, 0.05, () => true);
   check(flankerController.getDebugSnapshot(flanker).state === 'comic_crash', 'Missed Flanker charge enters the crash punish window');
+  battle.applyEnemyRolePresentation(flanker, flankerController);
   check(flanker.roleCueText.visible && flanker.roleCueText.text === 'CRASH!', 'Flanker crash is visibly telegraphed');
 
   const qualityChecks = [];

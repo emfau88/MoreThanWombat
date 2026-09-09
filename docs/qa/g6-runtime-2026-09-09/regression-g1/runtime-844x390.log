@@ -1,0 +1,718 @@
+PASS — 715 runtime checks
+Real assets loaded and Main Menu created
+wombat: restart begins at intro
+Phase spawning, section 1
+Entry has no enemy attacks
+Entry has no projectiles
+Entry fighters are protected
+Phase active, section 1
+No mana during intro/entry
+Mana regenerates during active combat
+Delayed entrants cannot attack or take damage
+Every staged entrant becomes combat-active
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Real projectile created for cleanup check
+Clear removes actual projectile objects
+Phase transition, section 1
+No mana during clear delay
+Phase section_intro, section 2
+Sub-wave transition preserves player position
+No sub-wave transition mana
+Phase spawning, section 2
+Entry has no enemy attacks
+Entry has no projectiles
+Entry fighters are protected
+Phase active, section 2
+No mana during intro/entry
+Mana regenerates during active combat
+Delayed entrants cannot attack or take damage
+Every staged entrant becomes combat-active
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Real projectile created for cleanup check
+Clear removes actual projectile objects
+Phase travel, section 2
+No mana during clear delay
+Five seconds travel waiting gives no mana
+Walking crosses arrival trigger
+Phase section_intro, section 3
+Transition preserves player position
+No transition mana
+Phase spawning, section 3
+Entry has no enemy attacks
+Entry has no projectiles
+Entry fighters are protected
+Phase active, section 3
+No mana during intro/entry
+Mana regenerates during active combat
+Delayed entrants cannot attack or take damage
+Every staged entrant becomes combat-active
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Real projectile created for cleanup check
+Clear removes actual projectile objects
+Phase transition, section 3
+No mana during clear delay
+Phase section_intro, section 4
+Sub-wave transition preserves player position
+No sub-wave transition mana
+Phase spawning, section 4
+Entry has no enemy attacks
+Entry has no projectiles
+Entry fighters are protected
+Phase active, section 4
+No mana during intro/entry
+Mana regenerates during active combat
+Delayed entrants cannot attack or take damage
+Every staged entrant becomes combat-active
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Real projectile created for cleanup check
+Clear removes actual projectile objects
+Phase transition, section 4
+No mana during clear delay
+Phase section_intro, section 5
+Sub-wave transition preserves player position
+No sub-wave transition mana
+Phase spawning, section 5
+Entry has no enemy attacks
+Entry has no projectiles
+Entry fighters are protected
+Phase active, section 5
+No mana during intro/entry
+Mana regenerates during active combat
+Delayed entrants cannot attack or take damage
+Every staged entrant becomes combat-active
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Real projectile created for cleanup check
+Clear removes actual projectile objects
+Phase travel, section 5
+No mana during clear delay
+Five seconds travel waiting gives no mana
+Walking crosses arrival trigger
+Phase section_intro, section 6
+Transition preserves player position
+No transition mana
+Phase spawning, section 6
+Entry has no enemy attacks
+Entry has no projectiles
+Entry fighters are protected
+Phase active, section 6
+No mana during intro/entry
+Mana regenerates during active combat
+Delayed entrants cannot attack or take damage
+Every staged entrant becomes combat-active
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Real projectile created for cleanup check
+Clear removes actual projectile objects
+Phase transition, section 6
+No mana during clear delay
+Phase section_intro, section 7
+Sub-wave transition preserves player position
+No sub-wave transition mana
+Phase spawning, section 7
+Entry has no enemy attacks
+Entry has no projectiles
+Entry fighters are protected
+Phase active, section 7
+No mana during intro/entry
+Mana regenerates during active combat
+Delayed entrants cannot attack or take damage
+Every staged entrant becomes combat-active
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Real projectile created for cleanup check
+Clear removes actual projectile objects
+Phase victory, section 7
+No mana during clear delay
+wombat: full seven-encounter flow reaches victory
+Victory freezes mana and hazards
+discount_wizard: restart begins at intro
+Phase spawning, section 1
+Entry has no enemy attacks
+Entry has no projectiles
+Entry fighters are protected
+Phase active, section 1
+No mana during intro/entry
+Mana regenerates during active combat
+Delayed entrants cannot attack or take damage
+Every staged entrant becomes combat-active
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Real projectile created for cleanup check
+Clear removes actual projectile objects
+Phase transition, section 1
+No mana during clear delay
+Phase section_intro, section 2
+Sub-wave transition preserves player position
+No sub-wave transition mana
+Phase spawning, section 2
+Entry has no enemy attacks
+Entry has no projectiles
+Entry fighters are protected
+Phase active, section 2
+No mana during intro/entry
+Mana regenerates during active combat
+Delayed entrants cannot attack or take damage
+Every staged entrant becomes combat-active
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Real projectile created for cleanup check
+Clear removes actual projectile objects
+Phase travel, section 2
+No mana during clear delay
+Five seconds travel waiting gives no mana
+Walking crosses arrival trigger
+Phase section_intro, section 3
+Transition preserves player position
+No transition mana
+Phase spawning, section 3
+Entry has no enemy attacks
+Entry has no projectiles
+Entry fighters are protected
+Phase active, section 3
+No mana during intro/entry
+Mana regenerates during active combat
+Delayed entrants cannot attack or take damage
+Every staged entrant becomes combat-active
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Real projectile created for cleanup check
+Clear removes actual projectile objects
+Phase transition, section 3
+No mana during clear delay
+Phase section_intro, section 4
+Sub-wave transition preserves player position
+No sub-wave transition mana
+Phase spawning, section 4
+Entry has no enemy attacks
+Entry has no projectiles
+Entry fighters are protected
+Phase active, section 4
+No mana during intro/entry
+Mana regenerates during active combat
+Delayed entrants cannot attack or take damage
+Every staged entrant becomes combat-active
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Real projectile created for cleanup check
+Clear removes actual projectile objects
+Phase transition, section 4
+No mana during clear delay
+Phase section_intro, section 5
+Sub-wave transition preserves player position
+No sub-wave transition mana
+Phase spawning, section 5
+Entry has no enemy attacks
+Entry has no projectiles
+Entry fighters are protected
+Phase active, section 5
+No mana during intro/entry
+Mana regenerates during active combat
+Delayed entrants cannot attack or take damage
+Every staged entrant becomes combat-active
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Real projectile created for cleanup check
+Clear removes actual projectile objects
+Phase travel, section 5
+No mana during clear delay
+Five seconds travel waiting gives no mana
+Walking crosses arrival trigger
+Phase section_intro, section 6
+Transition preserves player position
+No transition mana
+Phase spawning, section 6
+Entry has no enemy attacks
+Entry has no projectiles
+Entry fighters are protected
+Phase active, section 6
+No mana during intro/entry
+Mana regenerates during active combat
+Delayed entrants cannot attack or take damage
+Every staged entrant becomes combat-active
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Real projectile created for cleanup check
+Clear removes actual projectile objects
+Phase transition, section 6
+No mana during clear delay
+Phase section_intro, section 7
+Sub-wave transition preserves player position
+No sub-wave transition mana
+Phase spawning, section 7
+Entry has no enemy attacks
+Entry has no projectiles
+Entry fighters are protected
+Phase active, section 7
+No mana during intro/entry
+Mana regenerates during active combat
+Delayed entrants cannot attack or take damage
+Every staged entrant becomes combat-active
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Real projectile created for cleanup check
+Clear removes actual projectile objects
+Phase victory, section 7
+No mana during clear delay
+discount_wizard: full seven-encounter flow reaches victory
+Victory freezes mana and hazards
+budget_barbarian: restart begins at intro
+Phase spawning, section 1
+Entry has no enemy attacks
+Entry has no projectiles
+Entry fighters are protected
+Phase active, section 1
+No mana during intro/entry
+Mana regenerates during active combat
+Delayed entrants cannot attack or take damage
+Every staged entrant becomes combat-active
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Real projectile created for cleanup check
+Clear removes actual projectile objects
+Phase transition, section 1
+No mana during clear delay
+Phase section_intro, section 2
+Sub-wave transition preserves player position
+No sub-wave transition mana
+Phase spawning, section 2
+Entry has no enemy attacks
+Entry has no projectiles
+Entry fighters are protected
+Phase active, section 2
+No mana during intro/entry
+Mana regenerates during active combat
+Delayed entrants cannot attack or take damage
+Every staged entrant becomes combat-active
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Real projectile created for cleanup check
+Clear removes actual projectile objects
+Phase travel, section 2
+No mana during clear delay
+Five seconds travel waiting gives no mana
+Walking crosses arrival trigger
+Phase section_intro, section 3
+Transition preserves player position
+No transition mana
+Phase spawning, section 3
+Entry has no enemy attacks
+Entry has no projectiles
+Entry fighters are protected
+Phase active, section 3
+No mana during intro/entry
+Mana regenerates during active combat
+Delayed entrants cannot attack or take damage
+Every staged entrant becomes combat-active
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Real projectile created for cleanup check
+Clear removes actual projectile objects
+Phase transition, section 3
+No mana during clear delay
+Phase section_intro, section 4
+Sub-wave transition preserves player position
+No sub-wave transition mana
+Phase spawning, section 4
+Entry has no enemy attacks
+Entry has no projectiles
+Entry fighters are protected
+Phase active, section 4
+No mana during intro/entry
+Mana regenerates during active combat
+Delayed entrants cannot attack or take damage
+Every staged entrant becomes combat-active
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Real projectile created for cleanup check
+Clear removes actual projectile objects
+Phase transition, section 4
+No mana during clear delay
+Phase section_intro, section 5
+Sub-wave transition preserves player position
+No sub-wave transition mana
+Phase spawning, section 5
+Entry has no enemy attacks
+Entry has no projectiles
+Entry fighters are protected
+Phase active, section 5
+No mana during intro/entry
+Mana regenerates during active combat
+Delayed entrants cannot attack or take damage
+Every staged entrant becomes combat-active
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Real projectile created for cleanup check
+Clear removes actual projectile objects
+Phase travel, section 5
+No mana during clear delay
+Five seconds travel waiting gives no mana
+Walking crosses arrival trigger
+Phase section_intro, section 6
+Transition preserves player position
+No transition mana
+Phase spawning, section 6
+Entry has no enemy attacks
+Entry has no projectiles
+Entry fighters are protected
+Phase active, section 6
+No mana during intro/entry
+Mana regenerates during active combat
+Delayed entrants cannot attack or take damage
+Every staged entrant becomes combat-active
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Real projectile created for cleanup check
+Clear removes actual projectile objects
+Phase transition, section 6
+No mana during clear delay
+Phase section_intro, section 7
+Sub-wave transition preserves player position
+No sub-wave transition mana
+Phase spawning, section 7
+Entry has no enemy attacks
+Entry has no projectiles
+Entry fighters are protected
+Phase active, section 7
+No mana during intro/entry
+Mana regenerates during active combat
+Delayed entrants cannot attack or take damage
+Every staged entrant becomes combat-active
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Real projectile created for cleanup check
+Clear removes actual projectile objects
+Phase victory, section 7
+No mana during clear delay
+budget_barbarian: full seven-encounter flow reaches victory
+Victory freezes mana and hazards
+mara_breach: restart begins at intro
+Phase spawning, section 1
+Entry has no enemy attacks
+Entry has no projectiles
+Entry fighters are protected
+Phase active, section 1
+No mana during intro/entry
+Mana regenerates during active combat
+Delayed entrants cannot attack or take damage
+Every staged entrant becomes combat-active
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Real projectile created for cleanup check
+Clear removes actual projectile objects
+Phase transition, section 1
+No mana during clear delay
+Phase section_intro, section 2
+Sub-wave transition preserves player position
+No sub-wave transition mana
+Phase spawning, section 2
+Entry has no enemy attacks
+Entry has no projectiles
+Entry fighters are protected
+Phase active, section 2
+No mana during intro/entry
+Mana regenerates during active combat
+Delayed entrants cannot attack or take damage
+Every staged entrant becomes combat-active
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Real projectile created for cleanup check
+Clear removes actual projectile objects
+Phase travel, section 2
+No mana during clear delay
+Five seconds travel waiting gives no mana
+Walking crosses arrival trigger
+Phase section_intro, section 3
+Transition preserves player position
+No transition mana
+Phase spawning, section 3
+Entry has no enemy attacks
+Entry has no projectiles
+Entry fighters are protected
+Phase active, section 3
+No mana during intro/entry
+Mana regenerates during active combat
+Delayed entrants cannot attack or take damage
+Every staged entrant becomes combat-active
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Real projectile created for cleanup check
+Clear removes actual projectile objects
+Phase transition, section 3
+No mana during clear delay
+Phase section_intro, section 4
+Sub-wave transition preserves player position
+No sub-wave transition mana
+Phase spawning, section 4
+Entry has no enemy attacks
+Entry has no projectiles
+Entry fighters are protected
+Phase active, section 4
+No mana during intro/entry
+Mana regenerates during active combat
+Delayed entrants cannot attack or take damage
+Every staged entrant becomes combat-active
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Real projectile created for cleanup check
+Clear removes actual projectile objects
+Phase transition, section 4
+No mana during clear delay
+Phase section_intro, section 5
+Sub-wave transition preserves player position
+No sub-wave transition mana
+Phase spawning, section 5
+Entry has no enemy attacks
+Entry has no projectiles
+Entry fighters are protected
+Phase active, section 5
+No mana during intro/entry
+Mana regenerates during active combat
+Delayed entrants cannot attack or take damage
+Every staged entrant becomes combat-active
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Real projectile created for cleanup check
+Clear removes actual projectile objects
+Phase travel, section 5
+No mana during clear delay
+Five seconds travel waiting gives no mana
+Walking crosses arrival trigger
+Phase section_intro, section 6
+Transition preserves player position
+No transition mana
+Phase spawning, section 6
+Entry has no enemy attacks
+Entry has no projectiles
+Entry fighters are protected
+Phase active, section 6
+No mana during intro/entry
+Mana regenerates during active combat
+Delayed entrants cannot attack or take damage
+Every staged entrant becomes combat-active
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Real projectile created for cleanup check
+Clear removes actual projectile objects
+Phase transition, section 6
+No mana during clear delay
+Phase section_intro, section 7
+Sub-wave transition preserves player position
+No sub-wave transition mana
+Phase spawning, section 7
+Entry has no enemy attacks
+Entry has no projectiles
+Entry fighters are protected
+Phase active, section 7
+No mana during intro/entry
+Mana regenerates during active combat
+Delayed entrants cannot attack or take damage
+Every staged entrant becomes combat-active
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active spawn visible in actual camera
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Active fighter pushboxes remain separated
+Real projectile created for cleanup check
+Clear removes actual projectile objects
+Phase victory, section 7
+No mana during clear delay
+mara_breach: full seven-encounter flow reaches victory
+Victory freezes mana and hazards
+Phase active, section 1
+Wave attack receives a token
+Actual Fighter hit interrupt releases token
+Defeat clears actual projectile and enemy objects
+Defeat disables mana
+Restart has fresh director and no tokens
+Phase active, section 1
+Simultaneous player/enemy death cannot start travel or victory
+Duel creates its ordinary enemy without Director
+Duel mana unchanged
+Duel victory unchanged
+Gym creates its existing diagnostic controls
+Paused Gym cannot regenerate mana
+Unpaused Gym regenerates as before
+Scripted diagnostics; not a balance or real-device playtest.
+[]

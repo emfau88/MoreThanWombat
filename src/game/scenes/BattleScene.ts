@@ -27,6 +27,7 @@ import { projectilesById } from '../data/projectiles';
 import { JUNKYARD_WALKABLE_BAND, defaultWaveStageId, waveStages, type StageDefinition, type StageSectionDefinition, type StageEnemySpawnDefinition, type WaveStageId } from '../data/stages';
 import { canEnterNextWaveSection, getWaveTraversalBounds, type WaveTraversalPhase } from '../core/WaveTraversal';
 import { findSafeWaveSpawn, isWaveActorVisible } from '../core/WaveSafety';
+import { WaveStageInteractionController, type WaveStageInteractionEvent } from '../core/WaveStageInteractionController';
 import { Hud } from '../ui/Hud';
 import { CombatGymController } from '../debug/CombatGymController';
 import {
@@ -83,6 +84,7 @@ export class BattleScene extends Phaser.Scene {
   private combatFeedback!: CombatFeedbackController;
   private combatPresentation!: CombatPresentationController;
   private combatImpact!: CombatImpactOrchestrator;
+  private stageInteractions!: WaveStageInteractionController;
   private readonly inputBuffer = new InputBuffer(150);
   private combatGym: CombatGymController | null = null;
   private combatGymSettings: CombatGymSettings | null = null;
@@ -160,6 +162,7 @@ export class BattleScene extends Phaser.Scene {
       getShakeScale: () => this.combatFeedback.getAccessibilityScale(),
     });
     this.combatImpact = new CombatImpactOrchestrator(this, this.combatFeedback, this.combatPresentation);
+    this.stageInteractions = new WaveStageInteractionController(this);
     registerCharacterAnimations(this);
     this.renderArena();
     this.instructionText = this.add.text(32, 28, 'Hold direction to run; repeat J/Space for 3-hit chain; Run + ATK dash; L jump; F defend', {
@@ -259,6 +262,7 @@ export class BattleScene extends Phaser.Scene {
       this.mobileControls.destroy();
       this.projectileSystem.destroy();
       this.combatPresentation.destroy();
+      this.stageInteractions.destroy();
       this.combatGym?.destroy();
     });
     this.player = new Fighter(this, fighterDefinitions[this.playerFighterId], this.getPlayerSpawnPoint(), 'player');
@@ -475,6 +479,8 @@ export class BattleScene extends Phaser.Scene {
           : this.tryStartAttackWithFx(enemy, enemyIntent.attackKind);
         if (!didStart && this.mode === 'waves') {
           this.encounterDirector?.releaseAttack(enemy.instanceId);
+        } else if (didStart && enemyIntent.stageInteractionTriggerId) {
+          this.stageInteractions.trigger(enemyIntent.stageInteractionTriggerId);
         }
       }
     }
@@ -489,6 +495,16 @@ export class BattleScene extends Phaser.Scene {
       } else if (this.mode === 'test') {
         enemy.update(deltaSeconds, 0, 0, this.arenaBounds, { allowManaRegen });
       }
+    }
+
+    if (this.mode === 'waves') {
+      this.handleStageInteractionEvents(this.stageInteractions.update(
+        simulationDeltaMs,
+        this.encounterDirector?.getPhase() === 'active',
+        this.player,
+        [this.player, ...this.getCombatEnemies()],
+        this.cameras.main.worldView,
+      ));
     }
 
     this.presentPendingAttackStart(this.player);
@@ -858,6 +874,7 @@ export class BattleScene extends Phaser.Scene {
       const section = this.waveStage.sections[this.waveIndex];
       if (section) this.focusWaveCamera(section, 0);
       this.clearWaveEnemies();
+      if (section) this.stageInteractions.loadSection(section);
       this.waveEnemies = this.createWaveEnemiesForCurrentSection();
       this.syncPrimaryEnemy();
       for (const enemy of this.waveEnemies) {
@@ -999,6 +1016,35 @@ export class BattleScene extends Phaser.Scene {
     enemy.setRolePresentation(presentation.cue, presentation.tint);
   }
 
+  private handleStageInteractionEvents(events: readonly WaveStageInteractionEvent[]): void {
+    for (const event of events) {
+      if (event.type === 'pickup_collected') {
+        this.player.restoreHealth(Math.ceil(this.player.maxHp * event.definition.healthRatio));
+        this.player.restoreMana(Math.ceil(this.player.maxMana * event.definition.manaRatio));
+        continue;
+      }
+
+      const actor = event.actor;
+      const isForeman = this.getWaveSpawnForEnemy(actor)?.aiProfile === 'scrap_foreman';
+      const sourceFacing = actor.x >= event.definition.x ? 'right' : 'left';
+      actor.receiveHit({
+        damage: isForeman ? Math.ceil(event.definition.damage * 1.5) : event.definition.damage,
+        hitstunMs: isForeman ? 0 : 360,
+        knockbackX: event.definition.knockback,
+        knockbackY: Math.sign(actor.y - event.definition.y || 1) * event.definition.knockback * 0.45,
+        sourceFacing,
+        hitReaction: isForeman ? 'knockdown' : 'hitstun',
+      });
+      if (actor.faction === 'enemy') {
+        const controller = this.getControllerForEnemy(actor);
+        controller.notifyStageHazardHit();
+        this.projectileSystem.removeByOwner(actor.instanceId);
+        this.encounterDirector?.releaseAttack(actor.instanceId);
+        this.applyEnemyRolePresentation(actor, controller);
+      }
+    }
+  }
+
   private isEnemyVisibleForAttack(enemy: Fighter): boolean {
     return this.isWaveEnemyCombatActive(enemy) && isWaveActorVisible(enemy, this.cameras.main.worldView);
   }
@@ -1034,6 +1080,7 @@ export class BattleScene extends Phaser.Scene {
     this.projectileSystem.destroy();
     this.spawnedProjectileAttackInstances.clear();
     this.combatPresentation.clearTransientEffects();
+    this.stageInteractions.clear();
   }
 
   private resolveWaveVictory(): void {
@@ -1069,7 +1116,8 @@ export class BattleScene extends Phaser.Scene {
     const debugText = this.debugEnabled && this.encounterDirector
       ? `\n${this.encounterDirector.getDebugLabel()}`
       : '';
-    this.modeText.setText(`${this.waveStage.title} ${this.waveIndex + 1}/${this.waveStage.sections.length} | ${sectionTitle}${debugText}`);
+    const midbossTag = this.waveStage.sections[this.waveIndex]?.enemies.some((spawn) => spawn.aiProfile) ? 'MIDBOSS · ' : '';
+    this.modeText.setText(`${this.waveStage.title} ${this.waveIndex + 1}/${this.waveStage.sections.length} | ${midbossTag}${sectionTitle}${debugText}`);
   }
 
   private renderArena(): void {
@@ -1360,6 +1408,8 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private describeSectionEncounter(section: StageSectionDefinition): string {
+    const midboss = section.enemies.find((spawn) => spawn.aiProfile === 'scrap_foreman');
+    if (midboss) return `MIDBOSS · ${midboss.labelOverride ?? 'Acting Foreman'}`;
     const enemyCount = section.enemies.length;
     if (enemyCount <= 1) {
       return 'Single enemy encounter';
@@ -1382,9 +1432,9 @@ export class BattleScene extends Phaser.Scene {
       occupiedPositions.push(runtimeSpawn);
       const waveDefinition = {
         ...fighterDefinitions[spawn.fighterId],
-        label: section.enemies.length > 1
+        label: spawn.labelOverride ?? (section.enemies.length > 1
           ? `${fighterDefinitions[spawn.fighterId].label} ${index + 1}`
-          : fighterDefinitions[spawn.fighterId].label,
+          : fighterDefinitions[spawn.fighterId].label),
         maxHp: spawn.hpOverride ?? fighterDefinitions[spawn.fighterId].maxHp,
         moveSpeed: spawn.moveSpeedOverride ?? fighterDefinitions[spawn.fighterId].moveSpeed,
       };
@@ -1396,7 +1446,7 @@ export class BattleScene extends Phaser.Scene {
       enemy.setCombatResponse('invulnerable');
       enemy.setStatusNote('ENTRY');
       enemy.container.setVisible(spawn.entryDelayMs === 0);
-      const controller = new EnemyController(spawn.roleId, enemy.instanceId);
+      const controller = new EnemyController(spawn.roleId, enemy.instanceId, spawn.aiProfile, spawn.stageInteractionId);
       this.waveEnemyControllers.set(enemy.instanceId, controller);
       const role = getEnemyRoleContract(spawn.roleId);
       enemy.setRolePresentation(role.label.toUpperCase());
@@ -1551,7 +1601,16 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private getHudEnemy(): Fighter | null {
+    const midboss = this.waveEnemies.find((enemy) => (
+      this.getWaveSpawnForEnemy(enemy)?.aiProfile === 'scrap_foreman' && enemy.state !== 'dead'
+    ));
+    if (midboss) return midboss;
     return this.getPreferredEnemyTarget() ?? this.enemy;
+  }
+
+  private getWaveSpawnForEnemy(enemy: Fighter): StageEnemySpawnDefinition | undefined {
+    const spawnId = this.waveEnemyEntries.get(enemy.instanceId)?.spawnId;
+    return this.waveStage.sections[this.waveIndex]?.enemies.find((spawn) => spawn.id === spawnId);
   }
 
   private getViewportWidth(): number {

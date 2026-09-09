@@ -4,7 +4,7 @@ import type { EncounterPressureChannel } from '../core/EncounterDirector';
 import { getEnemyRoleContract, resolveEnemyRoleId, type EnemyRoleId } from './EnemyRoles';
 
 export type EnemyAiState = 'idle' | 'approach' | 'flank' | 'telegraph' | 'attack' | 'recover'
-  | 'reposition' | 'comic_whiff' | 'comic_crash' | 'comic_miscast' | 'armor_break';
+  | 'reposition' | 'comic_whiff' | 'comic_crash' | 'comic_miscast' | 'comic_safety' | 'armor_break';
 export type EnemyAttackKind = 'basic' | 'special';
 export type EnemyAttackPermission = (kind: EnemyAttackKind) => boolean;
 
@@ -14,6 +14,7 @@ export type EnemyIntent = {
   attackPressed: boolean;
   attackKind: EnemyAttackKind;
   attackId?: string;
+  stageInteractionTriggerId?: string;
   state: EnemyAiState;
 };
 
@@ -52,8 +53,14 @@ export class EnemyController {
   private zonerRangedCommitments = 0;
   private heavyArmorContacts = 0;
   private heavyArmorBroken = false;
+  private foremanPatternStep = 0;
 
-  constructor(roleId?: EnemyRoleId, seed = 1) {
+  constructor(
+    roleId?: EnemyRoleId,
+    seed = 1,
+    private readonly aiProfile?: 'scrap_foreman',
+    private readonly stageInteractionId?: string,
+  ) {
     this.configuredRoleId = roleId;
     this.flankLaneSide = seed % 2 === 0 ? -1 : 1;
   }
@@ -63,6 +70,7 @@ export class EnemyController {
   }
 
   getPressureChannel(kind: EnemyAttackKind, actor?: Pick<EnemyRoleActor, 'id'>): EncounterPressureChannel {
+    if (this.aiProfile === 'scrap_foreman' && kind === 'special') return 'disruption';
     return getEnemyRoleContract(this.getRoleId(actor)).pressureChannels[kind];
   }
 
@@ -91,6 +99,12 @@ export class EnemyController {
     }
   }
 
+  notifyStageHazardHit(): void {
+    if (this.aiProfile !== 'scrap_foreman') return;
+    this.foremanPatternStep = 0;
+    this.enterRoleState('comic_safety', 1000);
+  }
+
   /** Returns true exactly once when a heavy loses its armor. */
   notifyArmoredContact(actor?: Pick<EnemyRoleActor, 'id'>): boolean {
     if (this.getRoleId(actor) !== 'heavy' || this.heavyArmorBroken) return false;
@@ -103,6 +117,13 @@ export class EnemyController {
 
   getPresentation(actor: Pick<EnemyRoleActor, 'id' | 'getCurrentAttack' | 'getAttackPhase'>): EnemyRolePresentation {
     const roleId = this.getRoleId(actor);
+    if (this.roleState === 'comic_safety') return { cue: 'SAFETY LAST!', tint: 0x9de06f };
+    const attack = actor.getCurrentAttack();
+    if (this.aiProfile === 'scrap_foreman' && attack && actor.getAttackPhase() === 'startup') {
+      const cue = attack.id === 'foreman_clipboard_check' ? 'CLIPBOARD!'
+        : attack.id === 'foreman_forklift_charge' ? 'FORKLIFT →' : 'STEAM DRILL!';
+      return { cue, tint: attack.id === 'foreman_steam_whistle' ? 0x9de06f : 0xffb259 };
+    }
     if (roleId === 'heavy' && !this.heavyArmorBroken) {
       return { cue: `ARMOR ${'◆'.repeat(HEAVY_ARMOR_CONTACTS - this.heavyArmorContacts)}`, tint: 0xffc15c };
     }
@@ -110,7 +131,6 @@ export class EnemyController {
     if (this.roleState === 'comic_whiff') return { cue: 'WHOOPS!', tint: 0xffd166 };
     if (this.roleState === 'comic_crash') return { cue: 'CRASH!', tint: 0xff7043 };
     if (this.roleState === 'comic_miscast') return { cue: 'DUD!', tint: 0xb892ff };
-    const attack = actor.getCurrentAttack();
     if (attack?.id === 'scrap_flanker_charge' && actor.getAttackPhase() === 'startup') {
       return { cue: 'CHARGE →', tint: 0xffa62b };
     }
@@ -123,12 +143,13 @@ export class EnemyController {
 
   getDebugSnapshot(actor?: Pick<EnemyRoleActor, 'id'>): Readonly<{
     roleId: EnemyRoleId; state: EnemyAiState | null; armorContacts: number;
-    armorBroken: boolean; rangedCommitments: number;
+    armorBroken: boolean; rangedCommitments: number; aiProfile?: 'scrap_foreman'; foremanPatternStep: number;
   }> {
     return {
       roleId: this.getRoleId(actor), state: this.roleState,
       armorContacts: this.heavyArmorContacts, armorBroken: this.heavyArmorBroken,
       rangedCommitments: this.zonerRangedCommitments,
+      aiProfile: this.aiProfile, foremanPatternStep: this.foremanPatternStep,
     };
   }
 
@@ -159,6 +180,8 @@ export class EnemyController {
       return { ...IDLE_INTENT, state: 'recover' };
     }
 
+    if (this.aiProfile === 'scrap_foreman') return this.updateForeman(enemy, target, requestAttack);
+
     switch (this.getRoleId(enemy)) {
       case 'flanker': return this.updateFlanker(enemy, target, requestAttack);
       case 'heavy': return this.updateHeavy(enemy, target, requestAttack);
@@ -184,6 +207,12 @@ export class EnemyController {
     if (enemy.state === 'hitstun' || enemy.state === 'dead') return;
 
     const roleId = this.getRoleId(enemy);
+    if (this.aiProfile === 'scrap_foreman' && [
+      'foreman_clipboard_check', 'foreman_forklift_charge', 'foreman_steam_whistle',
+    ].includes(finishedAttackId)) {
+      this.foremanPatternStep = (this.foremanPatternStep + 1) % 3;
+      return;
+    }
     if (roleId === 'pursuer' && finishedAttackId === 'pigeon_peck' && !didConnect) {
       this.enterRoleState('comic_whiff', 560);
     } else if (roleId === 'flanker' && finishedAttackId === 'scrap_flanker_charge') {
@@ -304,6 +333,61 @@ export class EnemyController {
         : absX > contract.preferredDistance.maxX ? Math.sign(deltaX) * 0.66 : 0,
       moveY: absY > 34 ? Math.sign(deltaY) * 0.68 : 0,
       attackPressed: false, attackKind: 'special', state: 'approach',
+    };
+  }
+
+  private updateForeman(enemy: EnemyRoleActor, target: EnemyRoleActor,
+    requestAttack: EnemyAttackPermission): EnemyIntent {
+    const deltaX = target.x - enemy.x;
+    const deltaY = target.y - enemy.y;
+    const absX = Math.abs(deltaX);
+    const absY = Math.abs(deltaY);
+
+    if (this.foremanPatternStep === 0) {
+      if (target.isGrounded && absX <= 92 && absY <= 32 && requestAttack('basic')) {
+        return {
+          ...IDLE_INTENT, attackPressed: true, attackKind: 'basic',
+          attackId: 'foreman_clipboard_check', state: 'telegraph',
+        };
+      }
+      return {
+        ...IDLE_INTENT,
+        moveX: absX > 70 ? Math.sign(deltaX) * 0.68 : 0,
+        moveY: absY > 28 ? Math.sign(deltaY) * 0.58 : 0,
+        state: 'approach',
+      };
+    }
+
+    if (this.foremanPatternStep === 1) {
+      const chargeReady = target.isGrounded && absX >= 140 && absX <= 250 && absY <= 24;
+      if (chargeReady && requestAttack('special')) {
+        return {
+          ...IDLE_INTENT, attackPressed: true, attackKind: 'special',
+          attackId: 'foreman_forklift_charge', state: 'telegraph',
+        };
+      }
+      const desiredX = target.x - Math.sign(deltaX || 1) * 184;
+      return {
+        ...IDLE_INTENT,
+        moveX: Math.abs(desiredX - enemy.x) > 18 ? Math.sign(desiredX - enemy.x) * 0.66 : 0,
+        moveY: absY > 24 ? Math.sign(deltaY) * 0.58 : 0,
+        state: 'reposition',
+      };
+    }
+
+    const steamReady = target.isGrounded && absX >= 90 && absX <= 300 && absY <= 42;
+    if (steamReady && requestAttack('special')) {
+      return {
+        ...IDLE_INTENT, attackPressed: true, attackKind: 'special',
+        attackId: 'foreman_steam_whistle', stageInteractionTriggerId: this.stageInteractionId,
+        state: 'telegraph',
+      };
+    }
+    return {
+      ...IDLE_INTENT,
+      moveX: absX < 116 ? -Math.sign(deltaX || 1) * 0.62 : absX > 280 ? Math.sign(deltaX) * 0.62 : 0,
+      moveY: absY > 34 ? Math.sign(deltaY) * 0.52 : 0,
+      state: 'reposition',
     };
   }
 

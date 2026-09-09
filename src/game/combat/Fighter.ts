@@ -734,9 +734,12 @@ export class Fighter {
     this.updateVisuals();
   }
 
-  restoreMana(): void {
-    this.mana = this.maxMana;
+  restoreMana(amount = this.maxMana): number {
+    if (this.state === 'dead' || !Number.isFinite(amount) || amount <= 0) return 0;
+    const previousMana = this.mana;
+    this.mana = Phaser.Math.Clamp(this.mana + amount, 0, this.maxMana);
     this.updateVisuals();
+    return this.mana - previousMana;
   }
 
   restoreHealth(amount: number): number {

@@ -1,0 +1,54 @@
+PASS — 51 G6 runtime checks
+Real assets loaded and Main Menu created
+G6 ships exactly two data-driven interaction types
+Encounter 5 is a standalone authored midboss
+Encounter 1 reaches active combat
+Encounter 1 reaches its release beat
+Encounter 2 reaches active combat
+Encounter 2 reaches its release beat
+Zone route after Encounter 2 is traversable
+Encounter 3 reaches active combat
+Furnace vent begins with a deterministic safe delay
+Visible pressure leak enters its full warning phase
+Steam warning is rendered before danger becomes active
+Pressure leak deals its authored damage exactly after the warning
+One steam cycle cannot multi-hit the same fighter
+Steam changes fighter position as well as health
+Defeat clears active stage interactions
+Restart begins a clean run without inherited interaction state
+Encounter 1 reaches active combat
+Encounter 1 reaches its release beat
+Encounter 2 reaches active combat
+Encounter 2 reaches its release beat
+Zone route after Encounter 2 is traversable
+Encounter 3 reaches active combat
+Encounter 3 reaches its release beat
+Encounter 4 reaches active combat
+Union Lunchbox reproducibly restores its authored HP and mana
+Union Lunchbox can be collected only once
+Collected resource cannot be farmed by standing on it
+Encounter 4 reaches its release beat
+Encounter 5 reaches active combat
+Encounter 5 presents the priority target as a named midboss
+Midboss owns its dedicated AI profile
+Foreman opens with Clipboard Check
+Clipboard Check has a visible startup callout
+Clipboard Check reaches recovery end
+Foreman escalates into Forklift Charge
+Forklift Charge signals its direction
+Forklift Charge reaches recovery end
+Foreman completes the pattern with Steam Drill
+Steam Drill and the vent visibly warn before firing
+Commanded vent reaches its active phase
+Foreman can be knocked down by his own stronger steam backfire
+Backfire produces a mechanical comedy punish window
+Midboss defeat clears its commanded hazard immediately
+Encounter 5 reaches its release beat
+Zone route after Encounter 5 is traversable
+Encounter 6 reaches active combat
+Encounter 6 reaches its release beat
+Encounter 7 reaches active combat
+Final encounter reaches victory
+Victory leaves no interaction state behind
+Scripted diagnostics; manual feel and device acceptance remain separate.
+[]

@@ -6,6 +6,37 @@ import { FLAT_ARENA_VISUAL_CONTRACT } from '../core/StageVisuals';
 
 export type WaveStageId = 'junkyard_run';
 export type EnemyEntryDirection = 'left' | 'right' | 'upper_lane' | 'lower_lane';
+export type EnemyAiProfile = 'scrap_foreman';
+
+export type SteamVentInteractionDefinition = Readonly<{
+  id: string;
+  type: 'steam_vent';
+  x: number;
+  y: number;
+  radiusX: number;
+  radiusY: number;
+  trigger: 'periodic' | 'midboss_command';
+  initialDelayMs: number;
+  telegraphMs: number;
+  activeMs: number;
+  cooldownMs: number;
+  damage: number;
+  knockback: number;
+  label: string;
+}>;
+
+export type ResourcePickupInteractionDefinition = Readonly<{
+  id: string;
+  type: 'resource_pickup';
+  x: number;
+  y: number;
+  collectRadius: number;
+  healthRatio: number;
+  manaRatio: number;
+  label: string;
+}>;
+
+export type StageInteractionDefinition = SteamVentInteractionDefinition | ResourcePickupInteractionDefinition;
 
 export type StageEnemySpawnDefinition = {
   id: string;
@@ -17,6 +48,9 @@ export type StageEnemySpawnDefinition = {
   entryDelayMs: number;
   hpOverride?: number;
   moveSpeedOverride?: number;
+  labelOverride?: string;
+  aiProfile?: EnemyAiProfile;
+  stageInteractionId?: string;
 };
 
 export type EncounterCompletionRule =
@@ -38,6 +72,7 @@ export type StageSectionDefinition = {
   pressureBudget: EncounterPressureBudget;
   completionRule: EncounterCompletionRule;
   clearReward?: Readonly<{ healthRatio: number; label: string }>;
+  interactions?: readonly StageInteractionDefinition[];
   enemies: StageEnemySpawnDefinition[];
 };
 
@@ -114,6 +149,11 @@ export const junkyardRunStage: StageDefinition = {
         { id: 'wizard-crossfire', fighterId: 'discount_wizard', roleId: 'zoner', spawnX: 1580, spawnY: 354,
           entryDirection: 'upper_lane', entryDelayMs: 1000, hpOverride: 46, moveSpeedOverride: 136 },
       ],
+      interactions: [{
+        id: 'crossfire-steam', type: 'steam_vent', x: 1435, y: 394, radiusX: 68, radiusY: 34,
+        trigger: 'periodic', initialDelayMs: 1800, telegraphMs: 900, activeMs: 260, cooldownMs: 4600,
+        damage: 8, knockback: 150, label: 'PRESSURE LEAK',
+      }],
     },
     {
       id: 'armor-lesson', title: 'Armor Lesson', objective: 'Strip armor while managing pursuit.', zoneId: 'furnace-yard',
@@ -127,21 +167,27 @@ export const junkyardRunStage: StageDefinition = {
         { id: 'pigeon-lesson-late', fighterId: 'angry_pigeon', roleId: 'pursuer', spawnX: 1595, spawnY: 430,
           entryDirection: 'lower_lane', entryDelayMs: 1100, hpOverride: 28, moveSpeedOverride: 114 },
       ],
+      interactions: [{
+        id: 'union-lunchbox', type: 'resource_pickup', x: 1190, y: 426, collectRadius: 48,
+        healthRatio: 0.18, manaRatio: 0.25, label: 'Union Lunchbox',
+      }],
     },
     {
-      id: 'foreman-audition', title: 'Foreman Audition', objective: 'Punish two long commitments.', zoneId: 'furnace-yard',
+      id: 'foreman-audition', title: 'Foreman Audition', objective: 'Read the Foreman, then let safety fail him.', zoneId: 'furnace-yard',
       bounds: FURNACE_YARD_BOUNDS,
       travelBounds: { minX: 984, maxX: 2064, ...JUNKYARD_WALKABLE_BAND }, arrivalTriggerX: 1978,
-      pressureBudget: { meleeTokens: 1, rangedTokens: 0, disruptionBudget: 1,
-        burst: { periodMs: 4000, durationMs: 1900 } }, completionRule: DEFEAT_ALL,
+      pressureBudget: { meleeTokens: 1, rangedTokens: 0, disruptionBudget: 1 },
+      completionRule: { type: 'defeat_priority', prioritySpawnId: 'acting-foreman' },
       enemies: [
-        { id: 'pigeon-foreman', fighterId: 'angry_pigeon', roleId: 'pursuer', spawnX: 1280, spawnY: 338,
-          entryDirection: 'right', entryDelayMs: 0, hpOverride: 30, moveSpeedOverride: 116 },
-        { id: 'flanker-elite', fighterId: 'scrap_flanker', roleId: 'flanker', spawnX: 1460, spawnY: 430,
-          entryDirection: 'lower_lane', entryDelayMs: 550, hpOverride: 44, moveSpeedOverride: 182 },
-        { id: 'heavy-elite', fighterId: 'scrap_heavy', roleId: 'heavy', spawnX: 1600, spawnY: 354,
-          entryDirection: 'upper_lane', entryDelayMs: 1250, hpOverride: 84, moveSpeedOverride: 118 },
+        { id: 'acting-foreman', fighterId: 'scrap_heavy', roleId: 'heavy', spawnX: 1510, spawnY: 372,
+          entryDirection: 'right', entryDelayMs: 0, hpOverride: 132, moveSpeedOverride: 132,
+          labelOverride: 'Acting Foreman', aiProfile: 'scrap_foreman', stageInteractionId: 'foreman-steam' },
       ],
+      interactions: [{
+        id: 'foreman-steam', type: 'steam_vent', x: 1470, y: 402, radiusX: 82, radiusY: 38,
+        trigger: 'midboss_command', initialDelayMs: 0, telegraphMs: 1050, activeMs: 300, cooldownMs: 2600,
+        damage: 9, knockback: 175, label: 'MANDATORY SAFETY DRILL',
+      }],
       clearReward: { healthRatio: 0.3, label: 'Questionable First-Aid Can' },
     },
     {

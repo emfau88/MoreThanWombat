@@ -5,6 +5,7 @@ import { getPressureBudgetViolations } from './EncounterDirector';
 export const MINIMUM_WAVE_SPAWN_DISTANCE = 96;
 export const MAXIMUM_WAVE_SPAWN_DISTANCE = 480;
 export const MAXIMUM_WAVE_ENEMIES = 4;
+export const MAXIMUM_STAGE_INTERACTIONS = 2;
 
 /**
  * Validates static Wave data without needing a Phaser scene. These rules keep
@@ -101,6 +102,34 @@ export function getWaveStageValidationViolations(stage: StageDefinition): string
         violations.push(`${section.id}: clear reward label must not be empty`);
       }
     }
+    const interactionIds = new Set<string>();
+    if ((section.interactions?.length ?? 0) > MAXIMUM_STAGE_INTERACTIONS) {
+      violations.push(`${section.id}: encounter exceeds the stage interaction budget`);
+    }
+    for (const interaction of section.interactions ?? []) {
+      if (!interaction.id || interactionIds.has(interaction.id)) {
+        violations.push(`${section.id}: stage interaction ids must be unique`);
+      }
+      interactionIds.add(interaction.id);
+      if (interaction.x < bounds.minX || interaction.x > bounds.maxX
+        || interaction.y < bounds.minY || interaction.y > bounds.maxY) {
+        violations.push(`${section.id}: stage interactions must stay inside combat bounds`);
+      }
+      if (!interaction.label.trim()) violations.push(`${section.id}: stage interaction label must not be empty`);
+      if (interaction.type === 'steam_vent') {
+        const positiveValues = [interaction.radiusX, interaction.radiusY, interaction.telegraphMs,
+          interaction.activeMs, interaction.cooldownMs, interaction.damage, interaction.knockback];
+        if (positiveValues.some((value) => !Number.isFinite(value) || value <= 0)
+          || !Number.isFinite(interaction.initialDelayMs) || interaction.initialDelayMs < 0) {
+          violations.push(`${section.id}: steam vent values must be finite with positive size, timing and impact`);
+        }
+      } else if (!Number.isFinite(interaction.collectRadius) || interaction.collectRadius <= 0
+        || !Number.isFinite(interaction.healthRatio) || interaction.healthRatio < 0 || interaction.healthRatio > 1
+        || !Number.isFinite(interaction.manaRatio) || interaction.manaRatio < 0 || interaction.manaRatio > 1
+        || interaction.healthRatio + interaction.manaRatio <= 0) {
+        violations.push(`${section.id}: resource pickup values must define a positive bounded reward and radius`);
+      }
+    }
     const spawnIds = new Set<string>();
     for (const spawn of section.enemies) {
       if (!spawn.id || spawnIds.has(spawn.id)) violations.push(`${section.id}: enemy spawn ids must be unique`);
@@ -118,6 +147,14 @@ export function getWaveStageValidationViolations(stage: StageDefinition): string
       }
       if (spawn.spawnX < bounds.minX || spawn.spawnX > bounds.maxX || spawn.spawnY < bounds.minY || spawn.spawnY > bounds.maxY) {
         violations.push(`${section.id}: enemy spawn must stay inside its section bounds`);
+      }
+      if (spawn.aiProfile === 'scrap_foreman') {
+        const interaction = section.interactions?.find((candidate) => candidate.id === spawn.stageInteractionId);
+        if (!interaction || interaction.type !== 'steam_vent' || interaction.trigger !== 'midboss_command') {
+          violations.push(`${section.id}: scrap foreman must reference a command-triggered steam vent`);
+        }
+      } else if (spawn.stageInteractionId) {
+        violations.push(`${section.id}: only an authored AI profile may command a stage interaction`);
       }
 
       const distance = Math.hypot(spawn.spawnX - playerSpawnX, spawn.spawnY - playerSpawnY);

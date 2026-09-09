@@ -675,6 +675,54 @@ export const scrapHeavyBash: AttackDefinition = {
   timeline: { feedbackClass: 'heavy' },
 };
 
+export const foremanClipboardCheck: AttackDefinition = {
+  id: 'foreman_clipboard_check',
+  label: 'Clipboard Compliance Check',
+  startupMs: 190,
+  activeMs: 100,
+  recoveryMs: 260,
+  damage: 10,
+  hitstunMs: 240,
+  knockbackX: 170,
+  knockbackY: 24,
+  hitbox: { offsetX: 20, offsetY: -58, width: 82, height: 38 },
+  canTurnDuringAttack: false,
+  timeline: { feedbackClass: 'medium' },
+};
+
+export const foremanForkliftCharge: AttackDefinition = {
+  id: 'foreman_forklift_charge',
+  label: 'Forklift Certification Pending',
+  startupMs: 520,
+  activeMs: 220,
+  recoveryMs: 620,
+  damage: 15,
+  hitstunMs: 350,
+  knockbackX: 300,
+  knockbackY: 42,
+  hitbox: { offsetX: 18, offsetY: -60, width: 112, height: 48 },
+  forwardTravelSpeed: 310,
+  canTurnDuringAttack: false,
+  hitReaction: 'knockdown',
+  guardBreak: true,
+  timeline: { feedbackClass: 'heavy' },
+};
+
+export const foremanSteamWhistle: AttackDefinition = {
+  id: 'foreman_steam_whistle',
+  label: 'Mandatory Safety Drill',
+  startupMs: 560,
+  activeMs: 80,
+  recoveryMs: 480,
+  damage: 0,
+  hitstunMs: 0,
+  knockbackX: 0,
+  knockbackY: 0,
+  hitbox: { offsetX: 10000, offsetY: 10000, width: 1, height: 1 },
+  canTurnDuringAttack: false,
+  timeline: { feedbackClass: 'medium' },
+};
+
 export const discountEnemyMiscast: AttackDefinition = {
   id: 'discount_enemy_miscast',
   label: 'Harmless Discount Dud',
@@ -755,6 +803,9 @@ export const attacksById: Record<string, AttackDefinition> = {
   [busterUnderbiteBulldozer.id]: busterUnderbiteBulldozer,
   [scrapFlankerCharge.id]: scrapFlankerCharge,
   [scrapHeavyBash.id]: scrapHeavyBash,
+  [foremanClipboardCheck.id]: foremanClipboardCheck,
+  [foremanForkliftCharge.id]: foremanForkliftCharge,
+  [foremanSteamWhistle.id]: foremanSteamWhistle,
   [discountEnemyMiscast.id]: discountEnemyMiscast,
   [airBonk.id]: airBonk,
 };

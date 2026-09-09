@@ -36,10 +36,12 @@ try {
   battle.player.setCombatResponse('invulnerable');
   check(battle.waveStage.sections.length === 7, 'Stage owns exactly seven data-driven encounters');
   check(new Set(battle.waveStage.sections.map((section) => section.objective)).size === 7, 'Every encounter has a distinct player objective');
-  check(battle.waveStage.sections.every((section) => section.completionRule.type === 'defeat_all'), 'All shipped G3 encounters use defeat_all');
+  check(battle.waveStage.sections.filter((section) => section.completionRule.type === 'defeat_all').length === 6
+    && battle.waveStage.sections[4].completionRule.type === 'defeat_priority',
+  'Six encounters clear crowds and Encounter 5 clears its authored priority target');
   check(battle.waveStage.sections.every((section) => section.bounds.minY === 310 && section.bounds.maxY === 468),
     'Every Wave encounter is confined to the painted ground band');
-  check(battle.waveStage.sections.map((section) => section.enemies.length).join(',') === '1,3,3,3,3,4,4',
+  check(battle.waveStage.sections.map((section) => section.enemies.length).join(',') === '1,3,3,3,1,4,4',
     'Encounter curve mixes crowds of weak enemies with selected stronger roles');
 
   let zoneTravelCount = 0;
@@ -123,7 +125,8 @@ try {
   check(subWaveCount === 4, 'Four same-zone transitions run without travel');
   check(zoneTravelCount === 2, 'Travel occurs exactly twice between three zones');
   check(battle.battleFlow.getResult() === 'victory', 'Seventh encounter produces Stage victory');
-  check(battle.waveEnemies.length === 0 && battle.projectileSystem.getActiveOwnerIds().length === 0, 'Victory leaves no enemy or projectile softlock');
+  check(battle.waveEnemies.length === 0 && battle.projectileSystem.getActiveOwnerIds().length === 0
+    && battle.stageInteractions.getCount() === 0, 'Victory leaves no enemy, projectile or stage-interaction softlock');
 
   game.loop.start(game.step.bind(game));
   await sleep(100);

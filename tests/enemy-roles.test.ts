@@ -202,3 +202,45 @@ test('Zoner turns every third approved ranged commitment into a harmless dud and
   assert.equal(controller.update(wizard, target, 1 / 60).state, 'comic_miscast');
   assert.equal(controller.getPresentation(wizard).cue, 'DUD!');
 });
+
+test('G6 Foreman runs a readable three-step pattern and exposes his own safety failure', () => {
+  const target = actor('wombat', 90, 0, 0);
+  const foreman = actor('scrap_heavy', 5, 80, 0);
+  const controller = new EnemyController('heavy', 1, 'scrap_foreman', 'foreman-steam');
+
+  const clipboard = controller.update(foreman, target, 1 / 60, () => true);
+  assert.equal(clipboard.attackId, 'foreman_clipboard_check');
+  assert.equal(controller.getPressureChannel(clipboard.attackKind, foreman), 'melee');
+  foreman.attack = { id: clipboard.attackId };
+  foreman.phase = 'startup';
+  controller.update(foreman, target, 1 / 60);
+  assert.equal(controller.getPresentation(foreman).cue, 'CLIPBOARD!', 'boss telegraph takes priority over armor status');
+  foreman.attack = null;
+  foreman.phase = 'none';
+  controller.update(foreman, target, 1 / 60);
+
+  foreman.x = 184;
+  const charge = controller.update(foreman, target, 1 / 60, () => true);
+  assert.equal(charge.attackId, 'foreman_forklift_charge');
+  assert.equal(controller.getPressureChannel(charge.attackKind, foreman), 'disruption');
+  foreman.attack = { id: charge.attackId };
+  foreman.phase = 'startup';
+  controller.update(foreman, target, 1 / 60);
+  assert.equal(controller.getPresentation(foreman).cue, 'FORKLIFT →');
+  foreman.attack = null;
+  foreman.phase = 'none';
+  controller.update(foreman, target, 1 / 60);
+
+  foreman.x = 200;
+  const whistle = controller.update(foreman, target, 1 / 60, () => true);
+  assert.equal(whistle.attackId, 'foreman_steam_whistle');
+  assert.equal(whistle.stageInteractionTriggerId, 'foreman-steam');
+  foreman.attack = { id: whistle.attackId };
+  foreman.phase = 'startup';
+  controller.update(foreman, target, 1 / 60);
+  assert.equal(controller.getPresentation(foreman).cue, 'STEAM DRILL!');
+
+  controller.notifyStageHazardHit();
+  assert.equal(controller.getPresentation(foreman).cue, 'SAFETY LAST!');
+  assert.equal(controller.getDebugSnapshot(foreman).foremanPatternStep, 0);
+});
