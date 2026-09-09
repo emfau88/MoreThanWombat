@@ -2,16 +2,16 @@
 
 Last updated: 2026-09-09
 
-## Current handoff — G1–G6 implemented; G7 next
+## Current handoff — G1–G7 implemented; G8 next
 
 Read [plan 31](31_GAMEPLAY_AND_WAVE_COMPLETION_PLAN.md) first and the [G0 baseline with logs](qa/gameplay-baseline-2026-09-05/README.md) second. The current task is gameplay and Wave completion. The historical VFX-first recommendations and knockdown exclusion below do not override this plan.
 
 - Four normal players: Wombat, Discount Wizard, Budget Barbarian and Mara Breach. Normal Duel enemies: Pigeon and Wizard. Buster Bulldog and Reference Fighter are Gym-only prototypes, not normal Character Select options.
-- The current code passes Typecheck, **94/94 tests**, production build, the current G1–G6 browser suites, **6/6** character-sheet gates and VFX QA **6/6 + 5/5 + 4/4**. Character QA includes a prototype and is not a roster count or visual acceptance.
+- The current code passes Typecheck, **96/96 tests**, production build, the current G1–G7 browser suites, **6/6** character-sheet gates and VFX QA **6/6 + 5/5 + 4/4**. Character QA includes a prototype and is not a roster count or visual acceptance.
 - Junkyard Run has three zones and seven role-based encounters with a tested Director, safe visible entry, floor bounds, group camera framing, health rewards and phase-aware mana. No mana regeneration during safe travel, transition or results.
-- G4 supplies Guard/Evade, anti-stunlock and the complete Knockdown/Wake-up lifecycle. G5 supplies Run, four Dash Attacks, four three-step Basic-Chains and steerable Air Bonk. G6 supplies the two Stage-interaction types, deterministic lunchbox and Acting Foreman midboss. See the [G6 report](qa/g6-runtime-2026-09-09/README.md).
+- G4 supplies Guard/Evade, anti-stunlock and the complete Knockdown/Wake-up lifecycle. G5 supplies Run, four Dash Attacks, four three-step Basic-Chains and steerable Air Bonk. G6 supplies the two Stage-interaction types, deterministic lunchbox and Acting Foreman midboss. G7 supplies the two-phase Overtime Supervisor, phase-aware Boss HUD, lane lockdown, Shift Change and priority cleanup. See the [G7 report](qa/g7-runtime-2026-09-09/README.md).
 - Mobile follow-up: corrected FIT resizing, full landscape width, canvas sharpening and four action buttons enlarged by 10% with matching separate touch circles. Rotation and actual touch events pass browser emulation; [mobile evidence](qa/mobile-2026-09-05/README.md). Physical-device acceptance remains open.
-- Next: G7 replaces Encounter 7 with a standalone, two-phase Junkyard boss. No new player fighter or arena during G0–G9.
+- Next: G8 measures and tunes resources, encounter duration and complete-run balance. No new player fighter or arena during G0–G9.
 - Full interactive runs, balance, current Pages verification and two real-device classes remain open. Use the [run template](qa/gameplay-run-template.md); do not mark manual gates passed from unit tests.
 
 Everything below is retained as dated implementation history and system context. Older counts, roster descriptions and “next” lists are superseded by this update.

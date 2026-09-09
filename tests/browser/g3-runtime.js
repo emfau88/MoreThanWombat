@@ -36,12 +36,13 @@ try {
   battle.player.setCombatResponse('invulnerable');
   check(battle.waveStage.sections.length === 7, 'Stage owns exactly seven data-driven encounters');
   check(new Set(battle.waveStage.sections.map((section) => section.objective)).size === 7, 'Every encounter has a distinct player objective');
-  check(battle.waveStage.sections.filter((section) => section.completionRule.type === 'defeat_all').length === 6
-    && battle.waveStage.sections[4].completionRule.type === 'defeat_priority',
-  'Six encounters clear crowds and Encounter 5 clears its authored priority target');
+  check(battle.waveStage.sections.filter((section) => section.completionRule.type === 'defeat_all').length === 5
+    && battle.waveStage.sections[4].completionRule.type === 'defeat_priority'
+    && battle.waveStage.sections[6].completionRule.type === 'defeat_priority',
+  'Five encounters clear crowds while the midboss and final boss clear authored priority targets');
   check(battle.waveStage.sections.every((section) => section.bounds.minY === 310 && section.bounds.maxY === 468),
     'Every Wave encounter is confined to the painted ground band');
-  check(battle.waveStage.sections.map((section) => section.enemies.length).join(',') === '1,3,3,3,1,4,4',
+  check(battle.waveStage.sections.map((section) => section.enemies.length).join(',') === '1,3,3,3,1,4,2',
     'Encounter curve mixes crowds of weak enemies with selected stronger roles');
 
   let zoneTravelCount = 0;

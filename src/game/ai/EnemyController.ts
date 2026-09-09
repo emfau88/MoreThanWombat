@@ -1,10 +1,12 @@
 import type { CombatResponse } from '../combat/CombatResolver';
 import type { FighterFacing, FighterState, AttackPhase } from '../combat/Fighter';
 import type { EncounterPressureChannel } from '../core/EncounterDirector';
+import type { EnemyAiProfile } from '../data/stages';
 import { getEnemyRoleContract, resolveEnemyRoleId, type EnemyRoleId } from './EnemyRoles';
 
 export type EnemyAiState = 'idle' | 'approach' | 'flank' | 'telegraph' | 'attack' | 'recover'
-  | 'reposition' | 'comic_whiff' | 'comic_crash' | 'comic_miscast' | 'comic_safety' | 'armor_break';
+  | 'reposition' | 'comic_whiff' | 'comic_crash' | 'comic_miscast' | 'comic_safety' | 'armor_break'
+  | 'boss_phase_change' | 'boss_reposition';
 export type EnemyAttackKind = 'basic' | 'special';
 export type EnemyAttackPermission = (kind: EnemyAttackKind) => boolean;
 
@@ -15,6 +17,7 @@ export type EnemyIntent = {
   attackKind: EnemyAttackKind;
   attackId?: string;
   stageInteractionTriggerId?: string;
+  stageInteractionTriggerIds?: readonly string[];
   state: EnemyAiState;
 };
 
@@ -26,6 +29,8 @@ export type EnemyRoleActor = {
   facing: FighterFacing;
   state: FighterState;
   isGrounded: boolean;
+  hp: number;
+  maxHp: number;
   getCurrentAttack(): { id: string } | null;
   getAttackPhase(): AttackPhase;
 };
@@ -54,27 +59,40 @@ export class EnemyController {
   private heavyArmorContacts = 0;
   private heavyArmorBroken = false;
   private foremanPatternStep = 0;
+  private junkyardBossPhase: 1 | 2 = 1;
+  private junkyardBossPatternStep = 0;
+  private junkyardBossLaneIndex = 0;
+  private junkyardBossRepositionX = 0;
+  private junkyardBossRepositionY = 0;
 
   constructor(
     roleId?: EnemyRoleId,
     seed = 1,
-    private readonly aiProfile?: 'scrap_foreman',
-    private readonly stageInteractionId?: string,
+    private readonly aiProfile?: EnemyAiProfile,
+    stageInteractionIds?: string | readonly string[],
   ) {
     this.configuredRoleId = roleId;
     this.flankLaneSide = seed % 2 === 0 ? -1 : 1;
+    this.stageInteractionIds = typeof stageInteractionIds === 'string'
+      ? [stageInteractionIds]
+      : [...(stageInteractionIds ?? [])];
   }
+
+  private readonly stageInteractionIds: readonly string[];
 
   getRoleId(actor?: Pick<EnemyRoleActor, 'id'>): EnemyRoleId {
     return this.configuredRoleId ?? resolveEnemyRoleId(actor?.id ?? 'angry_pigeon');
   }
 
   getPressureChannel(kind: EnemyAttackKind, actor?: Pick<EnemyRoleActor, 'id'>): EncounterPressureChannel {
-    if (this.aiProfile === 'scrap_foreman' && kind === 'special') return 'disruption';
+    if ((this.aiProfile === 'scrap_foreman' || this.aiProfile === 'junkyard_boss') && kind === 'special') {
+      return 'disruption';
+    }
     return getEnemyRoleContract(this.getRoleId(actor)).pressureChannels[kind];
   }
 
   getCombatResponse(actor?: Pick<EnemyRoleActor, 'id'>): CombatResponse {
+    if (this.aiProfile === 'junkyard_boss' && this.roleState === 'boss_phase_change') return 'invulnerable';
     return this.getRoleId(actor) === 'heavy' && !this.heavyArmorBroken ? 'armor' : 'normal';
   }
 
@@ -100,9 +118,10 @@ export class EnemyController {
   }
 
   notifyStageHazardHit(): void {
-    if (this.aiProfile !== 'scrap_foreman') return;
-    this.foremanPatternStep = 0;
-    this.enterRoleState('comic_safety', 1000);
+    if (this.aiProfile === 'scrap_foreman') {
+      this.foremanPatternStep = 0;
+      this.enterRoleState('comic_safety', 1000);
+    }
   }
 
   /** Returns true exactly once when a heavy loses its armor. */
@@ -117,8 +136,15 @@ export class EnemyController {
 
   getPresentation(actor: Pick<EnemyRoleActor, 'id' | 'getCurrentAttack' | 'getAttackPhase'>): EnemyRolePresentation {
     const roleId = this.getRoleId(actor);
+    if (this.roleState === 'boss_phase_change') return { cue: 'OVERTIME!', tint: 0xff4f8b };
+    if (this.roleState === 'boss_reposition') return { cue: 'SHIFT CHANGE!', tint: 0x79e7ff };
     if (this.roleState === 'comic_safety') return { cue: 'SAFETY LAST!', tint: 0x9de06f };
     const attack = actor.getCurrentAttack();
+    if (this.aiProfile === 'junkyard_boss' && attack && actor.getAttackPhase() === 'startup') {
+      return attack.id === 'overtime_timecard_swipe'
+        ? { cue: 'TIMECARD!', tint: 0xffc15c }
+        : { cue: this.junkyardBossPhase === 1 ? 'LANE LOCK!' : 'FULL LOCKDOWN!', tint: 0xff4f8b };
+    }
     if (this.aiProfile === 'scrap_foreman' && attack && actor.getAttackPhase() === 'startup') {
       const cue = attack.id === 'foreman_clipboard_check' ? 'CLIPBOARD!'
         : attack.id === 'foreman_forklift_charge' ? 'FORKLIFT →' : 'STEAM DRILL!';
@@ -143,13 +169,15 @@ export class EnemyController {
 
   getDebugSnapshot(actor?: Pick<EnemyRoleActor, 'id'>): Readonly<{
     roleId: EnemyRoleId; state: EnemyAiState | null; armorContacts: number;
-    armorBroken: boolean; rangedCommitments: number; aiProfile?: 'scrap_foreman'; foremanPatternStep: number;
+    armorBroken: boolean; rangedCommitments: number; aiProfile?: EnemyAiProfile; foremanPatternStep: number;
+    junkyardBossPhase: 1 | 2; junkyardBossPatternStep: number;
   }> {
     return {
       roleId: this.getRoleId(actor), state: this.roleState,
       armorContacts: this.heavyArmorContacts, armorBroken: this.heavyArmorBroken,
       rangedCommitments: this.zonerRangedCommitments,
       aiProfile: this.aiProfile, foremanPatternStep: this.foremanPatternStep,
+      junkyardBossPhase: this.junkyardBossPhase, junkyardBossPatternStep: this.junkyardBossPatternStep,
     };
   }
 
@@ -168,10 +196,23 @@ export class EnemyController {
     const currentAttack = enemy.getCurrentAttack();
     if (currentAttack) return this.getActiveAttackIntent(enemy, currentAttack.id);
 
+    if (this.aiProfile === 'junkyard_boss' && this.junkyardBossPhase === 1
+      && enemy.maxHp > 0 && enemy.hp / enemy.maxHp <= 0.5) {
+      this.junkyardBossPhase = 2;
+      this.junkyardBossPatternStep = 0;
+      this.enterRoleState('boss_phase_change', 1050);
+    }
+
     if (this.roleState && this.roleStateRemainingMs > 0) {
+      const activeState = this.roleState;
       this.roleStateRemainingMs = Math.max(0, this.roleStateRemainingMs - deltaMs);
       const intent = this.getRoleStateIntent(enemy);
-      if (this.roleStateRemainingMs === 0) this.roleState = null;
+      if (this.roleStateRemainingMs === 0) {
+        this.roleState = null;
+        if (activeState === 'boss_reposition') {
+          this.junkyardBossPatternStep = (this.junkyardBossPatternStep + 1) % 3;
+        }
+      }
       return intent;
     }
 
@@ -181,6 +222,7 @@ export class EnemyController {
     }
 
     if (this.aiProfile === 'scrap_foreman') return this.updateForeman(enemy, target, requestAttack);
+    if (this.aiProfile === 'junkyard_boss') return this.updateJunkyardBoss(enemy, target, requestAttack);
 
     switch (this.getRoleId(enemy)) {
       case 'flanker': return this.updateFlanker(enemy, target, requestAttack);
@@ -213,6 +255,12 @@ export class EnemyController {
       this.foremanPatternStep = (this.foremanPatternStep + 1) % 3;
       return;
     }
+    if (this.aiProfile === 'junkyard_boss' && [
+      'overtime_timecard_swipe', 'overtime_lane_lockdown',
+    ].includes(finishedAttackId)) {
+      this.junkyardBossPatternStep = (this.junkyardBossPatternStep + 1) % 3;
+      return;
+    }
     if (roleId === 'pursuer' && finishedAttackId === 'pigeon_peck' && !didConnect) {
       this.enterRoleState('comic_whiff', 560);
     } else if (roleId === 'flanker' && finishedAttackId === 'scrap_flanker_charge') {
@@ -238,12 +286,15 @@ export class EnemyController {
   }
 
   private getRoleStateIntent(enemy: EnemyRoleActor): EnemyIntent {
-    const moveX = this.roleState === 'comic_whiff'
+    const moveX = this.roleState === 'boss_reposition'
+      ? this.junkyardBossRepositionX
+      : this.roleState === 'comic_whiff'
       ? (enemy.facing === 'right' ? 0.34 : -0.34)
       : this.roleState === 'comic_crash'
         ? (enemy.facing === 'right' ? 0.12 : -0.12)
         : 0;
-    return { ...IDLE_INTENT, moveX, state: this.roleState ?? 'idle' };
+    const moveY = this.roleState === 'boss_reposition' ? this.junkyardBossRepositionY : 0;
+    return { ...IDLE_INTENT, moveX, moveY, state: this.roleState ?? 'idle' };
   }
 
   private updatePursuer(enemy: EnemyRoleActor, target: EnemyRoleActor,
@@ -379,7 +430,7 @@ export class EnemyController {
     if (steamReady && requestAttack('special')) {
       return {
         ...IDLE_INTENT, attackPressed: true, attackKind: 'special',
-        attackId: 'foreman_steam_whistle', stageInteractionTriggerId: this.stageInteractionId,
+        attackId: 'foreman_steam_whistle', stageInteractionTriggerId: this.stageInteractionIds[0],
         state: 'telegraph',
       };
     }
@@ -389,6 +440,59 @@ export class EnemyController {
       moveY: absY > 34 ? Math.sign(deltaY) * 0.52 : 0,
       state: 'reposition',
     };
+  }
+
+  private updateJunkyardBoss(enemy: EnemyRoleActor, target: EnemyRoleActor,
+    requestAttack: EnemyAttackPermission): EnemyIntent {
+    const deltaX = target.x - enemy.x;
+    const deltaY = target.y - enemy.y;
+    const absX = Math.abs(deltaX);
+    const absY = Math.abs(deltaY);
+    const phaseTwo = this.junkyardBossPhase === 2;
+    const action = phaseTwo
+      ? ['reposition', 'melee', 'lockdown'][this.junkyardBossPatternStep]
+      : ['melee', 'lockdown', 'reposition'][this.junkyardBossPatternStep];
+
+    if (action === 'melee') {
+      if (target.isGrounded && absX <= 98 && absY <= 34 && requestAttack('basic')) {
+        return {
+          ...IDLE_INTENT, attackPressed: true, attackKind: 'basic',
+          attackId: 'overtime_timecard_swipe', state: 'telegraph',
+        };
+      }
+      return {
+        ...IDLE_INTENT,
+        moveX: absX > 76 ? Math.sign(deltaX) * (phaseTwo ? 0.82 : 0.66) : 0,
+        moveY: absY > 28 ? Math.sign(deltaY) * 0.62 : 0,
+        state: 'approach',
+      };
+    }
+
+    if (action === 'lockdown') {
+      if (target.isGrounded && absX >= 130 && absX <= 340 && absY <= 90 && requestAttack('special')) {
+        const laneId = this.stageInteractionIds[this.junkyardBossLaneIndex % Math.max(1, this.stageInteractionIds.length)];
+        const triggerIds = phaseTwo ? this.stageInteractionIds : laneId ? [laneId] : [];
+        this.junkyardBossLaneIndex += 1;
+        return {
+          ...IDLE_INTENT, attackPressed: true, attackKind: 'special',
+          attackId: 'overtime_lane_lockdown', stageInteractionTriggerIds: triggerIds,
+          state: 'telegraph',
+        };
+      }
+      const desiredX = target.x - Math.sign(deltaX || 1) * 210;
+      return {
+        ...IDLE_INTENT,
+        moveX: Math.abs(desiredX - enemy.x) > 18 ? Math.sign(desiredX - enemy.x) * 0.72 : 0,
+        moveY: absY > 60 ? Math.sign(deltaY) * 0.58 : 0,
+        state: 'reposition',
+      };
+    }
+
+    const horizontalAway = Math.sign(enemy.x - target.x) || (enemy.instanceId % 2 === 0 ? 1 : -1);
+    this.junkyardBossRepositionX = horizontalAway * (phaseTwo ? 0.94 : 0.72);
+    this.junkyardBossRepositionY = (this.junkyardBossLaneIndex % 2 === 0 ? -1 : 1) * (phaseTwo ? 0.82 : 0.66);
+    this.enterRoleState('boss_reposition', phaseTwo ? 720 : 620);
+    return this.getRoleStateIntent(enemy);
   }
 
   private createRepositionIntent(enemy: EnemyRoleActor, target: EnemyRoleActor): EnemyIntent {

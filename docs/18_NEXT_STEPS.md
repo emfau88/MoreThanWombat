@@ -1,6 +1,6 @@
 # 18 - Next Steps
 
-**Current order — 2026-09-09:** G0 is complete and G1–G6 are implemented and technically verified. Next implement G7: replace Encounter 7 with a readable two-phase Junkyard boss whose attacks, adds and cleanup remain under the existing Director and interaction contracts. Then continue with G8–G11 in [plan 31](31_GAMEPLAY_AND_WAVE_COMPLETION_PLAN.md). Use the [G6 report](qa/g6-runtime-2026-09-09/README.md) for the still-open combined rhythm, pressure, balance and real-device acceptance.
+**Current order — 2026-09-09:** G0 is complete and G1–G7 are implemented and technically verified. Next execute G8: measure full runs, then tune HP, MP, damage, encounter duration and pressure without replacing composition-first difficulty with health inflation. Continue with G9–G11 in [plan 31](31_GAMEPLAY_AND_WAVE_COMPLETION_PLAN.md). Use the [G7 report](qa/g7-runtime-2026-09-09/README.md) for the still-open learning, pressure, balance and real-device acceptance.
 
 The blocks below are historical recommendations. Camera, feel and device checks remain relevant, but their old order and content restrictions do not supersede the scoped G1–G11 work.
 

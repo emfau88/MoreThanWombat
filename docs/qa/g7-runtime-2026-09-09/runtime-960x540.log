@@ -1,0 +1,66 @@
+PASS — 63 G7 runtime checks
+Real assets loaded and Main Menu created
+Encounter 1 reaches active combat
+Encounter 1 reaches its release beat
+Encounter 2 reaches active combat
+Encounter 2 reaches its release beat
+Zone route after Encounter 2 is traversable
+Encounter 3 reaches active combat
+Encounter 3 reaches its release beat
+Encounter 4 reaches active combat
+Encounter 4 reaches its release beat
+Encounter 5 reaches active combat
+Encounter 5 reaches its release beat
+Zone route after Encounter 5 is traversable
+Encounter 6 reaches active combat
+Encounter 6 reaches its release beat
+Encounter 7 reaches active combat
+Encounter 7 clears through its authored boss priority target
+Finale creates the named boss plus one controlled add
+Finale owns two command-triggered lane hazards
+Boss has a dedicated phase-aware HUD
+Phase 1 opens with its quick punishable melee action
+Melee startup has a visible callout
+Boss and add share the Director melee budget
+Timecard Swipe reaches its long punishable recovery end
+Phase 1 escalates into lane denial
+Lane denial has a visible boss startup callout
+Phase 1 claims one lane and leaves the other lane as the learned answer
+Lane Lock reaches recovery end
+Phase 1 completes with a distinct reposition action
+Shift Change is visible and moves the boss to a new lane position
+Phase 1 reposition completes
+Boss changes to phase 2 exactly at half health
+Phase transition is protected and visibly announced
+Boss HUD updates to the second phase
+Phase 2 changes the decision order by repositioning first
+Phase 2 reposition completes
+Phase 2 retains the readable melee punish test
+Phase 2 melee completes
+Phase 2 reaches its area-denial action
+Phase 2 danger uses a stronger distinct callout
+Phase 2 locks both outer lanes and changes the safe-space decision
+Boss cannot damage itself with its authored lane hazards
+Priority boss defeat begins the victory release beat
+defeat_priority immediately cleans the surviving add, hazards and projectiles
+Final boss clear reaches Stage victory
+Victory leaves no enemy AI, interaction or transient presentation state
+Encounter 1 reaches active combat
+Encounter 1 reaches its release beat
+Encounter 2 reaches active combat
+Encounter 2 reaches its release beat
+Zone route after Encounter 2 is traversable
+Encounter 3 reaches active combat
+Encounter 3 reaches its release beat
+Encounter 4 reaches active combat
+Encounter 4 reaches its release beat
+Encounter 5 reaches active combat
+Encounter 5 reaches its release beat
+Zone route after Encounter 5 is traversable
+Encounter 6 reaches active combat
+Encounter 6 reaches its release beat
+Encounter 7 reaches active combat
+Restart reproduces a full-health phase-1 boss with fresh hazards
+Final QA frame visibly captures the protected phase transition
+Scripted diagnostics; manual learning, feel and device acceptance remain separate.
+[]

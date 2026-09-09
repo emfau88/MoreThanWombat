@@ -27,6 +27,7 @@ These files describe the current built prototype and near-term work:
 - `qa/gameplay-run-template.md` - copy for every measured run, including defeats; common definitions for timing, damage, pressure and HP/MP checkpoints
 - `qa/g4-runtime-2026-09-08/README.md` - current technical evidence for defense, knockdown/wake-up, mobile input, Wave ground bounds, healing, transitions, camera and the open manual acceptance gate
 - `qa/g6-runtime-2026-09-09/README.md` - current technical evidence for Stage interactions, deterministic HP/MP pickup, the Acting Foreman midboss and full interaction cleanup
+- `qa/g7-runtime-2026-09-09/README.md` - current technical evidence for the two-phase Overtime Supervisor, lane lockdown, Boss HUD, Director-budgeted add and priority cleanup
 - `31_GAMEPLAY_AND_WAVE_COMPLETION_PLAN.md` - current priority order from a stable combat prototype to a complete seven-encounter Wave run; use this as the gameplay execution plan when older roadmaps conflict
 - `16_CURRENT_ROADMAP.md` - actual execution roadmap based on what is already built
 - `17_OPEN_TASKS.md` - practical current task list
@@ -71,7 +72,7 @@ Do not use the old MVP documents as permission to remove existing systems such a
 
 ## Current Working Rule
 
-G0 is complete as a documentation and technical baseline. G1 through G6 are implemented and technically verified; their combined manual gameplay, balance and real-device acceptance remains open. G7 is next. Use the [G6 report](qa/g6-runtime-2026-09-09/README.md), [G5 report](qa/g5-runtime-2026-09-09/README.md), [G4 report](qa/g4-runtime-2026-09-08/README.md), [G3 report](qa/g3-runtime-2026-09-08/README.md), [G2 report](qa/g2-runtime-2026-09-06/README.md), and [G1 report](qa/g1-runtime-2026-09-05/README.md) for current evidence. Scripted browser diagnostics do not replace balance or real-device acceptance. Older numeric test counts describe their original milestones.
+G0 is complete as a documentation and technical baseline. G1 through G7 are implemented and technically verified; their combined manual gameplay, balance and real-device acceptance remains open. G8 is next. Use the [G7 report](qa/g7-runtime-2026-09-09/README.md), [G6 report](qa/g6-runtime-2026-09-09/README.md), [G5 report](qa/g5-runtime-2026-09-09/README.md), [G4 report](qa/g4-runtime-2026-09-08/README.md), [G3 report](qa/g3-runtime-2026-09-08/README.md), [G2 report](qa/g2-runtime-2026-09-06/README.md), and [G1 report](qa/g1-runtime-2026-09-05/README.md) for current evidence. Scripted browser diagnostics do not replace balance or real-device acceptance. Older numeric test counts describe their original milestones.
 
 Before implementing:
 

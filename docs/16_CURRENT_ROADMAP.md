@@ -2,14 +2,15 @@
 
 ## Current execution update — 2026-09-09
 
-[Plan 31](31_GAMEPLAY_AND_WAVE_COMPLETION_PLAN.md) owns the gameplay execution order. G0 is complete; **G1–G6** are implemented and technically verified. Their combined manual gameplay, balance and real-device acceptance remains open. G7 is the next implementation bulk. [G6 evidence and open gates](qa/g6-runtime-2026-09-09/README.md) are the current status reference.
+[Plan 31](31_GAMEPLAY_AND_WAVE_COMPLETION_PLAN.md) owns the gameplay execution order. G0 is complete; **G1–G7** are implemented and technically verified. Their combined manual gameplay, balance and real-device acceptance remains open. G8 is the next implementation bulk. [G7 evidence and open gates](qa/g7-runtime-2026-09-09/README.md) are the current status reference.
 
 - Normal players: Wombat, Discount Wizard, Budget Barbarian, Mara Breach. Buster Bulldog and Reference Fighter are Gym-only prototypes.
-- Typecheck, **94/94 tests** and build pass locally; G0 records six character-sheet hard gates and all three VFX-QA manifests passing.
+- Typecheck, **96/96 tests** and build pass locally; G0 records six character-sheet hard gates and all three VFX-QA manifests passing.
 - Junkyard Run has three zones and seven role-based encounters, now orchestrated by the Director with per-spawn entry direction/timing, same-zone sub-waves, safe zone travel, pressure budgets and phase-aware mana. Fighters stay on the painted floor; deterministic zone rewards heal the player; transition cards and group framing improve area changes.
-- Guard, directional Evade, Guard Break, Launch, Knockdown, Grounded, protected Wake-up and Anti-Stunlock are integrated across combat, G2 roles, Gym, keyboard and mobile input. Combined manual G1–G6 acceptance remains open.
+- Guard, directional Evade, Guard Break, Launch, Knockdown, Grounded, protected Wake-up and Anti-Stunlock are integrated across combat, G2 roles, Gym, keyboard and mobile input. Combined manual G1–G7 acceptance remains open.
 - Run activates from one sustained full direction on keyboard or touch. Every shippable fighter has one committed Dash Attack and a three-step Basic Chain with one queued follow-up, earlier hit continuation, later whiff continuation and a knockdown finisher. Air Bonk keeps its jump arc and repeated mid-air steering.
 - G6 adds a periodic Furnace vent, a deterministic one-use HP/MP lunchbox and the standalone Acting Foreman in Encounter 5. The Foreman uses a three-action pattern and can be knocked down by his own commanded vent.
+- G7 replaces Encounter 7 with the two-phase Overtime Supervisor. The boss changes pattern order and lane-denial geometry at half health, shares pressure budgets with one delayed add and owns controlled priority cleanup.
 - Scripted Phaser regression checks pass. Full-run gameplay acceptance, balance and two real-device classes remain open.
 - G0–G9 adds no player fighter or arena. Final art follows mechanical acceptance; broad architecture hardening remains G10.
 

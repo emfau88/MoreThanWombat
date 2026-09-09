@@ -461,6 +461,8 @@ export const scrapHeavyDefinition: FighterDefinition = {
       foreman_clipboard_check: 'buster-bulldog-underbite-jab',
       foreman_forklift_charge: 'buster-bulldog-bash',
       foreman_steam_whistle: 'buster-bulldog-bash',
+      overtime_timecard_swipe: 'buster-bulldog-underbite-jab',
+      overtime_lane_lockdown: 'buster-bulldog-bash',
     },
   },
 };

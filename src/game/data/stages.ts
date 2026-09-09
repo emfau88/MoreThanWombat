@@ -6,7 +6,7 @@ import { FLAT_ARENA_VISUAL_CONTRACT } from '../core/StageVisuals';
 
 export type WaveStageId = 'junkyard_run';
 export type EnemyEntryDirection = 'left' | 'right' | 'upper_lane' | 'lower_lane';
-export type EnemyAiProfile = 'scrap_foreman';
+export type EnemyAiProfile = 'scrap_foreman' | 'junkyard_boss';
 
 export type SteamVentInteractionDefinition = Readonly<{
   id: string;
@@ -51,6 +51,7 @@ export type StageEnemySpawnDefinition = {
   labelOverride?: string;
   aiProfile?: EnemyAiProfile;
   stageInteractionId?: string;
+  stageInteractionIds?: readonly string[];
 };
 
 export type EncounterCompletionRule =
@@ -207,19 +208,31 @@ export const junkyardRunStage: StageDefinition = {
       ],
     },
     {
-      id: 'junkyard-overtime', title: 'Junkyard Overtime', objective: 'Break the armored finale under mixed pressure.', zoneId: 'neon-dump',
+      id: 'junkyard-overtime', title: 'Junkyard Overtime',
+      objective: 'Read the Supervisor, rotate out of lockdown, punish the shift change.', zoneId: 'neon-dump',
       bounds: NEON_DUMP_BOUNDS,
-      pressureBudget: { meleeTokens: 1, rangedTokens: 1, disruptionBudget: 1,
-        burst: { periodMs: 4200, durationMs: 2400 } }, completionRule: DEFEAT_ALL,
+      pressureBudget: { meleeTokens: 1, rangedTokens: 0, disruptionBudget: 1,
+        burst: { periodMs: 4600, durationMs: 2200 } },
+      completionRule: { type: 'defeat_priority', prioritySpawnId: 'overtime-supervisor' },
       enemies: [
-        { id: 'pigeon-final', fighterId: 'angry_pigeon', roleId: 'pursuer', spawnX: 2200, spawnY: 338,
-          entryDirection: 'right', entryDelayMs: 0, hpOverride: 30, moveSpeedOverride: 118 },
-        { id: 'pigeon-final-late', fighterId: 'angry_pigeon', roleId: 'pursuer', spawnX: 2280, spawnY: 430,
-          entryDirection: 'lower_lane', entryDelayMs: 450, hpOverride: 30, moveSpeedOverride: 118 },
-        { id: 'heavy-final', fighterId: 'scrap_heavy', roleId: 'heavy', spawnX: 2440, spawnY: 354,
-          entryDirection: 'upper_lane', entryDelayMs: 1050, hpOverride: 90, moveSpeedOverride: 120 },
-        { id: 'wizard-final', fighterId: 'discount_wizard', roleId: 'zoner', spawnX: 2550, spawnY: 424,
-          entryDirection: 'lower_lane', entryDelayMs: 1650, hpOverride: 48, moveSpeedOverride: 140 },
+        { id: 'overtime-supervisor', fighterId: 'scrap_heavy', roleId: 'heavy', spawnX: 2500, spawnY: 386,
+          entryDirection: 'right', entryDelayMs: 0, hpOverride: 220, moveSpeedOverride: 142,
+          labelOverride: 'Overtime Supervisor', aiProfile: 'junkyard_boss',
+          stageInteractionIds: ['overtime-upper-vent', 'overtime-lower-vent'] },
+        { id: 'pigeon-union-rep', fighterId: 'angry_pigeon', roleId: 'pursuer', spawnX: 2250, spawnY: 330,
+          entryDirection: 'upper_lane', entryDelayMs: 1600, hpOverride: 32, moveSpeedOverride: 118 },
+      ],
+      interactions: [
+        {
+          id: 'overtime-upper-vent', type: 'steam_vent', x: 2420, y: 342, radiusX: 126, radiusY: 30,
+          trigger: 'midboss_command', initialDelayMs: 0, telegraphMs: 1050, activeMs: 320, cooldownMs: 1200,
+          damage: 10, knockback: 185, label: 'UPPER LANE LOCKDOWN',
+        },
+        {
+          id: 'overtime-lower-vent', type: 'steam_vent', x: 2420, y: 438, radiusX: 126, radiusY: 30,
+          trigger: 'midboss_command', initialDelayMs: 0, telegraphMs: 1050, activeMs: 320, cooldownMs: 1200,
+          damage: 10, knockback: 185, label: 'LOWER LANE LOCKDOWN',
+        },
       ],
     },
   ],

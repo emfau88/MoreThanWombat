@@ -153,7 +153,27 @@ export function getWaveStageValidationViolations(stage: StageDefinition): string
         if (!interaction || interaction.type !== 'steam_vent' || interaction.trigger !== 'midboss_command') {
           violations.push(`${section.id}: scrap foreman must reference a command-triggered steam vent`);
         }
-      } else if (spawn.stageInteractionId) {
+        if (spawn.stageInteractionIds) {
+          violations.push(`${section.id}: scrap foreman must use its single authored interaction`);
+        }
+      } else if (spawn.aiProfile === 'junkyard_boss') {
+        const interactionIds = spawn.stageInteractionIds ?? [];
+        const validInteractionIds = new Set(section.interactions
+          ?.filter((candidate) => candidate.type === 'steam_vent' && candidate.trigger === 'midboss_command')
+          .map((candidate) => candidate.id));
+        if (sectionIndex !== stage.sections.length - 1
+          || section.completionRule.type !== 'defeat_priority'
+          || section.completionRule.prioritySpawnId !== spawn.id) {
+          violations.push(`${section.id}: junkyard boss must be the final priority target`);
+        }
+        if (interactionIds.length !== 2 || new Set(interactionIds).size !== 2
+          || interactionIds.some((id) => !validInteractionIds.has(id))) {
+          violations.push(`${section.id}: junkyard boss must reference two command-triggered lane hazards`);
+        }
+        if (spawn.stageInteractionId) {
+          violations.push(`${section.id}: junkyard boss must use its authored interaction list`);
+        }
+      } else if (spawn.stageInteractionId || spawn.stageInteractionIds) {
         violations.push(`${section.id}: only an authored AI profile may command a stage interaction`);
       }
 

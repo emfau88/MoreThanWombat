@@ -723,6 +723,36 @@ export const foremanSteamWhistle: AttackDefinition = {
   timeline: { feedbackClass: 'medium' },
 };
 
+export const overtimeTimecardSwipe: AttackDefinition = {
+  id: 'overtime_timecard_swipe',
+  label: 'Mandatory Timecard Swipe',
+  startupMs: 170,
+  activeMs: 100,
+  recoveryMs: 520,
+  damage: 12,
+  hitstunMs: 270,
+  knockbackX: 190,
+  knockbackY: 28,
+  hitbox: { offsetX: 22, offsetY: -60, width: 88, height: 40 },
+  canTurnDuringAttack: false,
+  timeline: { feedbackClass: 'medium' },
+};
+
+export const overtimeLaneLockdown: AttackDefinition = {
+  id: 'overtime_lane_lockdown',
+  label: 'Mandatory Overtime Lockdown',
+  startupMs: 720,
+  activeMs: 80,
+  recoveryMs: 520,
+  damage: 0,
+  hitstunMs: 0,
+  knockbackX: 0,
+  knockbackY: 0,
+  hitbox: { offsetX: 10000, offsetY: 10000, width: 1, height: 1 },
+  canTurnDuringAttack: false,
+  timeline: { feedbackClass: 'heavy' },
+};
+
 export const discountEnemyMiscast: AttackDefinition = {
   id: 'discount_enemy_miscast',
   label: 'Harmless Discount Dud',
@@ -806,6 +836,8 @@ export const attacksById: Record<string, AttackDefinition> = {
   [foremanClipboardCheck.id]: foremanClipboardCheck,
   [foremanForkliftCharge.id]: foremanForkliftCharge,
   [foremanSteamWhistle.id]: foremanSteamWhistle,
+  [overtimeTimecardSwipe.id]: overtimeTimecardSwipe,
+  [overtimeLaneLockdown.id]: overtimeLaneLockdown,
   [discountEnemyMiscast.id]: discountEnemyMiscast,
   [airBonk.id]: airBonk,
 };

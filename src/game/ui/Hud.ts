@@ -25,7 +25,7 @@ export class Hud {
     this.enemyBar = this.createBar(scene, viewportWidth - 28, HUD_LAYOUT.enemy.y, 'Enemy', 'right');
   }
 
-  update(player: Fighter, enemy: Fighter | null): void {
+  update(player: Fighter, enemy: Fighter | null, enemyLabelOverride?: string): void {
     this.updateBar(this.playerBar, player.label, player.hp, player.maxHp, player.mana, player.maxMana);
 
     if (!enemy) {
@@ -35,7 +35,7 @@ export class Hud {
     }
 
     this.setBarVisible(this.enemyBar, true);
-    this.updateBar(this.enemyBar, enemy.label, enemy.hp, enemy.maxHp, enemy.mana, enemy.maxMana);
+    this.updateBar(this.enemyBar, enemyLabelOverride ?? enemy.label, enemy.hp, enemy.maxHp, enemy.mana, enemy.maxMana);
   }
 
   layout(viewportWidth: number): void {

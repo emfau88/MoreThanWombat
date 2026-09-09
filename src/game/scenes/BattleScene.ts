@@ -479,8 +479,10 @@ export class BattleScene extends Phaser.Scene {
           : this.tryStartAttackWithFx(enemy, enemyIntent.attackKind);
         if (!didStart && this.mode === 'waves') {
           this.encounterDirector?.releaseAttack(enemy.instanceId);
-        } else if (didStart && enemyIntent.stageInteractionTriggerId) {
-          this.stageInteractions.trigger(enemyIntent.stageInteractionTriggerId);
+        } else if (didStart) {
+          const triggerIds = enemyIntent.stageInteractionTriggerIds
+            ?? (enemyIntent.stageInteractionTriggerId ? [enemyIntent.stageInteractionTriggerId] : []);
+          for (const interactionId of triggerIds) this.stageInteractions.trigger(interactionId);
         }
       }
     }
@@ -904,6 +906,10 @@ export class BattleScene extends Phaser.Scene {
     if (event.type === 'clear_delay') {
       this.clearWaveCombatArtifacts();
       const currentSection = this.waveStage.sections[this.waveIndex];
+      if (currentSection?.completionRule.type === 'defeat_priority') {
+        this.clearWaveEnemies();
+        this.syncPrimaryEnemy();
+      }
       const nextSection = this.waveStage.sections[this.waveIndex + 1];
       const staysInZone = currentSection && nextSection && currentSection.zoneId === nextSection.zoneId;
       const reward = currentSection?.clearReward;
@@ -1025,7 +1031,9 @@ export class BattleScene extends Phaser.Scene {
       }
 
       const actor = event.actor;
-      const isForeman = this.getWaveSpawnForEnemy(actor)?.aiProfile === 'scrap_foreman';
+      const aiProfile = this.getWaveSpawnForEnemy(actor)?.aiProfile;
+      if (aiProfile === 'junkyard_boss') continue;
+      const isForeman = aiProfile === 'scrap_foreman';
       const sourceFacing = actor.x >= event.definition.x ? 'right' : 'left';
       actor.receiveHit({
         damage: isForeman ? Math.ceil(event.definition.damage * 1.5) : event.definition.damage,
@@ -1116,8 +1124,14 @@ export class BattleScene extends Phaser.Scene {
     const debugText = this.debugEnabled && this.encounterDirector
       ? `\n${this.encounterDirector.getDebugLabel()}`
       : '';
-    const midbossTag = this.waveStage.sections[this.waveIndex]?.enemies.some((spawn) => spawn.aiProfile) ? 'MIDBOSS · ' : '';
-    this.modeText.setText(`${this.waveStage.title} ${this.waveIndex + 1}/${this.waveStage.sections.length} | ${midbossTag}${sectionTitle}${debugText}`);
+    const boss = this.waveEnemies.find((enemy) => this.getWaveSpawnForEnemy(enemy)?.aiProfile === 'junkyard_boss');
+    const bossPhase = boss ? this.getControllerForEnemy(boss).getDebugSnapshot(boss).junkyardBossPhase : null;
+    const encounterTag = bossPhase
+      ? `BOSS · PHASE ${bossPhase}/2 · `
+      : this.waveStage.sections[this.waveIndex]?.enemies.some((spawn) => spawn.aiProfile === 'scrap_foreman')
+        ? 'MIDBOSS · '
+        : '';
+    this.modeText.setText(`${this.waveStage.title} ${this.waveIndex + 1}/${this.waveStage.sections.length} | ${encounterTag}${sectionTitle}${debugText}`);
   }
 
   private renderArena(): void {
@@ -1408,6 +1422,8 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private describeSectionEncounter(section: StageSectionDefinition): string {
+    const boss = section.enemies.find((spawn) => spawn.aiProfile === 'junkyard_boss');
+    if (boss) return `BOSS · ${boss.labelOverride ?? 'Overtime Supervisor'} · TWO PHASES`;
     const midboss = section.enemies.find((spawn) => spawn.aiProfile === 'scrap_foreman');
     if (midboss) return `MIDBOSS · ${midboss.labelOverride ?? 'Acting Foreman'}`;
     const enemyCount = section.enemies.length;
@@ -1446,7 +1462,12 @@ export class BattleScene extends Phaser.Scene {
       enemy.setCombatResponse('invulnerable');
       enemy.setStatusNote('ENTRY');
       enemy.container.setVisible(spawn.entryDelayMs === 0);
-      const controller = new EnemyController(spawn.roleId, enemy.instanceId, spawn.aiProfile, spawn.stageInteractionId);
+      const controller = new EnemyController(
+        spawn.roleId,
+        enemy.instanceId,
+        spawn.aiProfile,
+        spawn.stageInteractionIds ?? spawn.stageInteractionId,
+      );
       this.waveEnemyControllers.set(enemy.instanceId, controller);
       const role = getEnemyRoleContract(spawn.roleId);
       enemy.setRolePresentation(role.label.toUpperCase());
@@ -1601,10 +1622,10 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private getHudEnemy(): Fighter | null {
-    const midboss = this.waveEnemies.find((enemy) => (
-      this.getWaveSpawnForEnemy(enemy)?.aiProfile === 'scrap_foreman' && enemy.state !== 'dead'
+    const priorityEnemy = this.waveEnemies.find((enemy) => (
+      this.getWaveSpawnForEnemy(enemy)?.aiProfile !== undefined && enemy.state !== 'dead'
     ));
-    if (midboss) return midboss;
+    if (priorityEnemy) return priorityEnemy;
     return this.getPreferredEnemyTarget() ?? this.enemy;
   }
 
@@ -1619,7 +1640,12 @@ export class BattleScene extends Phaser.Scene {
 
   private updateCombatHud(): void {
     if (this.mode === 'waves') this.updateModeText();
-    this.hud.update(this.player, this.getHudEnemy());
+    const hudEnemy = this.getHudEnemy();
+    const spawn = hudEnemy ? this.getWaveSpawnForEnemy(hudEnemy) : undefined;
+    const enemyLabel = hudEnemy && spawn?.aiProfile === 'junkyard_boss'
+      ? `BOSS · PHASE ${this.getControllerForEnemy(hudEnemy).getDebugSnapshot(hudEnemy).junkyardBossPhase}/2 · ${hudEnemy.label}`
+      : hudEnemy && spawn?.aiProfile === 'scrap_foreman' ? `MIDBOSS · ${hudEnemy.label}` : undefined;
+    this.hud.update(this.player, hudEnemy, enemyLabel);
     this.mobileControls.setUltimateAvailability(
       this.player.canStartAttack('ultimate'),
       this.player.getAttackManaCost('ultimate'),

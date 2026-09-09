@@ -1,0 +1,32 @@
+PASS — 29 G4 runtime checks
+Real assets loaded and Main Menu created
+Pigeon starts a real light attack
+Neutral defend starts Guard (got guard)
+Guard blocks a real melee hit without damage
+Block remains a distinct combat outcome
+Guard has punishable recovery
+Guard cannot retrigger during recovery
+Guard returns idle before its reuse cooldown
+Directional defend starts Evade
+Evade enters its precise invulnerability window
+Evade moves along the requested lane direction
+Evade recovery is vulnerable
+Evade stops moving during recovery and returns idle
+Enemy starts an authored guard-break move
+Heavy move produces guard_broken
+Guard break deals reduced damage and hitstun
+Hitstun prevents alternating crowd re-hits
+Launch is distinct from ordinary hitstun
+Launched fighter cannot be juggled indefinitely
+Launch reaches knockdown, grounded and wake-up in order
+Wake-up has visible protected hurtbox
+Wake-up protection ends before recovery
+Wake-up completes without a stuck state
+Death remains distinct from normal knockdown
+Combat Gym exposes guard preset
+Combat Gym exposes evade preset
+Combat Gym exposes launched preset
+Combat Gym exposes knockdown preset
+Combat Gym exposes wake_up preset
+Scripted diagnostics; manual game-feel acceptance remains separate.
+[]

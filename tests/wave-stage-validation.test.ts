@@ -21,10 +21,10 @@ test('Junkyard Run composes exactly seven valid encounters across three zones', 
     junkyardRunStage.sections.filter((section) => section.zoneId === zone.id).length), [2, 3, 2]);
   assert.ok(junkyardRunStage.sections.every((section) => section.objective.length > 0));
   assert.deepEqual(junkyardRunStage.sections.map((section) => section.completionRule.type),
-    ['defeat_all', 'defeat_all', 'defeat_all', 'defeat_all', 'defeat_priority', 'defeat_all', 'defeat_all']);
-  assert.deepEqual(junkyardRunStage.sections.map((section) => section.enemies.length), [1, 3, 3, 3, 1, 4, 4]);
+    ['defeat_all', 'defeat_all', 'defeat_all', 'defeat_all', 'defeat_priority', 'defeat_all', 'defeat_priority']);
+  assert.deepEqual(junkyardRunStage.sections.map((section) => section.enemies.length), [1, 3, 3, 3, 1, 4, 2]);
   assert.deepEqual(junkyardRunStage.sections.flatMap((section) => section.interactions ?? []).map((item) => item.type),
-    ['steam_vent', 'resource_pickup', 'steam_vent']);
+    ['steam_vent', 'resource_pickup', 'steam_vent', 'steam_vent', 'steam_vent']);
   assert.ok(junkyardRunStage.sections.every((section) =>
     section.bounds.minY === JUNKYARD_WALKABLE_BAND.minY
       && section.bounds.maxY === JUNKYARD_WALKABLE_BAND.maxY));
@@ -44,11 +44,11 @@ test('encounters escalate through role composition, timing and pressure channels
     ['heavy', 'pursuer', 'pursuer'],
     ['heavy'],
     ['pursuer', 'pursuer', 'zoner', 'flanker'],
-    ['pursuer', 'pursuer', 'heavy', 'zoner'],
+    ['heavy', 'pursuer'],
   ]);
   assert.deepEqual(junkyardRunStage.sections.map((section) => section.enemies.map((spawn) => spawn.entryDelayMs)), [
     [0], [0, 450, 1000], [0, 500, 1000], [0, 550, 1100], [0],
-    [0, 450, 1000, 1550], [0, 450, 1050, 1650],
+    [0, 450, 1000, 1550], [0, 1600],
   ]);
   assert.deepEqual(junkyardRunStage.sections.map((section) => section.pressureBudget), [
     { meleeTokens: 1, rangedTokens: 0, disruptionBudget: 0 },
@@ -57,7 +57,7 @@ test('encounters escalate through role composition, timing and pressure channels
     { meleeTokens: 1, rangedTokens: 0, disruptionBudget: 0 },
     { meleeTokens: 1, rangedTokens: 0, disruptionBudget: 1 },
     { meleeTokens: 1, rangedTokens: 1, disruptionBudget: 1, burst: { periodMs: 5000, durationMs: 2200 } },
-    { meleeTokens: 1, rangedTokens: 1, disruptionBudget: 1, burst: { periodMs: 4200, durationMs: 2400 } },
+    { meleeTokens: 1, rangedTokens: 0, disruptionBudget: 1, burst: { periodMs: 4600, durationMs: 2200 } },
   ]);
 });
 
@@ -122,4 +122,24 @@ test('stage validation rejects invalid role entry, completion and zone-transitio
   assert.ok(violations.includes('gate-crasher: enemy fighter and role must match'));
   assert.ok(violations.includes('gate-crasher: enemy spawn ids must be unique'));
   assert.ok(violations.includes('zones must cover the full world width'));
+});
+
+test('G7 boss validation requires a final priority target and two authored lane hazards', () => {
+  const finalSection = junkyardRunStage.sections.at(-1)!;
+  const boss = finalSection.enemies[0];
+  const invalidBossStage: StageDefinition = {
+    ...junkyardRunStage,
+    sections: [
+      ...junkyardRunStage.sections.slice(0, -1),
+      {
+        ...finalSection,
+        completionRule: { type: 'defeat_all' },
+        enemies: [{ ...boss, stageInteractionIds: ['missing-vent'] }, ...finalSection.enemies.slice(1)],
+      },
+    ],
+  };
+
+  const violations = getWaveStageValidationViolations(invalidBossStage);
+  assert.ok(violations.includes('junkyard-overtime: junkyard boss must be the final priority target'));
+  assert.ok(violations.includes('junkyard-overtime: junkyard boss must reference two command-triggered lane hazards'));
 });

@@ -23,6 +23,8 @@ function actor(id: string, instanceId: number, x: number, y: number): MutableRol
     facing: x > 0 ? 'left' : 'right',
     state: 'idle',
     isGrounded: true,
+    hp: 100,
+    maxHp: 100,
     attack: null,
     phase: 'none',
     getCurrentAttack: () => result.attack,
@@ -243,4 +245,64 @@ test('G6 Foreman runs a readable three-step pattern and exposes his own safety f
   controller.notifyStageHazardHit();
   assert.equal(controller.getPresentation(foreman).cue, 'SAFETY LAST!');
   assert.equal(controller.getDebugSnapshot(foreman).foremanPatternStep, 0);
+});
+
+test('G7 boss changes decisions across two readable phases', () => {
+  const target = actor('wombat', 90, 0, 0);
+  const boss = actor('scrap_heavy', 6, 82, 0);
+  boss.hp = 220;
+  boss.maxHp = 220;
+  const controller = new EnemyController('heavy', 1, 'junkyard_boss', ['upper-vent', 'lower-vent']);
+
+  const melee = controller.update(boss, target, 1 / 60, () => true);
+  assert.equal(melee.attackId, 'overtime_timecard_swipe');
+  assert.equal(controller.getPressureChannel(melee.attackKind, boss), 'melee');
+  boss.attack = { id: melee.attackId! };
+  boss.phase = 'startup';
+  controller.update(boss, target, 1 / 60);
+  assert.equal(controller.getPresentation(boss).cue, 'TIMECARD!');
+  boss.attack = null;
+  boss.phase = 'none';
+  controller.update(boss, target, 1 / 60);
+
+  boss.x = 200;
+  const laneLock = controller.update(boss, target, 1 / 60, () => true);
+  assert.equal(laneLock.attackId, 'overtime_lane_lockdown');
+  assert.deepEqual(laneLock.stageInteractionTriggerIds, ['upper-vent']);
+  assert.equal(controller.getPressureChannel(laneLock.attackKind, boss), 'disruption');
+  boss.attack = { id: laneLock.attackId! };
+  boss.phase = 'startup';
+  controller.update(boss, target, 1 / 60);
+  assert.equal(controller.getPresentation(boss).cue, 'LANE LOCK!');
+  boss.attack = null;
+  boss.phase = 'none';
+  controller.update(boss, target, 1 / 60);
+
+  assert.equal(controller.update(boss, target, 1 / 60).state, 'boss_reposition');
+  assert.equal(controller.getPresentation(boss).cue, 'SHIFT CHANGE!');
+  controller.update(boss, target, 0.7);
+
+  boss.hp = 110;
+  assert.equal(controller.update(boss, target, 1 / 60).state, 'boss_phase_change');
+  assert.equal(controller.getCombatResponse(boss), 'invulnerable');
+  assert.equal(controller.getPresentation(boss).cue, 'OVERTIME!');
+  controller.update(boss, target, 1.1);
+  assert.equal(controller.getDebugSnapshot(boss).junkyardBossPhase, 2);
+
+  assert.equal(controller.update(boss, target, 1 / 60).state, 'boss_reposition',
+    'phase two changes the pattern by repositioning before attacking');
+  controller.update(boss, target, 0.8);
+  boss.x = 82;
+  const phaseTwoMelee = controller.update(boss, target, 1 / 60, () => true);
+  assert.equal(phaseTwoMelee.attackId, 'overtime_timecard_swipe');
+  boss.attack = { id: phaseTwoMelee.attackId! };
+  boss.phase = 'active';
+  controller.update(boss, target, 1 / 60);
+  boss.attack = null;
+  boss.phase = 'none';
+  controller.update(boss, target, 1 / 60);
+  boss.x = 200;
+  const fullLockdown = controller.update(boss, target, 1 / 60, () => true);
+  assert.equal(fullLockdown.attackId, 'overtime_lane_lockdown');
+  assert.deepEqual(fullLockdown.stageInteractionTriggerIds, ['upper-vent', 'lower-vent']);
 });

@@ -9,9 +9,9 @@
 
 ### Ausführungsstand 2026-09-09
 
-**G0 abgeschlossen; G1–G6 implementiert und technisch geprüft, gemeinsame manuelle Spielgefühlabnahme offen. G7 ist der nächste Implementierungs-Bulk.** [G6-Prüfbericht](qa/g6-runtime-2026-09-09/README.md) · [G5-Prüfbericht](qa/g5-runtime-2026-09-09/README.md) · [G4-Prüfbericht](qa/g4-runtime-2026-09-08/README.md) · [G3-Prüfbericht](qa/g3-runtime-2026-09-08/README.md) · [G2-Prüfbericht](qa/g2-runtime-2026-09-06/README.md) · [G1-Prüfbericht](qa/g1-runtime-2026-09-05/README.md) · [Historische G0-Baseline](qa/gameplay-baseline-2026-09-05/README.md) · [Einheitliche Run-Messvorlage](qa/gameplay-run-template.md).
+**G0 abgeschlossen; G1–G7 implementiert und technisch geprüft, gemeinsame manuelle Spielgefühlabnahme offen. G8 ist der nächste Implementierungs-Bulk.** [G7-Prüfbericht](qa/g7-runtime-2026-09-09/README.md) · [G6-Prüfbericht](qa/g6-runtime-2026-09-09/README.md) · [G5-Prüfbericht](qa/g5-runtime-2026-09-09/README.md) · [G4-Prüfbericht](qa/g4-runtime-2026-09-08/README.md) · [G3-Prüfbericht](qa/g3-runtime-2026-09-08/README.md) · [G2-Prüfbericht](qa/g2-runtime-2026-09-06/README.md) · [G1-Prüfbericht](qa/g1-runtime-2026-09-05/README.md) · [Historische G0-Baseline](qa/gameplay-baseline-2026-09-05/README.md) · [Einheitliche Run-Messvorlage](qa/gameplay-run-template.md).
 
-Technisch geprüft: 94/94 Tests, Typecheck und Production Build. G6 ergänzt genau zwei Interaktionstypen: ein telegraphiertes Dampfventil und eine deterministische HP-/MP-Lunchbox. Encounter 5 ist der eigenständige Acting Foreman mit Clipboard Check, Forklift Charge und Steam Drill; sein eigenes Ventil erzeugt einen Knockdown- und Comedy-Punish. Die G6-Browserprüfung umfasst 51 echte Phaser-Checks in Desktop- und Mobile-Auflösung. G1–G5 bestehen in der aktuellen Regression mit 715/57/305/29/80 Checks.
+Technisch geprüft: 96/96 Tests, Typecheck und Production Build. G7 ersetzt Encounter 7 durch den zweiphasigen Overtime Supervisor mit Timecard Swipe, phasenabhängigem Lane Lockdown, Shift Change, eigenem Boss-HUD und einem über den Director begrenzten Add. Die G7-Browserprüfung umfasst 63 echte Phaser-Checks in Desktop- und Mobile-Auflösung. G1–G6 bestehen in der aktuellen Regression mit 679/57/280/29/80/51 Checks.
 
 Zusatzauftrag Mobile: Querformat-Skalierung und Rotation korrigiert, vier vorhandene Aktionsbuttons um 10 % vergrößert, Touch-Zonen angepasst und für G4 ein separater Defend-Button ergänzt. [Aktuelle G4-Messwerte](qa/g4-runtime-2026-09-08/README.md) · [ursprüngliche Mobile-Prüfung](qa/mobile-2026-09-05/README.md).
 
@@ -521,6 +521,8 @@ Geeignete kleine Beispiele:
 2. `Add Junkyard midboss encounter`
 
 ## 13. BULK G7 – Zweiphasiger Endboss
+
+**Status 2026-09-09:** Implementiert und technisch geprüft. Der Overtime Supervisor besitzt ein eigenes AI-Profil, phasenabhängiges Boss-HUD, drei unterscheidbare Aktionen und eine geschützte 50-%-Transition. Phase 2 verändert Musterreihenfolge und Safe-Space-Regel. Boss und Add teilen Director-Budgets; `defeat_priority` bereinigt Add, Projektile, Interaktionen und VFX. Lernkurven-, Balance- und Realgeräte-Abnahme bleiben offen; Details im [G7-Prüfbericht](qa/g7-runtime-2026-09-09/README.md).
 
 **Priorität:** P1<br>
 **Risiko:** hoch<br>
