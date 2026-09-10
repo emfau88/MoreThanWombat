@@ -1148,14 +1148,11 @@ export class BattleScene extends Phaser.Scene {
           .setDepth(-100));
       }
       for (let index = 0; index < this.waveStage.zones.length - 1; index += 1) {
-        const currentZone = this.waveStage.zones[index];
-        const nextZone = this.waveStage.zones[index + 1];
-        const boundary = currentZone.maxX;
-        this.trackArenaVisual(this.add.rectangle(boundary, GAME_HEIGHT / 2, 92, GAME_HEIGHT, 0x07101b, 0.3).setDepth(-96));
-        this.trackArenaVisual(this.add.rectangle(boundary - 38, GAME_HEIGHT / 2, 5, GAME_HEIGHT, currentZone.transitionColor, 0.42).setDepth(-95));
-        this.trackArenaVisual(this.add.rectangle(boundary + 38, GAME_HEIGHT / 2, 5, GAME_HEIGHT, nextZone.transitionColor, 0.42).setDepth(-95));
-        this.trackArenaVisual(this.add.rectangle(boundary, JUNKYARD_WALKABLE_BAND.minY, 72, 10, 0xf5f0d8, 0.15).setDepth(-94));
-        this.trackArenaVisual(this.add.rectangle(boundary, JUNKYARD_WALKABLE_BAND.maxY, 72, 10, 0x10151e, 0.3).setDepth(-94));
+        const boundary = this.waveStage.zones[index].maxX;
+        this.trackArenaVisual(this.add.image(boundary, GAME_HEIGHT / 2, 'junkyard-zone-transition')
+          .setOrigin(70 / 180, 0.5)
+          .setDisplaySize(180, GAME_HEIGHT)
+          .setDepth(-94));
       }
       this.trackArenaVisual(this.add.rectangle(this.waveStage.worldWidth / 2, JUNKYARD_WALKABLE_BAND.minY,
         this.waveStage.worldWidth - 120, 6, 0xffd08a, 0.16).setDepth(-90));

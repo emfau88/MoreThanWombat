@@ -31,6 +31,7 @@ type TouchState = Omit<PlayerInputState, 'debugTogglePressed' | 'restartPressed'
 const JOYSTICK_RADIUS = 58;
 const JOYSTICK_DEADZONE = 0.15;
 const JOYSTICK_CAPTURE_RADIUS = 180;
+const JOYSTICK_KNOB_ART_SIZE = 84;
 const ART_OVERSCAN = 10;
 
 export class MobileControls {
@@ -227,7 +228,8 @@ export class MobileControls {
     this.joystickCenter.set(layout.joystick.x, layout.joystick.y);
     this.controls.base.setPosition(layout.joystick.x, layout.joystick.y);
     this.controls.baseArt.setPosition(layout.joystick.x, layout.joystick.y).setDisplaySize(132, 132);
-    this.controls.knobArt.setPosition(layout.joystick.x, layout.joystick.y).setDisplaySize(57, 57);
+    this.controls.knobArt.setPosition(layout.joystick.x, layout.joystick.y)
+      .setDisplaySize(JOYSTICK_KNOB_ART_SIZE, JOYSTICK_KNOB_ART_SIZE);
 
     for (const button of ['attack', 'special', 'ultimate', 'jump', 'defend'] as const) {
       const target = layout[button];

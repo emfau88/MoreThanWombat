@@ -37,3 +37,16 @@ test('ultimate button keeps its purple star asset instead of the cyan joystick a
   assert.ok(opaqueColorRatio(ultimate, isPurple) > 0.25);
   assert.ok(opaqueColorRatio(joystick, isPurple) < 0.05);
 });
+
+test('Junkyard zone transition is a transparent full-height seam cover', () => {
+  const transition = PNG.sync.read(readFileSync(assetUrl('../../arenas/junkyard-run/zone_transition.png')));
+  let transparentPixels = 0;
+
+  for (let index = 3; index < transition.data.length; index += 4) {
+    if (transition.data[index] < 16) transparentPixels += 1;
+  }
+
+  assert.equal(transition.width, 180);
+  assert.equal(transition.height, 540);
+  assert.ok(transparentPixels / (transition.width * transition.height) > 0.45);
+});

@@ -21,6 +21,7 @@ Alle finalen, weboptimierten PNGs liegen unter `public/assets/ui/battle/`:
   `defend_button.png`, `ultimate_button.png`
 - `joystick_base.png`, `joystick_knob.png`
 - `player_hud_frame.png`, `boss_hud_frame.png`, `compact_button.png`
+- `arenas/junkyard-run/zone_transition.png` als transparente, begehbare Nahtkaschierung
 
 Die Action-Assets sind textfrei. Dynamische Kosten und Systemtexte bleiben im Code,
 damit sie scharf, korrekt und lokalisierbar sind. Normale Gegner verwenden den
@@ -38,9 +39,23 @@ Ember-Rot (Fist), Lime (Jump), Cyan (Lightning), Teal (Shield) und Royal Purple
 und Systembutton wurden leere cyan-neutrale beziehungsweise magenta/orange Bossrahmen
 im selben Materialstil erzeugt.
 
+## Korrektur vom 2026-09-10
+
+Der sichtbare Stick-Knauf füllt nun den vorgesehenen Innenring aus. Player, Gegner und
+Boss erhalten echte, kreisförmig maskierte Fighter-Portraits in den zuvor leer wirkenden
+Rahmenansätzen. HP- und MP-Balken verwenden gemeinsame Innenmaße und bleiben innerhalb
+der dunklen Rahmenflächen. Die provisorischen senkrechten Farbstreifen zwischen den drei
+Zonen wurden durch einen schmalen, transparenten Industriesträger ersetzt, dessen Säule
+exakt auf der jeweiligen Hintergrundnaht sitzt und die Laufebene offen lässt.
+
+Das Übergangsasset entstand im eingebauten ImageGen-Modus aus den drei vorhandenen
+Junkyard-Hintergründen als Stilreferenzen. Finaler Prompt: transparenter, frontaler
+Schrottplatz-Stützpfeiler mit abgenutztem Stahl, Rohren, Bolzen sowie dezenten Cyan-,
+Magenta- und Ofenlichtern; keine Schrift, Figuren, Wand oder geschlossene Tür.
+
 ## Verifikation
 
-- 97/97 Unit-Tests bestanden. Ein Asset-Regressionstest verhindert, dass der violette
+- 99/99 Unit-Tests bestanden. Asset-Regressionstests verhindern, dass der violette
   Ultimate-Button erneut mit der cyanfarbenen Joystick-Grafik vertauscht wird.
 - Typecheck und Production Build bestanden.
 - Mobile Runtime: Landscape, Portrait-Rotation und Wide Landscape ohne Verzerrung.

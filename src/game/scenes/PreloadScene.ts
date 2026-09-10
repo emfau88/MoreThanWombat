@@ -16,6 +16,7 @@ export class PreloadScene extends Phaser.Scene {
     this.load.image('junkyard-run-scrap-gate', `${assetBase}arenas/junkyard-run/scrap_gate.png`);
     this.load.image('junkyard-run-furnace-yard', `${assetBase}arenas/junkyard-run/furnace_yard.png`);
     this.load.image('junkyard-run-neon-dump', `${assetBase}arenas/junkyard-run/neon_dump.png`);
+    this.load.image('junkyard-zone-transition', `${assetBase}arenas/junkyard-run/zone_transition.png`);
     this.load.image('rooftop-background', `${assetBase}arenas/rooftop/rooftop_background.png`);
     this.load.image('cs-background', `${assetBase}ui/character-select/character_select_backstage.png`);
     this.load.image('cs-panel-player', `${assetBase}ui/character-select/panel_player.png`);
