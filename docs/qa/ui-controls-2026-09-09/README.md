@@ -40,7 +40,8 @@ im selben Materialstil erzeugt.
 
 ## Verifikation
 
-- 96/96 Unit-Tests bestanden.
+- 97/97 Unit-Tests bestanden. Ein Asset-Regressionstest verhindert, dass der violette
+  Ultimate-Button erneut mit der cyanfarbenen Joystick-Grafik vertauscht wird.
 - Typecheck und Production Build bestanden.
 - Mobile Runtime: Landscape, Portrait-Rotation und Wide Landscape ohne Verzerrung.
 - Fünf getrennte Rand-Taps lösen exakt die jeweilige Aktion aus.
