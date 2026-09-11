@@ -1,7 +1,16 @@
 import Phaser from 'phaser';
 import type { PlayerInputState } from './InputController';
 import { resolveMobileControlTarget } from './MobileControlHitTest';
-import { ACTION_BUTTON_RADII, getMobileControlLayout } from './MobileControlLayout';
+import {
+  ACTION_BUTTON_RADII,
+  ACTION_BUTTON_VISUAL_DIAMETERS,
+  JOYSTICK_KNOB_VISUAL_DIAMETER,
+  JOYSTICK_VISUAL_DIAMETER,
+  getFloatingJoystickCenter,
+  getMobileControlLayout,
+  type MobileControlLayout,
+} from './MobileControlLayout';
+import { convertCssSafeAreaToGame, readBrowserSafeAreaInsets } from './SafeArea';
 
 type ActionButtonName = 'attack' | 'special' | 'ultimate' | 'jump' | 'defend';
 
@@ -28,11 +37,10 @@ type ControlElements = {
 
 type TouchState = Omit<PlayerInputState, 'debugTogglePressed' | 'restartPressed'>;
 
-const JOYSTICK_RADIUS = 58;
-const JOYSTICK_DEADZONE = 0.15;
-const JOYSTICK_CAPTURE_RADIUS = 180;
-const JOYSTICK_KNOB_ART_SIZE = 84;
-const ART_OVERSCAN = 10;
+const JOYSTICK_DEADZONE = 10;
+const JOYSTICK_MAX_TRAVEL = (JOYSTICK_VISUAL_DIAMETER - JOYSTICK_KNOB_VISUAL_DIAMETER) * 0.5;
+const JOYSTICK_IDLE_BASE_ALPHA = 0.52;
+const JOYSTICK_IDLE_KNOB_ALPHA = 0.72;
 
 export class MobileControls {
   private readonly scene: Phaser.Scene;
@@ -49,6 +57,9 @@ export class MobileControls {
   };
   private joystickPointerId: number | null = null;
   private readonly joystickCenter = new Phaser.Math.Vector2();
+  private readonly joystickHome = new Phaser.Math.Vector2();
+  private readonly activePressPointers = new Map<number, ActionButtonName | 'menu'>();
+  private layout!: MobileControlLayout;
 
   constructor(scene: Phaser.Scene) {
     this.scene = scene;
@@ -59,6 +70,8 @@ export class MobileControls {
     scene.input.on(Phaser.Input.Events.POINTER_DOWN, this.handlePointerDown, this);
     scene.input.on(Phaser.Input.Events.POINTER_MOVE, this.handlePointerMove, this);
     scene.input.on(Phaser.Input.Events.POINTER_UP, this.handlePointerUp, this);
+    scene.input.on(Phaser.Input.Events.POINTER_UP_OUTSIDE, this.handlePointerUp, this);
+    scene.input.on(Phaser.Input.Events.GAME_OUT, this.resetAllInput, this);
     scene.scale.on(Phaser.Scale.Events.RESIZE, this.handleResize, this);
   }
 
@@ -66,6 +79,8 @@ export class MobileControls {
     this.scene.input.off(Phaser.Input.Events.POINTER_DOWN, this.handlePointerDown, this);
     this.scene.input.off(Phaser.Input.Events.POINTER_MOVE, this.handlePointerMove, this);
     this.scene.input.off(Phaser.Input.Events.POINTER_UP, this.handlePointerUp, this);
+    this.scene.input.off(Phaser.Input.Events.POINTER_UP_OUTSIDE, this.handlePointerUp, this);
+    this.scene.input.off(Phaser.Input.Events.GAME_OUT, this.resetAllInput, this);
     this.scene.scale.off(Phaser.Scale.Events.RESIZE, this.handleResize, this);
   }
 
@@ -91,9 +106,9 @@ export class MobileControls {
       .setScrollFactor(0).setDepth(995);
     const art = (texture: string) => this.scene.add.image(0, 0, texture).setScrollFactor(0).setDepth(1000);
 
-    const base = hitCircle(JOYSTICK_RADIUS);
-    const baseArt = art('ui-joystick-base').setAlpha(0.82);
-    const knobArt = art('ui-joystick-knob').setDepth(1002).setAlpha(0.96);
+    const base = hitCircle(JOYSTICK_VISUAL_DIAMETER * 0.5);
+    const baseArt = art('ui-joystick-base').setAlpha(JOYSTICK_IDLE_BASE_ALPHA);
+    const knobArt = art('ui-joystick-knob').setDepth(1002).setAlpha(JOYSTICK_IDLE_KNOB_ALPHA);
     const attackButton = hitCircle(ACTION_BUTTON_RADII.attack);
     const attackArt = art('ui-button-attack');
     const specialButton = hitCircle(ACTION_BUTTON_RADII.special);
@@ -158,29 +173,33 @@ export class MobileControls {
 
   private handlePointerDown(pointer: Phaser.Input.Pointer): void {
     const target = resolveMobileControlTarget(pointer, {
-      screenWidth: this.scene.scale.width,
-      menu: this.controls.menuButton,
-      attack: this.controls.attackButton,
-      special: this.controls.specialButton,
-      ultimate: this.controls.ultimateButton,
-      jump: this.controls.jumpButton,
-      defend: this.controls.defendButton,
+      menu: this.layout.menu,
+      attack: this.layout.attack,
+      special: this.layout.special,
+      ultimate: this.layout.ultimate,
+      jump: this.layout.jump,
+      defend: this.layout.defend,
+      joystickRegion: this.layout.joystickRegion,
       joystickAvailable: this.joystickPointerId === null,
     });
 
     if (target === 'menu') {
       this.touchState.menuPressed = true;
+      this.activePressPointers.set(pointer.id, target);
       this.setMenuPressed(true);
       return;
     }
     if (target === 'joystick') {
       this.joystickPointerId = pointer.id;
+      const center = getFloatingJoystickCenter(pointer, this.layout);
+      this.setJoystickVisualCenter(center.x, center.y, true);
       this.updateJoystick(pointer);
       return;
     }
     if (target === 'none') return;
 
     this.touchState[`${target}Pressed`] = true;
+    this.activePressPointers.set(pointer.id, target);
     this.setButtonPressed(target, true);
   }
 
@@ -190,22 +209,29 @@ export class MobileControls {
 
   private handlePointerUp(pointer: Phaser.Input.Pointer): void {
     if (pointer.id === this.joystickPointerId) this.resetJoystick();
-    for (const button of ['attack', 'special', 'ultimate', 'jump', 'defend'] as const) {
-      this.setButtonPressed(button, false);
+    const pressedTarget = this.activePressPointers.get(pointer.id);
+    if (!pressedTarget) return;
+    this.activePressPointers.delete(pointer.id);
+
+    if (pressedTarget === 'menu') {
+      const menuStillPressed = [...this.activePressPointers.values()].includes('menu');
+      this.setMenuPressed(menuStillPressed);
+      return;
     }
-    this.setMenuPressed(false);
+
+    const actionStillPressed = [...this.activePressPointers.values()].includes(pressedTarget);
+    this.setButtonPressed(pressedTarget, actionStillPressed);
   }
 
   private updateJoystick(pointer: Phaser.Input.Pointer): void {
     const delta = new Phaser.Math.Vector2(pointer.x - this.joystickCenter.x, pointer.y - this.joystickCenter.y);
-    const clampedVisual = delta.clone().limit(JOYSTICK_RADIUS * 0.62);
-    const normalized = delta.clone().limit(JOYSTICK_CAPTURE_RADIUS).scale(1 / JOYSTICK_CAPTURE_RADIUS);
+    const clampedVisual = delta.clone().limit(JOYSTICK_MAX_TRAVEL);
 
-    if (normalized.length() < JOYSTICK_DEADZONE) {
+    if (delta.length() < JOYSTICK_DEADZONE) {
       this.touchState.moveX = 0;
       this.touchState.moveY = 0;
     } else {
-      const strongInput = normalized.normalize();
+      const strongInput = delta.normalize();
       this.touchState.moveX = Phaser.Math.Clamp(strongInput.x, -1, 1);
       this.touchState.moveY = Phaser.Math.Clamp(strongInput.y, -1, 1);
     }
@@ -216,7 +242,16 @@ export class MobileControls {
     this.joystickPointerId = null;
     this.touchState.moveX = 0;
     this.touchState.moveY = 0;
-    this.controls.knobArt.setPosition(this.joystickCenter.x, this.joystickCenter.y);
+    this.setJoystickVisualCenter(this.joystickHome.x, this.joystickHome.y, false);
+  }
+
+  private resetAllInput(): void {
+    if (this.joystickPointerId !== null) this.resetJoystick();
+    this.activePressPointers.clear();
+    for (const button of ['attack', 'special', 'ultimate', 'jump', 'defend'] as const) {
+      this.setButtonPressed(button, false);
+    }
+    this.setMenuPressed(false);
   }
 
   private handleResize(gameSize: Phaser.Structs.Size): void {
@@ -224,28 +259,43 @@ export class MobileControls {
   }
 
   private updateLayout(width: number, height: number): void {
-    const layout = getMobileControlLayout(width, height);
+    const displayWidth = this.scene.scale.displaySize.width || width;
+    const displayHeight = this.scene.scale.displaySize.height || height;
+    const safeArea = convertCssSafeAreaToGame(
+      readBrowserSafeAreaInsets(),
+      width,
+      height,
+      displayWidth,
+      displayHeight,
+    );
+    const cssPixelsPerGameUnit = Math.min(displayWidth / width, displayHeight / height);
+    const layout = getMobileControlLayout(width, height, { safeArea, cssPixelsPerGameUnit });
+    this.layout = layout;
+    this.joystickHome.set(layout.joystick.x, layout.joystick.y);
     this.joystickCenter.set(layout.joystick.x, layout.joystick.y);
-    this.controls.base.setPosition(layout.joystick.x, layout.joystick.y);
-    this.controls.baseArt.setPosition(layout.joystick.x, layout.joystick.y).setDisplaySize(132, 132);
+    this.controls.base.setPosition(layout.joystick.x, layout.joystick.y).setRadius(layout.joystick.radius);
+    this.controls.baseArt.setPosition(layout.joystick.x, layout.joystick.y)
+      .setDisplaySize(JOYSTICK_VISUAL_DIAMETER, JOYSTICK_VISUAL_DIAMETER)
+      .setAlpha(JOYSTICK_IDLE_BASE_ALPHA);
     this.controls.knobArt.setPosition(layout.joystick.x, layout.joystick.y)
-      .setDisplaySize(JOYSTICK_KNOB_ART_SIZE, JOYSTICK_KNOB_ART_SIZE);
+      .setDisplaySize(JOYSTICK_KNOB_VISUAL_DIAMETER, JOYSTICK_KNOB_VISUAL_DIAMETER)
+      .setAlpha(JOYSTICK_IDLE_KNOB_ALPHA);
 
     for (const button of ['attack', 'special', 'ultimate', 'jump', 'defend'] as const) {
       const target = layout[button];
-      this.controls[`${button}Button`].setPosition(target.x, target.y);
+      this.controls[`${button}Button`].setPosition(target.x, target.y).setRadius(target.radius);
       this.controls[`${button}Art`].setPosition(target.x, target.y);
       this.setButtonPressed(button, false);
     }
-    this.controls.ultimateCost.setPosition(layout.ultimate.x, layout.ultimate.y + 16);
-    this.controls.ultimateLabel.setPosition(layout.ultimate.x, layout.ultimate.y - 16);
+    this.controls.ultimateCost.setPosition(layout.ultimate.x, layout.ultimate.y + 14);
+    this.controls.ultimateLabel.setPosition(layout.ultimate.x, layout.ultimate.y - 14);
     this.controls.menuButton.setPosition(layout.menu.x, layout.menu.y);
     this.controls.menuArt.setPosition(layout.menu.x, layout.menu.y);
     this.controls.menuLabel.setPosition(layout.menu.x, layout.menu.y);
   }
 
   private setButtonPressed(button: ActionButtonName, pressed: boolean): void {
-    const diameter = ACTION_BUTTON_RADII[button] * 2 + ART_OVERSCAN;
+    const diameter = ACTION_BUTTON_VISUAL_DIAMETERS[button];
     const size = diameter * (pressed ? 0.91 : 1);
     const visual = this.controls[`${button}Art`];
     visual.setDisplaySize(size, size);
@@ -259,5 +309,12 @@ export class MobileControls {
   private setMenuPressed(pressed: boolean): void {
     this.controls.menuArt.setDisplaySize(pressed ? 76 : 82, pressed ? 31 : 34);
     this.controls.menuLabel.setScale(pressed ? 0.94 : 1);
+  }
+
+  private setJoystickVisualCenter(x: number, y: number, active: boolean): void {
+    this.joystickCenter.set(x, y);
+    this.controls.base.setPosition(x, y);
+    this.controls.baseArt.setPosition(x, y).setAlpha(active ? 0.82 : JOYSTICK_IDLE_BASE_ALPHA);
+    this.controls.knobArt.setPosition(x, y).setAlpha(active ? 0.96 : JOYSTICK_IDLE_KNOB_ALPHA);
   }
 }

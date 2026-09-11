@@ -1,8 +1,8 @@
 # 17 - Open Tasks
 
-## Current queue — 2026-09-09
+## Current queue — 2026-09-10
 
-The authoritative work queue is [plan 31](31_GAMEPLAY_AND_WAVE_COMPLETION_PLAN.md). **G0 complete; G1–G7 implemented and technically verified, combined manual gameplay, balance and real-device acceptance open. G8 is next.** See the [G7 report](qa/g7-runtime-2026-09-09/README.md) and [run measurement template](qa/gameplay-run-template.md).
+The authoritative gameplay queue is [plan 31](31_GAMEPLAY_AND_WAVE_COMPLETION_PLAN.md). **G0 complete; G1–G7 implemented and technically verified. UI-R0–R4 are complete and UI-R5 is next.** G8 resumes after UI-R5. Combined manual gameplay, balance and real-device acceptance remains open. See the [UI-R4 report](qa/ui-r4-2026-09-11/README.md), [G7 report](qa/g7-runtime-2026-09-09/README.md) and [run measurement template](qa/gameplay-run-template.md).
 
 | Work | Current status / owner bulk |
 |---|---|
@@ -12,7 +12,8 @@ The authoritative work queue is [plan 31](31_GAMEPLAY_AND_WAVE_COMPLETION_PLAN.m
 | Run/dash, dash attack, basic chains and steerable Air Bonk | G5 implemented; manual rhythm and real-device acceptance open |
 | Interactions, pickup and midboss | G6 implemented; manual feel/readability acceptance open |
 | Two-phase boss | G7 implemented; manual learning and pressure acceptance open |
-| Full-run resource tuning, HUD/camera/audio polish | G8 / G9; G8 next |
+| Battle UI correction | UI-R0–R4 complete; R5 integration/real-device acceptance next |
+| Full-run resource tuning, HUD/camera/audio polish | G8 / G9; resumes after UI-R5 |
 | Browser runtime automation, lint and focused architecture hardening | G10 |
 | Device performance, current Pages build, complete roster runs and asset delivery | G11; open |
 

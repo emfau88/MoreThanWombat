@@ -1,6 +1,6 @@
 # 18 - Next Steps
 
-**Current order — 2026-09-09:** G0 is complete and G1–G7 are implemented and technically verified. Next execute G8: measure full runs, then tune HP, MP, damage, encounter duration and pressure without replacing composition-first difficulty with health inflation. Continue with G9–G11 in [plan 31](31_GAMEPLAY_AND_WAVE_COMPLETION_PLAN.md). Use the [G7 report](qa/g7-runtime-2026-09-09/README.md) for the still-open learning, pressure, balance and real-device acceptance.
+**Current order — 2026-09-11:** G0 is complete and G1–G7 are implemented and technically verified. In the pre-G8 Battle-UI correction, UI-R0–R4 are complete. Next execute R5 (transition/integration and physical-device acceptance). G8 then measures full runs and tunes HP, MP, damage, duration and pressure. Use the [UI-R4 report](qa/ui-r4-2026-09-11/README.md), [layout contract](32_BATTLE_UI_R0_LAYOUT_CONTRACT.md) and [G7 report](qa/g7-runtime-2026-09-09/README.md).
 
 The blocks below are historical recommendations. Camera, feel and device checks remain relevant, but their old order and content restrictions do not supersede the scoped G1–G11 work.
 

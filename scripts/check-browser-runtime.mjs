@@ -85,11 +85,81 @@ try {
       window.__MORE_THAN_WOMBAT_GAME__.scene.start('BattleScene', {mode:'waves'}); void 0;`);
     await sleep(1600);
     await capture('wave-landscape');
-    for (const [label, w, h] of [['portrait', 390, 844], ['landscape-after-rotation', 844, 390], ['wide-landscape', 932, 360]]) {
+    if (process.env.QA_CAPTURE_UI_R4 === '1') {
+      const waveHudState = await evaluate(`(() => {
+        const scene = window.__MORE_THAN_WOMBAT_GAME__.scene.getScene('BattleScene');
+        const enemy = scene.waveEnemies[0];
+        enemy.hp = Math.max(1, enemy.maxHp * 0.62);
+        scene.revealLocalEnemyHealthBars([{ attacker: scene.player, defender: enemy, damage: 1 }]);
+        scene.enemyHealthBars.update(0, scene.waveEnemies);
+        return {
+          opponentVisible: scene.hud.opponentBar.frame.visible,
+          priorityVisible: scene.hud.priorityBar.frame.visible,
+          localBars: scene.enemyHealthBars.getActiveCount(),
+          header: scene.modeText.text,
+        };
+      })()`);
+      assert.equal(waveHudState.opponentVisible, false, 'Normal Wave must not show an arbitrary global opponent HUD');
+      assert.equal(waveHudState.priorityVisible, false, 'Normal Wave must not show the priority HUD');
+      assert.equal(waveHudState.localBars, 1, 'Damaged normal-wave enemy must show one local health bar');
+      assert.match(waveHudState.header, /1 LEFT/, 'Wave header must expose the remaining enemy count');
+      await capture('wave-local-health');
+    }
+    if (process.env.QA_CAPTURE_HUD_GATES === '1') {
+      const originalResources = await evaluate(`(() => {
+        const game = window.__MORE_THAN_WOMBAT_GAME__;
+        const scene = game.scene.getScene('BattleScene');
+        game.scene.pause('BattleScene');
+        return { hp: scene.player.hp, mana: scene.player.mana };
+      })()`);
+      for (const [label, ratio] of [['0', 0], ['1', 0.01], ['50', 0.5], ['100', 1]]) {
+        await evaluate(`(() => {
+          const scene = window.__MORE_THAN_WOMBAT_GAME__.scene.getScene('BattleScene');
+          scene.player.hp = scene.player.maxHp * ${ratio};
+          scene.player.mana = scene.player.maxMana * ${ratio};
+          scene.hud.update(scene.player, scene.getHudEnemy());
+        })()`);
+        await capture(`hud-fill-${label}`);
+      }
+      await evaluate(`(() => {
+        const game = window.__MORE_THAN_WOMBAT_GAME__;
+        const scene = game.scene.getScene('BattleScene');
+        scene.player.hp = ${JSON.stringify(originalResources.hp)};
+        scene.player.mana = ${JSON.stringify(originalResources.mana)};
+        scene.hud.update(scene.player, scene.getHudEnemy());
+        game.scene.resume('BattleScene');
+      })()`);
+    }
+    for (const [label, w, h] of [['portrait', 390, 844], ['landscape-after-rotation', 844, 390], ['wide-landscape', 932, 430]]) {
       await send('Emulation.setDeviceMetricsOverride', { width: w, height: h, deviceScaleFactor: 3, mobile: true });
       await sleep(600);
       await capture(label);
     }
+    const safeAreaShift = await evaluate(`(() => {
+      const game = window.__MORE_THAN_WOMBAT_GAME__;
+      const controls = game.scene.getScene('BattleScene').mobileControls;
+      const before = { attackX: controls.layout.attack.x, attackY: controls.layout.attack.y,
+        joystickX: controls.layout.joystick.x, menuX: controls.layout.menu.x };
+      document.documentElement.style.setProperty('--game-safe-area-right', '34px');
+      document.documentElement.style.setProperty('--game-safe-area-bottom', '20px');
+      document.documentElement.style.setProperty('--game-safe-area-left', '24px');
+      controls.updateLayout(game.scale.width, game.scale.height);
+      const after = { attackX: controls.layout.attack.x, attackY: controls.layout.attack.y,
+        joystickX: controls.layout.joystick.x, menuX: controls.layout.menu.x };
+      return { before, after };
+    })()`);
+    assert.ok(safeAreaShift.before.attackX - safeAreaShift.after.attackX > 30, 'Right safe area does not shift action controls');
+    assert.ok(safeAreaShift.before.attackY - safeAreaShift.after.attackY > 20, 'Bottom safe area does not shift action controls');
+    assert.ok(safeAreaShift.after.joystickX - safeAreaShift.before.joystickX > 20, 'Left safe area does not shift joystick home');
+    assert.ok(safeAreaShift.after.menuX - safeAreaShift.before.menuX > 20, 'Left safe area does not shift menu');
+    await capture('wide-safe-area');
+    await evaluate(`(() => {
+      const game = window.__MORE_THAN_WOMBAT_GAME__;
+      for (const side of ['right', 'bottom', 'left']) {
+        document.documentElement.style.removeProperty('--game-safe-area-' + side);
+      }
+      game.scene.getScene('BattleScene').mobileControls.updateLayout(game.scale.width, game.scale.height);
+    })()`);
     await writeFile(join(outputDir, 'mobile-metrics.json'), JSON.stringify({ snapshots, errors }, null, 2));
     console.log(JSON.stringify({ snapshots, errors }, null, 2));
     for (const snapshot of snapshots) {
@@ -112,21 +182,30 @@ try {
         return state;
       };
     })()`);
-    const controlPoint = (name, offsetX = 0) => evaluate(`(() => {
+    const controlPoint = (name, offsetX = 0, offsetY = 0) => evaluate(`(() => {
       const game = window.__MORE_THAN_WOMBAT_GAME__;
       const scene = game.scene.getScene('BattleScene');
       const rect = game.canvas.getBoundingClientRect();
       const control = scene.mobileControls.controls.${name};
       return { x: rect.x + (control.x + ${offsetX}) * rect.width / game.scale.width,
-        y: rect.y + control.y * rect.height / game.scale.height, id: 1 };
+        y: rect.y + (control.y + ${offsetY}) * rect.height / game.scale.height, id: 1 };
     })()`);
+    const edgeDirections = {
+      attack: [1, 0],
+      jump: [-1, 0],
+      special: [-1, 0],
+      defend: [1, 0],
+      ultimate: [0, 1],
+    };
     for (const action of ['attack', 'special', 'ultimate', 'jump', 'defend']) {
       const radius = await evaluate(`window.__MORE_THAN_WOMBAT_GAME__.scene.getScene('BattleScene').mobileControls.controls.${action}Button.radius`);
-      assert.ok(Math.abs(radius - (action === 'attack' ? 46 : action === 'jump' ? 40
-        : action === 'special' ? 36 : action === 'defend' ? 34 : 31)) < 0.001,
+      assert.ok(Math.abs(radius - (action === 'attack' ? 46 : 41)) < 0.001,
       `${action}: wrong rendered radius`);
       await evaluate('window.__QA_ACTIONS__ = []; void 0;');
-      await send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [await controlPoint(`${action}Button`, radius * 0.97)] });
+      const [directionX, directionY] = edgeDirections[action];
+      await send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [
+        await controlPoint(`${action}Button`, radius * 0.94 * directionX, radius * 0.94 * directionY),
+      ] });
       await sleep(100);
       await send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
       await sleep(100);
@@ -144,28 +223,44 @@ try {
         enemy.faction = 'player';
       }
     })()`);
-    const joystickStart = await controlPoint('base');
-    const joystickRight = await controlPoint('base', 45);
+    const joystickStart = await controlPoint('base', 35, -20);
+    const joystickRight = await controlPoint('base', 80, -20);
     await send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [joystickStart] });
+    assert.ok(await evaluate(`(() => {
+      const controls = window.__MORE_THAN_WOMBAT_GAME__.scene.getScene('BattleScene').mobileControls;
+      return controls.joystickCenter.x - controls.layout.joystick.x > 30;
+    })()`), 'Floating joystick does not move its origin beneath the initial touch');
     await send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [joystickRight] });
     await sleep(300);
     assert.ok(await evaluate('window.__MORE_THAN_WOMBAT_GAME__.scene.getScene("BattleScene").mobileControls.touchState.moveX > 0'), 'Rotated joystick misses touch');
+    const activeJoystickShot = await send('Page.captureScreenshot', { format: 'png' });
+    await writeFile(join(outputDir, 'joystick-active.png'), Buffer.from(activeJoystickShot.data, 'base64'));
     assert.equal(await evaluate('window.__MORE_THAN_WOMBAT_GAME__.scene.getScene("BattleScene").player.state'), 'run',
       'Sustained full joystick input should start Run');
     const attackTouch = { ...(await controlPoint('attackButton')), id: 2 };
     await send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [joystickRight, attackTouch] });
-    await sleep(80);
-    assert.equal(await evaluate('window.__MORE_THAN_WOMBAT_GAME__.scene.getScene("BattleScene").player.state'), 'dashAttack',
+    let dashState = '';
+    for (let attempt = 0; attempt < 12; attempt++) {
+      await sleep(25);
+      dashState = await evaluate('window.__MORE_THAN_WOMBAT_GAME__.scene.getScene("BattleScene").player.state');
+      if (dashState === 'dashAttack') break;
+    }
+    assert.equal(dashState, 'dashAttack',
       'ATK while holding the joystick should start Dash Attack');
     await send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
     await sleep(100);
     assert.equal(await evaluate('window.__MORE_THAN_WOMBAT_GAME__.scene.getScene("BattleScene").mobileControls.touchState.moveX'), 0, 'Joystick sticks after release');
+    assert.ok(await evaluate(`(() => {
+      const controls = window.__MORE_THAN_WOMBAT_GAME__.scene.getScene('BattleScene').mobileControls;
+      return Math.abs(controls.joystickCenter.x - controls.layout.joystick.x) < 0.01
+        && Math.abs(controls.joystickCenter.y - controls.layout.joystick.y) < 0.01;
+    })()`), 'Floating joystick does not return to its safe home position');
     await send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [await controlPoint('menuButton')] });
     await send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
     await sleep(400);
     assert.ok(await evaluate('window.__MORE_THAN_WOMBAT_GAME__.scene.isActive("MainMenuScene")'), 'Menu touch misses after rotation');
     assert.equal(errors.length, 0, 'Uncaught browser errors');
-    const report = 'PASS — mobile layout, rotation, aspect ratio, preserved Wave state, five separate action edge touches, joystick Run, touch Dash Attack, release and menu touch';
+    const report = 'PASS — adaptive compact layout, rotation, aspect ratio, preserved Wave state, five nearest-target edge touches, floating joystick Run, touch Dash Attack, release and menu touch';
     await writeFile(join(outputDir, 'checks.log'), `${report}\n${JSON.stringify(await send('Browser.getVersion'))}\n`);
     console.log(report);
   } else {

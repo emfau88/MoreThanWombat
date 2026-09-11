@@ -38,8 +38,14 @@ export class PreloadScene extends Phaser.Scene {
     this.load.image('ui-button-ultimate', `${assetBase}ui/battle/ultimate_button.png`);
     this.load.image('ui-joystick-base', `${assetBase}ui/battle/joystick_base.png`);
     this.load.image('ui-joystick-knob', `${assetBase}ui/battle/joystick_knob.png`);
-    this.load.image('ui-player-hud-frame', `${assetBase}ui/battle/player_hud_frame.png`);
-    this.load.image('ui-boss-hud-frame', `${assetBase}ui/battle/boss_hud_frame.png`);
+    this.load.image('ui-hud-chassis-neutral', `${assetBase}ui/battle/hud_chassis_neutral.png`);
+    this.load.image('hud-portrait-wombat', `${assetBase}ui/battle/portraits/wombat.png`);
+    this.load.image('hud-portrait-angry-pigeon', `${assetBase}ui/battle/portraits/angry_pigeon.png`);
+    this.load.image('hud-portrait-discount-wizard', `${assetBase}ui/battle/portraits/discount_wizard.png`);
+    this.load.image('hud-portrait-budget-barbarian', `${assetBase}ui/battle/portraits/budget_barbarian.png`);
+    this.load.image('hud-portrait-mara-breach', `${assetBase}ui/battle/portraits/mara_breach.png`);
+    this.load.image('hud-portrait-buster-bulldog', `${assetBase}ui/battle/portraits/buster_bulldog.png`);
+    this.load.image('hud-portrait-reference-fighter', `${assetBase}ui/battle/portraits/reference_fighter.png`);
     this.load.image('ui-button-compact', `${assetBase}ui/battle/compact_button.png`);
     this.load.spritesheet('wombat', `${assetBase}characters/wombat/wombat_spritesheet_128_normalized.png`, {
       frameWidth: 128,

@@ -1,19 +1,19 @@
 # 31 – Gameplay- und Wave-Completion-Plan
 
-**Stand:** 2026-09-09<br>
+**Stand:** 2026-09-10<br>
 **Status:** Verbindliche, nach Gameplay-Risiko neu sortierte Ausführungsreihenfolge<br>
 **Adressat:** Coding Agent<br>
 **Ziel:** Aus dem technisch stabilen Vertical Slice einen kurzen, eigenständig tragfähigen Arcade-Brawler-Run machen, bevor weitere Figuren, Arenen oder aufwendige VFX produziert werden.
 
 > Bei Widersprüchen mit älteren Roadmaps gilt für Gameplay und Wave Completion dieses Dokument.
 
-### Ausführungsstand 2026-09-09
+### Ausführungsstand 2026-09-10
 
-**G0 abgeschlossen; G1–G7 implementiert und technisch geprüft, gemeinsame manuelle Spielgefühlabnahme offen. G8 ist der nächste Implementierungs-Bulk.** [G7-Prüfbericht](qa/g7-runtime-2026-09-09/README.md) · [G6-Prüfbericht](qa/g6-runtime-2026-09-09/README.md) · [G5-Prüfbericht](qa/g5-runtime-2026-09-09/README.md) · [G4-Prüfbericht](qa/g4-runtime-2026-09-08/README.md) · [G3-Prüfbericht](qa/g3-runtime-2026-09-08/README.md) · [G2-Prüfbericht](qa/g2-runtime-2026-09-06/README.md) · [G1-Prüfbericht](qa/g1-runtime-2026-09-05/README.md) · [Historische G0-Baseline](qa/gameplay-baseline-2026-09-05/README.md) · [Einheitliche Run-Messvorlage](qa/gameplay-run-template.md).
+**G0 abgeschlossen; G1–G7 implementiert und technisch geprüft, gemeinsame manuelle Spielgefühlabnahme offen. Vor G8 läuft die Battle-UI-Korrektur UI-R0–R5: R0–R4 sind abgeschlossen, R5 ist als Nächstes dran.** [UI-R4-Prüfbericht](qa/ui-r4-2026-09-11/README.md) · [UI-R0-Vertrag](32_BATTLE_UI_R0_LAYOUT_CONTRACT.md) · [G7-Prüfbericht](qa/g7-runtime-2026-09-09/README.md) · [G6-Prüfbericht](qa/g6-runtime-2026-09-09/README.md) · [G5-Prüfbericht](qa/g5-runtime-2026-09-09/README.md) · [G4-Prüfbericht](qa/g4-runtime-2026-09-08/README.md) · [G3-Prüfbericht](qa/g3-runtime-2026-09-08/README.md) · [G2-Prüfbericht](qa/g2-runtime-2026-09-06/README.md) · [G1-Prüfbericht](qa/g1-runtime-2026-09-05/README.md) · [Historische G0-Baseline](qa/gameplay-baseline-2026-09-05/README.md) · [Einheitliche Run-Messvorlage](qa/gameplay-run-template.md).
 
-Technisch geprüft: 99/99 Tests, Typecheck und Production Build. G7 ersetzt Encounter 7 durch den zweiphasigen Overtime Supervisor mit Timecard Swipe, phasenabhängigem Lane Lockdown, Shift Change, eigenem Boss-HUD und einem über den Director begrenzten Add. Die G7-Browserprüfung umfasst 63 echte Phaser-Checks in Desktop- und Mobile-Auflösung. G1–G6 bestehen in der aktuellen Regression mit 679/57/280/29/80/51 Checks.
+Technisch geprüft: 108/108 Tests, Typecheck und Production Build. G7 ersetzt Encounter 7 durch den zweiphasigen Overtime Supervisor mit Timecard Swipe, phasenabhängigem Lane Lockdown, Shift Change, eigenem Boss-HUD und einem über den Director begrenzten Add. Die G7-Browserprüfung umfasst 63 echte Phaser-Checks in Desktop- und Mobile-Auflösung. G1–G6 bestehen in der aktuellen Regression mit 679/57/280/29/80/51 Checks.
 
-Zusatzauftrag Mobile/UI: Querformat-Skalierung und Rotation korrigiert. Der UI-Zwischenschritt vom 09.09. ersetzt Joystick und fünf Aktionsbuttons durch optimierte, textfreie Produktionsassets, ordnet alle Aktionen als ergonomischen rechten Daumenfächer an und zieht die hochwertigen Player-/Enemy-/Boss-HUD-Rahmen aus G9 vor. Die Korrektur vom 10.09. vergrößert den Stick-Knauf, setzt Fighter-Portraits in die vorgesehenen Kreise, fasst HP/MP vollständig ein und kaschiert Zonenbildnähte mit einem transparenten Stage-Prop. Touch-Zonen bleiben code-owned, getrennt und getestet. [UI-Prüfung](qa/ui-controls-2026-09-09/README.md) · [ursprüngliche Mobile-Prüfung](qa/mobile-2026-09-05/README.md).
+Zusatzauftrag Mobile/UI: Der neue Ablauf UI-R0–R5 beginnt mit dem freigegebenen [Layoutvertrag](32_BATTLE_UI_R0_LAYOUT_CONTRACT.md). UI-R1 liefert adaptive Geometrie und Safe Areas. UI-R2 behält die professionellen ImageGen-Aktionsbuttons. Die dort erzeugte flache Joystick-Paarung war technisch korrekt, aber im Spiel schlechter lesbar; deshalb nutzt die Runtime wieder die klareren ursprünglichen Basis-/Knauf-Assets in der neuen kompakten Floating-Geometrie und mit besserem Idle-Kontrast. UI-R3 liefert das vollständige spiegelbare Chassis und exakte codeeigene Slots. UI-R4 ergänzt sieben Porträts, normale Wave-Lokalbalken und getrennte Midboss-/Boss-Semantik. R5 übernimmt nun Integration und Realgeräteabnahme. [UI-R4-Prüfung](qa/ui-r4-2026-09-11/README.md) · [historischer UI-Prototyp](qa/ui-controls-2026-09-09/README.md) · [ursprüngliche Mobile-Prüfung](qa/mobile-2026-09-05/README.md).
 
 **Präzisierte Abhängigkeiten aus dem Codeabgleich:**
 

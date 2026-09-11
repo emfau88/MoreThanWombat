@@ -1,17 +1,18 @@
 # More Than Wombat - Handoff For New Chat
 
-Last updated: 2026-09-09
+Last updated: 2026-09-10
 
-## Current handoff — G1–G7 implemented; G8 next
+## Current handoff — UI-R4 complete; UI-R5 next
 
 Read [plan 31](31_GAMEPLAY_AND_WAVE_COMPLETION_PLAN.md) first and the [G0 baseline with logs](qa/gameplay-baseline-2026-09-05/README.md) second. The current task is gameplay and Wave completion. The historical VFX-first recommendations and knockdown exclusion below do not override this plan.
 
 - Four normal players: Wombat, Discount Wizard, Budget Barbarian and Mara Breach. Normal Duel enemies: Pigeon and Wizard. Buster Bulldog and Reference Fighter are Gym-only prototypes, not normal Character Select options.
-- The current code passes Typecheck, **99/99 tests**, production build, the current G1–G7 browser suites, **6/6** character-sheet gates and VFX QA **6/6 + 5/5 + 4/4**. Character QA includes a prototype and is not a roster count or visual acceptance.
+- The current code passes Typecheck, **108/108 tests**, production build, the current G1–G7 browser suites, **6/6** character-sheet gates and VFX QA **6/6 + 5/5 + 4/4**. Character QA includes a prototype and is not a roster count or visual acceptance.
 - Junkyard Run has three zones and seven role-based encounters with a tested Director, safe visible entry, floor bounds, group camera framing, health rewards and phase-aware mana. No mana regeneration during safe travel, transition or results.
 - G4 supplies Guard/Evade, anti-stunlock and the complete Knockdown/Wake-up lifecycle. G5 supplies Run, four Dash Attacks, four three-step Basic-Chains and steerable Air Bonk. G6 supplies the two Stage-interaction types, deterministic lunchbox and Acting Foreman midboss. G7 supplies the two-phase Overtime Supervisor, phase-aware Boss HUD, lane lockdown, Shift Change and priority cleanup. See the [G7 report](qa/g7-runtime-2026-09-09/README.md).
-- Mobile/UI follow-up: corrected FIT resizing and rotation remain intact. An ImageGen-authored industrial control set now supplies a split joystick and five icon-first action buttons. Attack is largest, Jump second-largest, and Defend has moved into the right-thumb fan. Player/enemy/Boss HUD frames were pulled forward from G9. Stable code-owned hit circles, rotation and actual edge-touch events pass browser emulation; [UI evidence](qa/ui-controls-2026-09-09/README.md). Physical-device acceptance remains open.
-- Next: G8 measures and tunes resources, encounter duration and complete-run balance. No new player fighter or arena during G0–G9.
+- Mobile/UI correction: [UI-R0](32_BATTLE_UI_R0_LAYOUT_CONTRACT.md) is accepted; UI-R1 implements adaptive geometry and safe-area behavior. UI-R2 keeps the professional ImageGen action-button family. Its generated flat joystick pair was rejected after in-game comparison; the clearer original base/knob artwork now uses the compact floating geometry with stronger idle contrast. UI-R3 replaces the cropped HUD frames with a complete mirrorable ImageGen chassis and exact code-owned portrait/HP/MP slots; [UI-R3 evidence](qa/ui-r3-2026-09-10/README.md). Physical-device acceptance remains open.
+- UI-R4 supplies seven dedicated portraits, hides the arbitrary global enemy HUD in normal waves, shows short-lived local damage bars, and reserves one centered persistent chassis for the Midboss/Boss. The Boss lower slot is a phase indicator rather than fake mana. The browser fullscreen pill is now a compact top-right icon. [UI-R4 evidence](qa/ui-r4-2026-09-11/README.md).
+- Next: UI-R5 completes transition cleanup, integration and physical-device acceptance. G8 resource and full-run balance follows. No new player fighter or arena during G0–G9.
 - Full interactive runs, balance, current Pages verification and two real-device classes remain open. Use the [run template](qa/gameplay-run-template.md); do not mark manual gates passed from unit tests.
 
 Everything below is retained as dated implementation history and system context. Older counts, roster descriptions and “next” lists are superseded by this update.

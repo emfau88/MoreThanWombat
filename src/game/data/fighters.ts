@@ -49,6 +49,7 @@ function createFighterBoxProfiles(hurtbox: LocalBox, pushbox: LocalBox): Pick<Fi
 export const wombatDefinition: FighterDefinition = {
   id: 'wombat',
   label: 'Wombat',
+  hudPortraitKey: 'hud-portrait-wombat',
   fillColor: 0xa67c52,
   outlineColor: 0x3c2a1e,
   maxHp: 100,
@@ -104,6 +105,7 @@ export const wombatDefinition: FighterDefinition = {
 export const angryPigeonDefinition: FighterDefinition = {
   id: 'angry_pigeon',
   label: 'Angry Pigeon',
+  hudPortraitKey: 'hud-portrait-angry-pigeon',
   fillColor: 0x7d8597,
   outlineColor: 0x1f2937,
   maxHp: 64,
@@ -148,6 +150,7 @@ export const angryPigeonDefinition: FighterDefinition = {
 export const discountWizardDefinition: FighterDefinition = {
   id: 'discount_wizard',
   label: 'Discount Wizard',
+  hudPortraitKey: 'hud-portrait-discount-wizard',
   fillColor: 0x2c7a8c,
   outlineColor: 0x17202a,
   maxHp: 76,
@@ -205,6 +208,7 @@ export const discountWizardDefinition: FighterDefinition = {
 export const budgetBarbarianDefinition: FighterDefinition = {
   id: 'budget_barbarian',
   label: 'Budget Barbarian',
+  hudPortraitKey: 'hud-portrait-budget-barbarian',
   fillColor: 0xb8793a,
   outlineColor: 0x2b1a10,
   maxHp: 112,
@@ -263,6 +267,7 @@ export const budgetBarbarianDefinition: FighterDefinition = {
 export const maraBreachDefinition: FighterDefinition = {
   id: 'mara_breach',
   label: 'Mara Breach',
+  hudPortraitKey: 'hud-portrait-mara-breach',
   fillColor: 0xa5a846,
   outlineColor: 0x17202a,
   maxHp: 88,
@@ -321,6 +326,7 @@ export const maraBreachDefinition: FighterDefinition = {
 export const busterBulldogDefinition: FighterDefinition = {
   id: 'buster_bulldog',
   label: 'Buster Bulldog',
+  hudPortraitKey: 'hud-portrait-buster-bulldog',
   fillColor: 0xb87834,
   outlineColor: 0x24150f,
   maxHp: 125,
@@ -374,6 +380,7 @@ export const busterBulldogDefinition: FighterDefinition = {
 export const referenceFighterDefinition: FighterDefinition = {
   id: 'reference_fighter',
   label: 'Reference Fighter',
+  hudPortraitKey: 'hud-portrait-reference-fighter',
   fillColor: 0x2f66d8,
   outlineColor: 0x101820,
   maxHp: 100,

@@ -115,7 +115,8 @@ try {
   check(vents.length === 2 && vents.every((vent) => vent.trigger === 'midboss_command'),
     'Finale owns two command-triggered lane hazards');
   check(battle.modeText.text.includes('BOSS · PHASE 1/2')
-    && battle.hud.enemyBar.label.text.includes('BOSS · PHASE 1/2 · Overtime Supervisor'),
+    && battle.hud.priorityBar.label.text.includes('BOSS · OVERTIME SUPERVISOR')
+    && battle.hud.priorityBar.manaText.text === 'PHASE 1 / 2',
   'Boss has a dedicated phase-aware HUD');
 
   battle.player.x = 2200;
@@ -163,7 +164,7 @@ try {
   check(boss.getCombatResponse() === 'invulnerable' && boss.roleCueText.text === 'OVERTIME!',
     'Phase transition is protected and visibly announced');
   check(battle.modeText.text.includes('BOSS · PHASE 2/2')
-    && battle.hud.enemyBar.label.text.includes('BOSS · PHASE 2/2'),
+    && battle.hud.priorityBar.manaText.text === 'PHASE 2 / 2',
   'Boss HUD updates to the second phase');
   until(battle, () => controller.getDebugSnapshot(boss).state === 'boss_reposition',
     'Phase 2 changes the decision order by repositioning first');

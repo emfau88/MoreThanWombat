@@ -7,17 +7,18 @@ This folder contains both the original foundation documents and the current proj
 The project has moved beyond the original combat sandbox MVP. Use the docs in this order for current work:
 
 1. `31_GAMEPLAY_AND_WAVE_COMPLETION_PLAN.md`
-2. `22_HANDOFF_FOR_NEW_CHAT.md`
-3. `23_ARCADE_QUALITY_COMBAT_VFX_PLAN.md`
-4. `24_BULK_1_CHARACTER_ASSET_IMPLEMENTATION.md`
-5. `25_BULK_2_BOX_PROFILE_IMPLEMENTATION.md`
-6. `26_BULK_3_HIT_CONFIRM_IMPLEMENTATION.md`
-7. `27_BULK_4_UNIFIED_VFX_PRODUCTION_PLAN.md`
-8. `28_BULK_4_0_VFX_STYLE_LOCK.md`
-9. `16_CURRENT_ROADMAP.md`
-10. `17_OPEN_TASKS.md`
-11. `21_CHARACTER_ASSET_STANDARD.md`
-12. Relevant implementation spec from `07` to `13` only when touching that system
+2. `32_BATTLE_UI_R0_LAYOUT_CONTRACT.md`
+3. `22_HANDOFF_FOR_NEW_CHAT.md`
+4. `23_ARCADE_QUALITY_COMBAT_VFX_PLAN.md`
+5. `24_BULK_1_CHARACTER_ASSET_IMPLEMENTATION.md`
+6. `25_BULK_2_BOX_PROFILE_IMPLEMENTATION.md`
+7. `26_BULK_3_HIT_CONFIRM_IMPLEMENTATION.md`
+8. `27_BULK_4_UNIFIED_VFX_PRODUCTION_PLAN.md`
+9. `28_BULK_4_0_VFX_STYLE_LOCK.md`
+10. `16_CURRENT_ROADMAP.md`
+11. `17_OPEN_TASKS.md`
+12. `21_CHARACTER_ASSET_STANDARD.md`
+13. Relevant implementation spec from `07` to `13` only when touching that system
 
 ## Current Truth
 
@@ -28,7 +29,12 @@ These files describe the current built prototype and near-term work:
 - `qa/g4-runtime-2026-09-08/README.md` - current technical evidence for defense, knockdown/wake-up, mobile input, Wave ground bounds, healing, transitions, camera and the open manual acceptance gate
 - `qa/g6-runtime-2026-09-09/README.md` - current technical evidence for Stage interactions, deterministic HP/MP pickup, the Acting Foreman midboss and full interaction cleanup
 - `qa/g7-runtime-2026-09-09/README.md` - current technical evidence for the two-phase Overtime Supervisor, lane lockdown, Boss HUD, Director-budgeted add and priority cleanup
-- `qa/ui-controls-2026-09-09/README.md` - generated production touch-control and HUD asset manifest, layout rationale, mobile input checks and visual evidence
+- `qa/ui-controls-2026-09-09/README.md` - historical first control/HUD art pass and its evidence; retained for traceability, not the accepted final UI direction
+- `32_BATTLE_UI_R0_LAYOUT_CONTRACT.md` - accepted replacement contract for compact touch-control geometry, modular HUD construction and mode-specific HUD semantics
+- `qa/ui-r1-2026-09-10/README.md` - current technical evidence for adaptive hit geometry, safe areas, multi-touch release and the bounded floating joystick
+- `qa/ui-r2-2026-09-10/README.md` - production-asset evidence for the retained ImageGen action buttons and the superseded flat joystick experiment
+- `qa/ui-r3-2026-09-10/README.md` - modular HUD chassis and exact portrait/HP/MP geometry evidence
+- `qa/ui-r4-2026-09-11/README.md` - seven dedicated portraits, normal-Wave local HP bars and centered Midboss/Boss HUD semantics
 - `31_GAMEPLAY_AND_WAVE_COMPLETION_PLAN.md` - current priority order from a stable combat prototype to a complete seven-encounter Wave run; use this as the gameplay execution plan when older roadmaps conflict
 - `16_CURRENT_ROADMAP.md` - actual execution roadmap based on what is already built
 - `17_OPEN_TASKS.md` - practical current task list
@@ -73,7 +79,7 @@ Do not use the old MVP documents as permission to remove existing systems such a
 
 ## Current Working Rule
 
-G0 is complete as a documentation and technical baseline. G1 through G7 are implemented and technically verified; their combined manual gameplay, balance and real-device acceptance remains open. G8 is next. Use the [G7 report](qa/g7-runtime-2026-09-09/README.md), [G6 report](qa/g6-runtime-2026-09-09/README.md), [G5 report](qa/g5-runtime-2026-09-09/README.md), [G4 report](qa/g4-runtime-2026-09-08/README.md), [G3 report](qa/g3-runtime-2026-09-08/README.md), [G2 report](qa/g2-runtime-2026-09-06/README.md), and [G1 report](qa/g1-runtime-2026-09-05/README.md) for current evidence. Scripted browser diagnostics do not replace balance or real-device acceptance. Older numeric test counts describe their original milestones.
+G0 is complete as a documentation and technical baseline. G1 through G7 are implemented and technically verified; their combined manual gameplay, balance and real-device acceptance remains open. Before G8, UI-R0–R5 replaces the rejected Battle-UI prototype: R0–R4 are complete and R5 is next. Use the [UI-R4 report](qa/ui-r4-2026-09-11/README.md), [G7 report](qa/g7-runtime-2026-09-09/README.md), [G6 report](qa/g6-runtime-2026-09-09/README.md), [G5 report](qa/g5-runtime-2026-09-09/README.md), [G4 report](qa/g4-runtime-2026-09-08/README.md), [G3 report](qa/g3-runtime-2026-09-08/README.md), [G2 report](qa/g2-runtime-2026-09-06/README.md), and [G1 report](qa/g1-runtime-2026-09-05/README.md) for current evidence. Scripted browser diagnostics do not replace balance or real-device acceptance. Older numeric test counts describe their original milestones.
 
 Before implementing:
 

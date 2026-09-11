@@ -4,15 +4,17 @@ export type RectTarget = { x: number; y: number; width: number; height: number }
 export type MobileControlTarget = 'menu' | 'attack' | 'special' | 'ultimate' | 'jump' | 'defend' | 'joystick' | 'none';
 
 export type MobileControlGeometry = {
-  screenWidth: number;
   menu: RectTarget;
   attack: CircleTarget;
   special: CircleTarget;
   ultimate: CircleTarget;
   jump: CircleTarget;
   defend: CircleTarget;
+  joystickRegion: RectTarget;
   joystickAvailable: boolean;
 };
+
+const ACTION_TARGETS = ['attack', 'jump', 'defend', 'ultimate', 'special'] as const;
 
 export function containsCircle(point: ScreenPoint, target: CircleTarget): boolean {
   const deltaX = point.x - target.x;
@@ -33,22 +35,23 @@ export function resolveMobileControlTarget(point: ScreenPoint, geometry: MobileC
   if (containsRect(point, geometry.menu)) {
     return 'menu';
   }
-  if (containsCircle(point, geometry.attack)) {
-    return 'attack';
+
+  let nearestAction: typeof ACTION_TARGETS[number] | null = null;
+  let nearestNormalizedDistance = Number.POSITIVE_INFINITY;
+  for (const action of ACTION_TARGETS) {
+    const target = geometry[action];
+    if (!containsCircle(point, target)) continue;
+    const normalizedDistance = Math.hypot(point.x - target.x, point.y - target.y) / target.radius;
+    if (normalizedDistance < nearestNormalizedDistance) {
+      nearestAction = action;
+      nearestNormalizedDistance = normalizedDistance;
+    }
   }
-  if (containsCircle(point, geometry.special)) {
-    return 'special';
+
+  if (nearestAction) {
+    return nearestAction;
   }
-  if (containsCircle(point, geometry.ultimate)) {
-    return 'ultimate';
-  }
-  if (containsCircle(point, geometry.jump)) {
-    return 'jump';
-  }
-  if (containsCircle(point, geometry.defend)) {
-    return 'defend';
-  }
-  if (point.x <= geometry.screenWidth * 0.5 && geometry.joystickAvailable) {
+  if (containsRect(point, geometry.joystickRegion) && geometry.joystickAvailable) {
     return 'joystick';
   }
   return 'none';

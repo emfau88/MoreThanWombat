@@ -8,7 +8,7 @@ export function setupMobileViewport(game: Phaser.Game): void {
   const button = document.createElement('button');
   button.type = 'button';
   button.className = FULLSCREEN_BUTTON_CLASS;
-  button.textContent = 'Full';
+  button.textContent = '⛶';
   button.setAttribute('aria-label', 'Play in fullscreen');
   button.hidden = !fullscreenSupported;
   document.body.appendChild(button);

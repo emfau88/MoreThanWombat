@@ -11,6 +11,13 @@ body,
   overscroll-behavior: none;
 }
 
+:root {
+  --game-safe-area-top: env(safe-area-inset-top, 0px);
+  --game-safe-area-right: env(safe-area-inset-right, 0px);
+  --game-safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --game-safe-area-left: env(safe-area-inset-left, 0px);
+}
+
 body {
   font-family: Verdana, Geneva, sans-serif;
   position: fixed;
@@ -41,19 +48,18 @@ canvas {
 .fullscreen-button {
   position: fixed;
   top: calc(env(safe-area-inset-top) + 12px);
-  left: 50%;
-  transform: translateX(-50%);
+  right: calc(env(safe-area-inset-right) + 12px);
   z-index: 10000;
   display: none;
-  min-width: 64px;
-  min-height: 44px;
+  width: 44px;
+  height: 44px;
   border: 2px solid rgba(245, 240, 216, 0.72);
   border-radius: 999px;
-  padding: 6px 10px;
+  padding: 0;
   background: rgba(20, 24, 33, 0.74);
   color: #fff7e6;
   font-family: Verdana, Geneva, sans-serif;
-  font-size: 13px;
+  font-size: 20px;
   font-weight: 700;
   letter-spacing: 0.02em;
   box-shadow: 0 8px 22px rgba(0, 0, 0, 0.26);
@@ -66,7 +72,7 @@ canvas {
 }
 
 .fullscreen-button:active {
-  transform: translateX(-50%) scale(0.96);
+  transform: scale(0.94);
 }
 
 @media (pointer: coarse) {

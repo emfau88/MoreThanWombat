@@ -63,6 +63,7 @@ export type ActiveWorldHitbox = {
 export type FighterDefinition = {
   id: string;
   label: string;
+  hudPortraitKey: string;
   fillColor: number;
   outlineColor: number;
   maxHp: number;
@@ -114,6 +115,7 @@ export class Fighter {
   readonly instanceId: number;
   readonly id: string;
   readonly label: string;
+  readonly hudPortraitKey: string;
   readonly faction: CombatFaction;
   readonly maxHp: number;
   readonly maxMana: number;
@@ -187,6 +189,7 @@ export class Fighter {
     Fighter.nextInstanceId += 1;
     this.id = definition.id;
     this.label = definition.label;
+    this.hudPortraitKey = definition.hudPortraitKey;
     this.faction = faction;
     this.maxHp = definition.maxHp;
     this.maxMana = definition.maxMana;

@@ -1,16 +1,79 @@
+export type HudSide = 'left' | 'right';
+
+export type HudResourceSlot = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  padding: number;
+};
+
+export type HudResourceFillRect = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
+
 export const HUD_LAYOUT = {
-  player: { x: 122, y: 66 },
-  enemy: { rightInset: 54, y: 66 },
-  portraitRadius: 30,
-  labelOffsetY: -30,
-  labelFontSize: 11,
+  frame: {
+    width: 238,
+    height: 72,
+    top: 18,
+  },
+  player: {
+    left: 96,
+  },
+  enemy: {
+    right: 18,
+  },
+  portrait: {
+    x: 33,
+    y: 36,
+    radius: 24,
+    artSize: 50,
+  },
+  label: {
+    x: 67,
+    y: 8,
+    fontSize: 10,
+  },
+  hp: {
+    x: 67,
+    y: 27,
+    width: 158,
+    height: 14,
+    padding: 3,
+  },
+  mana: {
+    x: 67,
+    y: 50,
+    width: 158,
+    height: 9,
+    padding: 2,
+  },
 } as const;
 
-const BAR_HORIZONTAL_INSET_RATIO = 0.06;
+export function getHudFrameAnchor(viewportWidth: number, side: HudSide): number {
+  return side === 'left' ? HUD_LAYOUT.player.left : viewportWidth - HUD_LAYOUT.enemy.right;
+}
 
-// Keep the frame geometry pure so the Node suite can guard against bars spilling
-// over the beveled raster artwork again.
-export function getHudBarMetrics(frameWidth: number): { inset: number; width: number } {
-  const inset = frameWidth * BAR_HORIZONTAL_INSET_RATIO;
-  return { inset, width: frameWidth - inset * 2 };
+export function getHudWorldX(anchorX: number, localX: number, side: HudSide): number {
+  return side === 'left' ? anchorX + localX : anchorX - localX;
+}
+
+export function getHudResourceFillRect(
+  slot: HudResourceSlot,
+  ratio: number,
+): HudResourceFillRect {
+  const clampedRatio = Math.min(1, Math.max(0, ratio));
+  const innerWidth = Math.max(0, slot.width - slot.padding * 2);
+  const innerHeight = Math.max(0, slot.height - slot.padding * 2);
+
+  return {
+    x: slot.x + slot.padding,
+    y: slot.y + slot.height * 0.5,
+    width: innerWidth * clampedRatio,
+    height: innerHeight,
+  };
 }
