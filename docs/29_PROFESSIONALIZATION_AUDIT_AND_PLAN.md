@@ -349,7 +349,7 @@ Diese Reihenfolge enthält ausschließlich Arbeit, die lokal, reproduzierbar und
 
 ### A3 — Roster-Bereinigung: Bulldog technisch ausliefern verhindern
 
-**Historischer Status 2026-09-03:** umgesetzt. Buster Bulldog und Reference Fighter bleiben ausschließlich Combat-Gym-Prototypen; der damalige normale Select zeigte Wombat, Wizard und Barbarian. Im aktuellen Code ergänzt Mara Breach diesen Spieler-Roster. **Umfang:** klarer Produktbeschluss, keine Neugestaltung.
+**Historischer Status 2026-09-03:** umgesetzt. Buster Bulldog und der neutrale Platzhalter bleiben ausschließlich Combat-Gym-Prototypen; der damalige normale Select zeigte Wombat, Wizard und Barbarian. Im aktuellen Code ergänzt Mara Breach diesen Spieler-Roster. **Umfang:** klarer Produktbeschluss, keine Neugestaltung.
 
 - Buster Bulldog aus Character Select, zufälliger Gegnerwahl und Wave-Rotation entfernen.
 - Seine Definition, Moves und Assets als ungenutzten Prototyp erhalten, damit nichts destruktiv gelöscht wird und der spätere Ersatz unabhängig entstehen kann.

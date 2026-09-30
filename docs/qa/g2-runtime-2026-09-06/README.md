@@ -38,8 +38,7 @@ G1 Phaser regression, 960 × 540
 
 Der G2-Harness lädt die echten Assets und Phaser-Szenen, durchläuft Entry und alle drei Abschnitte, startet die neuen Moves auf echten `Fighter`-Instanzen, löst alle vier Comedy-/Break-Zustände aus, prüft Director-Kanäle sowie Full/Reduced/Minimal VFX und lässt den letzten Zustand für den Screenshot rendern. Die Unit-Tests prüfen zusätzlich alle vier Einzelrollen und sechs Paarungen. Der G1-Harness durchläuft weiterhin mit allen vier Spielerfiguren den vollständigen Drei-Abschnitt-Flow sowie Defeat, Restart, Duel und Gym.
 
-- [960 × 540 Laufzeitbild](runtime-960x540.png)
-- [844 × 390 Mobile-Laufzeitbild](runtime-844x390.png)
+- Historische Laufzeitbilder des ausgemusterten Prototyps wurden archivbereinigt; die Laufzeitprotokolle bleiben als technische Nachweise erhalten.
 - [960 × 540 Laufzeitprotokoll](runtime-960x540.log)
 - [844 × 390 Laufzeitprotokoll](runtime-844x390.log)
 - [G1-Regressionsprotokoll](g1-regression/runtime-960x540.log)

@@ -27,7 +27,7 @@ Umgebung: Windows, PowerShell, Node `v22.17.1`, npm `10.9.2`; vorhandene lokale 
 |---|---|---|
 | Normale Spieler | Wombat, Discount Wizard, Budget Barbarian, Mara Breach | Vollständiger Run pro Figur auf Keyboard und Touch |
 | Normale Duel-Gegner | Angry Pigeon, Discount Wizard | Match-up- und Ressourcenbalance |
-| Diagnostische Prototypen | Buster Bulldog, Reference Fighter im Combat Gym | Keine Aufnahme in normalen Roster geplant |
+| Diagnostische Prototypen | Buster Bulldog, neutraler Platzhalter im Combat Gym | Keine Aufnahme in normalen Roster geplant |
 | Combat | Datengetriebene Basic/Special/Ultimate, Jump/Air Bonk, Input Buffer, Hitstop, Boxen, Fraktionen und Hit-Reaktionen | Spieler-Guard/Evade, vollständiger Knockdown/Wake-up, Dash und Basic-Chain |
 | Waves | `junkyard_run`, 3 Zonen, 3 statische Gruppen mit 1/2/2 Gegnern, insgesamt 5 Gegner; Combat/Travel/Transition | Director, Entry-Sperre, Rollenmix, 7 Encounters, Midboss/Boss, Interaktionen/Pickup |
 | Stage | 2880 Weltbreite, 3 eigene Zonenhintergründe, Bodenvertrag und Travel-Korridore | Aktuelle vollständige Kamera-/Boden-Sichtprüfung und Screenshot-Baselines |

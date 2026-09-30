@@ -157,7 +157,7 @@ Die Pixelmessung ist ein Diagnosewerkzeug, kein Ersatz für eine Animation Revie
 | Technische Basis | Phaser 4.1, TypeScript, Vite; Build, Typecheck und 33 Tests erfolgreich | gut | gezielte weitere Modulentkopplung, Asset-Ladeplan |
 | Kernkampf | Startup/Active/Recovery, Input Buffer, zentraler Resolver, Hitstop, Knockback, Hitstun, Air Attack | gut für Pre-Alpha | Knockdown, Defense, Cancel-/Chain-Regeln |
 | Collision | phasen-/zustandsabhängige Hit-/Hurt-/Pushboxprofile, Factions, explizite Lane-/Höhenreichweite und echter Kontaktpunkt | stark für Pre-Alpha | weitere Moves selektiv authored kalibrieren |
-| Charaktere | 5 eigene Figuren plus Reference Fighter; 5/5 Body-Sheets bestehen harte QA-Gates | gute produktive Grundlage | dedizierte Air-/State-Abdeckung und native Layer-Master |
+| Charaktere | 5 eigene Figuren; 5/5 Body-Sheets bestehen harte QA-Gates | gute produktive Grundlage | dedizierte Air-/State-Abdeckung und native Layer-Master |
 | Spezialangriffe/Ultimates | figurenspezifisch und visuell unterscheidbar | vielversprechend | genaue Kontakt-Synchronisierung und einheitlicher Feedback-Standard |
 | Projektile | vorhanden, inklusive Impact-FX | brauchbar | Team/Faction-Regeln, Kontaktpunkt, einheitliche Hitprofile |
 | Waves | drei kurze Waves vorhanden | technischer Beweis | Gegnerrollen, Koordination, Stage Beats, Boss |
@@ -569,7 +569,7 @@ Die Reihenfolge ist absichtlich streng. Ein Block darf teilweise parallel vorber
 3. Budget Barbarian Walk-Ausreißer und Scale Pops beseitigen
 4. Buster Bulldog als Referenzstandard dokumentieren und Animationslücken schließen
 5. Angry Pigeon Idle und Gegnerreaktionen bereinigen
-6. Reference Fighter vor einem öffentlichen Release ersetzen oder entfernen, sofern Provenienz/Lizenz nicht eindeutig produktionsgeeignet ist
+6. Für nicht gestaltete Prototypen ausschließlich neutrale Platzhalter verwenden
 
 #### Verbindlicher Sheet-Standard
 

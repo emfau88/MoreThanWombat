@@ -377,12 +377,12 @@ export const busterBulldogDefinition: FighterDefinition = {
   },
 };
 
-export const referenceFighterDefinition: FighterDefinition = {
-  id: 'reference_fighter',
-  label: 'Reference Fighter',
-  hudPortraitKey: 'hud-portrait-reference-fighter',
-  fillColor: 0x2f66d8,
-  outlineColor: 0x101820,
+export const prototypePlaceholderDefinition: FighterDefinition = {
+  id: 'prototype_placeholder',
+  label: 'Prototype Placeholder',
+  hudPortraitKey: 'hud-portrait-prototype-placeholder',
+  fillColor: 0x050505,
+  outlineColor: 0x4a4a4a,
   maxHp: 100,
   maxMana: 100,
   manaRegenPerSecond: 5,
@@ -409,31 +409,11 @@ export const referenceFighterDefinition: FighterDefinition = {
     basic: 'buster_underbite_jab',
     special: 'buster_bulldog_bash',
   },
-  sprite: {
-    textureKey: 'reference-fighter',
-    scale: 1.32,
-    animations: {
-      idle: 'reference-fighter-idle',
-      walk: 'reference-fighter-walk',
-      attack: 'reference-fighter-basic',
-      special: 'reference-fighter-special',
-      jump: 'reference-fighter-jump',
-      fall: 'reference-fighter-fall',
-      landing: 'reference-fighter-landing',
-      hitstun: 'reference-fighter-hit',
-      dead: 'reference-fighter-dead',
-    },
-    attackAnimations: {
-      air_bonk: 'reference-fighter-air-bonk',
-      buster_underbite_jab: 'reference-fighter-basic',
-      buster_bulldog_bash: 'reference-fighter-special',
-    },
-  },
 };
 
-/** G2 behavior prototype. It deliberately reuses diagnostic art until the role passes mechanical review. */
+/** G2 behavior prototype. It deliberately uses the neutral rectangle fallback until it receives approved art. */
 export const scrapFlankerDefinition: FighterDefinition = {
-  ...referenceFighterDefinition,
+  ...prototypePlaceholderDefinition,
   id: 'scrap_flanker',
   label: 'Scrap Flanker [PROTO]',
   maxHp: 58,
@@ -441,13 +421,6 @@ export const scrapFlankerDefinition: FighterDefinition = {
   manaRegenPerSecond: 8,
   moveSpeed: 190,
   attacks: { basic: 'buster_underbite_jab', special: 'scrap_flanker_charge' },
-  sprite: {
-    ...referenceFighterDefinition.sprite!,
-    attackAnimations: {
-      ...referenceFighterDefinition.sprite!.attackAnimations,
-      scrap_flanker_charge: 'reference-fighter-special',
-    },
-  },
 };
 
 /** G2 behavior prototype. It deliberately reuses Buster art until the armor contract passes review. */
@@ -481,7 +454,7 @@ export const fighterDefinitions: Record<FighterId, FighterDefinition> = {
   budget_barbarian: budgetBarbarianDefinition,
   mara_breach: maraBreachDefinition,
   buster_bulldog: busterBulldogDefinition,
-  reference_fighter: referenceFighterDefinition,
+  prototype_placeholder: prototypePlaceholderDefinition,
   scrap_flanker: scrapFlankerDefinition,
   scrap_heavy: scrapHeavyDefinition,
 };

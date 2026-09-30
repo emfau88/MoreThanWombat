@@ -6,7 +6,7 @@ Last updated: 2026-09-10
 
 Read [plan 31](31_GAMEPLAY_AND_WAVE_COMPLETION_PLAN.md) first and the [G0 baseline with logs](qa/gameplay-baseline-2026-09-05/README.md) second. The current task is gameplay and Wave completion. The historical VFX-first recommendations and knockdown exclusion below do not override this plan.
 
-- Four normal players: Wombat, Discount Wizard, Budget Barbarian and Mara Breach. Normal Duel enemies: Pigeon and Wizard. Buster Bulldog and Reference Fighter are Gym-only prototypes, not normal Character Select options.
+- Four normal players: Wombat, Discount Wizard, Budget Barbarian and Mara Breach. Normal Duel enemies: Pigeon and Wizard. Buster Bulldog and a neutral rectangle placeholder are Gym-only prototypes, not normal Character Select options.
 - The current code passes Typecheck, **108/108 tests**, production build, the current G1–G7 browser suites, **6/6** character-sheet gates and VFX QA **6/6 + 5/5 + 4/4**. Character QA includes a prototype and is not a roster count or visual acceptance.
 - Junkyard Run has three zones and seven role-based encounters with a tested Director, safe visible entry, floor bounds, group camera framing, health rewards and phase-aware mana. No mana regeneration during safe travel, transition or results.
 - G4 supplies Guard/Evade, anti-stunlock and the complete Knockdown/Wake-up lifecycle. G5 supplies Run, four Dash Attacks, four three-step Basic-Chains and steerable Air Bonk. G6 supplies the two Stage-interaction types, deterministic lunchbox and Acting Foreman midboss. G7 supplies the two-phase Overtime Supervisor, phase-aware Boss HUD, lane lockdown, Shift Change and priority cleanup. See the [G7 report](qa/g7-runtime-2026-09-09/README.md).
@@ -208,21 +208,18 @@ Implemented:
 - Jump
 - Air Bonk animation
 
-### Reference Fighter
+### Prototype Placeholder
 
-Role: development-only animation reference.
+Role: development-only mechanics placeholder.
 
 Implemented:
 
-- Uses selected coherent chunks from `public/assets/original/205103.png` converted into `public/assets/characters/reference-fighter/reference_fighter_selected_96.png`
-- Source chunks are row 1 frames 1-4 for idle, row 3 frames 1-3 for walk/run, row 2 frames 1-4 for basic attack, the 4th row from the bottom frames 3-5 for the superpunch-style special, and the previous jump-kick frames as a dedicated Air Bonk block
-- Previously available in Character Select for local animation/combat feel testing; it is now a Combat-Gym-only diagnostic.
+- Uses the engine's plain black rectangle fallback and a generated neutral HUD tile.
+- Available only in the Combat Gym for mechanics testing.
 
 Notes:
 
-- This is not final project content. It exists to compare clean original-style sprite motion against the current combat system.
-- Current visual test result: idle, walk, jump, and Air Bonk are acceptable as a diagnostic reference. Special is still weak and the fighter has no proper ultimate.
-- Do not ship or build design direction around this asset unless licensing/provenance is resolved.
+- This is not final project content and intentionally contains no authored character artwork.
 
 ## Current Arenas
 
@@ -380,7 +377,7 @@ Check:
 
 ### Character Select
 
-The character select received a compact readability pass during the historical Reference Fighter experiment:
+The character select received a compact readability pass during an earlier prototype experiment:
 
 - wider player/opponent cards
 - larger touch arrow buttons

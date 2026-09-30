@@ -40,5 +40,5 @@ ImageGen produced one square, transparent head-and-upper-torso portrait per core
 
 - Source masters: `portraits/*_portrait_source.png`
 - Runtime exports: `public/assets/ui/battle/portraits/*.png`
-- Core set: Wombat, Angry Pigeon, Discount Wizard, Budget Barbarian, Mara Breach, Buster Bulldog and Reference Fighter
-- Prototype reuse: Scrap Heavy/Acting Foreman/Overtime Supervisor use Buster; Scrap Flanker uses Reference Fighter, matching their current gameplay art.
+- Core set: Wombat, Angry Pigeon, Discount Wizard, Budget Barbarian, Mara Breach and Buster Bulldog
+- Prototype fallback: Scrap Heavy/Acting Foreman/Overtime Supervisor use Buster; Scrap Flanker and the Gym-only placeholder use neutral rectangles until approved art exists.

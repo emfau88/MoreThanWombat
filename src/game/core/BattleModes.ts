@@ -11,7 +11,7 @@ export type FighterId =
   | 'budget_barbarian'
   | 'mara_breach'
   | 'buster_bulldog'
-  | 'reference_fighter'
+  | 'prototype_placeholder'
   | 'scrap_flanker'
   | 'scrap_heavy';
 

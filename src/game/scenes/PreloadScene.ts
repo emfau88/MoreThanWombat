@@ -45,7 +45,6 @@ export class PreloadScene extends Phaser.Scene {
     this.load.image('hud-portrait-budget-barbarian', `${assetBase}ui/battle/portraits/budget_barbarian.png`);
     this.load.image('hud-portrait-mara-breach', `${assetBase}ui/battle/portraits/mara_breach.png`);
     this.load.image('hud-portrait-buster-bulldog', `${assetBase}ui/battle/portraits/buster_bulldog.png`);
-    this.load.image('hud-portrait-reference-fighter', `${assetBase}ui/battle/portraits/reference_fighter.png`);
     this.load.image('ui-button-compact', `${assetBase}ui/battle/compact_button.png`);
     this.load.spritesheet('wombat', `${assetBase}characters/wombat/wombat_spritesheet_128_normalized.png`, {
       frameWidth: 128,
@@ -78,10 +77,6 @@ export class PreloadScene extends Phaser.Scene {
     this.load.spritesheet('buster-bulldog', `${assetBase}characters/buster-bulldog/buster_bulldog_spritesheet_128_normalized.png`, {
       frameWidth: 128,
       frameHeight: 128,
-    });
-    this.load.spritesheet('reference-fighter', `${assetBase}characters/reference-fighter/reference_fighter_selected_96.png`, {
-      frameWidth: 96,
-      frameHeight: 96,
     });
     this.load.spritesheet('buster-bulldog-air-bonk', `${assetBase}characters/buster-bulldog/buster_bulldog_air_bonk_128.png`, {
       frameWidth: 128,
@@ -118,6 +113,11 @@ export class PreloadScene extends Phaser.Scene {
   }
 
   create(): void {
+    const placeholderPortrait = this.add.graphics();
+    placeholderPortrait.fillStyle(0x050505, 1).fillRect(0, 0, 256, 256);
+    placeholderPortrait.lineStyle(12, 0x4a4a4a, 1).strokeRect(6, 6, 244, 244);
+    placeholderPortrait.generateTexture('hud-portrait-prototype-placeholder', 256, 256);
+    placeholderPortrait.destroy();
     this.scene.start('MainMenuScene');
   }
 }

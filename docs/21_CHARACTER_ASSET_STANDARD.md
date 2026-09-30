@@ -145,7 +145,7 @@ Requirements:
 
 ## Current Asset-Pipeline Status
 
-**Current-state note — 2026-09-05:** This section records asset-pipeline coverage, not the shippable gameplay roster. The current roster and acceptance status are authoritative in `31_GAMEPLAY_AND_WAVE_COMPLETION_PLAN.md` and `qa/gameplay-baseline-2026-09-05/README.md`: Wombat, Discount Wizard, Budget Barbarian, and Mara Breach are normal players; Buster Bulldog and Reference Fighter are Combat-Gym diagnostics; Angry Pigeon and Wizard are normal Duel enemies. Full current run and real-device acceptance remains open.
+**Current-state note — 2026-09-05:** This section records asset-pipeline coverage, not the shippable gameplay roster. The current roster and acceptance status are authoritative in `31_GAMEPLAY_AND_WAVE_COMPLETION_PLAN.md` and `qa/gameplay-baseline-2026-09-05/README.md`: Wombat, Discount Wizard, Budget Barbarian, and Mara Breach are normal players; Buster Bulldog and a neutral rectangle are Combat-Gym diagnostics; Angry Pigeon and Wizard are normal Duel enemies. Full current run and real-device acceptance remains open.
 
 As of 2026-09-05, the six QA-covered Body sheets use the deterministic pipeline documented in `24_BULK_1_CHARACTER_ASSET_IMPLEMENTATION.md`.
 

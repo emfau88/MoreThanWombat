@@ -31,7 +31,7 @@ export const COMBAT_GYM_FIGHTERS: FighterId[] = [
   'mara_breach',
   'buster_bulldog',
   'angry_pigeon',
-  'reference_fighter',
+  'prototype_placeholder',
 ];
 
 export const COMBAT_GYM_RANGES = [58, 92, 150] as const;

@@ -104,7 +104,6 @@ test('R4 fighter portraits are optimized square PNGs with real transparency', ()
     'budget_barbarian',
     'mara_breach',
     'buster_bulldog',
-    'reference_fighter',
   ]) {
     const portrait = PNG.sync.read(readFileSync(assetUrl(`portraits/${name}.png`)));
     const bounds = opaqueBounds(portrait);

@@ -22,7 +22,7 @@ Die Dauer ist Startup + Active + Recovery. Projectile- und Mehrtreffer-Moves wer
 
 ## Harte technische Schutzregeln
 
-- Der normale Roster enthält vier Spielerfiguren. Buster Bulldog und Reference Fighter bleiben Combat-Gym-Prototypen.
+- Der normale Roster enthält vier Spielerfiguren. Buster Bulldog und ein neutraler Platzhalter bleiben Combat-Gym-Prototypen.
 - Jede Spielerfigur besitzt Basic, Special und Ultimate; Special kostet Mana, Ultimate benötigt volle Mana-Leiste. Dieser Vertrag ist automatisiert in `tests/shippable-roster.test.ts` gesichert.
 - Wave-Daten dürfen keinen Prototyp verwenden; die Stage-Validierung prüft sichere Spawn- und Laufbereiche.
 

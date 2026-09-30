@@ -4,7 +4,7 @@
 
 [Plan 31](31_GAMEPLAY_AND_WAVE_COMPLETION_PLAN.md) owns the gameplay execution order. G0 is complete; **G1–G7** are implemented and technically verified. Their combined manual gameplay, balance and real-device acceptance remains open. The pre-G8 Battle-UI correction is now executing as UI-R0–R5: **UI-R0–R4 are complete; UI-R5 is next.** G8 resumes after UI-R5. [UI-R4 evidence](qa/ui-r4-2026-09-11/README.md) and [G7 evidence](qa/g7-runtime-2026-09-09/README.md) are the current status references.
 
-- Normal players: Wombat, Discount Wizard, Budget Barbarian, Mara Breach. Buster Bulldog and Reference Fighter are Gym-only prototypes.
+- Normal players: Wombat, Discount Wizard, Budget Barbarian, Mara Breach. Buster Bulldog and a neutral rectangle placeholder are Gym-only prototypes.
 - Typecheck, **108/108 tests** and build pass locally; G0 records six character-sheet hard gates and all three VFX-QA manifests passing.
 - Junkyard Run has three zones and seven role-based encounters, now orchestrated by the Director with per-spawn entry direction/timing, same-zone sub-waves, safe zone travel, pressure budgets and phase-aware mana. Fighters stay on the painted floor; deterministic zone rewards heal the player; transition cards and group framing improve area changes.
 - Guard, directional Evade, Guard Break, Launch, Knockdown, Grounded, protected Wake-up and Anti-Stunlock are integrated across combat, G2 roles, Gym, keyboard and mobile input. Combined manual G1–G7 acceptance remains open.
@@ -54,7 +54,7 @@ Implemented and usable at this snapshot:
 - Discount Wizard playable character
 - Budget Barbarian playable character
 - Buster Bulldog then exposed as a playable character; current code keeps it Gym-only
-- Reference Fighter diagnostic character
+- Neutral diagnostic placeholder
 - Basic attacks
 - Specials
 - Mana and ultimates

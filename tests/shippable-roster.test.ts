@@ -17,17 +17,17 @@ test('normal play exposes only the asset-approved roster and its approved Duel o
   assert.deepEqual(SHIPPABLE_PLAYER_FIGHTERS, ['wombat', 'discount_wizard', 'budget_barbarian', 'mara_breach']);
   assert.deepEqual(SHIPPABLE_DUEL_ENEMIES, ['angry_pigeon', 'discount_wizard']);
   assert.equal(isShippableFighter('buster_bulldog'), false);
-  assert.equal(isShippableFighter('reference_fighter'), false);
+  assert.equal(isShippableFighter('prototype_placeholder'), false);
   assert.equal(isShippableFighter('budget_barbarian'), true);
   assert.equal(isShippableFighter('mara_breach'), true);
 });
 
 test('diagnostic prototypes stay in the Gym while explicit role prototypes may appear in Waves', () => {
-  assert.deepEqual(PROTOTYPE_FIGHTERS, ['buster_bulldog', 'reference_fighter']);
+  assert.deepEqual(PROTOTYPE_FIGHTERS, ['buster_bulldog', 'prototype_placeholder']);
   assert.deepEqual(WAVE_ROLE_PROTOTYPES, ['scrap_flanker', 'scrap_heavy']);
   assert.deepEqual(REWORK_FIGHTERS, []);
   assert.ok(COMBAT_GYM_FIGHTERS.includes('buster_bulldog'));
-  assert.ok(COMBAT_GYM_FIGHTERS.includes('reference_fighter'));
+  assert.ok(COMBAT_GYM_FIGHTERS.includes('prototype_placeholder'));
   assert.ok(COMBAT_GYM_FIGHTERS.includes('budget_barbarian'));
   assert.ok(COMBAT_GYM_FIGHTERS.includes('mara_breach'));
   const unavailableWaveFighters = [...PROTOTYPE_FIGHTERS, ...REWORK_FIGHTERS];
@@ -35,6 +35,17 @@ test('diagnostic prototypes stay in the Gym while explicit role prototypes may a
   const waveFighters = junkyardRunStage.sections.flatMap((section) => section.enemies.map((spawn) => spawn.fighterId));
   assert.ok(WAVE_ROLE_PROTOTYPES.every((fighterId) => waveFighters.includes(fighterId)));
   assert.ok(WAVE_ROLE_PROTOTYPES.every((fighterId) => !isShippableFighter(fighterId)));
+});
+
+test('mechanics placeholders render with neutral fallback geometry', () => {
+  const placeholder = fighterDefinitions.prototype_placeholder;
+  const flanker = fighterDefinitions.scrap_flanker;
+
+  assert.equal(placeholder.label, 'Prototype Placeholder');
+  assert.equal(placeholder.fillColor, 0x050505);
+  assert.equal(placeholder.sprite, undefined);
+  assert.equal(flanker.sprite, undefined);
+  assert.equal(flanker.hudPortraitKey, 'hud-portrait-prototype-placeholder');
 });
 
 test('every shippable player has an authored basic, special, and ultimate with a real mana gate', () => {
